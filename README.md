@@ -12,7 +12,7 @@ cp setup_tmp.sh setup.sh
 Edit and Run setup.sh :
 ```
 export SKFlatLogEmail='' # <- put your email address here
-. setup.sh
+. setup.sh         ## you should do this for every pane of tmux again and again
 ```
 
 Making libraries
