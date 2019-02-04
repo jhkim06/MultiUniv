@@ -9,9 +9,10 @@ https://jskim.web.cern.ch/jskim/SKFlat/Manual/Manual_SKFlat.pdf
 cp setup_tmp.sh setup.sh
 ```
 
-Edit setup.sh :
+Edit and Run setup.sh :
 ```
 export SKFlatLogEmail='' # <- put your email address here
+. setup.sh         ## you should do this for every pane of tmux again and again
 ```
 
 Making libraries
