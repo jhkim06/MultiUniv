@@ -45,7 +45,7 @@ void SKFlatNtuple::Loop(){
 SKFlatNtuple::SKFlatNtuple(){
   MaxEvent = -1;
   NSkipEvent = 0;
-  LogEvery = 1000;
+  LogEvery = 5000;
   IsDATA = false;
   DataStream = "";
   MCSample = "";
