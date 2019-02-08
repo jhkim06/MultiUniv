@@ -571,8 +571,13 @@ os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz')
 FinalOutputPath = args.Outputdir
 if args.Outputdir=="":
   FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'
+  IsFirstFlag=True
   for flag in Userflags:
-    FinalOutputPath += flag+"__"
+    if IsFirstFlag:
+      IsFirstFlag=False
+      FinalOutputPath += flag
+    else:
+      FinalOutputPath += "_"+flag
   if IsDATA:
     FinalOutputPath += '/DATA/'
 os.system('mkdir -p '+FinalOutputPath)

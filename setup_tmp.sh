@@ -1,4 +1,9 @@
 export SKFlat_WD=`pwd`
+#TODO
+#export PYTHONPATH=${PYTHONPATH}:${SKFlat_WD} 
+# this guy is not working,
+# now using sys.path.insert(0,'../../CommonTools/python') instead at a relavant python script
+
 export SKFlat_LIB_PATH=$SKFlat_WD/lib/
 mkdir -p $SKFlat_LIB_PATH
 
