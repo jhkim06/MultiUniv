@@ -1,8 +1,14 @@
 #!/bin/bash
 
 # --userflags a,b,c,... to be used inside of analyser
+#############################
 # userflags for Skim
 # DoubleLepTrg
+#############################
+
+# options: see mkGardener for more details
+# --no_exec
+# MonitJob: default False
 
 #python python/SKFlat.py -a SMP_SkimTree -y 2017 -i DYtest -n 50 &
 #python ../python/SKFlat.py -a SMP_Validation -y 2017 -i DYJets -n 5 --nTotFiles 5 --userflags haha,hoho  &

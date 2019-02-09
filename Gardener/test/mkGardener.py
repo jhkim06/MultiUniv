@@ -22,6 +22,7 @@ parser.add_argument('--InSkim', dest='InSkim', default="")
 parser.add_argument('--no_exec', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="")
 parser.add_argument('--nTotFiles', dest='nTotFiles', default=0, type=int)
+parser.add_argument('--MonitJob', dest='MonitJob', default=False, type=bool)
 
 args = parser.parse_args()
 
@@ -62,7 +63,7 @@ SKFlat_LIB_PATH = os.environ['SKFlat_LIB_PATH']
 UID = str(os.getuid())
 
 if SKFlatLogEmail=='':
-  print '[SKFlat.py] Put your email address in setup.sh'
+  print '[mkGardener.py] Put your email address in setup.sh'
   exit()
 SendLogToWeb = True
 if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
@@ -110,7 +111,7 @@ elif args.Year == "2017":
 elif args.Year == "2018":
   AvailableDataPeriods = ["A", "B","C","D"]
 else:
-  print "[SKFlat.py] Wrong Year : "+args.Year
+  print "[mkGardener.py] Wrong Year : "+args.Year
 
 InputSamples = []
 StringForHash = ""
@@ -218,7 +219,7 @@ for InputSample in InputSamples:
           FinalOutputPath += '_'+flag
       else:
         FinalOutputPath += '_'+flag
-    FinalOutputPath +='/'+InputSample+'/'
+    #FinalOutputPath +='/'+InputSample+'/'
   os.system('mkdir -p '+FinalOutputPath)
 
 
@@ -279,6 +280,7 @@ for InputSample in InputSamples:
     SubmitOutput.write('--> exit'+'\n')
     sys.exit()
 
+  # FileRanges format: [[0,1,2],[3,4,5]]
   FileRanges = []
   temp_end_largerjob = 0
   nfile_checksum = 0
@@ -486,24 +488,35 @@ void {2}(){{
 #TODO
     if IsSkimTree:
       if IsSNU:
-	lsSNU
-        tmp_filename = lines_files[ FileRanges[it_job][0] ].strip('\n')
+        tmp_inputFilename = lines_files[ FileRanges[it_job][0] ].strip('\n')
+	chunkedInputFileName = InputSample+tmp_inputFilename.split(InputSample)[1]
+
         ## /data7/DATA/SKFlat/v949cand2_2/2017/DATA/SingleMuon/periodB/181107_231447/0000
         ## /data7/DATA/SKFlat/v949cand2_2/2017/MC/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/181108_152345/0000/SKFlatNtuple_2017_MC_100.root
-        dir1 = '/data7/DATA/SKFlat/'+SKFlatV+'/'+args.Year+'/'
-        dir2 = dir1
-        if IsDATA:
-          dir1 += "DATA/"
-          dir2 += "DATA_"+args.Analyzer+"/"
-        else:
-          dir1 += "MC/"
-          dir2 += "MC_"+args.Analyzer+"/"
+        #dir1 = '/data7/DATA/SKFlat/'+SKFlatV+'/'+args.Year+'/'
+        #dir2 = dir1
+        #if IsDATA:
+        #  dir1 += "DATA/"
+        #  dir2 += "DATA_"+args.Analyzer+"/"
+        #else:
+        #  dir1 += "MC/"
+        #  dir2 += "MC_"+args.Analyzer+"/"
 
-        skimoutname = tmp_filename.replace(dir1,dir2)
+        #skimoutname = tmp_filename.replace(dir1,dir2)
 
-        tmp_filename = skimoutname.split('/')[-1]
-        os.system('mkdir -p '+skimoutname.replace(tmp_filename,''))
-        out.write('  m.SetOutfilePath("'+skimoutname+'");\n')
+        #tmp_filename = skimoutname.split('/')[-1]
+	#outPath = skimoutname.replace(tmp_filename,'')
+	#print "outPath", outPath
+	#outPath = FinalOutputPath + '/'+InSkimString
+	out_Path_FileName = FinalOutputPath+'/'+chunkedInputFileName
+	out_FileName = out_Path_FileName.split('/')[-1]
+	out_Path          = out_Path_FileName.replace(out_FileName,'')
+	#print 'out_Path_FileName',out_Path_FileName
+	#print 'out_Path',out_Path
+	#print 'out_FileName',out_FileName
+	#fileName=InSkimString+str(it_job).zfill(3)+'root'
+        os.system('mkdir -p '+ out_Path)
+        out.write('  m.SetOutfilePath("'+out_Path_FileName+'");\n')
       else:
         out.write('  m.SetOutfilePath("hists.root");\n')
 
@@ -528,7 +541,7 @@ void {2}(){{
     if IsSNU:
       run_commands = open(thisjob_dir+'commands.sh','w')
       print>>run_commands,'''cd {0}
-echo "[SKFlat.py] Okay, let's run the analysis"
+echo "[mkGardener.py] Okay, let's run the analysis"
 root -l -b -q run.C
 '''.format(thisjob_dir)
       run_commands.close()
@@ -549,7 +562,7 @@ root -l -b -q run.C
       run_commands = open(thisjob_dir+'commands.sh','w')
       print>>run_commands,'''cd {0}
 cp ../x509up_u{1} /tmp/
-echo "[SKFlat.py] Okay, let's run the analysis"
+echo "[mkGardener.py] Okay, let's run the analysis"
 root -l -b -q run.C 1>stdout.log 2>stderr.log
 '''.format(thisjob_dir,UID)
       run_commands.close()
@@ -615,6 +628,11 @@ print '##################################################'
 
 if args.no_exec:
   print "Exiting no_exec run"
+  exit()
+
+if not args.MonitJob:
+  print 'No monitering job'
+  print 'Bye!!!'
   exit()
 
 ##########################
