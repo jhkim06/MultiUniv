@@ -1,9 +1,9 @@
-#ifndef SMP_SkimTree_h
-#define SMP_SkimTree_h
+#ifndef SMP_Skim_h
+#define SMP_Skim_h
 
 #include "AnalyzerCore.h"
 
-class SMP_SkimTree : public AnalyzerCore {
+class SMP_Skim : public AnalyzerCore {
 
 public:
 
@@ -11,8 +11,8 @@ public:
   void executeEventFromParameter(AnalyzerParameter param);
   void executeEvent();
 
-  SMP_SkimTree();
-  ~SMP_SkimTree();
+  SMP_Skim();
+  ~SMP_Skim();
 
   TTree *newtree;
 

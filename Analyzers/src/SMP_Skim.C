@@ -1,13 +1,13 @@
-#include "SMP_SkimTree.h"
+#include "SMP_Skim.h"
 
-void SMP_SkimTree::initializeAnalyzer(){
+void SMP_Skim::initializeAnalyzer(){
 
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");
   newtree = fChain->CloneTree(0);
   //=================================
   // Skim Types
-  skim_DoubleLepTrg = HasFlag("DoubleLepTrg");
+  skim_DoubleLepTrg = HasFlag("DoLeTrg");
   //=================================
 
 
@@ -16,7 +16,7 @@ void SMP_SkimTree::initializeAnalyzer(){
   doubleTrgs.clear();
 
 
-  cout << "[SMP_SkimTree::initializeAnalyzer] Skim List====================== " << endl;
+  cout << "[SMP_Skim::initializeAnalyzer] Skim List====================== " << endl;
   if(skim_DoubleLepTrg){
     if(DataYear==2016){
       doubleTrgs = {
@@ -37,7 +37,7 @@ void SMP_SkimTree::initializeAnalyzer(){
 
 }
 
-void SMP_SkimTree::executeEvent(){
+void SMP_Skim::executeEvent(){
 
   FillHist("InputEvent",1,1,2,0,2);
 
@@ -51,22 +51,22 @@ void SMP_SkimTree::executeEvent(){
 
 }
 
-void SMP_SkimTree::executeEventFromParameter(AnalyzerParameter param){
+void SMP_Skim::executeEventFromParameter(AnalyzerParameter param){
 
 }
 
-SMP_SkimTree::SMP_SkimTree(){
+SMP_Skim::SMP_Skim(){
 
 }
 
-SMP_SkimTree::~SMP_SkimTree(){
+SMP_Skim::~SMP_Skim(){
 
 }
 
-void SMP_SkimTree::WriteHist(){
+void SMP_Skim::WriteHist(){
 
   //outfile->mkdir("recoTree");
-  //outfile->cd("recoTree"); Already at SMP_SkimTree::initializeAnalyzer
+  //outfile->cd("recoTree"); Already at SMP_Skim::initializeAnalyzer
   newtree->AutoSave();
   //newtree->Write();
   outfile->cd();

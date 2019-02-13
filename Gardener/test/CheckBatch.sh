@@ -12,8 +12,11 @@
 
 #python python/SKFlat.py -a SMP_SkimTree -y 2017 -i DYtest -n 50 &
 #python ../python/SKFlat.py -a SMP_Validation -y 2017 -i DYJets -n 5 --nTotFiles 5 --userflags haha,hoho  &
-./mkGardener.py -a SMP_Skim -y 2017 -i DYJets -n 5 --nTotFiles 5 --userflags DoLeTrg --flagVer 9  &
-./mkGardener.py -a SMP_Skim -y 2017 -i DoubleMuon -n 5 --nTotFiles 5  --userflags DoLeTrg --flagVer 9  &
+#./mkGardener.py -a SMP_Skim -y 2017 -i DYJets -n 5 --nTotFiles 5 --userflags DoLeTrg --flagVer 9  &
+#./checkGardenerBatch.py -a SMP_Skim -y 2017 -i DYJets -n 5 --nTotFiles 5 --RundirBase /data7/Users/salee/SKFlatRunlog/SMP_Skim_2019_02_12_001802 --SkimName DoLeTrg_v9  &
+./checkGardenerBatch.py -a SMP_Skim -y 2017 -i DYJets -n 5 --nTotFiles 5 --RundirBase /data7/Users/salee/SKFlatRunlog/SMP_Skim_2019_02_10_224848 --SkimName DoLeTrg_v9  &
+#./checkGardenerBatch.py -a SMP_Skim -y 2017 -i DYJets -n 5 --nTotFiles 5 --userflags DoLeTrg --flagVer 9  &
+#./mkGardener.py -a SMP_Skim -y 2017 -i DoubleMuon -n 5 --nTotFiles 5  --userflags DoLeTrg --flagVer 9  &
 #./mkGardener.py -a SMP_Validation -y 2017 -i DYJets -n 5 --nTotFiles 5 --userflags haha,hoho --no_exec &
 #python ../python/SKFlat.py -a SMP_Validation -y 2017 -i DYJets -n 5 --nTotFiles 5 --userflags haha,hoho --no_exec &
 

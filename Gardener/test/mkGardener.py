@@ -2,12 +2,15 @@
 
 import os,sys,time
 #import os.path
-sys.path.insert(0,'../../CommonTools/python')
 import argparse
 import datetime
+import random
+sys.path.insert(0,'../../CommonTools/python')
+from getEvn import *
 from CheckJobStatus import *
 from TimeTools import *
-import random
+sys.path.insert(0,'../../data/python')
+from sampleDef import *
 
 parser = argparse.ArgumentParser(description='SKFlat Command')
 parser.add_argument('-a', dest='Analyzer', default="")
@@ -21,6 +24,7 @@ parser.add_argument('-y', dest='Year', default="2017")
 parser.add_argument('--InSkim', dest='InSkim', default="")
 parser.add_argument('--no_exec', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="")
+parser.add_argument('--flagVer', dest='flagVer', default="0")
 parser.add_argument('--nTotFiles', dest='nTotFiles', default=0, type=int)
 parser.add_argument('--MonitJob', dest='MonitJob', default=False, type=bool)
 
@@ -48,19 +52,7 @@ string_JobStartTime =  JobStartTime.strftime('%Y-%m-%d %H:%M:%S')
 string_ThisTime = ""
 
 ## Environment Variables
-
-USER = os.environ['USER']
-SKFlatLogEmail = os.environ['SKFlatLogEmail']
-SKFlatLogWeb = os.environ['SKFlatLogWeb']
-SKFlatLogWebDir = os.environ['SKFlatLogWebDir']
-SKFlat_WD = os.environ['SKFlat_WD']
-SKFlatV = os.environ['SKFlatV']
-SAMPLE_DATA_DIR = SKFlat_WD+'/data/'+SKFlatV+'/'+args.Year+'/Sample/'
-SKFlatRunlogDir = os.environ['SKFlatRunlogDir']
-SKFlatOutputDir = os.environ['SKFlatOutputDir']
-SKFlatSEDir = os.environ['SKFlatSEDir']
-SKFlat_LIB_PATH = os.environ['SKFlat_LIB_PATH']
-UID = str(os.getuid())
+SAMPLE_DATA_DIR = SampleDataDir(args.Year)
 
 if SKFlatLogEmail=='':
   print '[mkGardener.py] Put your email address in setup.sh'
@@ -69,12 +61,7 @@ SendLogToWeb = True
 if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
   SendLogToWeb = False
 
-HOSTNAME = os.environ['HOSTNAME']
-IsKISTI = ("sdfarm.kr" in HOSTNAME)
-IsUI10 = ("ui10.sdfarm.kr" in HOSTNAME)
-IsUI20 = ("ui20.sdfarm.kr" in HOSTNAME)
-IsSNU = ("snu" in HOSTNAME)
-IsKNU = ("knu" in HOSTNAME)
+
 if IsKISTI:
   HOSTNAME = "KISTI"
 if IsSNU:
@@ -83,8 +70,8 @@ if IsKNU:
   HOSTNAME = "KNU"
 
 ## Is Skim run?
-IsSkimTree = "SkimTree" in args.Analyzer
-if IsSkimTree:
+IsSKim = "Skim" in args.Analyzer
+if IsSKim:
   if IsSNU:
     print  "Skim in SNU setting NJobs = 999999 !!!!!!!!!!!"
     args.NJobs = 999999
@@ -102,16 +89,9 @@ if IsKNU:
 
 ## Make Sample List
 
-InputSample_Data = ["DoubleMuon", "DoubleEG", "SingleMuon", "SingleElectron", "SinglePhoton"]
-AvailableDataPeriods = []
-if args.Year == "2016":
-  AvailableDataPeriods = ["B_ver2","C","D","E","F","G","H"]
-elif args.Year == "2017":
-  AvailableDataPeriods = ["B","C","D","E","F"]
-elif args.Year == "2018":
-  AvailableDataPeriods = ["A", "B","C","D"]
-else:
-  print "[mkGardener.py] Wrong Year : "+args.Year
+DataPeriods = DataPeriods(args.Year)
+print "DataPeriods", DataPeriods
+
 
 InputSamples = []
 StringForHash = ""
@@ -128,10 +108,10 @@ if args.InputSampleList is not "":
 else:
   if args.InputSample in InputSample_Data:
     if args.DataPeriod=="ALL":
-      for period in AvailableDataPeriods:
+      for period in DataPeriods:
         InputSamples.append(args.InputSample+":"+period)
         StringForHash += args.InputSample+":"+period
-    elif args.DataPeriod in AvailableDataPeriods:
+    elif args.DataPeriod in DataPeriods:
       InputSamples.append(args.InputSample+":"+args.DataPeriod)
       StringForHash += args.InputSample+":"+args.DataPeriod
   else:
@@ -183,20 +163,23 @@ for InputSample in InputSamples:
 
   InSkimString = ""
   if args.InSkim!="":
-    InSkimString = args.InSkim+"_"
+    InSkimString = args.InSkim
 
 
 
   ## Prepare output
 
-  base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+'Year'+args.Year+'__'+InSkimString+InputSample
+  if InSkimString !="":
+    base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+timestamp+'_'+'Y'+args.Year+'_'+InSkimString+'_'+InputSample
+  else:
+    base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+timestamp+'_'+'Y'+args.Year+'_'+InputSample
   print "base_rundir: ", base_rundir
   if IsDATA:
-    base_rundir = base_rundir+'_period'+DataPeriod
+    base_rundir = base_rundir+'_'+DataPeriod
   for flag in Userflags:
-    base_rundir += '__'+flag
-  base_rundir += '__'+HOSTNAME
-  base_rundir = base_rundir+"/"
+    base_rundir += '_'+flag
+  #base_rundir += '_'+HOSTNAME
+  base_rundir = base_rundir+'_v'+args.flagVer+"/"
 
   os.system('mkdir -p '+base_rundir)
   os.system('mkdir -p '+base_rundir+'/output/')
@@ -220,6 +203,7 @@ for InputSample in InputSamples:
       else:
         FinalOutputPath += '_'+flag
     #FinalOutputPath +='/'+InputSample+'/'
+    FinalOutputPath +='_v'+args.flagVer+'/'
   os.system('mkdir -p '+FinalOutputPath)
 
 
@@ -249,18 +233,18 @@ for InputSample in InputSamples:
 
   ## Get Sample Path
 
-  lines_files = []
+  inputFileList = []
 
-  tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InSkimString+InputSample+'.txt'
+  tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InSkimString+'/'+InputSample+'.txt'
   if IsDATA:
-    tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InSkimString+InputSample+'_'+DataPeriod+'.txt'
-  lines_files = open(tmpfilepath).readlines()
+    tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InSkimString+'/'+InputSample+'_'+DataPeriod+'.txt'
+  inputFileList = open(tmpfilepath).readlines()
   os.system('cp '+tmpfilepath+' '+base_rundir+'/input_filelist.txt')
 
   if args.nTotFiles > 0:
     NTotalFiles = args.nTotFiles
   else:
-    NTotalFiles = len(lines_files)
+    NTotalFiles = len(inputFileList)
 
   print "NTotalFiles: ", NTotalFiles
 
@@ -319,7 +303,7 @@ for InputSample in InputSamples:
     if IsDATA:
       commandsfilename += '_'+DataPeriod
     for flag in Userflags:
-      commandsfilename += '__'+flag
+      commandsfilename += '_'+flag
     run_commands = open(base_rundir+'/'+commandsfilename+'.sh','w')
     print>>run_commands,'''#!/bin/bash
 SECTION=`printf %03d $1`
@@ -482,13 +466,13 @@ void {2}(){{
       out.write('  };\n')
 
     for it_file in FileRanges[it_job]:
-      thisfilename = lines_files[it_file].strip('\n')
+      thisfilename = inputFileList[it_file].strip('\n')
       out.write('  m.AddFile("'+thisfilename+'");\n')
 
 #TODO
-    if IsSkimTree:
+    if IsSKim:
       if IsSNU:
-        tmp_inputFilename = lines_files[ FileRanges[it_job][0] ].strip('\n')
+        tmp_inputFilename = inputFileList[ FileRanges[it_job][0] ].strip('\n')
 	chunkedInputFileName = InputSample+tmp_inputFilename.split(InputSample)[1]
 
         ## /data7/DATA/SKFlat/v949cand2_2/2017/DATA/SingleMuon/periodB/181107_231447/0000
@@ -528,7 +512,7 @@ void {2}(){{
 
 
     out.write('  m.Init();'+'\n')
-    if not IsSkimTree:
+    if not IsSKim:
       out.write('  m.initializeAnalyzerTools();'+'\n')
     print>>out,'''  m.initializeAnalyzer();
   m.Loop();
@@ -605,6 +589,8 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
       KillCommand.write('qdel '+jobid+' ## job_'+str(it_job)+' ##\n')
     KillCommand.close()
 
+  SubmitOutput.write('Job submitted at '+string_JobStartTime+'\n')
+
 ### remove tar.gz
 os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz')
 os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz')
@@ -620,7 +606,7 @@ print InputSamples
 print '- NJobs = '+str(NJobs)
 print '- Year = '+args.Year
 print '- UserFlags =',
-print Userflags
+print Userflags, args.flagVer
 if IsSNU or IsKNU:
   print '- Queue = '+args.Queue
 print '- output will be send to : '+FinalOutputPath
@@ -677,18 +663,23 @@ try:
 
       InSkimString = ""
       if args.InSkim!="":
-        InSkimString = args.InSkim+"_"
+        InSkimString = args.InSkim
 
       ## Prepare output
       ## This should be copied from above
 
-      base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+'Year'+args.Year+'__'+InSkimString+InputSample
+      if InSkimString != "":
+        base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+timestamp+'_'+'Y'+args.Year+'_'+InSkimString+'_'+InputSample
+      else:
+        base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+timestamp+'_'+'Y'+args.Year+'_'+InputSample
+
       if IsDATA:
-        base_rundir = base_rundir+'_period'+DataPeriod
+        base_rundir = base_rundir+'_'+DataPeriod
+
       for flag in Userflags:
-        base_rundir += '__'+flag
-      base_rundir += '__'+HOSTNAME
-      base_rundir = base_rundir+"/"
+        base_rundir += '_'+flag
+      #base_rundir += '_'+HOSTNAME
+      base_rundir = base_rundir+'_v'+args.flagVer+"/"
 
       this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'')
 
@@ -866,11 +857,15 @@ try:
 
 
           ## if Skim, no need to hadd. move on!
-          if IsSkimTree:
+          if IsSKim:
             PostJobFinishedForEachSample[it_sample] = True
             continue
 
-          outputname = args.Analyzer+'_'+InSkimString+InputSample
+          if InSkimString !="":
+            outputname = args.Analyzer+'_'+InSkimString+'_'+InputSample
+	  else:
+            outputname = args.Analyzer+'_'+InputSample
+
           if IsDATA:
             outputname += '_'+DataPeriod
 

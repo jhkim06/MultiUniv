@@ -180,9 +180,9 @@ void SMP_Validation::executeEventFromParameter(TString channelname,Event* ev){
   /////////////////PUreweight///////////////////
   double PUreweight=1.,PUreweight_up=1.,PUreweight_down=1.;
   if(!IsDATA){
-    PUreweight=mcCorr.GetPileUpWeightBySampleName(nPileUp,0);
-    PUreweight_up=mcCorr.GetPileUpWeightBySampleName(nPileUp,1);
-    PUreweight_down=mcCorr.GetPileUpWeightBySampleName(nPileUp,-1);
+    PUreweight=mcCorr->GetPileUpWeightBySampleName(nPileUp,0);
+    PUreweight_up=mcCorr->GetPileUpWeightBySampleName(nPileUp,1);
+    PUreweight_down=mcCorr->GetPileUpWeightBySampleName(nPileUp,-1);
     totalweight*=PUreweight;
   }
   FillHist("cutflow",1.5,totalweight,20,0,20);
@@ -215,26 +215,26 @@ void SMP_Validation::executeEventFromParameter(TString channelname,Event* ev){
 	exit(EXIT_FAILURE);
       }
 
-      double this_RECOSF=LeptonReco_SF?(mcCorr.*LeptonReco_SF)(this_eta,this_pt,0):1.;
-      double this_RECOSF_up=LeptonReco_SF?(mcCorr.*LeptonReco_SF)(this_eta,this_pt,1):1.;
-      double this_RECOSF_down=LeptonReco_SF?(mcCorr.*LeptonReco_SF)(this_eta,this_pt,-1):1.;
+      double this_RECOSF=LeptonReco_SF?(mcCorr->*LeptonReco_SF)(this_eta,this_pt,0):1.;
+      double this_RECOSF_up=LeptonReco_SF?(mcCorr->*LeptonReco_SF)(this_eta,this_pt,1):1.;
+      double this_RECOSF_down=LeptonReco_SF?(mcCorr->*LeptonReco_SF)(this_eta,this_pt,-1):1.;
       RECOSF*=this_RECOSF; RECOSF_up*=this_RECOSF_up; RECOSF_down*=this_RECOSF_down;
 
-      double this_IDSF=LeptonID_SF?(mcCorr.*LeptonID_SF)(LeptonID_key,this_eta,this_pt,0):1.;
-      double this_IDSF_up=LeptonID_SF?(mcCorr.*LeptonID_SF)(LeptonID_key,this_eta,this_pt,1):1.;
-      double this_IDSF_down=LeptonID_SF?(mcCorr.*LeptonID_SF)(LeptonID_key,this_eta,this_pt,-1):1.;
+      double this_IDSF=LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,this_eta,this_pt,0):1.;
+      double this_IDSF_up=LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,this_eta,this_pt,1):1.;
+      double this_IDSF_down=LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,this_eta,this_pt,-1):1.;
       IDSF*=this_IDSF; IDSF_up*=this_IDSF_up; IDSF_down*=this_IDSF_down;
       
       if(LeptonID_key_POG!=""){
-	double this_IDSF_POG=LeptonID_SF?(mcCorr.*LeptonID_SF)(LeptonID_key_POG,this_eta,this_pt,0):1.;
-	double this_IDSF_POG_up=LeptonID_SF?(mcCorr.*LeptonID_SF)(LeptonID_key_POG,this_eta,this_pt,1):1.;
-	double this_IDSF_POG_down=LeptonID_SF?(mcCorr.*LeptonID_SF)(LeptonID_key_POG,this_eta,this_pt,-1):1.;
+	double this_IDSF_POG=LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key_POG,this_eta,this_pt,0):1.;
+	double this_IDSF_POG_up=LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key_POG,this_eta,this_pt,1):1.;
+	double this_IDSF_POG_down=LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key_POG,this_eta,this_pt,-1):1.;
 	IDSF_POG*=this_IDSF_POG; IDSF_POG_up*=this_IDSF_POG_up; IDSF_POG_down*=this_IDSF_POG_down;
       }
 
-      double this_ISOSF=LeptonISO_SF?(mcCorr.*LeptonISO_SF)(LeptonISO_key,this_eta,this_pt,0):1.;
-      double this_ISOSF_up=LeptonISO_SF?(mcCorr.*LeptonISO_SF)(LeptonISO_key,this_eta,this_pt,1):1.;
-      double this_ISOSF_down=LeptonISO_SF?(mcCorr.*LeptonISO_SF)(LeptonISO_key,this_eta,this_pt,-1):1.;
+      double this_ISOSF=LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,this_eta,this_pt,0):1.;
+      double this_ISOSF_up=LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,this_eta,this_pt,1):1.;
+      double this_ISOSF_down=LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,this_eta,this_pt,-1):1.;
       ISOSF*=this_ISOSF; ISOSF_up*=this_ISOSF_up; ISOSF_down*=this_ISOSF_down;
     }
   }
@@ -386,9 +386,9 @@ double SMP_Validation::DileptonTrigger_SF(TString SFhistkey0,TString SFhistkey1,
   }
   map<TString,TH2F*>* map_hist_Lepton=NULL;
   if(leps[0]->LeptonFlavour()==Lepton::MUON){
-    map_hist_Lepton=&mcCorr.map_hist_Muon;
+    map_hist_Lepton=&mcCorr->map_hist_Muon;
   }else if(leps[0]->LeptonFlavour()==Lepton::ELECTRON){
-    map_hist_Lepton=&mcCorr.map_hist_Electron;
+    map_hist_Lepton=&mcCorr->map_hist_Electron;
   }else{
     cout <<"[SMP_Validation::Trigger_SF] Not ready"<<endl;
     exit(EXIT_FAILURE);
