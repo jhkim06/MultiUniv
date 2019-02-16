@@ -1,4 +1,8 @@
-all: DataFormats AnalyzerTools Analyzers Archive
+all: CommonTools DataFormats  AnalyzerTools Analyzers Archive
+
+CommonTools::
+	(cd CommonTools; make)
+	(mvexist.sh CommonTools/src/CommonTools_Dict_rdict.pcm lib/)
 
 DataFormats::
 	(cd DataFormats; make)

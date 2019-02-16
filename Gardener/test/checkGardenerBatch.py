@@ -78,9 +78,9 @@ if args.InputSampleList is not "":
 else:
   if args.InputSample in InputSample_Data:
     if args.DataPeriod=="ALL":
-      for period in DataPeriods:
+      for period in DataPeriods(args.Year):
         InputSamples.append(args.InputSample+":"+period)
-    elif args.DataPeriod in DataPeriods:
+    elif args.DataPeriod in DataPeriods(args.Year):
       InputSamples.append(args.InputSample+":"+args.DataPeriod)
   else:
     InputSamples.append(args.InputSample)
@@ -266,7 +266,8 @@ try:
       if SampleFinished:
         continue
       else:
-        AllSampleFinished = False
+	pass
+        #AllSampleFinished = False
 
       ## Global Varialbes
 
@@ -323,12 +324,17 @@ try:
 
           this_status = ""
           this_status = CheckJobStatus(base_rundir, args.Analyzer, it_job, HOSTNAME)
+	  print base_rundir, args.Analyzer, 'job',it_job
+	  print "this_status",this_status
 
           if "ERROR" in this_status:
             GotError = True
             statuslog.write("#### ERROR OCCURED ####\n")
             statuslog.write(this_status+'\n')
             ErrorLog = this_status
+            print '###################### ERROR OCCURED ##########################'
+	    print ErrorLog
+
             break
 
           if "FINISHED" not in this_status:
@@ -488,7 +494,6 @@ if GotError:
   JobFinishEmail = "#### ERROR OCCURED ####\n"+JobFinishEmail
   JobFinishEmail = ErrorLog+"\n------------------------------------------------\n"+JobFinishEmail
   EmailTitle = '[ERROR] Job Summary'
-  print '###################### ERROR OCCURED ##########################'
 else:
   print 'Congratulation! there is no error occured'
   print 'Check log file at', base_rundir+'/JobStatus.log'

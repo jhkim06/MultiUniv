@@ -11,7 +11,8 @@
 #pragma link C++ class ExampleRun+;
 #pragma link C++ class SKFlatValidation+;
 #pragma link C++ class SkimTree_LRSMHighPt+;
-#pragma link C++ class SMP_Skim+;
+#pragma link C++ class Skim_Leptons+;
+#pragma link C++ class Skim_DiLep+;
 #pragma link C++ class SMP_Validation+;
 
 #endif

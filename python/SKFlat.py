@@ -19,11 +19,8 @@ parser.add_argument('-y', dest='Year', default="2017")
 parser.add_argument('--skim', dest='Skim', default="")
 parser.add_argument('--no_exec', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="")
-parser.add_argument('--nTotFiles', dest='nTotFiles', default=1, type=int)
-
 args = parser.parse_args()
 
-print "Let's go"
 ## make flags
 Userflags = []
 if args.Userflags != "":
@@ -82,16 +79,10 @@ if IsKNU:
 ## Is Skim run?
 IsSkimTree = "SkimTree" in args.Analyzer
 if IsSkimTree:
-  if IsSNU:
-    print  "Skim in SNU setting NJobs = 999999 !!!!!!!!!!!"
-    args.NJobs = 999999
-  elif IsKISTI:
-    print "Skim in Kisti"
-  else:
-    print "Skimming in ", HOSTNAME, "is not prepared kkk"
+  if not IsSNU:
+    print "Skimming only possible in SNU"
     exit()
-
-
+  args.NJobs = 999999
 
 ## Machine-dependent variables
 if IsKNU:
@@ -180,7 +171,6 @@ for InputSample in InputSamples:
   ## Prepare output
 
   base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'__'+timestamp+'__'+'Year'+args.Year+'__'+SkimString+InputSample
-  print "base_rundir: ", base_rundir
   if IsDATA:
     base_rundir = base_rundir+'_period'+DataPeriod
   for flag in Userflags:
@@ -197,8 +187,9 @@ for InputSample in InputSamples:
     ## In KISTI, we have copy both library and data file
     os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz '+base_rundir+'/data.tar.gz')
     os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz '+base_rundir+'/lib.tar.gz')
-    os.system('cp '+SKFlat_WD+'/lib/Analyzers.tar.gz '+base_rundir)
     os.system('cp '+SKFlat_WD+'/lib/DataFormats.tar.gz '+base_rundir)
+    os.system('cp '+SKFlat_WD+'/lib/AnalyzerTools.tar.gz '+base_rundir)
+    os.system('cp '+SKFlat_WD+'/lib/Analyzers.tar.gz '+base_rundir)
 
   else:
     ## Else, we only have to copy libray
@@ -224,12 +215,7 @@ for InputSample in InputSamples:
   lines_files = open(tmpfilepath).readlines()
   os.system('cp '+tmpfilepath+' '+base_rundir+'/input_filelist.txt')
 
-  if args.nTotFiles > 0:
-    NTotalFiles = args.nTotFiles
-  else:
-    NTotalFiles = len(lines_files)
-
-  print "NTotalFiles: ", NTotalFiles
+  NTotalFiles = len(lines_files)
 
   if NJobs>NTotalFiles:
     NJobs = NTotalFiles
@@ -292,6 +278,8 @@ SECTION=`printf %03d $1`
 WORKDIR=`pwd`
 echo "#### Extracting DataFormats ####"
 tar -zxvf DataFormats.tar.gz
+echo "####  Extracting AnalyzerTools ####"
+tar -zxvf AnalyzerTools.tar.gz
 echo "####  Extracting Analyzers ####"
 tar -zxvf Analyzers.tar.gz
 echo "#### Extracting libraries ####"
@@ -314,7 +302,7 @@ export SKFlatV="{0}"
 export SKFlat_WD=`pwd`
 export SKFlat_LIB_PATH=$SKFlat_WD/lib/
 export DATA_DIR=data/$SKFlatV
-export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKFlat_WD/Analyzers/include/
+export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKFlat_WD/Analyzers/include/:$SKFlat_WD/AnalyzerTools/include/
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH
 
 SumNoAuth=999
@@ -359,33 +347,29 @@ should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 output = job_$(Process).log
 error = job_$(Process).err
-transfer_input_files = {0}, {1}, {4}, {5}, {6}
-# To use sample in KNU for example
-#use_x509userproxy = true
+transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {2}
-'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/DataFormats.tar.gz')
+'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/AnalyzerTools.tar.gz', base_rundir+'/DataFormats.tar.gz')
       submit_command.close()
     if IsUI20:
       print>>submit_command,'''executable = {3}.sh
 universe   = vanilla
 requirements = ( HasSingularity == true )
 arguments  = $(Process)
-log = condor_$(Process).log
+log = condor.log
 getenv     = False
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 output = job_$(Process).log
 error = job_$(Process).err
-transfer_input_files = {0}, {1}, {4}, {5}, {6}
-# To use sample in KNU for example
-#use_x509userproxy = true
+transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}
 accounting_group=group_cms
 +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest"
 +SingularityBind = "/cvmfs, /cms, /share"
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {2}
-'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/DataFormats.tar.gz')
+'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/AnalyzerTools.tar.gz', base_rundir+'/DataFormats.tar.gz')
       submit_command.close()
 
 
@@ -403,7 +387,6 @@ queue {2}
 
     runfunctionname = "run"
     libdir = (base_rundir+'/lib').replace('///','/').replace('//','/')+'/'
-    print "libdir: ",libdir
     runCfileFullPath = ""
     if IsKISTI:
       libdir = './lib/'
@@ -417,7 +400,9 @@ queue {2}
     IncludeLine += 'R__LOAD_LIBRARY(libTree.so)\n'
     IncludeLine += 'R__LOAD_LIBRARY(libHist.so)\n'
     IncludeLine += 'R__LOAD_LIBRARY({0}libDataFormats.so)\n'.format(libdir)
+    IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzerTools.so)\n'.format(libdir)
     IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzers.so)\n'.format(libdir)
+    IncludeLine += 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc6_amd64_gcc630/external/lhapdf/6.2.1-fmblme/lib/libLHAPDF.so)\n'
     #IncludeLine = 'R__LOAD_LIBRARY({1}/{0}_C.so)'.format(args.Analyzer, libdir)
 
     out = open(runCfileFullPath, 'w')
@@ -451,30 +436,24 @@ void {2}(){{
       thisfilename = lines_files[it_file].strip('\n')
       out.write('  m.AddFile("'+thisfilename+'");\n')
 
-#TODO
     if IsSkimTree:
-      if IsSNU:
-	lsSNU
-        tmp_filename = lines_files[ FileRanges[it_job][0] ].strip('\n')
-        ## /data7/DATA/SKFlat/v949cand2_2/2017/DATA/SingleMuon/periodB/181107_231447/0000
-        ## /data7/DATA/SKFlat/v949cand2_2/2017/MC/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/181108_152345/0000/SKFlatNtuple_2017_MC_100.root
-        dir1 = '/data7/DATA/SKFlat/'+SKFlatV+'/'+args.Year+'/'
-        dir2 = dir1
-        if IsDATA:
-          dir1 += "DATA/"
-          dir2 += "DATA_"+args.Analyzer+"/"
-        else:
-          dir1 += "MC/"
-          dir2 += "MC_"+args.Analyzer+"/"
-
-        skimoutname = tmp_filename.replace(dir1,dir2)
-
-        tmp_filename = skimoutname.split('/')[-1]
-        os.system('mkdir -p '+skimoutname.replace(tmp_filename,''))
-        out.write('  m.SetOutfilePath("'+skimoutname+'");\n')
+      tmp_filename = lines_files[ FileRanges[it_job][0] ].strip('\n')
+      ## /data7/DATA/SKFlat/v949cand2_2/2017/DATA/SingleMuon/periodB/181107_231447/0000
+      ## /data7/DATA/SKFlat/v949cand2_2/2017/MC/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/181108_152345/0000/SKFlatNtuple_2017_MC_100.root
+      dir1 = '/data7/DATA/SKFlat/'+SKFlatV+'/'+args.Year+'/'
+      dir2 = dir1
+      if IsDATA:
+        dir1 += "DATA/"
+        dir2 += "DATA_"+args.Analyzer+"/"
       else:
-	print "Do something for Skim process at other than SNU. Exiting"
-	exit()
+        dir1 += "MC/"
+        dir2 += "MC_"+args.Analyzer+"/"
+
+      skimoutname = tmp_filename.replace(dir1,dir2)
+
+      tmp_filename = skimoutname.split('/')[-1]
+      os.system('mkdir -p '+skimoutname.replace(tmp_filename,''))
+      out.write('  m.SetOutfilePath("'+skimoutname+'");\n')
 
     else:
       if IsKISTI:
@@ -482,6 +461,7 @@ void {2}(){{
       else:
         out.write('  m.SetOutfilePath("'+thisjob_dir+'/hists.root");\n')
 
+    IsSkimTree
 
     out.write('  m.Init();'+'\n')
     if not IsSkimTree:
@@ -540,11 +520,8 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
     cwd = os.getcwd()
     os.chdir(base_rundir)
     os.system('tar -czf runFile.tar.gz run_*.C')
-    cmd = 'condor_submit submit.jds'
     if not args.no_exec:
-      os.system(cmd)
-    else:
-      print 'Dry run, command "'+cmd+'" will be excuted for real run at '+ base_rundir
+      os.system('condor_submit submit.jds')
     os.chdir(cwd)
 
   else:
@@ -561,23 +538,20 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
       KillCommand.write('qdel '+jobid+' ## job_'+str(it_job)+' ##\n')
     KillCommand.close()
 
-### remove tar.gz
+## remove tar.gz
 os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz')
 os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz')
 
+if args.no_exec:
+  exit()
 
 ## Set Output directory
-### if args.Outputdir is not set, go to default setting
+## if args.Outputdir is not set, go to default setting
 FinalOutputPath = args.Outputdir
 if args.Outputdir=="":
   FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'
-  IsFirstFlag=True
   for flag in Userflags:
-    if IsFirstFlag:
-      IsFirstFlag=False
-      FinalOutputPath += flag
-    else:
-      FinalOutputPath += "_"+flag
+    FinalOutputPath += flag+"__"
   if IsDATA:
     FinalOutputPath += '/DATA/'
 os.system('mkdir -p '+FinalOutputPath)
@@ -596,10 +570,6 @@ if IsSNU or IsKNU:
   print '- Queue = '+args.Queue
 print '- output will be send to : '+FinalOutputPath
 print '##################################################'
-
-if args.no_exec:
-  print "Exiting no_exec run"
-  exit()
 
 ##########################
 ## Submittion all done. ##
@@ -686,8 +656,8 @@ try:
         for it_job in range(0,len(FileRanges)):
 
           thisjob_dir = base_rundir+'/'
-          #if IsKISTI:
-           # thisjob_dir = base_rundir
+          if IsKISTI:
+            thisjob_dir = base_rundir
 
           this_status = ""
           this_status = CheckJobStatus(thisjob_dir, args.Analyzer, it_job, HOSTNAME)
@@ -708,7 +678,6 @@ try:
 
             EventInfo = this_status.split()[1].split(':')
 
-	    # Finished status, this is a trick to make Ntotal = NDone
             this_EventDone = int(EventInfo[2])
             this_EventTotal = int(EventInfo[2])
 
@@ -897,7 +866,3 @@ if IsKNU:
   SendEmailbyGMail(USER,SKFlatLogEmail,EmailTitle,JobFinishEmail)
 else:
   SendEmail(USER,SKFlatLogEmail,EmailTitle,JobFinishEmail)
-
-
-print "Every process has done, bye!!!"
-exit()

@@ -214,7 +214,9 @@ for InputSample in InputSamples:
     ## In KISTI, we have copy both library and data file
     os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz '+base_rundir+'/data.tar.gz')
     os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz '+base_rundir+'/lib.tar.gz')
+    os.system('cp '+SKFlat_WD+'/lib/CommonTools.tar.gz '+base_rundir)
     os.system('cp '+SKFlat_WD+'/lib/Analyzers.tar.gz '+base_rundir)
+    os.system('cp '+SKFlat_WD+'/lib/AnalyzerTools.tar.gz '+base_rundir)
     os.system('cp '+SKFlat_WD+'/lib/DataFormats.tar.gz '+base_rundir)
 
   else:
@@ -310,6 +312,10 @@ SECTION=`printf %03d $1`
 WORKDIR=`pwd`
 echo "#### Extracting DataFormats ####"
 tar -zxvf DataFormats.tar.gz
+echo "####  Extracting CommonTools ####"
+tar -zxvf CommonTools.tar.gz
+echo "####  Extracting AnalyzerTools ####"
+tar -zxvf AnalyzerTools.tar.gz
 echo "####  Extracting Analyzers ####"
 tar -zxvf Analyzers.tar.gz
 echo "#### Extracting libraries ####"
@@ -332,7 +338,7 @@ export SKFlatV="{0}"
 export SKFlat_WD=`pwd`
 export SKFlat_LIB_PATH=$SKFlat_WD/lib/
 export DATA_DIR=data/$SKFlatV
-export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKFlat_WD/Analyzers/include/
+export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKFlat_WD/Analyzers/include/:$SKFlat_WD/AnalyzerTools/include/:$SKFlat_WD/CommonTools/include/
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH
 
 SumNoAuth=999
@@ -371,45 +377,42 @@ cat err${{SECTION}}.log >&2
 universe   = vanilla
 arguments  = $(Process)
 requirements = OpSysMajorVer == 6
-log = condor_$(Process).log
+log = condor.log
 getenv     = False
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 output = job_$(Process).log
 error = job_$(Process).err
-transfer_input_files = {0}, {1}, {4}, {5}, {6}
-# To use sample in KNU for example
-#use_x509userproxy = true
+transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}, {8}
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {2}
-'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/DataFormats.tar.gz')
+'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/AnalyzerTools.tar.gz', base_rundir+'/DataFormats.tar.gz',base_rundir+'/CommonTools.tar.gz')
       submit_command.close()
     if IsUI20:
       print>>submit_command,'''executable = {3}.sh
 universe   = vanilla
 requirements = ( HasSingularity == true )
 arguments  = $(Process)
-log = condor_$(Process).log
+log = condor.log
 getenv     = False
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 output = job_$(Process).log
 error = job_$(Process).err
-transfer_input_files = {0}, {1}, {4}, {5}, {6}
-# To use sample in KNU for example
-#use_x509userproxy = true
+transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}, {8}
 accounting_group=group_cms
 +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest"
 +SingularityBind = "/cvmfs, /cms, /share"
-transfer_output_remaps = "hists.root = {7}/hists_$(Process).root"
+transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {2}
-'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/DataFormats.tar.gz',FinalOutputPath)
+'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/AnalyzerTools.tar.gz', base_rundir+'/DataFormats.tar.gz',base_rundir+'/CommonTools.tar.gz')
       submit_command.close()
 
 
 
   CheckTotalNFile=0
   for it_job in range(0,len(FileRanges)):
+    time.sleep(1)
 
     #print "["+str(it_job)+"th]",
     #print FileRanges[it_job],
@@ -421,7 +424,7 @@ queue {2}
 
     runfunctionname = "run"
     libdir = (base_rundir+'/lib').replace('///','/').replace('//','/')+'/'
-    print "libdir: ",libdir
+    #print "libdir: ",libdir
     runCfileFullPath = ""
     if IsKISTI:
       libdir = './lib/'
@@ -434,8 +437,11 @@ queue {2}
     IncludeLine  = 'R__LOAD_LIBRARY(libPhysics.so)\n'
     IncludeLine += 'R__LOAD_LIBRARY(libTree.so)\n'
     IncludeLine += 'R__LOAD_LIBRARY(libHist.so)\n'
+    IncludeLine += 'R__LOAD_LIBRARY({0}libCommonTools.so)\n'.format(libdir)
     IncludeLine += 'R__LOAD_LIBRARY({0}libDataFormats.so)\n'.format(libdir)
+    IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzerTools.so)\n'.format(libdir)
     IncludeLine += 'R__LOAD_LIBRARY({0}libAnalyzers.so)\n'.format(libdir)
+    IncludeLine += 'R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc6_amd64_gcc630/external/lhapdf/6.2.1-fmblme/lib/libLHAPDF.so)\n'
     #IncludeLine = 'R__LOAD_LIBRARY({1}/{0}_C.so)'.format(args.Analyzer, libdir)
 
     out = open(runCfileFullPath, 'w')
@@ -536,8 +542,11 @@ root -l -b -q run.C
       if not args.no_exec:
         cwd = os.getcwd()
         os.chdir(thisjob_dir)
+	print 'submitting',cmd
         os.system(cmd+' > submitlog.log')
         os.chdir(cwd)
+      else:
+	print 'Dry-Run: cmd',cmd
       sublog = open(thisjob_dir+'/submitlog.log','a')
       sublog.write('\nSubmission command was : '+cmd+'\n')
       sublog.close()

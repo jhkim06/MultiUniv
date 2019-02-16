@@ -33,6 +33,7 @@ void MCCorrection::ReadHistograms(){
 
     if(f=="TH2F"){
       map_hist_Electron[a+"_"+b+"_"+c] = (TH2F *)file->Get(e);
+      cout<<"map_hist_Electron["<<a+"_"+b+"_"+c<<"]"<<" is for file "<<e<<endl;
     }
     else if(f=="TGraphAsymmErrors"){
       map_graph_Electron[a+"_"+b+"_"+c] = (TGraphAsymmErrors *)file->Get(e);
