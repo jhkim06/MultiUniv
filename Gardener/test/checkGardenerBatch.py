@@ -5,12 +5,12 @@ import os,sys,time
 import argparse
 import datetime
 import random
-sys.path.insert(0,'../../CommonTools/python')
-from getEvn import *
-from CheckJobStatus import *
-from TimeTools import *
-sys.path.insert(0,'../../data/python')
-from sampleDef import *
+#sys.path.insert(0,'../../CommonTools/python')
+from CommonPyTools.getEvn import *
+from CommonPyTools.CheckJobStatus import *
+from CommonPyTools.TimeTools import *
+#sys.path.insert(0,'../../data/python')
+from CommonPyTools.DataSample.SampleDef import *
 
 parser = argparse.ArgumentParser(description='SKFlat Command')
 parser.add_argument('-a', dest='Analyzer', default="")
@@ -472,36 +472,36 @@ except KeyboardInterrupt:
 
 # Send Email now
 
-from SendEmail import *
-JobFinishEmail = '''#### Job Info ####
-HOST = {3}
-Analyzer = {0}
-SkimName = {5}
-# of Jobs = {4}
-InputSample = {1}
-Output sent to : {2}
-'''.format(args.Analyzer,InputSamples,FinalOutputPath,HOSTNAME,NJobs,args.SkimName)
-#JobFinishEmail += '''##################
-#Job started at {0}
-#Job finished at {1}
-#'''.format(string_JobStartTime,string_ThisTime)
-
-if IsSNU or IsKNU:
-  JobFinishEmail += 'Queue = '+args.Queue+'\n'
-
-EmailTitle = '['+HOSTNAME+']'+' Job Summary'
-if GotError:
-  JobFinishEmail = "#### ERROR OCCURED ####\n"+JobFinishEmail
-  JobFinishEmail = ErrorLog+"\n------------------------------------------------\n"+JobFinishEmail
-  EmailTitle = '[ERROR] Job Summary'
-else:
-  print 'Congratulation! there is no error occured'
-  print 'Check log file at', base_rundir+'/JobStatus.log'
-
-if IsKNU:
-  SendEmailbyGMail(USER,SKFlatLogEmail,EmailTitle,JobFinishEmail)
-else:
-  SendEmail(USER,SKFlatLogEmail,EmailTitle,JobFinishEmail)
+##from SendEmail import *
+#JobFinishEmail = '''#### Job Info ####
+#HOST = {3}
+#Analyzer = {0}
+#SkimName = {5}
+## of Jobs = {4}
+#InputSample = {1}
+#Output sent to : {2}
+#'''.format(args.Analyzer,InputSamples,FinalOutputPath,HOSTNAME,NJobs,args.SkimName)
+##JobFinishEmail += '''##################
+##Job started at {0}
+##Job finished at {1}
+##'''.format(string_JobStartTime,string_ThisTime)
+#
+#if IsSNU or IsKNU:
+#  JobFinishEmail += 'Queue = '+args.Queue+'\n'
+#
+#EmailTitle = '['+HOSTNAME+']'+' Job Summary'
+#if GotError:
+#  JobFinishEmail = "#### ERROR OCCURED ####\n"+JobFinishEmail
+#  JobFinishEmail = ErrorLog+"\n------------------------------------------------\n"+JobFinishEmail
+#  EmailTitle = '[ERROR] Job Summary'
+#else:
+#  print 'Congratulation! there is no error occured'
+#  print 'Check log file at', base_rundir+'/JobStatus.log'
+#
+#if IsKNU:
+#  SendEmailbyGMail(USER,SKFlatLogEmail,EmailTitle,JobFinishEmail)
+#else:
+#  SendEmail(USER,SKFlatLogEmail,EmailTitle,JobFinishEmail)
 
 
 print "Every process has done, bye!!!"

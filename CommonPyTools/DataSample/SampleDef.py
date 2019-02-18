@@ -1,8 +1,7 @@
 #!/usr/bin/python
 
 import os,sys,time
-sys.path.insert(0,'../../CommonTools/python')
-from getEvn import *
+from CommonPyTools.getEvn import *
 
 InputSample_Data = ["DoubleMuon", "DoubleEG", "SingleMuon", "SingleElectron", "SinglePhoton"]
 
@@ -22,4 +21,11 @@ def DataPeriods(Year):
 def SampleDataDir(Year):
   SAMPLE_DATA_DIR = SKFlat_WD+'/data/'+SKFlatV+'/'+Year+'/Sample/'
   return SAMPLE_DATA_DIR
+
+
+MCProductions = {
+    'Run2Legacy_v1_MC2017' : {
+      'samples' : 'CommonPyTools.DataSample.Samples_Fall17_miniaodv2',
+      },
+}
 
