@@ -33,15 +33,9 @@ args = parser.parse_args()
 
 print "Let's go"
 ## make flags
-SkimName = []
-if args.SkimName != "":
-  SkimName = (args.SkimName).split(',')
+SkimName = args.SkimName
 
 ## Add Abosolute path for outputdir
-if args.Outputdir!='':
-  if args.Outputdir[0]!='/':
-    args.Outputdir = os.getcwd()+'/'+args.Outputdir
-
 
 SAMPLE_DATA_DIR = SampleDataDir(args.Year)
 
@@ -57,6 +51,17 @@ if IsSNU:
 if IsKNU:
   HOSTNAME = "KNU"
 
+## Is Skim run?
+IsSKim = "Skim" in args.Analyzer
+if IsSKim:
+  if IsSNU:
+    print  "Skim in SNU setting NJobs = 999999 !!!!!!!!!!!"
+    args.NJobs = 999999
+  elif IsKISTI:
+    print "Skim in Kisti"
+  else:
+    print "Skimming in ", HOSTNAME, "is not prepared kkk"
+    exit()
 
 ## Machine-dependent variables
 if IsKNU:
@@ -88,9 +93,7 @@ FileRangesForEachSample = []
 
 ## Get Random Number for webdir
 
-timestamp = ""
-webdirname = timestamp
-webdirpathbase = SKFlatRunlogDir+'/www/SKFlatAnalyzerJobLogs/'+webdirname
+webdirpathbase = SKFlatRunlogDir+'/www/SKFlatAnalyzerJobLogs/'
 
 ## Loop over samples
 SampleFinishedForEachSample = []
@@ -119,51 +122,6 @@ for InputSample in InputSamples:
     InSkimString = args.InSkim
 
 
-  ## Prepare output
-  if InSkimString != "":
-    base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+timestamp+'_'+'Y'+args.Year+'_'+InSkimString+'_'+InputSample
-  else:
-    base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+timestamp+'_'+'Y'+args.Year+'_'+InputSample
-
-  #print "base_rundir: ", base_rundir
-  if IsDATA:
-    base_rundir = base_rundir+'_'+DataPeriod
-  for flag in SkimName:
-    base_rundir += '_'+flag
-  #base_rundir += '_'+HOSTNAME
-  base_rundir = base_rundir+'_v'+args.flagVer+"/"
-
-
-  ## Set Output directory
-  ### if args.Outputdir is not set, go to default setting
-  FinalOutputPath = args.Outputdir
-  if args.Outputdir=="":
-    if InSkimString == "":
-      FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'
-    else:
-      FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'+InSkimString
-    IsFirstFlag=True
-    for flag in SkimName:
-      if IsFirstFlag:
-        IsFirstFlag=False
-	if InSkimString == "":
-          FinalOutputPath += flag
-	else:
-          FinalOutputPath += '_'+flag
-      else:
-        FinalOutputPath += '_'+flag
-    #FinalOutputPath +='/'+InputSample+'/'
-    FinalOutputPath +='_v'+args.flagVer+'/'
-
-
-
-  ## Copy shared library file
-
-  ## Create webdir
-
-  this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'')
-
-  ## Get Sample Path
 
   inputFileList = []
 
@@ -259,9 +217,12 @@ try:
 
     AllSampleFinished = True
 
+    CheckLog = open('JobCheck.log','a')
     for it_sample in range(0,len(InputSamples)):
 
       InputSample = InputSamples[it_sample]
+      print 'checking for sample:',InputSample
+      CheckLog.write('checking for sample:'+InputSample+'\n')
       SampleFinished = SampleFinishedForEachSample[it_sample]
       if SampleFinished:
         continue
@@ -279,18 +240,14 @@ try:
         InputSample = tmp.split(":")[0]
         DataPeriod = tmp.split(":")[1]
 
-      InSkimString = ""
-      if args.InSkim!="":
-        InSkimString = args.InSkim+"_"
 
       ## Prepare output
       ## This should be copied from above
-      base_rundir = args.RundirBase+'_'+'Y'+args.Year+'_'+InputSample
+      base_rundir = args.RundirBase+args.Analyzer + '_Y'+args.Year+'_'+InputSample
 
       if IsDATA:
         base_rundir = base_rundir+'_'+DataPeriod
-      for skimName in SkimName:
-        base_rundir += '_'+skimName
+      base_rundir += '_'+SkimName
 
 
       this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'')
@@ -318,7 +275,7 @@ try:
 
         FileRanges = FileRangesForEachSample[it_sample]
 	print 'Njob: ',len(FileRanges)
-
+	CheckLog.write('Njob: '+ str(len(FileRanges))+'\n')
 
         for it_job in range(0,len(FileRanges)):
 
@@ -338,6 +295,8 @@ try:
             break
 
           if "FINISHED" not in this_status:
+	    CheckLog.write('Not FINISHED at job # '+ it_job+'\n' )
+	    CheckLog.write(this_status+'\n' )
             ThisSampleFinished = False
 
           outlog = ""
@@ -460,15 +419,19 @@ try:
       else:
 	pass
 
+    
+    CheckLog.close()
+
     if SendLogToWeb:
 
       os.system('scp -r '+webdirpathbase+'/* '+SKFlatLogWeb+':'+SKFlatLogWebDir)
       os.system('ssh -Y '+SKFlatLogWeb+' chmod -R 777 '+SKFlatLogWebDir+'/'+args.Analyzer+"*")
 
-    time.sleep(5)
+    #time.sleep(5)
 
 except KeyboardInterrupt:
   print('interrupted!')
+
 
 # Send Email now
 

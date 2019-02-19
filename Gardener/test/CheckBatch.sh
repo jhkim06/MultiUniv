@@ -9,6 +9,12 @@
 # options: see mkGardener for more details
 # --no_exec
 # --MonitJob True: default False
+# --nTotFiles : number of files to process
 
-./checkGardenerBatch.py -a Skim_Leptons -y 2017 -i DYJets10to50_MG -n 100 --nTotFiles 1 --RundirBase /data7/Users/salee/SKFlatRunlog/Skim_Leptons_2019_02_18_185530 --SkimName MetFt_L_v0
-./checkGardenerBatch.py -a Skim_Leptons -y 2017 -i DoubleEG -n 20 --nTotFiles 1 --RundirBase /data7/Users/salee/SKFlatRunlog/Skim_Leptons_2019_02_18_185524 --SkimName MetFt_L_v0
+rm JobCheck.log
+
+for sample in DoubleEG DoubleMuon DYJets10to50_MG DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
+do
+  echo $sample
+  ./checkGardenerBatch.py -a Skim_Leptons -y 2017 -i $sample -n 100  --RundirBase /data7/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0
+done

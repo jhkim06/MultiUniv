@@ -24,8 +24,9 @@ def SampleDataDir(Year):
 
 
 MCProductions = {
-    'Run2Legacy_v1_MC2017' : {
+    'Run2Legacy_v1_SMP2017' : {
       'samples' : 'CommonPyTools.DataSample.Samples_Fall17_miniaodv2',
+      'SNU_Location': '/data7/DATA/SKFlat/Run2Legacy_v1/2017/MC/'
       },
 }
 

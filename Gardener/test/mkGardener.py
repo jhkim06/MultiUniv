@@ -25,9 +25,10 @@ parser.add_argument('-y', dest='Year', default="2017")
 parser.add_argument('--InSkim', dest='InSkim', default="")
 parser.add_argument('--no_exec', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="")
-parser.add_argument('--flagVer', dest='flagVer', default="0")
+parser.add_argument('--skimV', dest='skimV', default="0")
 parser.add_argument('--nTotFiles', dest='nTotFiles', default=0, type=int)
 parser.add_argument('--MonitJob', dest='MonitJob', default=False, type=bool)
+parser.add_argument('--Category', dest='Category', default="SMP")
 
 args = parser.parse_args()
 print '=================================================================='
@@ -121,7 +122,7 @@ else:
       InputSamples[args.InputSampleKey+":"+args.DataPeriod]={'key':args.InputSampleKey}
       StringForHash += args.InputSampleKey+":"+args.DataPeriod
   else:
-    MCProductionKey = SKFlatV+'_'+'MC'+args.Year
+    MCProductionKey = SKFlatV+'_'+args.Category+args.Year
     print 'MCProductions key:',MCProductionKey
     print 'File to import', MCProductions[MCProductionKey]['samples']
     #importlib.import_module(MCProductions[MCProductionKey]['samples'])
@@ -188,15 +189,17 @@ for InputSample in InputSamples:
   ## Prepare output
 
   if InSkimString !="":
-    base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+timestamp+'_'+'Y'+args.Year+'_'+InSkimString+'_'+InputSamples[InputSample]['key']
+    base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+'Y'+args.Year+'_'+InSkimString+'_'+InputSamples[InputSample]['key']
+    #base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+timestamp+'_'+'Y'+args.Year+'_'+InSkimString+'_'+InputSamples[InputSample]['key']
   else:
-    base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+timestamp+'_'+'Y'+args.Year+'_'+InputSamples[InputSample]['key']
+    base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+'Y'+args.Year+'_'+InputSamples[InputSample]['key']
+    #base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+timestamp+'_'+'Y'+args.Year+'_'+InputSamples[InputSample]['key']
   if IsDATA:
     base_rundir = base_rundir+'_'+DataPeriod
   for flag in Userflags:
     base_rundir += '_'+flag
   #base_rundir += '_'+HOSTNAME
-  base_rundir = base_rundir+'_v'+args.flagVer+"/"
+  base_rundir = base_rundir+'_v'+args.skimV+"/"
   print "base_rundir: ", base_rundir
 
   os.system('mkdir -p '+base_rundir)
@@ -221,7 +224,7 @@ for InputSample in InputSamples:
       else:
         FinalOutputPath += '_'+flag
     #FinalOutputPath +='/'+InputSample+'/'
-    FinalOutputPath +='_v'+args.flagVer+'/'
+    FinalOutputPath +='_v'+args.skimV+'/'
   os.system('mkdir -p '+FinalOutputPath)
 
 
@@ -438,7 +441,7 @@ queue {2}
 
   CheckTotalNFile=0
   for it_job in range(0,len(FileRanges)):
-    time.sleep(1)
+    time.sleep(0.3)
 
     #print "["+str(it_job)+"th]",
     #print FileRanges[it_job],
@@ -653,7 +656,7 @@ print InputSamples
 print '- NJobs = '+str(NJobs)
 print '- Year = '+args.Year
 print '- UserFlags =',
-print Userflags, args.flagVer
+print Userflags, args.skimV
 if IsSNU or IsKNU:
   print '- Queue = '+args.Queue
 print '- output will be send to : '+FinalOutputPath
@@ -726,7 +729,7 @@ if not args.MonitJob:
 #      for flag in Userflags:
 #        base_rundir += '_'+flag
 #      #base_rundir += '_'+HOSTNAME
-#      base_rundir = base_rundir+'_v'+args.flagVer+"/"
+#      base_rundir = base_rundir+'_v'+args.skimV+"/"
 #
 #      this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'')
 #
