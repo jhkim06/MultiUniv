@@ -9,7 +9,7 @@ void Skim_K1::initializeAnalyzer(){
   if( HasFlag("L")){
     cout<<"[Skim_K1::initializeAnalyzer] Single Lepton Skim"<<endl;}
   else if(HasFlag("LL")){
-    cout<<"[Skim_K1::initializeAnalyzer] Di-Lepton Skim"<<endl;}
+    cout<<"[Skim_K1::initializeAnalyzer] Di-Lepton Skim !!!!!!!!!!!!!!!!"<<endl;}
   else if(HasFlag("LLL")){
     cout<<"[Skim_K1::initializeAnalyzer] Three-Lepton Skim"<<endl;}
   else{
@@ -26,9 +26,9 @@ void Skim_K1::initializeAnalyzer(){
   newtree = fChain->CloneTree(0);
 
   // New Branch
-  //TBranch* b_baseW = newtree->GetListOfBranches()->FindObject("baseW");
+  TBranch* b_baseW =(TBranch*) newtree->GetListOfBranches()->FindObject("baseW");
   Is_baseW = false;
-  //if(b_baseW) {Is_baseW = true;}
+  if(b_baseW) {Is_baseW = true;}
   if(Is_baseW == false){
     newtree->Branch("baseW", &baseW,"baseW/D");
   }
@@ -62,14 +62,17 @@ void Skim_K1::executeEvent(){
   // dilepton condition
 
   if( HasFlag("L")){
-    if (muons.size() + electrons.size() < 1) return;}
+    if (muons.size() + electrons.size() < 1) return;
     FillHist("CutFlow",2,1,30,0,30);
+  }
   else if(HasFlag("LL")){
-    if (muons.size() + electrons.size() < 2) return;}
+    if (muons.size() + electrons.size() < 2) return;
     FillHist("CutFlow",3,1,30,0,30);
+  }
   else if(HasFlag("LLL")){
-    if (muons.size() + electrons.size() < 3) return;}
+    if (muons.size() + electrons.size() < 3) return;
     FillHist("CutFlow",4,1,30,0,30);
+  }
   else{
     cout <<"[Skim_K1::executeEvent] Not ready for this Flags ";
     for(unsigned int i=0; i<Userflags.size(); i++){
