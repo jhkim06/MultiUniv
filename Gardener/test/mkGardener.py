@@ -240,6 +240,7 @@ for InputSample in InputSamples:
     ## In KISTI, we have copy both library and data file
     os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz '+base_rundir+'/data.tar.gz')
     os.system('cp '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz '+base_rundir+'/lib.tar.gz')
+    os.system('cp '+SKFlat_WD+'/lib/CommonPyTools.tar.gz '+base_rundir)
     os.system('cp '+SKFlat_WD+'/lib/CommonTools.tar.gz '+base_rundir)
     os.system('cp '+SKFlat_WD+'/lib/Analyzers.tar.gz '+base_rundir)
     os.system('cp '+SKFlat_WD+'/lib/AnalyzerTools.tar.gz '+base_rundir)
@@ -280,7 +281,7 @@ for InputSample in InputSamples:
     else:
       tmpSkimDir=Productions[ProductionKey]['SkimDir']+'/'+InSkimString+'/'+InputSample+'/'
     
-    print 'tmpSkimDir',tmpSkimDir
+    print 'Input SkimDir',tmpSkimDir
     input_filelist = open(base_rundir+'/input_filelist','w')
     for dirName, subdirList, fileList in os.walk(tmpSkimDir):
       for aFile in fileList:
@@ -369,10 +370,12 @@ for InputSample in InputSamples:
     print>>run_commands,'''#!/bin/bash
 SECTION=`printf %03d $1`
 WORKDIR=`pwd`
-echo "#### Extracting DataFormats ####"
-tar -zxvf DataFormats.tar.gz
+echo "####  Extracting CommonPyTools ####"
+tar -zxvf CommonPyTools.tar.gz
 echo "####  Extracting CommonTools ####"
 tar -zxvf CommonTools.tar.gz
+echo "#### Extracting DataFormats ####"
+tar -zxvf DataFormats.tar.gz
 echo "####  Extracting AnalyzerTools ####"
 tar -zxvf AnalyzerTools.tar.gz
 echo "####  Extracting Analyzers ####"
@@ -442,10 +445,10 @@ should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 output = job_$(Process).log
 error = job_$(Process).err
-transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}, {8}
+transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}, {8}, {9}
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {2}
-'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/AnalyzerTools.tar.gz', base_rundir+'/DataFormats.tar.gz',base_rundir+'/CommonTools.tar.gz')
+'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/AnalyzerTools.tar.gz', base_rundir+'/DataFormats.tar.gz',base_rundir+'/CommonTools.tar.gz',base_rundir+'/CommonPyTools.tar.gz')
       submit_command.close()
     if IsUI20:
       print>>submit_command,'''executable = {3}.sh
@@ -458,13 +461,13 @@ should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 output = job_$(Process).log
 error = job_$(Process).err
-transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}, {8}
+transfer_input_files = {0}, {1}, {4}, {5}, {6}, {7}, {8}, {9}
 accounting_group=group_cms
 +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest"
 +SingularityBind = "/cvmfs, /cms, /share"
 transfer_output_remaps = "hists.root = output/hists_$(Process).root"
 queue {2}
-'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/AnalyzerTools.tar.gz', base_rundir+'/DataFormats.tar.gz',base_rundir+'/CommonTools.tar.gz')
+'''.format(base_rundir+'/runFile.tar.gz', base_rundir+'/lib.tar.gz',str(NJobs), commandsfilename, base_rundir+'/data.tar.gz', base_rundir+'/Analyzers.tar.gz', base_rundir+'/AnalyzerTools.tar.gz', base_rundir+'/DataFormats.tar.gz',base_rundir+'/CommonTools.tar.gz',base_rundir+'/CommonPyTools.tar.gz')
       submit_command.close()
 
 
@@ -538,7 +541,7 @@ void {2}(){{
     if IsSKim:
       if IsSNU:
         tmp_inputFilename = inputFileList[ FileRanges[it_job][0] ].strip('\n')
-	print 'tmp_inputFilename', tmp_inputFilename
+	#print 'tmp_inputFilename', tmp_inputFilename
 	#print 'InputSample',InputSample
 	#if "_" in InputSample:
 	#  delemeter = InputSample.split('_')[0]+'_'
