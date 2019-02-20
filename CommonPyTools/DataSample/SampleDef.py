@@ -23,10 +23,10 @@ def SampleDataDir(Year):
   return SAMPLE_DATA_DIR
 
 
-MCProductions = {
+Productions = {
     'Run2Legacy_v1_SMP2017' : {
-      'samples' : 'CommonPyTools.DataSample.Samples_Fall17_miniaodv2',
-      'SNU_Location': '/data7/DATA/SKFlat/Run2Legacy_v1/2017/MC/'
+      'MCsamples' : 'CommonPyTools.DataSample.Samples_Fall17_miniaodv2',
+      'SkimDir': '/data8/DATA/SMP/Run2Legacy_v1/2017/'
       },
 }
 

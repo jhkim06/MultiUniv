@@ -93,6 +93,8 @@ if IsKNU:
 DataPeriods = DataPeriods(args.Year)
 
 SAMPLE_DATA_DIR = SampleDataDir(args.Year)
+ProductionKey = SKFlatV+'_'+args.Category+args.Year
+print 'Productions key:',ProductionKey
 
 InputSamples = {}
 StringForHash = ""
@@ -122,16 +124,14 @@ else:
       InputSamples[args.InputSampleKey+":"+args.DataPeriod]={'key':args.InputSampleKey}
       StringForHash += args.InputSampleKey+":"+args.DataPeriod
   else:
-    MCProductionKey = SKFlatV+'_'+args.Category+args.Year
-    print 'MCProductions key:',MCProductionKey
-    print 'File to import', MCProductions[MCProductionKey]['samples']
-    #importlib.import_module(MCProductions[MCProductionKey]['samples'])
-    #cmd = SKFlat_WD + MCProductions[MCProductionKey]['samples']
-    #cmd = 'samples : '+MCProductions[MCProductionKey]['samples']
-    cmd = 'from '+MCProductions[MCProductionKey]['samples'] +' import *'
+    print 'File to import', Productions[ProductionKey]['MCsamples']
+    #importlib.import_module(Productions[ProductionKey]['MCsamples'])
+    #cmd = SKFlat_WD + Productions[ProductionKey]['MCsamples']
+    #cmd = 'MCsamples : '+Productions[ProductionKey]['MCsamples']
+    cmd = 'from '+Productions[ProductionKey]['MCsamples'] +' import *'
     exec(cmd, globals())
-    #SampleInfo = __import__(MCProductions[MCProductionKey]['samples'])
-    #SampleName = getattr(SampleInfo, samples)
+    #SampleInfo = __import__(Productions[ProductionKey]['MCsamples'])
+    #SampleName = getattr(SampleInfo, MCsamples)
     #print sampleInfo
     #print sampleName[args.InputSampleKey]['name']
     #print sampleInfo[args.InputSampleKey]['name']
@@ -158,7 +158,13 @@ if IsKISTI:
   os.system('tar -czf '+str_RandomNumber+'_lib.tar.gz lib/*')
   os.chdir(cwd)
 
+
+
+
+############################
 ## Loop over samples
+############################
+
 SampleFinishedForEachSample = []
 PostJobFinishedForEachSample = []
 BaseDirForEachSample = []
@@ -174,28 +180,24 @@ for InputSample in InputSamples:
 
   IsDATA = False
   DataPeriod = ""
+  print 'InputSample', InputSample
   if ":" in InputSample:
     IsDATA = True
     #tmp = InputSample
     #InputSample = tmp.split(":")[0]
     DataPeriod = InputSample.split(":")[1]
+    print 'DataPeriod', DataPeriod
 
-  InSkimString = ""
-  if args.InSkim!="":
-    InSkimString = args.InSkim
+  InSkimString = args.InSkim
 
+  ## Prepare RunDir
 
-
-  ## Prepare output
-
-  if InSkimString !="":
-    base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+'Y'+args.Year+'_'+InSkimString+'_'+InputSamples[InputSample]['key']
-    #base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+timestamp+'_'+'Y'+args.Year+'_'+InSkimString+'_'+InputSamples[InputSample]['key']
-  else:
-    base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+'Y'+args.Year+'_'+InputSamples[InputSample]['key']
-    #base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+timestamp+'_'+'Y'+args.Year+'_'+InputSamples[InputSample]['key']
+  base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+'Y'+args.Year+'_'+InputSamples[InputSample]['key']
   if IsDATA:
-    base_rundir = base_rundir+'_'+DataPeriod
+    base_rundir = base_rundir + '_'+DataPeriod
+  if InSkimString !="":
+    base_rundir = base_rundir + '_'+InSkimString
+    #base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+timestamp+'_'+'Y'+args.Year+'_'+InSkimString+'_'+InputSamples[InputSample]['key']
   for flag in Userflags:
     base_rundir += '_'+flag
   #base_rundir += '_'+HOSTNAME
@@ -210,9 +212,11 @@ for InputSample in InputSamples:
   FinalOutputPath = args.Outputdir
   if args.Outputdir=="":
     if InSkimString == "":
-      FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'
+      FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Year+'/'
+      #FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'
     else:
-      FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'+InSkimString
+      FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Year+'/'+InSkimString
+      #FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'+InSkimString
     IsFirstFlag=True
     for flag in Userflags:
       if IsFirstFlag:
@@ -226,6 +230,7 @@ for InputSample in InputSamples:
     #FinalOutputPath +='/'+InputSample+'/'
     FinalOutputPath +='_v'+args.skimV+'/'
   os.system('mkdir -p '+FinalOutputPath)
+  print 'FinalOutputPath', FinalOutputPath
 
 
 
@@ -258,13 +263,38 @@ for InputSample in InputSamples:
 
   inputFileList = []
 
-  if IsDATA:
-    tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InSkimString+'/'+InputSamples[InputSample]['key']+'_'+DataPeriod+'.txt'
+  if InSkimString == "":
+    if IsDATA:
+      tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InputSamples[InputSample]['key']+'_'+DataPeriod+'.txt'
+    else:
+      tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InputSamples[InputSample]['key']+'.txt'
+
+    inputFileList = open(tmpfilepath).readlines()
+    os.system('cp '+tmpfilepath+' '+base_rundir+'/input_filelist.txt')
+    print 'Sample ROOT file list', tmpfilepath
+
   else:
-    tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InSkimString+'/'+InputSamples[InputSample]['key']+'.txt'
-  print 'Sample ROOT file list', tmpfilepath
-  inputFileList = open(tmpfilepath).readlines()
-  os.system('cp '+tmpfilepath+' '+base_rundir+'/input_filelist.txt')
+    # Skim data list setup
+    if IsDATA:
+      tmpSkimDir=Productions[ProductionKey]['SkimDir']+'/'+InSkimString+'/'+InputSamples[InputSample]['key']+'/'+'period'+DataPeriod+'/'
+    else:
+      tmpSkimDir=Productions[ProductionKey]['SkimDir']+'/'+InSkimString+'/'+InputSample+'/'
+    
+    print 'tmpSkimDir',tmpSkimDir
+    input_filelist = open(base_rundir+'/input_filelist','w')
+    for dirName, subdirList, fileList in os.walk(tmpSkimDir):
+      for aFile in fileList:
+	if '.root' in aFile:
+	  fileFullPathName = dirName +'/'+aFile
+          inputFileList.append(fileFullPathName)
+	  input_filelist.write(fileFullPathName+'\n')
+
+    input_filelist.close()
+
+
+  #print 'inputFiles',inputFileList
+
+
 
   if args.nTotFiles > 0:
     NTotalFiles = args.nTotFiles
@@ -508,7 +538,7 @@ void {2}(){{
     if IsSKim:
       if IsSNU:
         tmp_inputFilename = inputFileList[ FileRanges[it_job][0] ].strip('\n')
-	print tmp_inputFilename
+	print 'tmp_inputFilename', tmp_inputFilename
 	#print 'InputSample',InputSample
 	#if "_" in InputSample:
 	#  delemeter = InputSample.split('_')[0]+'_'
@@ -519,8 +549,8 @@ void {2}(){{
 	  chunkedInputFileName = InputSamples[InputSample]['key']+tmp_inputFilename.split(InputSamples[InputSample]['key'])[1]
 	else:
 	  chunkedInputFileName = InputSample+tmp_inputFilename.split(InputSample)[1]
-	
-	print chunkedInputFileName
+
+	#print 'chumkedInputFileName',chunkedInputFileName
 
         ## /data7/DATA/SKFlat/v949cand2_2/2017/DATA/SingleMuon/periodB/181107_231447/0000
         ## /data7/DATA/SKFlat/v949cand2_2/2017/MC/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/181108_152345/0000/SKFlatNtuple_2017_MC_100.root
@@ -542,9 +572,9 @@ void {2}(){{
 	out_Path_FileName = FinalOutputPath+'/'+chunkedInputFileName
 	out_FileName = out_Path_FileName.split('/')[-1]
 	out_Path          = out_Path_FileName.replace(out_FileName,'')
-	print 'out_Path_FileName',out_Path_FileName
-	print 'out_Path',out_Path
-	print 'out_FileName',out_FileName
+	#print 'out_Path_FileName',out_Path_FileName
+	#print 'out_Path',out_Path
+	#print 'out_FileName',out_FileName
 	#fileName=InSkimString+str(it_job).zfill(3)+'root'
         os.system('mkdir -p '+ out_Path)
         out.write('  m.SetOutfilePath("'+out_Path_FileName+'");\n')

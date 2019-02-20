@@ -1,19 +1,19 @@
-#include "Skim_Leptons.h"
+#include "Skim_K1.h"
 
-void Skim_Leptons::initializeAnalyzer(){
+void Skim_K1::initializeAnalyzer(){
 
   //initializeAnalyzerTools();
   //=================================
   // Skim Types
   //=================================
   if( HasFlag("L")){
-    cout<<"[Skim_Leptons::initializeAnalyzer] Single Lepton Skim"<<endl;}
+    cout<<"[Skim_K1::initializeAnalyzer] Single Lepton Skim"<<endl;}
   else if(HasFlag("LL")){
-    cout<<"[Skim_Leptons::initializeAnalyzer] Di-Lepton Skim"<<endl;}
+    cout<<"[Skim_K1::initializeAnalyzer] Di-Lepton Skim"<<endl;}
   else if(HasFlag("LLL")){
-    cout<<"[Skim_Leptons::initializeAnalyzer] Three-Lepton Skim"<<endl;}
+    cout<<"[Skim_K1::initializeAnalyzer] Three-Lepton Skim"<<endl;}
   else{
-    cout <<"[Skim_Leptons::executeEvent] Not ready for this Flags ";
+    cout <<"[Skim_K1::executeEvent] Not ready for this Flags ";
     for(unsigned int i=0; i<Userflags.size(); i++){
       cout <<"  "<< Userflags.at(i);
     }
@@ -37,7 +37,7 @@ void Skim_Leptons::initializeAnalyzer(){
 
 }
 
-void Skim_Leptons::executeEvent(){
+void Skim_K1::executeEvent(){
 
   muons.clear();
   electrons.clear();
@@ -71,7 +71,7 @@ void Skim_Leptons::executeEvent(){
     if (muons.size() + electrons.size() < 3) return;}
     FillHist("CutFlow",4,1,30,0,30);
   else{
-    cout <<"[Skim_Leptons::executeEvent] Not ready for this Flags ";
+    cout <<"[Skim_K1::executeEvent] Not ready for this Flags ";
     for(unsigned int i=0; i<Userflags.size(); i++){
       cout <<"  "<< Userflags.at(i);
     }
@@ -100,22 +100,22 @@ void Skim_Leptons::executeEvent(){
 }
 
 
-void Skim_Leptons::executeEventFromParameter(AnalyzerParameter param){
+void Skim_K1::executeEventFromParameter(AnalyzerParameter param){
 
 }
 
-Skim_Leptons::Skim_Leptons(){
+Skim_K1::Skim_K1(){
 
 }
 
-Skim_Leptons::~Skim_Leptons(){
+Skim_K1::~Skim_K1(){
 
 }
 
-void Skim_Leptons::WriteHist(){
+void Skim_K1::WriteHist(){
 
   //outfile->mkdir("recoTree");
-  //outfile->cd("recoTree"); Already at Skim_Leptons::initializeAnalyzer
+  //outfile->cd("recoTree"); Already at Skim_K1::initializeAnalyzer
   newtree->AutoSave();
   //newtree->Write();
   outfile->cd();

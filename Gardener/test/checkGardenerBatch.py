@@ -421,6 +421,7 @@ try:
 
     
     CheckLog.close()
+    print 'possible error recoded on JobCheck.log'
 
     if SendLogToWeb:
 
