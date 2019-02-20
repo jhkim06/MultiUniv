@@ -36,7 +36,8 @@ elif [[ $HOSTNAME == *"cms.snu.ac.kr"* ]]; then
 
   echo "Working on 42cluster"
   export SKFlatRunlogDir="/data7/Users/$USER/SKFlatRunlog/"
-  export SKFlatOutputDir="/data7/Users/$USER/SKFlatOutput/"
+  export SKFlatOutputDir="/data8/DATA/SMP/"
+  #export SKFlatOutputDir="/data7/Users/$USER/SKFlatOutput/"
   export DATA_DIR=$SKFlat_WD/data/$SKFlatV
 
   #source /share/apps/root_v6-12-06/bin/thisroot.sh
