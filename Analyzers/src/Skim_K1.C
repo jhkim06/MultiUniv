@@ -68,7 +68,7 @@ void Skim_K1::executeEvent(){
   // dilepton condition
 
   // DiLepton Variables
-  if (muons.size() + electrons.size() < 2) return;
+  if (muons.size() + electrons.size() < 2){
   }
 
 
