@@ -33,7 +33,7 @@ Productions = {
       },
     'LightCHToCB' : {
       'Run2Legacy_v1_2017' : {
-        'MC' : 'CommonPyTools.DataSample.Samples_LightCHToCB_Fall17_miniaodv2', #file to be add
+        'MC' : 'CommonPyTools.DataSample.Samples_LightCHToCB_Fall17_miniaodv2',
         'DATA' : ['SingleElectron', 'SingleMuon' ]
 	'SkimDir': '/data8/DATA/LightCHToCB/Run2Legacy_v1/2017/'
         },
