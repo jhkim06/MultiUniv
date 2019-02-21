@@ -42,47 +42,7 @@ void Skim_K1::executeEvent(){
   muons.clear();
   electrons.clear();
 
-
-  if(Is_baseW == false){
-    newtree->SetBranchAddress("baseW",&baseW);
-  }
-
-
-  FillHist("CutFlow",0,1,30,0,30);
-
-  // Filters ====================
-  if( HasFlag("MetFt"))if(!PassMETFilter()) return;
-  FillHist("CutFlow",1,1,30,0,30);
-
-  muons=GetMuons("POGLoose",7.,2.4);
-  electrons=GetElectrons("passLooseID",9.,2.5);
-
-  //std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
-
-  // dilepton condition
-
-  if( HasFlag("L")){
-    if (muons.size() + electrons.size() < 1) return;
-    FillHist("CutFlow",2,1,30,0,30);
-  }
-  else if(HasFlag("LL")){
-    if (muons.size() + electrons.size() < 2) return;
-    FillHist("CutFlow",3,1,30,0,30);
-  }
-  else if(HasFlag("LLL")){
-    if (muons.size() + electrons.size() < 3) return;
-    FillHist("CutFlow",4,1,30,0,30);
-  }
-  else{
-    cout <<"[Skim_K1::executeEvent] Not ready for this Flags ";
-    for(unsigned int i=0; i<Userflags.size(); i++){
-      cout <<"  "<< Userflags.at(i);
-    }
-    cout<<endl;
-    exit(EXIT_FAILURE);
-  }
-
-
+  // Basic Weights if ntuple doesn't have them -----------------------------
   evt = new Event;
   *evt = GetEvent();
 
@@ -93,6 +53,24 @@ void Skim_K1::executeEvent(){
       baseW = weight_norm_1invpb*evt->MCweight()*evt->GetTriggerLumi("Full");
     }
   }
+
+  if(Is_baseW == false){
+    newtree->SetBranchAddress("baseW",&baseW);
+  }
+  //------------------------------------------------------------------------
+
+
+  muons=GetMuons("POGLoose",7.,2.4);
+  electrons=GetElectrons("passLooseID",9.,2.5);
+
+  //std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
+
+  // dilepton condition
+
+  // DiLepton Variables
+  if (muons.size() + electrons.size() < 2) return;
+  }
+
 
 
   newtree->Fill();

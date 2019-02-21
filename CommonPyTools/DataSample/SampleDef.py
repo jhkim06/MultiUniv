@@ -24,9 +24,12 @@ def SampleDataDir(Year):
 
 
 Productions = {
-    'Run2Legacy_v1_SMP2017' : {
-      'MCsamples' : 'CommonPyTools.DataSample.Samples_Fall17_miniaodv2',
-      'SkimDir': '/data8/DATA/SMP/Run2Legacy_v1/2017/'
-      },
+    'SMP' : {
+      'Run2Legacy_v1_2017' : {
+        'MC' : 'CommonPyTools.DataSample.Samples_SMP_Fall17_miniaodv2',
+	'DATA' : ['DoubleEG', 'DoubleMuon' ]
+        'SkimDir': '/data8/DATA/SMP/Run2Legacy_v1/2017/'
+        },
+      }
 }
 
