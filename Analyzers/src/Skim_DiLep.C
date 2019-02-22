@@ -117,8 +117,8 @@ void Skim_DiLep::executeEvent(){
     if(muons.size() != 2   ) return;
     if(! evt->PassTrigger(DiMuTrgs) )return;
     leps=MakeLeptonPointerVector(muons);
-    lep0ptcut=20.;
-    lep1ptcut=10.;
+    Lep0PtCut=20.;
+    Lep1PtCut=10.;
     LeptonID_SF=&MCCorrection::MuonID_SF;
     LeptonISO_SF=&MCCorrection::MuonISO_SF;
     LeptonID_key="NUM_TightID_DEN_genTracks";
@@ -131,53 +131,52 @@ void Skim_DiLep::executeEvent(){
     if(muons.size() > 0   ) return;
     if(! evt->PassTrigger(DiElTrgs) )return;
     leps=MakeLeptonPointerVector(electrons);
-    lep0ptcut=25.;
-    lep1ptcut=15.;
+    Lep0PtCut=25.;
+    Lep1PtCut=15.;
     LeptonID_SF=&MCCorrection::ElectronID_SF;
     LeptonReco_SF=&MCCorrection::ElectronReco_SF;
     LeptonID_key="passMediumID_pt10";
     LeptonID_key_POG="passMediumID";
-    triggerSF_key0="LeadEle23_MediumID";
-    triggerSF_key1="TailEle12_MediumID";
+    trgSF_key0="LeadEle23_MediumID";
+    trgSF_key1="TailEle12_MediumID";
   } //===========================================
 
   // SF =========================
   /////////////////PUreweight///////////////////
-  PUw=1.,PUw_Up=1.,PUw_Dn=1.;
+  PUweight=1.,PUweight_Up=1.,PUweight_Dn=1.;
   if(!IsDATA){
     PUweight=(mcCorr->*PileUpWeight)(nPileUp,0);
-    PUreweight_up=(mcCorr->*PileUpWeight)(nPileUp,1);
-    PUreweight_down=(mcCorr->*PileUpWeight)(nPileUp,-1);
-    totalweight*=PUreweight;
+    PUweight_Up=(mcCorr->*PileUpWeight)(nPileUp,1);
+    PUweight_Dn=(mcCorr->*PileUpWeight)(nPileUp,-1);
   }
 
 
-  if( ChName.Contains("DoubleMuon")){
+  //if( ChName.Contains("DoubleMuon")){
 
-    Lep0PtCut = 20;
-    Lep1PtCut = 10;
-    EtaCut=2.4;
+  //  Lep0PtCut = 20;
+  //  Lep1PtCut = 10;
+  //  EtaCut=2.4;
 
-    trgSF_Leg0Key = "Leg17_POGTight"; // As writtern at histmaps.txt
-    trgSF_Leg1Key = "Leg8_POGTight";
+  //  trgSF_Leg0Key = "Leg17_POGTight"; // As writtern at histmaps.txt
+  //  trgSF_Leg1Key = "Leg8_POGTight";
 
-    leps=MakeLeptonPointerVector(muons);
-
-
-  }
-  if( ChName.Contains("DoubleElectron")){
-
-    Lep0PtCut=25.;
-    Lep1PtCut=15.;
-    EtaCut=2.5;
-
-    trgSF_Leg0Key="LeadEle23_MediumID";
-    trgSF_Leg1Key="TailEle12_MediumID";
-
-    leps=MakeLeptonPointerVector(electrons);
+  //  leps=MakeLeptonPointerVector(muons);
 
 
-  }
+  //}
+  //if( ChName.Contains("DoubleElectron")){
+
+  //  Lep0PtCut=25.;
+  //  Lep1PtCut=15.;
+  //  EtaCut=2.5;
+
+  //  trgSF_Leg0Key="LeadEle23_MediumID";
+  //  trgSF_Leg1Key="TailEle12_MediumID";
+
+  //  leps=MakeLeptonPointerVector(electrons);
+
+
+  //}
 
 
 
@@ -197,9 +196,9 @@ void Skim_DiLep::executeEvent(){
     if(fabs(leps.at(0)->Eta())>EtaCut||fabs(leps.at(1)->Eta()>EtaCut))PtEtaPass =  false;
 
     if(!IsDATA)if(PtEtaPass){
-      trgSF      = DiLepTrg_SF(trgSF_Leg0Key,trgSF_Leg1Key,leps,0);
-      trgSF_Up   = DiLepTrg_SF(trgSF_Leg0Key,trgSF_Leg1Key,leps,1);
-      trgSF_Dn   = DiLepTrg_SF(trgSF_Leg0Key,trgSF_Leg1Key,leps,-1);
+      trgSF      = DiLepTrg_SF(trgSF_key0,trgSF_key1,leps,0);
+      trgSF_Up   = DiLepTrg_SF(trgSF_key0,trgSF_key1,leps,1);
+      trgSF_Dn   = DiLepTrg_SF(trgSF_key0,trgSF_key1,leps,-1);
     }
   }
 

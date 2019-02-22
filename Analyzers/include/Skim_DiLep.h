@@ -32,9 +32,10 @@ private:
   //TBranch *b_trgSF_Dn;
 
   vector<TString> DiMuTrgs;
-  vector<TString> DiElTrigs;
+  vector<TString> DiElTrgs;
 
-  TString trgSF_Key0, trgSF_Key1;
+  TString trgSF_key0, trgSF_key1;
+  TString LeptonID_key,LeptonID_key_POG,LeptonISO_key;
   Event* evt;
 
   std::vector<Muon> muons;
@@ -46,7 +47,7 @@ private:
   double (MCCorrection::*LeptonReco_SF)(double,double,int);
   double (MCCorrection::*PileUpWeight)(int,int);
  
-  double puW, puW_Up, puW_Dn;
+  double PUweight, PUweight_Up, PUweight_Dn;
 
   bool PtEtaPass;
   double Lep0PtCut;
