@@ -28,6 +28,7 @@ parser.add_argument('--SkimName', dest='SkimName', default="")
 parser.add_argument('--flagVer', dest='flagVer', default="0")
 parser.add_argument('--nTotFiles', dest='nTotFiles', default=0, type=int)
 parser.add_argument('--MonitJob', dest='MonitJob', default=False, type=bool)
+parser.add_argument('--Category', dest='Category', default="SMP")
 
 args = parser.parse_args()
 
@@ -50,24 +51,6 @@ if IsSNU:
   HOSTNAME = "SNU"
 if IsKNU:
   HOSTNAME = "KNU"
-
-## Is Skim run?
-IsSKim = "Skim" in args.Analyzer
-if IsSKim:
-  if IsSNU:
-    print  "Skim in SNU setting NJobs = 999999 !!!!!!!!!!!"
-    args.NJobs = 999999
-  elif IsKISTI:
-    print "Skim in Kisti"
-  else:
-    print "Skimming in ", HOSTNAME, "is not prepared kkk"
-    exit()
-
-## Machine-dependent variables
-if IsKNU:
-  args.Queue = "cms"
-
-## Make Sample List
 
 
 InputSamples = []
@@ -103,107 +86,10 @@ BaseDirForEachSample = []
 
 for InputSample in InputSamples:
 
-  NJobs = args.NJobs
+  #NJobs = args.NJobs
 
   SampleFinishedForEachSample.append(False)
 
-  ## Global Varialbes
-
-  IsDATA = False
-  DataPeriod = ""
-  if ":" in InputSample:
-    IsDATA = True
-    tmp = InputSample
-    InputSample = tmp.split(":")[0]
-    DataPeriod = tmp.split(":")[1]
-
-  InSkimString = ""
-  if args.InSkim!="":
-    InSkimString = args.InSkim
-
-
-
-  inputFileList = []
-
-  tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InSkimString+'/'+InputSample+'.txt'
-  if IsDATA:
-    tmpfilepath = SAMPLE_DATA_DIR+'/For'+HOSTNAME+'/'+InSkimString+'/'+InputSample+'_'+DataPeriod+'.txt'
-  inputFileList = open(tmpfilepath).readlines()
-
-  if args.nTotFiles > 0:
-    NTotalFiles = args.nTotFiles
-  else:
-    NTotalFiles = len(inputFileList)
-
-  print "NTotalFiles: ", NTotalFiles
-
-  if NJobs>NTotalFiles:
-    NJobs = NTotalFiles
-
-  nfilepjob = int(NTotalFiles/NJobs)
-  nfilepjob_remainder = NTotalFiles-(NJobs)*(nfilepjob)
-
-  # FileRanges format: [[0,1,2],[3,4,5]]
-  FileRanges = []
-  temp_end_largerjob = 0
-  nfile_checksum = 0
-  ## First nfilepjob_remainder jobs will have (nfilepjob+1) files per job
-  for it_job in range(0,nfilepjob_remainder):
-    FileRanges.append(range(it_job*(nfilepjob+1),(it_job+1)*(nfilepjob+1)))
-    temp_end_largerjob = (it_job+1)*(nfilepjob+1)
-    nfile_checksum += len(range(it_job*(nfilepjob+1),(it_job+1)*(nfilepjob+1)))
-  ## Remaining NJobs-nfilepjob_remainder jobs will have (nfilepjob) files per job
-  for it_job in range(0,NJobs-nfilepjob_remainder):
-    FileRanges.append(range(temp_end_largerjob+(it_job*nfilepjob),temp_end_largerjob+((it_job+1)*nfilepjob) ))
-    nfile_checksum += len(range(temp_end_largerjob+(it_job*nfilepjob),temp_end_largerjob+((it_job+1)*nfilepjob) ))
-  FileRangesForEachSample.append(FileRanges)
-
-  ## Get xsec and SumW
-  this_xsec = 1.;
-  this_sumw = 1.;
-  if not IsDATA:
-    lines_SamplePath = open(SAMPLE_DATA_DIR+'/CommonSampleInfo/'+InputSample+'.txt').readlines()
-    for line in lines_SamplePath:
-      if line[0]=="#":
-        continue
-      words = line.split()
-      if InputSample==words[0]:
-        this_xsec = words[2]
-        this_sumw = words[4]
-        break
-
-  ## Write run script
-
-  if IsKISTI:
-    for idx  in range(0,NJobs):
-      #"Error in <TNetXNGFile::Open>" 
-      #"Error in <TNetXNGFile::Close>" 
-      logFile= base_rundir+' condor_'+idx+'.log'
-      outLogFile= base_rundir+' job_'+idx+'.log'
-      outErrFile= base_rundir+' job_'+idx+'.err'
-
-      cmd = 'grep "Error" '+logFile
-      result=os.system(cmd)
-      if result!=0:
-	print 'Result has error on',logFile
-
-      cmd = 'grep "Error" '+outLogFile
-      result=os.system(cmd)
-      if result!=0:
-	print 'Result has error on',outLogFile
-
-      cmd = 'grep "Error" '+outErrFile
-      result=os.system(cmd)
-      if result!=0:
-	print 'Result has error on',outErrFile
-
-
-  else:
-
-    if args.no_exec:
-      continue
-
-## Loop over samples again
 
 AllSampleFinished = False
 GotError = False
@@ -243,14 +129,21 @@ try:
 
       ## Prepare output
       ## This should be copied from above
-      base_rundir = args.RundirBase+args.Analyzer + '_Y'+args.Year+'_'+InputSample
+      base_rundir = args.RundirBase+'/'+args.Analyzer + '_Y'+args.Year+'_'+InputSample
 
       if IsDATA:
         base_rundir = base_rundir+'_'+DataPeriod
-      base_rundir += '_'+SkimName
+      base_rundir += '_'+SkimName+'/'
+      for line in open(base_rundir+'SubmitOutput.log','r'):
+        line = line.rstrip('\n')
+	if 'NJobs' in line:
+	  NJobs = int(line.split(' ')[3])
+	  break
 
 
+      #NJobs = 1
       this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'')
+      os.system('mkdir -p '+this_webdir)
 
       if not SampleFinished:
 
@@ -273,11 +166,9 @@ try:
         MaxTimeLeft = 0
         MaxEventRunTime = 0
 
-        FileRanges = FileRangesForEachSample[it_sample]
-	print 'Njob: ',len(FileRanges)
-	CheckLog.write('Njob: '+ str(len(FileRanges))+'\n')
+	CheckLog.write('Njob: '+ str(NJobs)+'\n')
 
-        for it_job in range(0,len(FileRanges)):
+        for it_job in range(0,NJobs):
 
           this_status = ""
           this_status = CheckJobStatus(base_rundir, args.Analyzer, it_job, HOSTNAME)
@@ -295,7 +186,7 @@ try:
             break
 
           if "FINISHED" not in this_status:
-	    CheckLog.write('Not FINISHED at job # '+ it_job+'\n' )
+	    CheckLog.write('Not FINISHED at job # '+ str(it_job)+'\n' )
 	    CheckLog.write(this_status+'\n' )
             ThisSampleFinished = False
 
@@ -382,7 +273,7 @@ try:
         statuslog.write('\n==============================================================\n')
         statuslog.write('HOSTNAME = '+HOSTNAME+'\n')
         statuslog.write('queue = '+args.Queue+'\n')
-        statuslog.write(str(len(FileRanges))+' jobs submitted\n')
+        statuslog.write(str(NJobs)+' jobs submitted\n')
         statuslog.write(str(n_eventran)+' jobs are running\n')
         statuslog.write(str(len(finished))+' jobs are finished\n')
 

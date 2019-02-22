@@ -14,7 +14,8 @@
 rm JobCheck.log
 
 for sample in DoubleEG DoubleMuon DYJets10to50_MG DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
+#for sample in DYJets10to50_MG
 do
   echo $sample
-  ./checkGardenerBatch.py -a Skim_Leptons -y 2017 -i $sample -n 100  --RundirBase /data7/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0
+  ./checkGardenerBatch.py -a Skim_Leptons -y 2017 -i $sample -n 100  --RundirBase /data7/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0_LL_v0
 done

@@ -22,23 +22,31 @@ public:
 private:
 
 
+  bool IsMuMu;
+  bool IsElEl;
+
   //RootHelper rootHelp;
   double DiLepTrg_SF(TString Leg0Key, TString Leg1Key, const vector<Lepton*>& leps, int sys);
   //TBranch *b_trgSF;
   //TBranch *b_trgSF_Up;
   //TBranch *b_trgSF_Dn;
 
-  vector<TString> DuMuTrgs;
-  vector<TString> DuElTrgs;
+  vector<TString> DiMuTrgs;
+  vector<TString> DiElTrigs;
 
-  TString trgSF_Leg0Key, trgSF_Leg1Key;
+  TString trgSF_Key0, trgSF_Key1;
   Event* evt;
-  TString ChName;
 
   std::vector<Muon> muons;
   std::vector<Electron> electrons;
   std::vector<Lepton*> leps;
+
+  double (MCCorrection::*LeptonID_SF)(TString,double,double,int);
+  double (MCCorrection::*LeptonISO_SF)(TString,double,double,int);
+  double (MCCorrection::*LeptonReco_SF)(double,double,int);
+  double (MCCorrection::*PileUpWeight)(int,int);
  
+  double puW, puW_Up, puW_Dn;
 
   bool PtEtaPass;
   double Lep0PtCut;

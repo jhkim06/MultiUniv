@@ -2,15 +2,31 @@
 
 void Skim_DiLep::initializeAnalyzer(){
 
-  initializeAnalyzerTools();
+  initializeAnalyzerTools(); //To use SF
+
   //=================================
   // Skim Types
   //=================================
-  //
-  //if(! HasFlag("DiLep")){
-  //  cout<<"[Skim_DiLep::initilaizeAnalyzer] ERROR, incorrect Flag"<<endl;
-  //  exit(EXIT_FAILURE);
-  //}
+   
+  IsMuMu = false;
+  IsElEl = false;
+
+  if( HasFlag("MuMu")){
+    IsMuMu = true;
+    cout<<"[Skim_DiLep::initializeAnalyzer] Same  Flavor Selection"<<endl;
+  }
+  else
+  if( HasFlag("ElEl")){
+    IsElEl = true;
+  }
+  else{
+    cout <<"[Skim_DiLep::executeEvent] Not ready for this Flags ";
+    for(unsigned int i=0; i<Userflags.size(); i++){
+      cout <<"  "<< Userflags.at(i);
+    }
+    cout<<endl;
+    exit(EXIT_FAILURE);
+  }
 
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");
@@ -27,37 +43,41 @@ void Skim_DiLep::initializeAnalyzer(){
 
 
   // clear vector residual
-  DuMuTrgs.clear();
-  DuElTrgs.clear();
+  DiMuTrgs.clear();
+  DiElTrgs.clear();
 
 
   cout << "[Skim_DiLep::initializeAnalyzer] Skim List====================== " << endl;
   if(DataYear==2016){
-    DuMuTrgs = {
+    DiMuTrgs = {
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v",
       "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v",
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",
       "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v",
     };
-    DuElTrgs = {
+    DiElTrgs = {
       "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"
     };
   }
   else if(DataYear==2017){
-    DuMuTrgs = {
+    DiMuTrgs = {
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v",
     };
-    DuElTrgs = {
+    DiElTrgs = {
       "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"
     };
   }
+  else{
+    cout<<"[Skim_DiLep::executeEvent] ERROR, this year "<<DataYear<<" is not prepared sorry, exiting..."<<endl;
+    exit(EXIT_FAILURE);
+  }
 
   cout << "\t"<<"doubleTrgs to skim = " << endl;
-  for(unsigned int i=0; i<DuMuTrgs.size(); i++){
-    cout << "\t" << DuMuTrgs.at(i) << endl;
+  for(unsigned int i=0; i<DiMuTrgs.size(); i++){
+    cout << "\t" << DiMuTrgs.at(i) << endl;
   }
-  for(unsigned int i=0; i<DuElTrgs.size(); i++){
-    cout << "\t" << DuElTrgs.at(i) << endl;
+  for(unsigned int i=0; i<DiElTrgs.size(); i++){
+    cout << "\t" << DiElTrgs.at(i) << endl;
   }
 
 }
@@ -68,52 +88,68 @@ void Skim_DiLep::executeEvent(){
   electrons.clear();
   leps.clear();
 
+  evt = new Event;
+  *evt = GetEvent();
 
   newtree->SetBranchAddress("trgSF",&trgSF);
   newtree->SetBranchAddress("trgSF_Up",&trgSF_Up);
   newtree->SetBranchAddress("trgSF_Dn",&trgSF_Dn);
 
-  FillHist("CutFlow",0,1,20,0,20);
+  FillHist("CutFlow",5,1,30,0,30);
   // Filters ====================
-  if( HasFlag("MetFilt"))if(!PassMETFilter()) return;
-  FillHist("CutFlow",1,1,20,0,20);
+  //if( HasFlag("MetFilt"))if(!PassMETFilter()) return;
+  FillHist("CutFlow",6,1,30,0,30);
 
-  evt = new Event;
-  *evt = GetEvent();
 
   muons=GetMuons("POGTightWithTightIso",7.,2.4);
   std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
   electrons=GetElectrons("passMediumID",9.,2.5);
   std::sort(electrons.begin(),electrons.end(),PtComparing);
 
+  LeptonID_SF=NULL;
+  LeptonISO_SF=NULL;
+  LeptonReco_SF=NULL;
+  PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
+
   // dilepton condition
-  if (muons.size() + electrons.size() < 2) return;
-
-  // Trigger Pass ================
-  ChName = "NotDefined";
-  if( evt->PassTrigger(DuMuTrgs) ){
-    if(DataYear == 2016) ChName = "DoubelMuon2016";
-    else if(DataYear == 2017) ChName = "DoubleMuon2017";
-    else{
-      cout<<"[Skim_DiLep::executeEvent] ERROR, this year "<<DataYear<<" is not prepared sorry, exiting..."<<endl;
-      exit(EXIT_FAILURE);
-    }
-  }else if( evt->PassTrigger(DuElTrgs) ){
-    if(DataYear == 2016) ChName = "DoubelElectron2016";
-    else if(DataYear == 2017) ChName = "DoubleElectron2017";
-    else{
-      cout<<"[Skim_DiLep::executeEvent] ERROR, this year "<<DataYear<<" is not prepared sorry, exiting..."<<endl;
-      exit(EXIT_FAILURE);
-    }
-  }else if( HasFlag("DuLep") ){
-    return;
-  }else return;
-
-  if( ChName == "NotDefined" ) return;
-  FillHist("CutFlow",2,1,20,0,20);
-
+  if(IsMuMu){ // Muon-----------------------------
+    if(electrons.size() > 0) return;
+    if(muons.size() != 2   ) return;
+    if(! evt->PassTrigger(DiMuTrgs) )return;
+    leps=MakeLeptonPointerVector(muons);
+    lep0ptcut=20.;
+    lep1ptcut=10.;
+    LeptonID_SF=&MCCorrection::MuonID_SF;
+    LeptonISO_SF=&MCCorrection::MuonISO_SF;
+    LeptonID_key="NUM_TightID_DEN_genTracks";
+    LeptonISO_key="NUM_TightRelIso_DEN_TightIDandIPCut";
+    trgSF_key0="Leg17_POGTight";
+    trgSF_key1="Leg8_POGTight";
+  } //---------------------------------------------
+  if(IsElEl){ // Electron =======================
+    if(electrons.size() != 0) return;
+    if(muons.size() > 0   ) return;
+    if(! evt->PassTrigger(DiElTrgs) )return;
+    leps=MakeLeptonPointerVector(electrons);
+    lep0ptcut=25.;
+    lep1ptcut=15.;
+    LeptonID_SF=&MCCorrection::ElectronID_SF;
+    LeptonReco_SF=&MCCorrection::ElectronReco_SF;
+    LeptonID_key="passMediumID_pt10";
+    LeptonID_key_POG="passMediumID";
+    triggerSF_key0="LeadEle23_MediumID";
+    triggerSF_key1="TailEle12_MediumID";
+  } //===========================================
 
   // SF =========================
+  /////////////////PUreweight///////////////////
+  PUw=1.,PUw_Up=1.,PUw_Dn=1.;
+  if(!IsDATA){
+    PUweight=(mcCorr->*PileUpWeight)(nPileUp,0);
+    PUreweight_up=(mcCorr->*PileUpWeight)(nPileUp,1);
+    PUreweight_down=(mcCorr->*PileUpWeight)(nPileUp,-1);
+    totalweight*=PUreweight;
+  }
 
 
   if( ChName.Contains("DoubleMuon")){

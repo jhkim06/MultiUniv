@@ -93,7 +93,7 @@ if IsKNU:
 DataPeriods = DataPeriods(args.Year)
 
 SAMPLE_DATA_DIR = SampleDataDir(args.Year)
-ProductionKey = SKFlatV+'_'+args.Category+args.Year
+ProductionKey = SKFlatV+'_'+args.Year
 print 'Productions key:',ProductionKey
 
 InputSamples = {}
@@ -124,13 +124,13 @@ else:
       InputSamples[args.InputSampleKey+":"+args.DataPeriod]={'key':args.InputSampleKey}
       StringForHash += args.InputSampleKey+":"+args.DataPeriod
   else:
-    print 'File to import', Productions[ProductionKey]['MCsamples']
-    #importlib.import_module(Productions[ProductionKey]['MCsamples'])
-    #cmd = SKFlat_WD + Productions[ProductionKey]['MCsamples']
-    #cmd = 'MCsamples : '+Productions[ProductionKey]['MCsamples']
-    cmd = 'from '+Productions[ProductionKey]['MCsamples'] +' import *'
+    print 'File to import', Productions[args.Category][ProductionKey]['MCsamples']
+    #importlib.import_module(Productions[args.Category][ProductionKey]['MCsamples'])
+    #cmd = SKFlat_WD + Productions[args.Category][ProductionKey]['MCsamples']
+    #cmd = 'MCsamples : '+Productions[args.Category][ProductionKey]['MCsamples']
+    cmd = 'from '+Productions[args.Category][ProductionKey]['MCsamples'] +' import *'
     exec(cmd, globals())
-    #SampleInfo = __import__(Productions[ProductionKey]['MCsamples'])
+    #SampleInfo = __import__(Productions[args.Category][ProductionKey]['MCsamples'])
     #SampleName = getattr(SampleInfo, MCsamples)
     #print sampleInfo
     #print sampleName[args.InputSampleKey]['name']
@@ -277,9 +277,9 @@ for InputSample in InputSamples:
   else:
     # Skim data list setup
     if IsDATA:
-      tmpSkimDir=Productions[ProductionKey]['SkimDir']+'/'+InSkimString+'/'+InputSamples[InputSample]['key']+'/'+'period'+DataPeriod+'/'
+      tmpSkimDir=Productions[args.Category][ProductionKey]['SkimDir']+'/'+InSkimString+'/'+InputSamples[InputSample]['key']+'/'+'period'+DataPeriod+'/'
     else:
-      tmpSkimDir=Productions[ProductionKey]['SkimDir']+'/'+InSkimString+'/'+InputSample+'/'
+      tmpSkimDir=Productions[args.Category][ProductionKey]['SkimDir']+'/'+InSkimString+'/'+InputSample+'/'
     
     print 'Input SkimDir',tmpSkimDir
     input_filelist = open(base_rundir+'/input_filelist','w')

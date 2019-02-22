@@ -27,15 +27,15 @@ Productions = {
     'SMP' : {
       'Run2Legacy_v1_2017' : {
         'MC' : 'CommonPyTools.DataSample.Samples_SMP_Fall17_miniaodv2',
-	'DATA' : ['DoubleEG', 'DoubleMuon' ]
-        'SkimDir': '/data8/DATA/SMP/Run2Legacy_v1/2017/'
+	'DATA' : ['DoubleEG', 'DoubleMuon' ],
+        'SkimDir': '/data8/DATA/SMP/Run2Legacy_v1/2017/',
         },
       },
     'LightCHToCB' : {
       'Run2Legacy_v1_2017' : {
         'MC' : 'CommonPyTools.DataSample.Samples_LightCHToCB_Fall17_miniaodv2',
-        'DATA' : ['SingleElectron', 'SingleMuon' ]
-	'SkimDir': '/data8/DATA/LightCHToCB/Run2Legacy_v1/2017/'
+        'DATA' : ['SingleElectron', 'SingleMuon' ],
+	'SkimDir': '/data8/DATA/LightCHToCB/Run2Legacy_v1/2017/',
         },
       },
 }
