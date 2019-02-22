@@ -124,13 +124,13 @@ else:
       InputSamples[args.InputSampleKey+":"+args.DataPeriod]={'key':args.InputSampleKey}
       StringForHash += args.InputSampleKey+":"+args.DataPeriod
   else:
-    print 'File to import', Productions[args.Category][ProductionKey]['MCsamples']
-    #importlib.import_module(Productions[args.Category][ProductionKey]['MCsamples'])
-    #cmd = SKFlat_WD + Productions[args.Category][ProductionKey]['MCsamples']
-    #cmd = 'MCsamples : '+Productions[args.Category][ProductionKey]['MCsamples']
-    cmd = 'from '+Productions[args.Category][ProductionKey]['MCsamples'] +' import *'
+    print 'File to import', Productions[args.Category][ProductionKey]['MC']
+    #importlib.import_module(Productions[args.Category][ProductionKey]['MC'])
+    #cmd = SKFlat_WD + Productions[args.Category][ProductionKey]['MC']
+    #cmd = 'MCsamples : '+Productions[args.Category][ProductionKey]['MC']
+    cmd = 'from '+Productions[args.Category][ProductionKey]['MC'] +' import *'
     exec(cmd, globals())
-    #SampleInfo = __import__(Productions[args.Category][ProductionKey]['MCsamples'])
+    #SampleInfo = __import__(Productions[args.Category][ProductionKey]['MC'])
     #SampleName = getattr(SampleInfo, MCsamples)
     #print sampleInfo
     #print sampleName[args.InputSampleKey]['name']
@@ -212,10 +212,10 @@ for InputSample in InputSamples:
   FinalOutputPath = args.Outputdir
   if args.Outputdir=="":
     if InSkimString == "":
-      FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Year+'/'
+      FinalOutputPath = Productions[args.Category][ProductionKey]['SkimDir']+'/'
       #FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'
     else:
-      FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Year+'/'+InSkimString
+      FinalOutputPath = Productions[args.Category][ProductionKey]['SkimDir']+'/'+InSkimString
       #FinalOutputPath = SKFlatOutputDir+'/'+SKFlatV+'/'+args.Analyzer+'/'+args.Year+'/'+InSkimString
     IsFirstFlag=True
     for flag in Userflags:
