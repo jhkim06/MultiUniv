@@ -1,4 +1,5 @@
 #include "MCCorrection.h"
+#include "RootHelper.h"
 
 MCCorrection::MCCorrection() : 
 IgnoreNoHist(false)
@@ -99,6 +100,7 @@ void MCCorrection::ReadHistograms(){
 
 
   // == Get Pileup Reweight maps
+  map_hist_pileup.clear();
   TString PUReweightPath = datapath+"/"+TString::Itoa(DataYear,10)+"/PileUp/";
 
   string elline4;
@@ -117,9 +119,38 @@ void MCCorrection::ReadHistograms(){
     if(DataYear == 2017 && a!=MCSample) continue;
     
     TFile *file = new TFile(PUReweightPath+c);
+    cout<<"MCCorrection:: getting PU hist: "<<a+"_"+b<<endl;
     if((TH1D *)file->Get(a+"_"+b)) map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
-    else cout << "[MCCorrection::ReadHistograms] No : " << a + "_" + b << endl;
+    else{
+      cout << "[MCCorrection::ReadHistograms] No : " << a + "_" + b << endl;
+    }
   }
+  if(DataYear == 2017 && map_hist_pileup.size() == 0){
+    cout << "[MCCorrection::ReadHistograms] Pileup: using 2017 default profile DYJets" <<endl;
+    in4.clear();
+    in4.seekg(0, ios::beg);
+    while(getline(in4,elline4)){
+      std::istringstream is( elline4 );
+
+      TString tstring_elline = elline4;
+      if(tstring_elline.Contains("#")) continue;
+
+      TString a,b,c;
+      is >> a; // sample name
+      is >> b; // syst
+      is >> c; // rootfile name
+
+      if(DataYear == 2017 && a!="DYJets") continue;
+      
+      TFile *file = new TFile(PUReweightPath+c);
+      cout<<"MCCorrection:: getting PU hist: "<<a+"_"+b<<endl;
+      if((TH1D *)file->Get(a+"_"+b)) map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
+      else{
+        cout << "[MCCorrection::ReadHistograms] No : " << a + "_" + b << endl;
+      }
+    }
+  }
+
 /*
   cout << "[MCCorrection::MCCorrection] map_hist_pileup :" << endl;
   for(std::map< TString, TH1D* >::iterator it=map_hist_pileup.begin(); it!=map_hist_pileup.end(); it++){
@@ -548,8 +579,32 @@ double MCCorrection::GetPileUpWeightBySampleName(int N_vtx, int syst){
 
   TH1D *this_hist = map_hist_pileup[this_histname];
   if(!this_hist){
-    cout << "[MCCorrection::GetPileUpWeightBySampleName] No " << this_histname << endl;
-    exit(EXIT_FAILURE);
+    if(DataYear == 2017){
+      this_histname = "DYJets";// Default for 2017
+      if(syst == 0){
+        this_histname += "_central_pileup";
+      }
+      else if(syst == -1){
+        this_histname += "_sig_down_pileup";
+      }
+      else if(syst == 1){
+        this_histname += "_sig_up_pileup";
+      }
+      else{
+        cout << "[MCCorrection::GetPileUpWeightBySampleName] syst should be 0, -1, or +1" << endl;
+        exit(EXIT_FAILURE);
+      }
+
+      this_hist = map_hist_pileup[this_histname];
+      if(!this_hist){
+	cout<<"[MCCorrection::GetPileUpWeightBySampleName] No " << this_histname << endl;
+	exit(EXIT_FAILURE);
+      }
+    }
+    else{
+      cout << "[MCCorrection::GetPileUpWeightBySampleName] No " << this_histname << endl;
+      exit(EXIT_FAILURE);
+    }
   }
 
   return this_hist->GetBinContent(this_bin);
@@ -572,19 +627,100 @@ double MCCorrection::GetPileUpWeight(int N_vtx, int syst){
     this_histname += "_sig_up_pileup";
   }
   else{
-    cout << "[MCCorrection::GetPileUpWeightBySampleName] syst should be 0, -1, or +1" << endl;
+    cout << "[MCCorrection::GetPileUpWeight] syst should be 0, -1, or +1" << endl;
     exit(EXIT_FAILURE);
   }
 
   TH1D *this_hist = map_hist_pileup[this_histname];
   if(!this_hist){
-    cout << "[MCCorrection::GetPileUpWeightBySampleName] No " << this_histname << endl;
+    cout << "[MCCorrection::GetPileUpWeight] No " << this_histname << endl;
     exit(EXIT_FAILURE);
   }
 
   return this_hist->GetBinContent(this_bin);
 
 }
+double MCCorrection::DiLeptonTrg_SF(TString IdKey0,TString IdKey1,const vector<Lepton*>& leps,int sys){
+  if(leps.size() < 2){
+    cout<<"[MCCorrection::DiLeptonTrg_SF] only dilepton algorithm"<<endl;
+    return 1;
+  }
+  //cout<<"DiLeptonTrg: pt0 "<<leps[0]->Pt()<<endl;
+  std::map< TString, TH2F* > map_hist_Lepton;
+  if(leps[0]->LeptonFlavour()==Lepton::MUON){
+    map_hist_Lepton = map_hist_Muon;
+  }else if(leps[0]->LeptonFlavour()==Lepton::ELECTRON){
+    map_hist_Lepton = map_hist_Electron;
+  }else{
+    cout <<"[MCCorrection::DiLeptonTrg_SF] Only for Muon or Electron"<<endl;
+    exit(EXIT_FAILURE);
+  }    
+      
+  double this_pt[2]={},this_eta[2]={};
+  for(int i=0;i<2;i++){
+    if(leps[i]->LeptonFlavour()==Lepton::MUON){
+      this_pt[i]=((Muon*)leps.at(i))->MiniAODPt();
+      this_eta[i]=leps.at(i)->Eta();
+    }else if(leps[i]->LeptonFlavour()==Lepton::ELECTRON){
+      this_pt[i]=leps.at(i)->Pt();
+      this_eta[i]=((Electron*)leps.at(i))->scEta();
+    }else{
+      cout << "[MCCorrection::DiLeptonTrg_SF] It is not lepton"<<endl;
+      exit(EXIT_FAILURE);
+    }
+  }
+  if(DataYear==2016&&leps[0]->LeptonFlavour()==Lepton::MUON){
+    TH2F* this_hist[8]={};
+    TString sdata[2]={"DATA","MC"};
+    TString speriod[2]={"BCDEF","GH"};
+    for(int id=0;id<2;id++){
+      for(int ip=0;ip<2;ip++){
+	this_hist[4*id+2*ip]=map_hist_Lepton["Trigger_Eff_"+sdata[id]+"_"+IdKey0+"_"+speriod[ip]];
+	this_hist[4*id+2*ip+1]=map_hist_Lepton["Trigger_Eff_"+sdata[id]+"_"+IdKey1+"_"+speriod[ip]];
+      }
+    }
+    if(!this_hist[0]||!this_hist[1]||!this_hist[2]||!this_hist[3]){
+      cout << "[SMPValidation::Trigger_SF] No "<<IdKey0<<" or "<<IdKey1<<endl;
+      exit(EXIT_FAILURE);
+    }
+
+    double lumi_periodB = 5.929001722;
+    double lumi_periodC = 2.645968083;
+    double lumi_periodD = 4.35344881;
+    double lumi_periodE = 4.049732039;
+    double lumi_periodF = 3.157020934;
+    double lumi_periodG = 7.549615806;
+    double lumi_periodH = 8.545039549 + 0.216782873;
+
+    double total_lumi = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH);
+
+    double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
+    double WeightGtoH = (lumi_periodG+lumi_periodH)/total_lumi;
+    
+    double triggerEff[4]={1.,1.,1.,1.};
+    for(int i=0;i<4;i++){
+      for(int il=0;il<2;il++){
+	triggerEff[i]*=RootHelper::GetBinContentUser(this_hist[2*i+il],this_eta[il],this_pt[il],(i<2?1.:-1.)*sys);
+      }
+    }
+    return (triggerEff[0]*WeightBtoF+triggerEff[1]*WeightGtoH)/(triggerEff[2]*WeightBtoF+triggerEff[3]*WeightGtoH);
+  }else{
+    TH2F* this_hist[2]={NULL,NULL};
+    double triggerSF=1.;
+    this_hist[0]=map_hist_Lepton["Trigger_SF_"+IdKey0];
+    this_hist[1]=map_hist_Lepton["Trigger_SF_"+IdKey1];
+    if(!this_hist[0]||!this_hist[1]){
+      cout << "[MCCorrection::DiLepTrg_SF] No Trigger_SF_"<<IdKey0<<" or Trigger_SF_"<<IdKey1<<endl;
+      exit(EXIT_FAILURE);
+    }
+    for(int i=0;i<2;i++){
+      triggerSF*=RootHelper::GetBinContentUser(this_hist[i],this_eta[i],this_pt[i],sys);
+    }
+    return triggerSF;
+  }   
+}
+
+
 
 
 

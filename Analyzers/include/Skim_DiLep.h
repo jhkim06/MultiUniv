@@ -22,8 +22,8 @@ public:
 private:
 
 
-  bool IsMuMu;
-  bool IsElEl;
+  int IsMuMu;
+  int IsElEl;
 
   //RootHelper rootHelp;
   double DiLepTrg_SF(TString Leg0Key, TString Leg1Key, const vector<Lepton*>& leps, int sys);
@@ -50,9 +50,10 @@ private:
   double PUweight, PUweight_Up, PUweight_Dn;
 
   bool PtEtaPass;
+  double Aod_pt[2], Aod_eta[2];
   double Lep0PtCut;
   double Lep1PtCut;
-  double EtaCut;
+  double LepEtaCut;
 
   Double_t trgSF;
   Double_t trgSF_Up;
@@ -62,7 +63,8 @@ private:
   double recoSF_Up;
   double recoSF_Dn;
 
-  double effSfIdIso;
+  double IdSF, IdSF_Up, IdSF_Dn;
+  double IsoSF, IsoSF_Up, IsoSF_Dn;
 
 
 };

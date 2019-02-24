@@ -203,6 +203,9 @@ for InputSample in InputSamples:
   #base_rundir += '_'+HOSTNAME
   base_rundir = base_rundir+'_v'+args.skimV+"/"
   print "base_rundir: ", base_rundir
+  if os.path.isdir(base_rundir):
+    print 'base_rundir already exists exiting... remove or mv this directory to run again'
+    exit()
 
   os.system('mkdir -p '+base_rundir)
   os.system('mkdir -p '+base_rundir+'/output/')

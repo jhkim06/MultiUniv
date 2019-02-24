@@ -8,16 +8,16 @@ void Skim_DiLep::initializeAnalyzer(){
   // Skim Types
   //=================================
    
-  IsMuMu = false;
-  IsElEl = false;
 
   if( HasFlag("MuMu")){
-    IsMuMu = true;
-    cout<<"[Skim_DiLep::initializeAnalyzer] Same  Flavor Selection"<<endl;
+    cout<<"[Skim_DiLep::initializeAnalyzer] MuMu Selection"<<endl;
   }
   else
   if( HasFlag("ElEl")){
-    IsElEl = true;
+    cout<<"[Skim_DiLep::initializeAnalyzer] ElEl Selection"<<endl;
+  }
+  if( HasFlag("MuMuOrElEl")){
+    cout<<"[Skim_DiLep::initializeAnalyzer] MuMu or ElEl Selection"<<endl;
   }
   else{
     cout <<"[Skim_DiLep::executeEvent] Not ready for this Flags ";
@@ -33,9 +33,31 @@ void Skim_DiLep::initializeAnalyzer(){
   newtree = fChain->CloneTree(0);
 
   // New Branch
-  newtree->Branch("trgSF", &trgSF,"trgSF/D");
+  newtree->Branch("IsMuMu", &IsMuMu,"IsMuMu/I");
+  newtree->Branch("IsElEl", &IsElEl,"IsElel/I");
+
+
+  newtree->Branch("PUweight", &PUweight,"PUweight/D");
+  newtree->Branch("PUweight_Up", &PUweight_Up,"PUweight_Up/D");
+  newtree->Branch("PUweight_Dn", &PUweight_Dn,"PUweight_Dn/D");
+
+  newtree->Branch("trgSF",    &trgSF,   "trgSF/D");
   newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/D");
   newtree->Branch("trgSF_Dn", &trgSF_Dn,"trgSF_Dn/D");
+
+  newtree->Branch("recoSF",    &recoSF,   "recoSF/D");
+  newtree->Branch("recoSF_Up", &recoSF_Up,"recoSF_Up/D");
+  newtree->Branch("recoSF_Dn", &recoSF_Dn,"recoSF_Dn/D");
+
+  newtree->Branch("IdSF",    &IdSF,   "IdSF/D");
+  newtree->Branch("IdSF_Up", &IdSF_Up,"IdSF_Up/D");
+  newtree->Branch("IdSF_Dn", &IdSF_Dn,"IdSF_Dn/D");
+
+  newtree->Branch("IsoSF",    &IsoSF,   "IsoSF/D");
+  newtree->Branch("IsoSF_Up", &IsoSF_Up,"IsoSF_Up/D");
+  newtree->Branch("IsoSF_Dn", &IsoSF_Dn,"IsoSF_Dn/D");
+
+
   //b_trgSF = newtree->Branch("trgSF", &trgSF,"trgSF/F");
   //b_trgSF_Up = newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/F");
   //b_trgSF_Dn = newtree->Branch("trgSF_Dn", &trgSF_Dn,"trgSF_Dn/F");
@@ -91,9 +113,28 @@ void Skim_DiLep::executeEvent(){
   evt = new Event;
   *evt = GetEvent();
 
-  newtree->SetBranchAddress("trgSF",&trgSF);
+  newtree->SetBranchAddress("IsMuMu",   &IsMuMu);
+  newtree->SetBranchAddress("IsElEl",   &IsElEl);
+
+  newtree->SetBranchAddress("PUweight",   &PUweight);
+  newtree->SetBranchAddress("PUweight_Up",&PUweight_Up);
+  newtree->SetBranchAddress("PUweight_Dn",&PUweight_Dn);
+
+  newtree->SetBranchAddress("trgSF",   &trgSF);
   newtree->SetBranchAddress("trgSF_Up",&trgSF_Up);
   newtree->SetBranchAddress("trgSF_Dn",&trgSF_Dn);
+
+  newtree->SetBranchAddress("recoSF",   &recoSF);
+  newtree->SetBranchAddress("recoSF_Up",&recoSF_Up);
+  newtree->SetBranchAddress("recoSF_Dn",&recoSF_Dn);
+
+  newtree->SetBranchAddress("IdSF",   &IdSF);
+  newtree->SetBranchAddress("IdSF_Up",&IdSF_Up);
+  newtree->SetBranchAddress("IdSF_Dn",&IdSF_Dn);
+
+  newtree->SetBranchAddress("IsoSF",   &IsoSF);
+  newtree->SetBranchAddress("IsoSF_Up",&IsoSF_Up);
+  newtree->SetBranchAddress("IsoSF_Dn",&IsoSF_Dn);
 
   FillHist("CutFlow",5,1,30,0,30);
   // Filters ====================
@@ -106,100 +147,124 @@ void Skim_DiLep::executeEvent(){
   electrons=GetElectrons("passMediumID",9.,2.5);
   std::sort(electrons.begin(),electrons.end(),PtComparing);
 
-  LeptonID_SF=NULL;
-  LeptonISO_SF=NULL;
-  LeptonReco_SF=NULL;
-  PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
+  IsMuMu = 0;
+  IsElEl = 0;
+  //=========================
+  // DiLepton condition
+  //=========================
+  if(muons.size() == 2   )if(electrons.size() == 0) IsMuMu = 1;
+  if(muons.size() == 0   )if(electrons.size() == 2) IsElEl = 1;
+  if(IsMuMu != 1 && IsElEl != 1) return;
+  if(HasFlag("MuMu") )if(IsMuMu !=1 ) return;
+  if(HasFlag("ElEl") )if(IsElEl !=1 ) return;
 
-  // dilepton condition
-  if(IsMuMu){ // Muon-----------------------------
-    if(electrons.size() > 0) return;
-    if(muons.size() != 2   ) return;
+  //=======================================
+  // Channel dependent cut and ftn set
+  //=======================================
+    
+  LeptonID_SF  = NULL;
+  LeptonISO_SF = NULL;
+  LeptonReco_SF= NULL;
+  PileUpWeight = NULL;
+
+  if(IsMuMu == 1){ // Muon-----------------------------
     if(! evt->PassTrigger(DiMuTrgs) )return;
     leps=MakeLeptonPointerVector(muons);
     Lep0PtCut=20.;
     Lep1PtCut=10.;
-    LeptonID_SF=&MCCorrection::MuonID_SF;
+    LepEtaCut = 2.4;
+    LeptonID_SF =&MCCorrection::MuonID_SF;
     LeptonISO_SF=&MCCorrection::MuonISO_SF;
+    // key for private or official SF
     LeptonID_key="NUM_TightID_DEN_genTracks";
     LeptonISO_key="NUM_TightRelIso_DEN_TightIDandIPCut";
-    trgSF_key0="Leg17_POGTight";
-    trgSF_key1="Leg8_POGTight";
+    trgSF_key0="Lead17_POGTight";  // For 2016 separated period BCDEF, GH 
+    trgSF_key1="Tail8_POGTight"; 
   } //---------------------------------------------
-  if(IsElEl){ // Electron =======================
-    if(electrons.size() != 0) return;
-    if(muons.size() > 0   ) return;
+  if(IsElEl == 1){ // Electron =======================
     if(! evt->PassTrigger(DiElTrgs) )return;
     leps=MakeLeptonPointerVector(electrons);
     Lep0PtCut=25.;
     Lep1PtCut=15.;
-    LeptonID_SF=&MCCorrection::ElectronID_SF;
-    LeptonReco_SF=&MCCorrection::ElectronReco_SF;
-    LeptonID_key="passMediumID_pt10";
-    LeptonID_key_POG="passMediumID";
+    LepEtaCut = 2.5;
+    LeptonID_SF  = &MCCorrection::ElectronID_SF;
+    LeptonReco_SF= &MCCorrection::ElectronReco_SF;
+    // key for private or official SF
+    LeptonID_key    = "MediumID_pt10";
+    LeptonID_key_POG= "passMediumID";
     trgSF_key0="LeadEle23_MediumID";
     trgSF_key1="TailEle12_MediumID";
   } //===========================================
 
-  // SF =========================
+  // ================================
+  // Kinematic cuts 
+  // ================================
+  for(int i(0); i < 2; i++){ // two lepton only, pt eta the same to TnP
+    if(leps[i]->LeptonFlavour()==Lepton::MUON){
+     Aod_pt[i]=((Muon*)leps.at(i))->MiniAODPt();
+     Aod_eta[i]=leps.at(i)->Eta();
+    }else if(leps[i]->LeptonFlavour()==Lepton::ELECTRON){
+     Aod_pt[i]=leps.at(i)->Pt();
+     Aod_eta[i]=((Electron*)leps.at(i))->scEta();
+     if(fabs(Aod_eta[i])>1.4442&&fabs(Aod_eta[i])<1.566) return; // two lepton only
+    }
+  }
+  if(Aod_pt[0] < Lep0PtCut) return;
+  if(Aod_pt[1] < Lep1PtCut) return;
+  if(fabs(Aod_eta[0]) > LepEtaCut) return;
+  if(fabs(Aod_eta[1]) > LepEtaCut) return;
+    
   /////////////////PUreweight///////////////////
+  PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
+
   PUweight=1.,PUweight_Up=1.,PUweight_Dn=1.;
+
   if(!IsDATA){
     PUweight=(mcCorr->*PileUpWeight)(nPileUp,0);
     PUweight_Up=(mcCorr->*PileUpWeight)(nPileUp,1);
     PUweight_Dn=(mcCorr->*PileUpWeight)(nPileUp,-1);
   }
+  //==============================
+  // SF 
+  //==============================
 
 
-  //if( ChName.Contains("DoubleMuon")){
+  trgSF    = 1;
+  trgSF_Up = 1;
+  trgSF_Dn = 1;
 
-  //  Lep0PtCut = 20;
-  //  Lep1PtCut = 10;
-  //  EtaCut=2.4;
+  recoSF    = 1;
+  recoSF_Up = 1;
+  recoSF_Dn = 1;
 
-  //  trgSF_Leg0Key = "Leg17_POGTight"; // As writtern at histmaps.txt
-  //  trgSF_Leg1Key = "Leg8_POGTight";
+  IdSF    = 1;
+  IdSF_Up = 1;
+  IdSF_Dn = 1;
 
-  //  leps=MakeLeptonPointerVector(muons);
-
-
-  //}
-  //if( ChName.Contains("DoubleElectron")){
-
-  //  Lep0PtCut=25.;
-  //  Lep1PtCut=15.;
-  //  EtaCut=2.5;
-
-  //  trgSF_Leg0Key="LeadEle23_MediumID";
-  //  trgSF_Leg1Key="TailEle12_MediumID";
-
-  //  leps=MakeLeptonPointerVector(electrons);
+  IsoSF =1;
+  IsoSF_Up =1;
+  IsoSF_Dn =1;
 
 
-  //}
+  if(!IsDATA){
+    for( int i(0); i<2 ; i++){
+      recoSF    *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],0):1.;
+      recoSF_Up *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],1):1.;
+      recoSF_Dn *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],-1):1.;
 
+      IdSF      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],0):1.;
+      IdSF_Up   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],1):1.;
+      IdSF_Dn   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],-1):1.;
 
+      IsoSF	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],0):1.;
+      IsoSF_Up	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],1):1.;
+      IsoSF_Dn	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],-1):1.;
 
-
-  trgSF=1;
-  trgSF_Up=1;
-  trgSF_Dn=1;
-
-  recoSF=1;
-  recoSF_Up=1;
-  recoSF_Dn=1;
-
-  //Double Lepton condition
-  if(leps.size() >= 2){
-    PtEtaPass = true;
-    if(leps.at(0)->Pt()<Lep0PtCut||leps.at(1)->Pt()<Lep1PtCut) PtEtaPass = false;
-    if(fabs(leps.at(0)->Eta())>EtaCut||fabs(leps.at(1)->Eta()>EtaCut))PtEtaPass =  false;
-
-    if(!IsDATA)if(PtEtaPass){
-      trgSF      = DiLepTrg_SF(trgSF_key0,trgSF_key1,leps,0);
-      trgSF_Up   = DiLepTrg_SF(trgSF_key0,trgSF_key1,leps,1);
-      trgSF_Dn   = DiLepTrg_SF(trgSF_key0,trgSF_key1,leps,-1);
     }
+    //cout<<"Skim pt0: "<<leps[0]->Pt()<<endl;
+    trgSF      = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,0);
+    trgSF_Up   = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,1);
+    trgSF_Dn   = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,-1);
   }
 
 

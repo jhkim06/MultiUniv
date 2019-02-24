@@ -54,6 +54,8 @@ public:
   double GetPileUpWeightBySampleName(int N_vtx, int syst);
   double GetPileUpWeight(int N_vtx, int syst);
 
+  double DiLeptonTrg_SF(TString IdKey0,TString IdKey1,const vector<Lepton*>& leps,int sys);
+
 };
 
 #endif
