@@ -267,6 +267,16 @@ void Skim_DiLep::executeEvent(){
     trgSF_Dn   = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,-1);
   }
 
+  //===============================
+  // Gen Info
+  //===============================
+  if(MCSample.Contains("DYJets") || MCSample.Contains("DYJets10to50_MG")){
+    vector<Gen> gens = GetGens();
+    for( int i(0); i<(int) gens.size(); i++){
+      if( !gens.at(i).isPrompt()) continue;
+    }
+  }
+
 
 
 
@@ -280,60 +290,7 @@ void Skim_DiLep::executeEvent(){
 
 
 }
-double Skim_DiLep::DiLepTrg_SF(TString Leg0Key, TString Leg1Key, const vector<Lepton*>& leps, int sys){
-  if(IsDATA) return 1;
-  if(leps.size()<2){
-  //if(leps.size()!=2)
-    //cout<<"[Skim_DiLep::DiLepTrg_SF] only dilepton algorithm"<<endl;
-    return 1;
-  }
-  map<TString,TH2F*>* map_hist_Lepton=NULL;
-  if(leps[0]->LeptonFlavour()==Lepton::MUON){
-    map_hist_Lepton=&mcCorr->map_hist_Muon;
-  }else if(leps[0]->LeptonFlavour()==Lepton::ELECTRON){
-    map_hist_Lepton=&mcCorr->map_hist_Electron;
-  }else{
-    cout <<"[Skim_DiLep::DiLepTrg_SF] Not ready"<<endl;
-    exit(EXIT_FAILURE);
-  }    
-      
-  TH2F* this_hist[2]={NULL,NULL};
-  double triggerSF=1.;
-  this_hist[0]=(*map_hist_Lepton)["Trigger_SF_"+Leg0Key];
-  this_hist[1]=(*map_hist_Lepton)["Trigger_SF_"+Leg1Key];
-  if(!this_hist[0]||!this_hist[1]){
-    cout << "[Skim_DiLep::DiLepTrg_SF] No "<<Leg0Key<<" or "<<Leg1Key<<" at data/ID/../histmap.txt"<<endl;
-    exit(EXIT_FAILURE);
-  }
-  for(int i=0;i<2;i++){
-    double this_pt,this_eta;
-    if(leps[i]->LeptonFlavour()==Lepton::MUON){
-      this_pt=((Muon*)leps.at(i))->MiniAODPt();
-      this_eta=leps.at(i)->Eta();
-    }else if(leps[i]->LeptonFlavour()==Lepton::ELECTRON){
-      this_pt=leps.at(i)->Pt();
-      this_eta=((Electron*)leps.at(i))->scEta();
-    }else{
-      cout << "[Skim_DiLep::DiLepTrg_SF] It is not lepton"<<endl;
-      exit(EXIT_FAILURE);
-    }
-    /*
-    double ptmin=this_hist[i]->GetYaxis()->GetXmin();
-    double ptmax=this_hist[i]->GetYaxis()->GetXmax();
-    double etamin=this_hist[i]->GetXaxis()->GetXmin();
-    double etamax=this_hist[i]->GetXaxis()->GetXmax();    
-    if(this_pt<ptmin) this_pt=ptmin+0.001;
-    if(this_pt>ptmax) this_pt=ptmax-0.001;
-    if(etamin>=0) this_eta=fabs(this_eta);
-    if(this_eta<etamin) this_eta=etamin+0.001;
-    if(this_eta>etamax) this_eta=etamax-0.001;
-    triggerSF*=this_hist[i]->GetBinContent(this_hist[i]->FindBin(this_eta,this_pt))+sys*this_hist[i]->GetBinError(this_hist[i]->FindBin(this_eta,this_pt));
-    */
-    triggerSF *= RootHelper::GetBinContentUser(this_hist[i],this_eta,this_pt,sys);
-    //triggerSF *= rootHelp.GetBinContentUser(this_hist[i],this_eta,this_pt,sys);
-  }
-  return triggerSF;
-}
+
 
 
 void Skim_DiLep::executeEventFromParameter(AnalyzerParameter param){
