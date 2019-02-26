@@ -150,6 +150,70 @@ void MCCorrection::ReadHistograms(){
       }
     }
   }
+  //=====================================
+  // ZpT weight maps
+  //=====================================
+  map_hist_ZpT.clear();
+  TString ZpTweightPath = datapath+"/"+TString::Itoa(DataYear,10)+"/ZpT/";
+
+  string zptInline;
+  ifstream f_zpt(ZpTweightPath + "histmap.txt");
+  if(!f_zpt.is_open()){
+    cout << "[MCCorrection:ZpT] no file "<<ZpTweightPath + "histmap.txt"  <<endl;
+    exit(EXIT_FAILURE);
+  }
+  while(getline(f_zpt, zptInline)){
+    std::istringstream is( zptInline );
+
+    TString tstring_elline = zptInline;
+    if(tstring_elline.Contains("#")) continue;
+
+    TString a,b,c,d,e;
+    is >> a; // sample name
+    is >> b; // flavor
+    is >> c; // number of iteration
+    is >> d; // rootfile name
+    is >> e; // hist name
+    //cout<<a<<"\t"<<b<<"\t"<<c<<"\t"<<d<<"\t"<<e<<endl;
+    TFile *fzpt = new TFile(ZpTweightPath + d);
+    //TString sflavour[2]={"muon","electron"};
+    //TH2D **hzpt=NULL,**hzpt_norm=NULL;
+    //for(int ifl=0;ifl<2;ifl++){
+    //if(ifl==0){
+    //  hzpt=&hzpt_muon;
+    //  hzpt_norm=&hzpt_norm_muon;
+    //}else if(ifl==1){
+    //  hzpt=&hzpt_electron;
+    //  hzpt_norm=&hzpt_norm_electron;
+    //}
+    cout<<"number of iteration for Zpt correction: "<<c.Atoi()<<endl;
+      for(int i=0;i<c.Atoi();i++){
+        TH2D* this_hzpt=(TH2D*)fzpt->Get(Form("%s%d",e.Data(),i));
+        //TH2D* this_hzpt=(TH2D*)fzpt->Get(Form("%s%d_iter%d",b.Data(),DataYear,i));
+	if(i==0)if(! this_hzpt){
+	  cout<<"[MCCorrection::SetupZPtWeight] No ZpT correction histogram for "<<a<<" "<<b<<endl;
+          exit(EXIT_FAILURE);
+	}
+        if(this_hzpt){
+          if(map_hist_ZpT[a+"_"+b]){
+            map_hist_ZpT[a+"_"+b]->Multiply(this_hzpt);
+            //(*hzpt)->Multiply(this_hzpt);
+            cout<<"[MCCorrection::SetupZPtWeight] setting "<<a<<" "<<b<<" zptcor iter"<<i<<endl;
+          }else{
+            map_hist_ZpT[a+"_"+b]=this_hzpt;
+            cout<<"[MCCorrection::SetupZPtWeight] setting first "<<a<<" "<<b<<" zptcor"<<i<<endl;
+          }
+        }else break;
+      }
+      //if(*hzpt) (*hzpt)->SetDirectory(0);
+      //*hzpt_norm=(TH2D*)fzpt.Get(Form("%s%d_norm",sflavour[ifl].Data(),DataYear));
+      map_hist_ZpT[a+"_"+b+"_Norm"]=(TH2D*)fzpt->Get(Form("%s%d_norm",b.Data(),DataYear));
+      if(map_hist_ZpT[a+"_"+b+"_Norm"]){
+        //(*hzpt_norm)->SetDirectory(0);
+        cout<<"[MCCorrection::SetupZPtWeight] setting "<<a<<" "<<b<<" zptcor norm"<<endl;
+      }
+    //}
+  }
 
 /*
   cout << "[MCCorrection::MCCorrection] map_hist_pileup :" << endl;
@@ -719,6 +783,25 @@ double MCCorrection::DiLeptonTrg_SF(TString IdKey0,TString IdKey1,const vector<L
     return triggerSF;
   }   
 }
+
+
+double MCCorrection::GetZPtWeight(double zpt, double zrap, Lepton::Flavour flavour, TString sample){
+  double valzptcor=1.;
+  double valzptcor_norm=1.;
+  TH2D* hzpt=NULL;
+  TH2D* hzpt_norm=NULL;
+  if(flavour==Lepton::MUON){
+    hzpt      = map_hist_ZpT[sample+"_muon"];
+    hzpt_norm = map_hist_ZpT[sample+"_muon_Norm"];
+  }else if(flavour==Lepton::ELECTRON){
+    hzpt      = map_hist_ZpT[sample+"_electron"];
+    hzpt_norm = map_hist_ZpT[sample+"_electron_Norm"];
+  }
+  if(hzpt) valzptcor *= RootHelper::GetBinContentUser(hzpt,zpt,zrap,0);
+  if(hzpt_norm) valzptcor_norm* = RootHelper::GetBinContentUser(hzpt_norm,zpt,zrap,0);
+  return valzptcor*valzptcor_norm;
+}
+
 
 
 
