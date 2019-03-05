@@ -797,8 +797,8 @@ double MCCorrection::GetZPtWeight(double zpt, double zrap, Lepton::Flavour flavo
     hzpt      = map_hist_ZpT[sample+"_electron"];
     hzpt_norm = map_hist_ZpT[sample+"_electron_Norm"];
   }
-  if(hzpt) valzptcor *= RootHelper::GetBinContentUser(hzpt,zpt,zrap,0);
-  if(hzpt_norm) valzptcor_norm* = RootHelper::GetBinContentUser(hzpt_norm,zpt,zrap,0);
+  if(hzpt) valzptcor = RootHelper::GetBinContentUser(hzpt,zpt,zrap,0);
+  if(hzpt_norm) valzptcor_norm = RootHelper::GetBinContentUser(hzpt_norm,zpt,zrap,0);
   return valzptcor*valzptcor_norm;
 }
 

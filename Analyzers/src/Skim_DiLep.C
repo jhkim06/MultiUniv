@@ -57,6 +57,7 @@ void Skim_DiLep::initializeAnalyzer(){
   newtree->Branch("IsoSF_Up", &IsoSF_Up,"IsoSF_Up/D");
   newtree->Branch("IsoSF_Dn", &IsoSF_Dn,"IsoSF_Dn/D");
 
+  newtree->Branch("ZPtCor", &ZPtCor,"ZPtCor/D");
 
   //b_trgSF = newtree->Branch("trgSF", &trgSF,"trgSF/F");
   //b_trgSF_Up = newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/F");
@@ -74,10 +75,10 @@ void Skim_DiLep::initializeAnalyzer(){
     DiMuTrgs = {
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v",
       "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v",
-      "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v",
+      "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v", // need to estimate the trg eff.
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",
       "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v",
-      "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v",
+      "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", // need to estimate the trg eff.
     };
     DiElTrgs = {
       "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"
@@ -137,6 +138,8 @@ void Skim_DiLep::executeEvent(){
   newtree->SetBranchAddress("IsoSF",   &IsoSF);
   newtree->SetBranchAddress("IsoSF_Up",&IsoSF_Up);
   newtree->SetBranchAddress("IsoSF_Dn",&IsoSF_Dn);
+
+  newtree->SetBranchAddress("ZPtCor",&ZPtCor);
 
   FillHist("CutFlow",5,1,30,0,30);
   // Filters ====================
@@ -271,15 +274,45 @@ void Skim_DiLep::executeEvent(){
 
   //===============================
   // Gen Info
+  // status code: http://home.thep.lu.se/~torbjorn/pythia81html/ParticleProperties.html
+  // genParticles status code: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePATMCMatchingExercise 
   //===============================
+
+  ZPtCor = 1;
   if(MCSample.Contains("DYJets") || MCSample.Contains("DYJets10to50_MG")){
+    Gen genL0, genL1, genFsr, genHardL0, genHardL1;
+    TLorentzVector genZ;
     vector<Gen> gens = GetGens();
+    // Check tau process
     for( int i(0); i<(int) gens.size(); i++){
-      if( !gens.at(i).isPrompt()) continue;
+      if( !gens.at(i).isPrompt()) continue; // not from hadron, muon, or tau
+      if( gens.at(i).isHardProcess()){ // from ME
+	if( genHardL0.IsEmpty() && (abs(gens.at(i).PID() ) == 11 || abs(gens.at(i).PID())==13||abs(gens.at(i).PID())==15)){
+	  genHardL0 = gens.at(i);
+        }else if(!genHardL0.IsEmpty() && gens.at(i).PID() == -genHardL0.PID()){
+	  genHardL1 = gens.at(i);
+	  if(abs( genHardL1.PID()) == 15){
+	    //prefix = "tau_";
+	    break;
+	  }
+        }
+      }
+      if(gens.at(i).Status() == 1){ // entering detector
+        if(genL0.IsEmpty() && (abs(gens.at(i).PID())==11 || abs(gens.at(i).PID())==13) ) genL0=gens.at(i);
+        else if( !genL0.IsEmpty() && gens.at(i).PID() == -genL0.PID()){
+          genL1=gens.at(i);
+        }
+        else if(gens.at(i).PID()==22){
+          genFsr+=gens.at(i); // need track mother, check also fromHardProcessBeforeFSR which is before QCD or QED FSR
+        }
+      }
+    }
+
+    if( abs(genHardL0.PID()) != 15 )if( (IsElEl && (genL1.PID() == 11)) || (IsMuMu && (genL1.PID() == 13)) ){
+      genZ = genL0 + genL1 + genFsr;
+      ZPtCor = mcCorr->GetZPtWeight(genZ.Pt(),genZ.Rapidity(),abs(genHardL0.PID())==13 ? Lepton::Flavour::MUON : Lepton::Flavour::ELECTRON);
     }
   }
-
-
 
 
     //baseW = weight_norm_1invpb*ev->MCweight()*ev->GetTriggerLumi("Full");

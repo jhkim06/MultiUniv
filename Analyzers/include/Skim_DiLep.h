@@ -66,6 +66,9 @@ private:
   double IdSF, IdSF_Up, IdSF_Dn;
   double IsoSF, IsoSF_Up, IsoSF_Dn;
 
+  // TString prefix;
+  double ZPtCor;
+
 
 };
 
