@@ -12,11 +12,10 @@ void Skim_DiLep::initializeAnalyzer(){
   if( HasFlag("MuMu")){
     cout<<"[Skim_DiLep::initializeAnalyzer] MuMu Selection"<<endl;
   }
-  else
-  if( HasFlag("ElEl")){
+  else if( HasFlag("ElEl")){
     cout<<"[Skim_DiLep::initializeAnalyzer] ElEl Selection"<<endl;
   }
-  if( HasFlag("MuMuOrElEl")){
+  else if( HasFlag("MuMuOrElEl")){
     cout<<"[Skim_DiLep::initializeAnalyzer] MuMu or ElEl Selection"<<endl;
   }
   else{
