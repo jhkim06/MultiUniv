@@ -392,6 +392,8 @@ void ExampleRun::executeEventFromParameter(AnalyzerParameter param){
   //==========================
 
   JSFillHist(param.Name, "ZCand_Mass_"+param.Name, ZCand.M(), weight, 40, 70., 110.);
+  JSFillHist(param.Name, "nbjet_deepcsv_"+param.Name, n_bjet_deepcsv_m, weight, 10, 0., 10.);
+  JSFillHist(param.Name, "nbjet_deepcsv_noSF"+param.Name, n_bjet_deepcsv_m_noSF, weight, 10, 0., 10.);
 
 }
 
