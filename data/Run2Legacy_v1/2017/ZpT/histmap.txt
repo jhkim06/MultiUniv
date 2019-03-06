@@ -1,0 +1,3 @@
+# sample flavor       number_iter          rootfile                         histname 
+DYJets    muon    	20             ZPtWeight_HSSeo_V1.root		muon2017_iter
+DYJets    electrion     20             ZPtWeight_HSSeo_V1.root		muon2017_iter
