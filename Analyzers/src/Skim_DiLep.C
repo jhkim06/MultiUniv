@@ -314,7 +314,32 @@ void Skim_DiLep::executeEvent(){
   }
 
 
-    //baseW = weight_norm_1invpb*ev->MCweight()*ev->GetTriggerLumi("Full");
+  //baseW = weight_norm_1invpb*ev->MCweight()*ev->GetTriggerLumi("Full");
+
+  // b tag test
+  //
+
+  //==== Test btagging code
+  //==== add taggers and WP that you want to use in analysis
+  std::vector<Jet::Tagger> vtaggers;
+  vtaggers.push_back(Jet::DeepCSV);
+
+  std::vector<Jet::WP> v_wps;
+  v_wps.push_back(Jet::Medium); 
+
+  //=== list of taggers, WP, setup systematics, use period SFs
+  SetupBTagger(vtaggers,v_wps, true, true);
+
+  vector<Jet> this_AllJets = GetAllJets();
+  vector<Jet> jets = SelectJets(this_AllJets, "tight", 30., 2.4);
+
+  int n_bjet_deepcsv_m=0;
+  int n_bjet_deepcsv_m_noSF=0;
+
+  for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+    if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,true,0)) n_bjet_deepcsv_m++; // method for getting btag with SF applied to MC
+    if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)) n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
+  }
 
 
   //b_trgSF->Fill();
