@@ -30,6 +30,11 @@ Productions = {
 	'DATA' : ['DoubleEG', 'DoubleMuon' ],
         'SkimDir': '/data8/DATA/SMP/Run2Legacy_v1/2017/',
         },
+      'Run2Legacy_v1_2016' : {
+        'MC' : 'CommonPyTools.DataSample.Samples_SMP_Summer16_miniaodv3',
+        'DATA' : ['DoubleEG', 'DoubleMuon' ],
+        'SkimDir': '/data8/DATA/SMP/Run2Legacy_v1/2016/',
+        },
       },
     'LightCHToCB' : {
       'Run2Legacy_v1_2017' : {
