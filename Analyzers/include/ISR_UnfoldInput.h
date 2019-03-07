@@ -69,6 +69,12 @@ private:
   // TString prefix;
   double ZPtCor;
 
+  // tree variables used in CatAnalyzer as a first trial
+  std::vector<Double_t> ptRec,mRec;
+  std::vector<Double_t> ptPreFSR,mPreFSR;
+  Double_t weightGen, weightRec;
+  Int_t ispassRec,isfiducialPreFSR,DYtautau,isBveto;
+  Int_t isdielectron, isdimuon;
 
 };
 

@@ -27,14 +27,14 @@ void ISR_UnfoldInput::initializeAnalyzer(){
     exit(EXIT_FAILURE);
   }
 
-  outfile->mkdir("Tree");
-  outfile->cd("Tree");
-  newtree = new TTree("t","t");
+  //outfile->mkdir("Tree");
+  //outfile->cd("Tree");
+  outfile->cd();
+  newtree = new TTree("tree","tree");
 
   // New Branch
   newtree->Branch("IsMuMu", &IsMuMu,"IsMuMu/I");
   newtree->Branch("IsElEl", &IsElEl,"IsElel/I");
-
 
   newtree->Branch("PUweight", &PUweight,"PUweight/D");
   newtree->Branch("PUweight_Up", &PUweight_Up,"PUweight_Up/D");
@@ -58,10 +58,23 @@ void ISR_UnfoldInput::initializeAnalyzer(){
 
   newtree->Branch("ZPtCor", &ZPtCor,"ZPtCor/D");
 
+  newtree->Branch("isdielectron",&isdielectron);
+  newtree->Branch("isdimuon",&isdimuon);
+  newtree->Branch("ptRec",&ptRec);
+  newtree->Branch("mRec",&mRec);
+  newtree->Branch("ptPreFSR",&ptPreFSR);
+  newtree->Branch("mPreFSR",&mPreFSR);
+  newtree->Branch("weightGen",&weightGen);
+  newtree->Branch("weightRec",&weightRec);
+  newtree->Branch("ispassRec",&ispassRec);
+  newtree->Branch("isfiducialPreFSR",&isfiducialPreFSR);
+  newtree->Branch("DYtautau",&DYtautau);
+  newtree->Branch("isBveto",&isBveto);
+
+
   //b_trgSF = newtree->Branch("trgSF", &trgSF,"trgSF/F");
   //b_trgSF_Up = newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/F");
   //b_trgSF_Dn = newtree->Branch("trgSF_Dn", &trgSF_Dn,"trgSF_Dn/F");
-
 
 
   // clear vector residual
@@ -112,6 +125,22 @@ void ISR_UnfoldInput::executeEvent(){
   electrons.clear();
   leps.clear();
 
+  ptRec.clear();
+  mRec.clear();
+  ptPreFSR.clear();
+  mPreFSR.clear();
+
+  weightGen = 1.;
+  weightRec = 1.;
+
+  ispassRec = 0;
+  isfiducialPreFSR = 0;
+  DYtautau = 0;
+  isBveto = 0;
+
+  isdielectron = 0;
+  isdimuon = 0;
+
   evt = new Event;
   *evt = GetEvent();
 
@@ -141,134 +170,17 @@ void ISR_UnfoldInput::executeEvent(){
   newtree->SetBranchAddress("ZPtCor",&ZPtCor);
 
   FillHist("CutFlow",5,1,30,0,30);
-  // Filters ====================
-  //if( HasFlag("MetFilt"))if(!PassMETFilter()) return;
-  FillHist("CutFlow",6,1,30,0,30);
-
-
-  muons=GetMuons("POGTightWithTightIso",7.,2.4);
-  std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
-  electrons=GetElectrons("passMediumID",9.,2.5);
-  std::sort(electrons.begin(),electrons.end(),PtComparing);
-
-  IsMuMu = 0;
-  IsElEl = 0;
-  //=========================
-  // DiLepton condition
-  //=========================
-  if(muons.size() == 2   )if(electrons.size() == 0) IsMuMu = 1;
-  if(muons.size() == 0   )if(electrons.size() == 2) IsElEl = 1;
-  if(IsMuMu != 1 && IsElEl != 1) return;
-  if(HasFlag("MuMu") )if(IsMuMu !=1 ) return;
-  if(HasFlag("ElEl") )if(IsElEl !=1 ) return;
-
-  //=======================================
-  // Channel dependent cut and ftn set
-  //=======================================
-    
-  LeptonID_SF  = NULL;
-  LeptonISO_SF = NULL;
-  LeptonReco_SF= NULL;
-  PileUpWeight = NULL;
-
-  if(IsMuMu == 1){ // Muon-----------------------------
-    if(! evt->PassTrigger(DiMuTrgs) )return;
-    leps=MakeLeptonPointerVector(muons);
-    Lep0PtCut=20.;
-    Lep1PtCut=10.;
-    LepEtaCut = 2.4;
-    LeptonID_SF =&MCCorrection::MuonID_SF;
-    LeptonISO_SF=&MCCorrection::MuonISO_SF;
-    // key for private or official SF
-    LeptonID_key="NUM_TightID_DEN_genTracks";
-    LeptonISO_key="NUM_TightRelIso_DEN_TightIDandIPCut";
-    trgSF_key0="Lead17_POGTight";  // For 2016 separated period BCDEF, GH 
-    trgSF_key1="Tail8_POGTight"; 
-  } //---------------------------------------------
-  if(IsElEl == 1){ // Electron =======================
-    if(! evt->PassTrigger(DiElTrgs) )return;
-    leps=MakeLeptonPointerVector(electrons);
-    Lep0PtCut=25.;
-    Lep1PtCut=15.;
-    LepEtaCut = 2.5;
-    LeptonID_SF  = &MCCorrection::ElectronID_SF;
-    LeptonReco_SF= &MCCorrection::ElectronReco_SF;
-    // key for private or official SF
-    LeptonID_key    = "MediumID_pt10";
-    LeptonID_key_POG= "passMediumID";
-    trgSF_key0="LeadEle23_MediumID";
-    trgSF_key1="TailEle12_MediumID";
-  } //===========================================
-
-  // ================================
-  // Kinematic cuts 
-  // ================================
-  for(int i(0); i < 2; i++){ // two lepton only, pt eta the same to TnP
-    if(leps[i]->LeptonFlavour()==Lepton::MUON){
-     Aod_pt[i]=((Muon*)leps.at(i))->MiniAODPt();
-     Aod_eta[i]=leps.at(i)->Eta();
-    }else if(leps[i]->LeptonFlavour()==Lepton::ELECTRON){
-     Aod_pt[i]=leps.at(i)->Pt();
-     Aod_eta[i]=((Electron*)leps.at(i))->scEta();
-     if(fabs(Aod_eta[i])>1.4442&&fabs(Aod_eta[i])<1.566) return; // two lepton only
-    }
-  }
-  if(Aod_pt[0] < Lep0PtCut) return;
-  if(Aod_pt[1] < Lep1PtCut) return;
-  if(fabs(Aod_eta[0]) > LepEtaCut) return;
-  if(fabs(Aod_eta[1]) > LepEtaCut) return;
-    
-  /////////////////PUreweight///////////////////
-  PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
-
-  PUweight=1.,PUweight_Up=1.,PUweight_Dn=1.;
 
   if(!IsDATA){
-    PUweight=(mcCorr->*PileUpWeight)(nPileUp,0);
-    PUweight_Up=(mcCorr->*PileUpWeight)(nPileUp,1);
-    PUweight_Dn=(mcCorr->*PileUpWeight)(nPileUp,-1);
-  }
-  //==============================
-  // SF 
-  //==============================
 
+    //==== weight_norm_1invpb is set to be event weight normalized to 1 pb-1
+    //==== So, you have to multiply trigger luminosity
+    //==== you can pass trigger names to ev.GetTriggerLumi(), but if you are using unprescaled trigger, simply pass "Full"
 
-  trgSF    = 1;
-  trgSF_Up = 1;
-  trgSF_Dn = 1;
+    weightGen *= weight_norm_1invpb*evt->GetTriggerLumi("Full");
 
-  recoSF    = 1;
-  recoSF_Up = 1;
-  recoSF_Dn = 1;
-
-  IdSF    = 1;
-  IdSF_Up = 1;
-  IdSF_Dn = 1;
-
-  IsoSF =1;
-  IsoSF_Up =1;
-  IsoSF_Dn =1;
-
-
-  if(!IsDATA){
-    for( int i(0); i<2 ; i++){
-      recoSF    *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],0):1.;
-      recoSF_Up *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],1):1.;
-      recoSF_Dn *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],-1):1.;
-
-      IdSF      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],0):1.;
-      IdSF_Up   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],1):1.;
-      IdSF_Dn   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],-1):1.;
-
-      IsoSF	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],0):1.;
-      IsoSF_Up	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],1):1.;
-      IsoSF_Dn	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],-1):1.;
-
-    }
-    //cout<<"Skim pt0: "<<leps[0]->Pt()<<endl;
-    trgSF      = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,0);
-    trgSF_Up   = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,1);
-    trgSF_Dn   = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,-1);
+    //==== MCweight is +1 or -1. Should be multiplied if you are using e.g., aMC@NLO NLO samples
+    weightGen *= evt->MCweight();
   }
 
   //===============================
@@ -286,71 +198,228 @@ void ISR_UnfoldInput::executeEvent(){
     for( int i(0); i<(int) gens.size(); i++){
       if( !gens.at(i).isPrompt()) continue; // not from hadron, muon, or tau
       if( gens.at(i).isHardProcess()){ // from ME
-	if( genHardL0.IsEmpty() && (abs(gens.at(i).PID() ) == 11 || abs(gens.at(i).PID())==13||abs(gens.at(i).PID())==15)){
-	  genHardL0 = gens.at(i);
+        if( genHardL0.IsEmpty() && (abs(gens.at(i).PID() ) == 11 || abs(gens.at(i).PID())==13 || abs(gens.at(i).PID())==15)){
+          genHardL0 = gens.at(i);
         }else if(!genHardL0.IsEmpty() && gens.at(i).PID() == -genHardL0.PID()){
-	  genHardL1 = gens.at(i);
-	  if(abs( genHardL1.PID()) == 15){
-	    //prefix = "tau_";
-	    break;
-	  }
+          genHardL1 = gens.at(i);
+          if(abs( genHardL1.PID()) == 11) isdielectron = 1;    
+          if(abs( genHardL1.PID()) == 13) isdimuon = 1;    
+          if(abs( genHardL1.PID()) == 15){
+ 	    DYtautau = 1;  
+            //prefix = "tau_";
+            break;
+          }
         }
-      }
+      }   
       if(gens.at(i).Status() == 1){ // entering detector
         if(genL0.IsEmpty() && (abs(gens.at(i).PID())==11 || abs(gens.at(i).PID())==13) ) genL0=gens.at(i);
         else if( !genL0.IsEmpty() && gens.at(i).PID() == -genL0.PID()){
           genL1=gens.at(i);
-          
+    
         }
         else if(gens.at(i).PID()==22){
           genFsr+=gens.at(i); // need track mother, check also fromHardProcessBeforeFSR which is before QCD or QED FSR
         }
-      }
-    }
+      }   
+    }   
 
-    if( abs(genHardL0.PID()) != 15 )if( (IsElEl && (genL1.PID() == 11)) || (IsMuMu && (genL1.PID() == 13)) ){
+    if( abs(genHardL0.PID()) != 15 ) if( (genL1.PID() == 11) || (genL1.PID() == 13) ){
       genZ = genL0 + genL1 + genFsr;
-      std::cout << "genz Pt: " << genZ.Pt() << " rap: " << genZ.Rapidity() << std::endl;
       ZPtCor = mcCorr->GetZPtWeight(genZ.Pt(),genZ.Rapidity(),abs(genHardL0.PID())==13 ? Lepton::Flavour::MUON : Lepton::Flavour::ELECTRON);
-      std::cout << "ZPtCor: " << ZPtCor << std::endl;
+
+      if ( genL1.PID() == 11 ) 
+	  if( ((genL0.Pt() > 25. && genL1.Pt() > 15.) || (genL0.Pt() > 15. && genL1.Pt() > 25.)) && fabs(genL0.Eta()) < 2.5 && fabs(genL1.Eta()) < 2.5 ) isfiducialPreFSR = 1;  
+      if ( genL1.PID() == 13 ) 
+	  if( ((genL0.Pt() > 20. && genL1.Pt() > 10.) || (genL0.Pt() > 10. && genL1.Pt() > 20.)) && fabs(genL0.Eta()) < 2.4 && fabs(genL1.Eta()) < 2.4 ) isfiducialPreFSR = 1;  
+
+      ptPreFSR.push_back(genL0.Pt());
+      ptPreFSR.push_back(genL1.Pt());
+      ptPreFSR.push_back((genL0+genL1).Pt());
+
+      mPreFSR.push_back(genL0.M());
+      mPreFSR.push_back(genL1.M());
+      mPreFSR.push_back((genL0+genL1).M());
     }
   }
 
+  // Filters ====================
+  if(PassMETFilter()){ 
+     FillHist("CutFlow",6,1,30,0,30);
 
-  //baseW = weight_norm_1invpb*ev->MCweight()*ev->GetTriggerLumi("Full");
+     // Lepton ID
+     muons=GetMuons("POGTightWithTightIso",7.,2.4);
+     std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
+     electrons=GetElectrons("passMediumID",9.,2.5);
+     std::sort(electrons.begin(),electrons.end(),PtComparing);
 
-  // b tag test
-  //
+     IsMuMu = 0;
+     IsElEl = 0;
+     //=========================
+     // DiLepton condition
+     //=========================
+     if(muons.size() == 2) if(electrons.size() == 0) IsMuMu = 1;
+     if(muons.size() == 0) if(electrons.size() == 2) IsElEl = 1;
 
-  //==== Test btagging code
-  //==== add taggers and WP that you want to use in analysis
-  std::vector<Jet::Tagger> vtaggers;
-  vtaggers.push_back(Jet::DeepCSV);
+     if( IsElEl == 1 ){ // allow dielectron only just for test
 
-  std::vector<Jet::WP> v_wps;
-  v_wps.push_back(Jet::Medium); 
+        //=======================================
+        // Channel dependent cut and ftn set
+        //=======================================
+          
+        LeptonID_SF  = NULL;
+        LeptonISO_SF = NULL;
+        LeptonReco_SF= NULL;
+        PileUpWeight = NULL;
 
-  //=== list of taggers, WP, setup systematics, use period SFs
-  SetupBTagger(vtaggers,v_wps, true, true);
+        if(IsMuMu == 1){ // Muon-----------------------------
+          if(evt->PassTrigger(DiMuTrgs) ){
+             leps=MakeLeptonPointerVector(muons);
+             Lep0PtCut=20.;
+             Lep1PtCut=10.;
+             LepEtaCut = 2.4;
+             LeptonID_SF =&MCCorrection::MuonID_SF;
+             LeptonISO_SF=&MCCorrection::MuonISO_SF;
+             // key for private or official SF
+             LeptonID_key="NUM_TightID_DEN_genTracks";
+             LeptonISO_key="NUM_TightRelIso_DEN_TightIDandIPCut";
+             trgSF_key0="Lead17_POGTight";  // For 2016 separated period BCDEF, GH 
+             trgSF_key1="Tail8_POGTight"; 
+          }
+        } //---------------------------------------------
+        if(IsElEl == 1){ // Electron =======================
+          if(evt->PassTrigger(DiElTrgs) ){
+             leps=MakeLeptonPointerVector(electrons);
+             Lep0PtCut = 25.;
+             Lep1PtCut = 15.;
+             LepEtaCut = 2.5;
+             LeptonID_SF  = &MCCorrection::ElectronID_SF;
+             LeptonReco_SF= &MCCorrection::ElectronReco_SF;
+             // key for private or official SF
+             LeptonID_key     = "MediumID_pt10";
+             LeptonID_key_POG = "passMediumID";
+             trgSF_key0 = "LeadEle23_MediumID";
+             trgSF_key1 = "TailEle12_MediumID";
+          }
+        } //===========================================
 
-  vector<Jet> this_AllJets = GetAllJets();
-  vector<Jet> jets = SelectJets(this_AllJets, "tight", 30., 2.4);
 
-  int n_bjet_deepcsv_m=0;
-  int n_bjet_deepcsv_m_noSF=0;
+        if( leps.size() == 2 ){ // leps have leptons passing ID and trigger matching
+          // ================================
+          // Kinematic cuts 
+          // ================================
+          for(int i(0); i < 2; i++){ // two lepton only, pt eta the same to TnP
+            if(leps[i]->LeptonFlavour()==Lepton::MUON){
+               Aod_pt[i]=((Muon*)leps.at(i))->MiniAODPt();
+               Aod_eta[i]=leps.at(i)->Eta();
+            }
+	    else if(leps[i]->LeptonFlavour()==Lepton::ELECTRON){
+                    if(fabs(leps.at(i)->Eta())>1.4442&&fabs(leps.at(i)->Eta())<1.566) continue;
+                    Aod_pt[i]=leps.at(i)->Pt();
+                    Aod_eta[i]=((Electron*)leps.at(i))->scEta();
+            }
+          }
 
-  for(unsigned int ij = 0 ; ij < jets.size(); ij++){
-    if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,true,0)) n_bjet_deepcsv_m++; // method for getting btag with SF applied to MC
-    if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)) n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
-  }
+	  if( Aod_pt[0] > Lep0PtCut && Aod_pt[1] > Lep1PtCut && fabs(Aod_eta[0]) < LepEtaCut && fabs(Aod_eta[1]) < LepEtaCut){
+             // 
+             ispassRec=1;
 
+             ptRec.push_back(leps.at(0)->Pt());
+             ptRec.push_back(leps.at(1)->Pt());
+             ptRec.push_back( (*(leps.at(0))+*(leps.at(1))).Pt() );
 
-  //b_trgSF->Fill();
-  //b_trgSF_Up->Fill();
-  //b_trgSF_Dn->Fill();
+             mRec.push_back(leps.at(0)->M());
+             mRec.push_back(leps.at(1)->M());
+             mRec.push_back( (*(leps.at(0))+*(leps.at(1))).M() );
+ 
+             /////////////////PUreweight///////////////////
+             PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
+
+             PUweight=1.,PUweight_Up=1.,PUweight_Dn=1.;
+
+             if(!IsDATA){
+               PUweight=(mcCorr->*PileUpWeight)(nPileUp,0);
+               PUweight_Up=(mcCorr->*PileUpWeight)(nPileUp,1);
+               PUweight_Dn=(mcCorr->*PileUpWeight)(nPileUp,-1);
+               weightRec *= PUweight;
+             }
+
+             //==============================
+             // SF 
+             //==============================
+
+             trgSF    = 1;
+             trgSF_Up = 1;
+             trgSF_Dn = 1;
+
+             recoSF    = 1;
+             recoSF_Up = 1;
+             recoSF_Dn = 1;
+
+             IdSF    = 1;
+             IdSF_Up = 1;
+             IdSF_Dn = 1;
+
+             IsoSF =1;
+             IsoSF_Up =1;
+             IsoSF_Dn =1;
+
+             if(!IsDATA){
+               for( int i(0); i<2 ; i++){
+                 recoSF    *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],0):1.;
+                 recoSF_Up *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],1):1.;
+                 recoSF_Dn *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],-1):1.;
+
+                 IdSF      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],0):1.;
+                 IdSF_Up   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],1):1.;
+                 IdSF_Dn   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],-1):1.;
+
+                 IsoSF	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],0):1.;
+                 IsoSF_Up	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],1):1.;
+                 IsoSF_Dn	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],-1):1.;
+
+               }
+               //cout<<"Skim pt0: "<<leps[0]->Pt()<<endl;
+               trgSF      = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,0);
+               trgSF_Up   = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,1);
+               trgSF_Dn   = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,-1);
+
+               weightRec *= recoSF;
+               weightRec *= IdSF;
+               weightRec *= trgSF;
+             }
+
+             // b tag test
+             //
+             //==== Test btagging code
+             //==== add taggers and WP that you want to use in analysis
+             std::vector<Jet::Tagger> vtaggers;
+             vtaggers.push_back(Jet::DeepCSV);
+
+             std::vector<Jet::WP> v_wps;
+             v_wps.push_back(Jet::Medium); 
+
+             //=== list of taggers, WP, setup systematics, use period SFs
+             SetupBTagger(vtaggers,v_wps, true, true);
+
+             vector<Jet> this_AllJets = GetAllJets();
+             vector<Jet> jets = SelectJets(this_AllJets, "tight", 30., 2.4);
+
+             int n_bjet_deepcsv_m=0;
+             int n_bjet_deepcsv_m_noSF=0;
+
+             for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+               if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,true,0)) n_bjet_deepcsv_m++; // method for getting btag with SF applied to MC
+               if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)) n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
+             }
+
+             if(n_bjet_deepcsv_m == 0) isBveto = 1;
+
+          } // kinematic cuts on leptons
+        } // two leptons
+     } // at least one lepton
+  } // pass METfilter 
+
   newtree->Fill();
-
-
 }
 
 
