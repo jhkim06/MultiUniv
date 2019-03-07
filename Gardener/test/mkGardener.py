@@ -62,7 +62,6 @@ SendLogToWeb = True
 if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
   SendLogToWeb = False
 
-
 if IsKISTI:
   HOSTNAME = "KISTI"
 if IsSNU:
@@ -72,6 +71,7 @@ if IsKNU:
 
 ## Is Skim run?
 IsSKim = "Skim" in args.Analyzer
+IsSKim = "ISR" in args.Analyzer
 if IsSKim:
   if IsSNU:
     print  "Skim in SNU setting NJobs = 999999 !!!!!!!!!!!"

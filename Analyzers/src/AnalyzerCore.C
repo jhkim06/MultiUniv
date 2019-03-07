@@ -846,6 +846,75 @@ void AnalyzerCore::SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Je
 
 }
 
+//=== author : BHO
+//=== Ref : AnalyzerCore::IsBTagged
+//=== return 3 values(btag SF, mistag SF) via reference
+void AnalyzerCore::BtaggingSFEvtbyEvt(std::vector<Jet> &jets, Jet::Tagger tagger, Jet::WP WP, int systematic,
+                                    float &btag_sf, float &mistag_sf){
+  //=== initialize
+  btag_sf=1.;
+  mistag_sf=1.;
+
+  //=== loop over jet vector
+  for(std::vector<Jet>::iterator itjet = jets.begin(); itjet!=jets.end(); itjet++){
+    //=== create key from configuration
+    TString map_key = itjet->TaggerString(tagger) + "_" + itjet->WPString(WP);
+
+    if(itjet->hadronFlavour() == 0 || IsDATA) map_key += "_lf";
+    else map_key +="_hf";
+
+    if(!IsDATA){
+      if(systematic > 0) map_key += "_systup";
+      else if (systematic < 0) map_key +=  "systdown";
+    }
+  
+    //=== use key to access correct BTagSFUtil object
+    std::map<TString,BTagSFUtil*>::iterator it_jet_btagger = MapBTagSF.find(map_key);
+
+    if(it_jet_btagger == MapBTagSF.end()){
+      cout << "[AnalyzerCore::IsBTaggedCorrected]  ERROR, incorrect combination of tagger/WP : " << itjet->TaggerString(tagger) <<  "/" << itjet->WPString(WP) << " check SetupBTagger is correctly configured for tagger/WP and systematics" << endl;
+      exit(EXIT_FAILURE);
+    }
+
+    int jet_flavour = IsDATA ? -999999 : itjet->hadronFlavour();
+
+    float jet_pt = itjet->Pt();
+    float jet_eta = itjet->Eta();
+    float Btag_SF=1., Btag_Eff=1.;
+    if(!IsDATA){
+      Btag_SF = it_jet_btagger->second->GetJetSF(jet_flavour, jet_pt, jet_eta);
+      Btag_Eff = it_jet_btagger->second->JetTagEfficiency(jet_flavour, jet_pt, jet_eta);
+    }
+
+    //=== check if jet is btagged using BTagSFUtil
+    //=== btag SF using BTagSFUtil
+    //=== 1a) event reweighting https://twiki.cern.ch/twiki/bin/view/CMS/BTagSFMethods
+    if(it_jet_btagger->second->IsUncorrectedTagged(itjet->GetTaggerResult(tagger))){
+      //=== Event reweighting SF
+      if(!IsDATA){
+        if(jet_flavour==5){
+          btag_sf *= Btag_SF;
+        }
+        else{
+          mistag_sf *= Btag_SF;
+        }
+      }
+    }
+    else{
+      //=== Event reweighting SF
+      if(!IsDATA){
+        if(jet_flavour==5){
+          btag_sf *= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+        }
+        else{
+          mistag_sf *= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+        }
+      }
+    }
+  }
+
+  return;
+}
 
 bool AnalyzerCore::IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF, int systematic){
 
@@ -891,7 +960,7 @@ bool AnalyzerCore::IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF
   }
   else{
     //===  dont apply correction to btag value
-    if (it_jet_btagger->second->IsUncorrectedTagged(j.GetTaggerResult(tagger), jet_flavour, j.Pt(), j.Eta()))
+    if (it_jet_btagger->second->IsUncorrectedTagged(j.GetTaggerResult(tagger)))
       isBtag=true;
   }
   return isBtag;

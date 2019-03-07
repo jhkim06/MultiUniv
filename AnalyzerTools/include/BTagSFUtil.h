@@ -21,7 +21,7 @@ class BTagSFUtil{
 
   // Function used in analyzer to determine if jet is tagged
   bool IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta, int seed);
-  bool IsUncorrectedTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta);
+  bool IsUncorrectedTagged(float JetDiscriminant);
 
 
   // Function to setup rand numb generator

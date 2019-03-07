@@ -4,7 +4,6 @@ be used only for the same MC samples or for events with similar topology */
 
 float BTagSFUtil::TagEfficiencyB_2016(float JetPt, float JetEta) {
 
-
 if (TaggerOP=="DeepCSV_Loose") { 
    if (JetPt > 20.00000 && JetPt <= 40.00000){  
      if      (fabs(JetEta) > 0.00000   && fabs(JetEta) <= 0.60000) return 0.83433 ;  
@@ -243,7 +242,6 @@ if (TaggerOP=="DeepCSV_Tight") {
  
  } 
 float BTagSFUtil::TagEfficiencyLight_2016(float JetPt, float JetEta) {
-
 
 if (TaggerOP=="DeepCSV_Loose") { 
    if (JetPt > 20.00000 && JetPt <= 40.00000){  

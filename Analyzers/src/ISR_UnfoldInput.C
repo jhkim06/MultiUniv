@@ -399,7 +399,7 @@ void ISR_UnfoldInput::executeEvent(){
              v_wps.push_back(Jet::Medium); 
 
              //=== list of taggers, WP, setup systematics, use period SFs
-             SetupBTagger(vtaggers,v_wps, true, true);
+             SetupBTagger(vtaggers,v_wps, true, false);
 
              vector<Jet> this_AllJets = GetAllJets();
              vector<Jet> jets = SelectJets(this_AllJets, "tight", 30., 2.4);
@@ -413,6 +413,11 @@ void ISR_UnfoldInput::executeEvent(){
              }
 
              if(n_bjet_deepcsv_m == 0) isBveto = 1;
+
+             float btag_sf = 1, misbtag_sf = 1.;
+             BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 0, btag_sf, misbtag_sf);
+             std::cout <<"misbtag_sf: " << misbtag_sf << " btag_sf : " << btag_sf << " n bjets: " << n_bjet_deepcsv_m_noSF << std::endl;
+                
 
           } // kinematic cuts on leptons
         } // two leptons

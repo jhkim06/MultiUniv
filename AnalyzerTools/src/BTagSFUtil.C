@@ -73,13 +73,16 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
       break;
     }
   }// end of taggermap loop
-  
+ 
+  //  
+  TaggerName = BTagAlgorithm;
+  TaggerOP = TaggerName;
 
   //=== Set OperatingPoint passed by var OperatingPoint
   BTagEntry::OperatingPoint op = BTagEntry::OP_LOOSE;
-  if (OperatingPoint=="Loose")        {op = BTagEntry::OP_LOOSE;        TaggerOP += "L";}
-  if (OperatingPoint=="Medium")       {op = BTagEntry::OP_MEDIUM;        TaggerOP += "M";}
-  if (OperatingPoint=="Tight")        {op = BTagEntry::OP_TIGHT;        TaggerOP += "T";}
+  if (OperatingPoint=="Loose")        {op = BTagEntry::OP_LOOSE;        TaggerOP += "_Loose";}
+  if (OperatingPoint=="Medium")       {op = BTagEntry::OP_MEDIUM;        TaggerOP += "_Medium";}
+  if (OperatingPoint=="Tight")        {op = BTagEntry::OP_TIGHT;        TaggerOP += "_Tight";}
     
 
   //=== open histmap file to tell code which file to use depending on year/tagger
@@ -93,7 +96,8 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
     
     //=== for now only 2017 SF are available, so dont bother setting up if not 2017
 
-    if(DataYear!=2017) break;
+    //but non run dependent 2916 SF available, so try to use it by comment out below line
+    //if(DataYear!=2017) break; 
 
     TString tstring_btagline = btagline;
     if(tstring_btagline.Contains("#")) continue;
@@ -124,9 +128,8 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
     }
   }
   
-  
-  TaggerName = BTagAlgorithm;
-  TaggerOP = TaggerName;
+  //TaggerName = BTagAlgorithm;
+  //TaggerOP = TaggerName;
 
   if (TaggerCut==-1) 
     cout << " " << TaggerName << " not supported for " << OperatingPoint << " WP" << endl;
@@ -150,7 +153,7 @@ BTagSFUtil::~BTagSFUtil() {
 
 float BTagSFUtil::JetTagEfficiency(int JetFlavor, float JetPt, float JetEta) {
 
-  
+
   if(DataYear == 2016){
     if (abs(JetFlavor)==5) return TagEfficiencyB_2016(JetPt, JetEta);
     else if (abs(JetFlavor)==4) return TagEfficiencyC_2016(JetPt, JetEta);
@@ -228,7 +231,6 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
     //=== Access SF using Full data year, no periods
 
     if(DataYear == 2016){
-
       float Btag_SF_BH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +TaggerName + "_272007_284044");
       return Btag_SF_BH;
     }
@@ -287,7 +289,7 @@ float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetE
 }
 
 
-bool BTagSFUtil::IsUncorrectedTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta) {
+bool BTagSFUtil::IsUncorrectedTagged(float JetDiscriminant) {
   /// return false if year is not set                                                                                                                                                                       
   if (DataYear == 0) return false;
 
