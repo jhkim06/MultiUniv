@@ -71,7 +71,7 @@ private:
   double ZPtCor;
 
   // diLepton Variables
-  DiLepType diLep_Ch;
+  DiLepCh diLep_Ch;
   TLorentzVector diLep;
   double diLep_m;
   double diLep_pt;
