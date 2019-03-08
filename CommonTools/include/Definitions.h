@@ -1,5 +1,5 @@
 #define DEFAULT -9999
 
-enum DiLepType{
+enum DiLepCh{
   ElElOS, ElElPP,ElElMM, MuMuOS, MuMuPP, MuMuMM, NA
 };

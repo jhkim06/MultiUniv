@@ -235,7 +235,7 @@ void Skim_DiLep::executeEvent(){
   // Kinematic Variables 
   //==============================
 
-  diLep_Ch = DiLepType::NA;
+  diLep_Ch = DiLepCh::NA;
 
   diLep_m  = DEFAULT;
   diLep_pt  = DEFAULT;
@@ -243,16 +243,16 @@ void Skim_DiLep::executeEvent(){
 
   if(leps.size() > 1){
     if(leps[0]->LeptonFlavour() == Lepton::MUON)if(leps[1]->LeptonFlavour() == Lepton::MUON){
-      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == 1) diLep_Ch = DiLepType::MuMuPP;
-      if(leps[0]->Charge() == -1)if(leps[1]->Charge() == -1)diLep_Ch = DiLepType::MuMuMM;
-      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == -1)diLep_Ch = DiLepType::MuMuOS;
-      if(leps[0]->Charge() == -1)if(leps[1]->Charge() ==  1)diLep_Ch = DiLepType::MuMuOS;
+      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == 1) diLep_Ch = DiLepCh::MuMuPP;
+      if(leps[0]->Charge() == -1)if(leps[1]->Charge() == -1)diLep_Ch = DiLepCh::MuMuMM;
+      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == -1)diLep_Ch = DiLepCh::MuMuOS;
+      if(leps[0]->Charge() == -1)if(leps[1]->Charge() ==  1)diLep_Ch = DiLepCh::MuMuOS;
     }
     if(leps[0]->LeptonFlavour() == Lepton::ELECTRON)if(leps[1]->LeptonFlavour() == Lepton::ELECTRON){
-      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == 1) diLep_Ch = DiLepType::ElElPP;
-      if(leps[0]->Charge() == -1)if(leps[1]->Charge() == -1)diLep_Ch = DiLepType::ElElMM;
-      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == -1)diLep_Ch = DiLepType::ElElOS;
-      if(leps[0]->Charge() == -1)if(leps[1]->Charge() ==  1)diLep_Ch = DiLepType::ElElOS;
+      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == 1) diLep_Ch = DiLepCh::ElElPP;
+      if(leps[0]->Charge() == -1)if(leps[1]->Charge() == -1)diLep_Ch = DiLepCh::ElElMM;
+      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == -1)diLep_Ch = DiLepCh::ElElOS;
+      if(leps[0]->Charge() == -1)if(leps[1]->Charge() ==  1)diLep_Ch = DiLepCh::ElElOS;
     }
     diLep    = *leps.at(0) + *leps.at(1);
     diLep_pt = diLep.Pt();
