@@ -71,7 +71,6 @@ if IsKNU:
 
 ## Is Skim run?
 IsSKim = "Skim" in args.Analyzer
-IsSKim = "ISR" in args.Analyzer
 if IsSKim:
   if IsSNU:
     print  "Skim in SNU setting NJobs = 999999 !!!!!!!!!!!"
@@ -695,7 +694,7 @@ print '- UserFlags =',
 print Userflags, args.skimV
 if IsSNU or IsKNU:
   print '- Queue = '+args.Queue
-print '- output will be send to : '+FinalOutputPath
+print '- output will be send to : '+ out_Path
 print '##################################################'
 
 if args.no_exec:
