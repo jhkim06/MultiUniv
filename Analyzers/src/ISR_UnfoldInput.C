@@ -29,6 +29,7 @@ void ISR_UnfoldInput::initializeAnalyzer(){
 
   //outfile->mkdir("Tree");
   //outfile->cd("Tree");
+  //newtree = fChain->CloneTree(0);
   outfile->cd();
   newtree = new TTree("tree","tree");
 
@@ -66,6 +67,7 @@ void ISR_UnfoldInput::initializeAnalyzer(){
   newtree->Branch("mPreFSR",&mPreFSR);
   newtree->Branch("weightGen",&weightGen);
   newtree->Branch("weightRec",&weightRec);
+  newtree->Branch("bTagReweight",&bTagReweight);
   newtree->Branch("ispassRec",&ispassRec);
   newtree->Branch("isfiducialPreFSR",&isfiducialPreFSR);
   newtree->Branch("DYtautau",&DYtautau);
@@ -132,6 +134,7 @@ void ISR_UnfoldInput::executeEvent(){
 
   weightGen = 1.;
   weightRec = 1.;
+  bTagReweight = 1.;
 
   ispassRec = 0;
   isfiducialPreFSR = 0;
@@ -412,11 +415,12 @@ void ISR_UnfoldInput::executeEvent(){
                if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)) n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
              }
 
-             if(n_bjet_deepcsv_m == 0) isBveto = 1;
+             if(n_bjet_deepcsv_m_noSF == 0) isBveto = 1;
 
              float btag_sf = 1, misbtag_sf = 1.;
              BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 0, btag_sf, misbtag_sf);
-             std::cout <<"misbtag_sf: " << misbtag_sf << " btag_sf : " << btag_sf << " n bjets: " << n_bjet_deepcsv_m_noSF << std::endl;
+             if(!IsDATA) bTagReweight = btag_sf * misbtag_sf;
+             std::cout <<"misbtag_sf: " << misbtag_sf << " btag_sf : " << btag_sf << " n bjets (noSF): " << n_bjet_deepcsv_m_noSF << " n bjets: " << n_bjet_deepcsv_m << std::endl;
                 
 
           } // kinematic cuts on leptons
