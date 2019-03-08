@@ -19,7 +19,7 @@ rm JobCheck.log
 for sample in DoubleEG DoubleMuon DYJets10to50_MG DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
 do
   echo $sample
-  ./mkGardener.py --Category SMP -a Skim_DiLep -y 2017 -i $sample -n 500 --nTotFiles 1 --InSkim MetFt_L_v0_LL_v0 --userflags MuMuOrElEl --skimV 9 
+  ./mkGardener.py --Category SMP -a Skim_DiLep -y 2017 -i $sample -n 500 --nTotFiles 0 --InSkim MetFt_L_v0_LL_v0 --userflags MuMuOrElEl --skimV 1 
   #./checkGardenerBatch.py -a Skim_DiLep -y 2017 -i $sample -n 500 --nTotFiles 1 --RundirBase /data7/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0_LL_v0_MuMuOrElEl_v9
 done
 

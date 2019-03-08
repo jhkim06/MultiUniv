@@ -58,6 +58,13 @@ void Skim_DiLep::initializeAnalyzer(){
 
   newtree->Branch("ZPtCor", &ZPtCor,"ZPtCor/D");
 
+  // Kinematic Variables
+  //
+  newtree->Branch("diLep_Ch", &diLep_Ch,"diLep_Ch/I");
+  newtree->Branch("diLep_m", &diLep_m,"diLep_m/D");
+  newtree->Branch("diLep_pt", &diLep_pt,"diLep_pt/D");
+  newtree->Branch("diLep_eta", &diLep_eta,"diLep_eta/D");
+
   //b_trgSF = newtree->Branch("trgSF", &trgSF,"trgSF/F");
   //b_trgSF_Up = newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/F");
   //b_trgSF_Dn = newtree->Branch("trgSF_Dn", &trgSF_Dn,"trgSF_Dn/F");
@@ -74,11 +81,13 @@ void Skim_DiLep::initializeAnalyzer(){
     DiMuTrgs = {
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v",
       "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v",
-      "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v", // need to estimate the trg eff.
+      "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v",
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",
       "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v",
-      "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", // need to estimate the trg eff.
+      "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v",
     };
+      //"HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v", need to evaluate the trig effi 
+      //"HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v",
     DiElTrgs = {
       "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"
     };
@@ -139,6 +148,10 @@ void Skim_DiLep::executeEvent(){
   newtree->SetBranchAddress("IsoSF_Dn",&IsoSF_Dn);
 
   newtree->SetBranchAddress("ZPtCor",&ZPtCor);
+  newtree->SetBranchAddress("diLep_Ch",&diLep_Ch);
+  newtree->SetBranchAddress("diLep_m",&diLep_m);
+  newtree->SetBranchAddress("diLep_pt",&diLep_pt);
+  newtree->SetBranchAddress("diLep_eta",&diLep_eta);
 
   FillHist("CutFlow",5,1,30,0,30);
   // Filters ====================
@@ -218,6 +231,35 @@ void Skim_DiLep::executeEvent(){
   if(fabs(Aod_eta[0]) > LepEtaCut) return;
   if(fabs(Aod_eta[1]) > LepEtaCut) return;
     
+  //==============================
+  // Kinematic Variables 
+  //==============================
+
+  diLep_Ch = DiLepType::NA;
+
+  diLep_m  = DEFAULT;
+  diLep_pt  = DEFAULT;
+  diLep_eta  = DEFAULT;
+
+  if(leps.size() > 1){
+    if(leps[0]->LeptonFlavour() == Lepton::MUON)if(leps[1]->LeptonFlavour() == Lepton::MUON){
+      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == 1) diLep_Ch = DiLepType::MuMuPP;
+      if(leps[0]->Charge() == -1)if(leps[1]->Charge() == -1)diLep_Ch = DiLepType::MuMuMM;
+      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == -1)diLep_Ch = DiLepType::MuMuOS;
+      if(leps[0]->Charge() == -1)if(leps[1]->Charge() ==  1)diLep_Ch = DiLepType::MuMuOS;
+    }
+    if(leps[0]->LeptonFlavour() == Lepton::ELECTRON)if(leps[1]->LeptonFlavour() == Lepton::ELECTRON){
+      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == 1) diLep_Ch = DiLepType::ElElPP;
+      if(leps[0]->Charge() == -1)if(leps[1]->Charge() == -1)diLep_Ch = DiLepType::ElElMM;
+      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == -1)diLep_Ch = DiLepType::ElElOS;
+      if(leps[0]->Charge() == -1)if(leps[1]->Charge() ==  1)diLep_Ch = DiLepType::ElElOS;
+    }
+    diLep    = *leps.at(0) + *leps.at(1);
+    diLep_pt = diLep.Pt();
+    diLep_eta = diLep.Eta();
+    diLep_m  = diLep.M();
+  }
+
   /////////////////PUreweight///////////////////
   PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
 
@@ -280,7 +322,6 @@ void Skim_DiLep::executeEvent(){
   ZPtCor = 1;
   if(MCSample.Contains("DYJets") || MCSample.Contains("DYJets10to50_MG")){
     Gen genL0, genL1, genFsr, genHardL0, genHardL1;
-    TLorentzVector genZ;
     vector<Gen> gens = GetGens();
     // Check tau process
     for( int i(0); i<(int) gens.size(); i++){

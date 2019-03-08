@@ -3,6 +3,7 @@
 
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
+#include "Definitions.h"
 
 class Skim_DiLep : public AnalyzerCore {
 
@@ -66,9 +67,15 @@ private:
   double IdSF, IdSF_Up, IdSF_Dn;
   double IsoSF, IsoSF_Up, IsoSF_Dn;
 
-  // TString prefix;
+  TLorentzVector genZ;
   double ZPtCor;
 
+  // diLepton Variables
+  DiLepType diLep_Ch;
+  TLorentzVector diLep;
+  double diLep_m;
+  double diLep_pt;
+  double diLep_eta;
 
 };
 

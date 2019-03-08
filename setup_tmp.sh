@@ -2,7 +2,7 @@ export SKFlat_WD=`pwd`
 #TODO
 export PYTHONPATH=${PYTHONPATH}:${SKFlat_WD} 
 # this guy is working only python only directory with __init__.py,
-# now using sys.path.insert(0,'../../CommonTools/python') instead at a relavant python script
+# another solution: using sys.path.insert(0,'../../CommonTools/python') instead at a relavant python script
 
 export SKFlat_LIB_PATH=$SKFlat_WD/lib/
 mkdir -p $SKFlat_LIB_PATH
