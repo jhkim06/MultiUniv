@@ -223,6 +223,7 @@ void Skim_DiLep::executeEvent(){
     }else if(leps[i]->LeptonFlavour()==Lepton::ELECTRON){
      Aod_pt[i]=leps.at(i)->Pt();
      Aod_eta[i]=((Electron*)leps.at(i))->scEta();
+     // TODO do we need this gap veto? it is already in Electron.h for id pass ftn
      if(fabs(Aod_eta[i])>1.4442&&fabs(Aod_eta[i])<1.566) return; // two lepton only
     }
   }
@@ -382,6 +383,10 @@ void Skim_DiLep::executeEvent(){
     if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)) n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
   }
 
+  //
+  //for(int i=0;i<(int)PDFWeights_Scale->size();i++){
+  //  cout<<"Scale: "<<i<<" "<<PDFWeights_Scale->at(i)<<endl;
+  //}
 
   //b_trgSF->Fill();
   //b_trgSF_Up->Fill();
