@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import os,sys,time
-from CommonPyTools.getEvn import *
+from CommonPyTools.python.getEvn import *
 
 DATaSets = ["DoubleMuon", "DoubleEG", "SingleMuon", "SingleElectron", "SinglePhoton"]
 
