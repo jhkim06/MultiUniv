@@ -15,6 +15,6 @@
 #pragma link C++ class Skim_K1+;
 #pragma link C++ class Skim_DiLep+;
 #pragma link C++ class SMP_Validation+;
-#pragma link C++ class ISR_UnfoldInput+;
+#pragma link C++ class Skim_ISRUnfoldInput+;
 
 #endif

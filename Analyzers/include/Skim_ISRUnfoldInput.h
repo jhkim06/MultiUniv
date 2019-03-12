@@ -1,10 +1,10 @@
-#ifndef ISR_UnfoldInput_h
-#define ISR_UnfoldInput_h
+#ifndef Skim_ISRUnfoldInput_h
+#define Skim_ISRUnfoldInput_h
 
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 
-class ISR_UnfoldInput : public AnalyzerCore {
+class Skim_ISRUnfoldInput : public AnalyzerCore {
 
 public:
 
@@ -12,8 +12,8 @@ public:
   void executeEventFromParameter(AnalyzerParameter param);
   void executeEvent();
 
-  ISR_UnfoldInput();
-  ~ISR_UnfoldInput();
+  Skim_ISRUnfoldInput();
+  ~Skim_ISRUnfoldInput();
 
   TTree *newtree;
 
