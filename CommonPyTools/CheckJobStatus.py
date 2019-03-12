@@ -42,7 +42,7 @@ def GetLogLastLine(lines):
 
 
 
-def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
+def CheckJobStatus(logfiledir, cycle, jobnumber, hostname, IsHadd):
   FinishString = "JOB FINISHED"
 
   path_log_e = ""
@@ -75,7 +75,7 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
   if length_log_e > 0:
     out = 'ERROR\n'
     out += '--------------------------------------\n'
-    out += 'logfile : '+path_log_o+'\n'
+    out += 'logfile : '+path_log_e+'\n'
     out += '--------------------------------------\n'
     for l in log_e:
       out = out+l
@@ -92,6 +92,10 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
     if "Processing run" in l:
       IsCycleRan = True
       break
+    if IsHadd:
+      if "hadd" in l:
+	IsCycleRan = True
+	break
 
   ## XX.oXX exists
 
@@ -100,6 +104,12 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname):
     return "ANALYZER NOT STARTED"
 
   LASTLINE = GetLogLastLine( log_o )
+  if IsHadd:
+    if "hadd Target path" in LASTLINE:
+      return "FINISHED"
+    else:
+      return "Something wrong"
+
   if "Processing run.C" in LASTLINE:
     return "EVENT NOT STARTED"
 

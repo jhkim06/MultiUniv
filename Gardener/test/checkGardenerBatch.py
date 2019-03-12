@@ -11,10 +11,11 @@ from CommonPyTools.CheckJobStatus import *
 from CommonPyTools.TimeTools import *
 #sys.path.insert(0,'../../data/python')
 from CommonPyTools.DataSample.SampleDef import *
+from CommonPyTools.BatchTools import *
 
 parser = argparse.ArgumentParser(description='SKFlat Command')
 parser.add_argument('-a', dest='Analyzer', default="")
-parser.add_argument('-i', dest='InputSample', default="")
+parser.add_argument('-i', dest='InputSampleKey', default="")
 parser.add_argument('-p', dest='DataPeriod', default="ALL")
 parser.add_argument('-l', dest='InputSampleList', default="")
 parser.add_argument('-n', dest='NJobs', default=1, type=int)
@@ -36,24 +37,33 @@ print "Let's go"
 ## make flags
 SkimName = args.SkimName
 
-## Add Abosolute path for outputdir
+## Is Skim run?
+IsSKim = "Skim" in args.Analyzer
+IsHadd = "hadd" in args.Analyzer
 
-SAMPLE_DATA_DIR = SampleDataDir(args.Year)
+
+if IsSKim:
+  if IsSNU:
+    print  "Skim in SNU setting NJobs = 999999 !!!!!!!!!!!"
+    args.NJobs = 999999
+  elif IsKISTI:
+    print "Skim in Kisti"
+  else:
+    print "Skimming in ", HostNickName, "is not prepared kkk"
+    exit()
+
 
 SendLogToWeb = True
 if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
   SendLogToWeb = False
 
-
-if IsKISTI:
-  HOSTNAME = "KISTI"
-if IsSNU:
-  HOSTNAME = "SNU"
-if IsKNU:
-  HOSTNAME = "KNU"
-
-
-InputSamples = []
+ProductionKey = SKFlatV+'_'+args.Year
+print 'Productions key:',ProductionKey
+InputSamples = {}
+StringForHash = ""
+print 'File to import', Productions[args.Category][ProductionKey]['MC']
+cmd = 'from '+Productions[args.Category][ProductionKey]['MC'] +' import *'
+exec(cmd, globals())
 
 ## When using list
 if args.InputSampleList is not "":
@@ -62,34 +72,25 @@ if args.InputSampleList is not "":
     if "#" in line:
       continue
     line = line.strip('\n')
-    InputSamples.append(line)
+    InputSamples[line]=line
 else:
-  if args.InputSample in InputSample_Data:
-    if args.DataPeriod=="ALL":
-      for period in DataPeriods(args.Year):
-        InputSamples.append(args.InputSample+":"+period)
-    elif args.DataPeriod in DataPeriods(args.Year):
-      InputSamples.append(args.InputSample+":"+args.DataPeriod)
-  else:
-    InputSamples.append(args.InputSample)
-FileRangesForEachSample = []
+  InputSamples,StringForHash = GetInputSamples(args.InputSampleKey,args.DataPeriod,args.Year,args.Category,ProductionKey)
 
+
+print 'InputSamples', InputSamples
+print 'len(InputSamples)',len(InputSamples)
 ## Get Random Number for webdir
 
 webdirpathbase = SKFlatRunlogDir+'/www/SKFlatAnalyzerJobLogs/'
 
 ## Loop over samples
-SampleFinishedForEachSample = []
+SampleFinishedForEachSample = {}
 BaseDirForEachSample = []
 
 
 
 for InputSample in InputSamples:
-
-  #NJobs = args.NJobs
-
-  SampleFinishedForEachSample.append(False)
-
+  SampleFinishedForEachSample[InputSample]=False
 
 AllSampleFinished = False
 GotError = False
@@ -104,10 +105,20 @@ try:
     AllSampleFinished = True
 
     CheckLog = open('JobCheck.log','a')
-    for it_sample in range(0,len(InputSamples)):
+    #for it_sample in range(0,len(InputSamples)):
+    for it_sample in InputSamples:
 
-      InputSample = InputSamples[it_sample]
-      print 'checking for sample:',InputSample
+      print 'checking for sample:',it_sample
+      IsDATA = False
+      DataPeriod = ""
+      if ":" in it_sample:
+        IsDATA = True
+        InputSample = it_sample.split(":")[0]
+        DataPeriod  = it_sample.split(":")[1]
+	InputSample = InputSample+'_'+DataPeriod
+      if IsDATA == False:
+	InputSample = InputSamples[it_sample]['key']
+
       CheckLog.write('checking for sample:'+InputSample+'\n')
       SampleFinished = SampleFinishedForEachSample[it_sample]
       if SampleFinished:
@@ -116,23 +127,9 @@ try:
 	pass
         #AllSampleFinished = False
 
-      ## Global Varialbes
-
-      IsDATA = False
-      DataPeriod = ""
-      if ":" in InputSample:
-        IsDATA = True
-        tmp = InputSample
-        InputSample = tmp.split(":")[0]
-        DataPeriod = tmp.split(":")[1]
-
-
       ## Prepare output
       ## This should be copied from above
       base_rundir = args.RundirBase+'/'+args.Analyzer + '_Y'+args.Year+'_'+InputSample
-
-      if IsDATA:
-        base_rundir = base_rundir+'_'+DataPeriod
       base_rundir += '_'+SkimName+'/'
       for line in open(base_rundir+'SubmitOutput.log','r'):
         line = line.rstrip('\n')
@@ -140,6 +137,7 @@ try:
 	  NJobs = int(line.split(' ')[3])
 	  break
 
+      print 'from',base_rundir+'SubmitOutput.log','NJobs', NJobs
 
       #NJobs = 1
       this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'')
@@ -169,9 +167,8 @@ try:
 	CheckLog.write('Njob: '+ str(NJobs)+'\n')
 
         for it_job in range(0,NJobs):
-
           this_status = ""
-          this_status = CheckJobStatus(base_rundir, args.Analyzer, it_job, HOSTNAME)
+          this_status = CheckJobStatus(base_rundir, args.Analyzer, it_job, HostNickName, IsHadd)
 	  print base_rundir, args.Analyzer, 'job',it_job
 	  print "this_status",this_status
 
@@ -193,6 +190,8 @@ try:
           outlog = ""
           if "FINISHED" in this_status:
             finished.append("Finished")
+	    if IsHadd:
+	      continue
 
             EventInfo = this_status.split()[1].split(':')
 
@@ -271,7 +270,7 @@ try:
         for l in ToStatuslog:
           statuslog.write(l+'\n')
         statuslog.write('\n==============================================================\n')
-        statuslog.write('HOSTNAME = '+HOSTNAME+'\n')
+        statuslog.write('HostNickName = '+HostNickName+'\n')
         statuslog.write('queue = '+args.Queue+'\n')
         statuslog.write(str(NJobs)+' jobs submitted\n')
         statuslog.write(str(n_eventran)+' jobs are running\n')
@@ -335,7 +334,7 @@ except KeyboardInterrupt:
 ## of Jobs = {4}
 #InputSample = {1}
 #Output sent to : {2}
-#'''.format(args.Analyzer,InputSamples,FinalOutputPath,HOSTNAME,NJobs,args.SkimName)
+#'''.format(args.Analyzer,InputSamples,FinalOutputPath,HostNickName,NJobs,args.SkimName)
 ##JobFinishEmail += '''##################
 ##Job started at {0}
 ##Job finished at {1}
@@ -344,7 +343,7 @@ except KeyboardInterrupt:
 #if IsSNU or IsKNU:
 #  JobFinishEmail += 'Queue = '+args.Queue+'\n'
 #
-#EmailTitle = '['+HOSTNAME+']'+' Job Summary'
+#EmailTitle = '['+HostNickName+']'+' Job Summary'
 #if GotError:
 #  JobFinishEmail = "#### ERROR OCCURED ####\n"+JobFinishEmail
 #  JobFinishEmail = ErrorLog+"\n------------------------------------------------\n"+JobFinishEmail

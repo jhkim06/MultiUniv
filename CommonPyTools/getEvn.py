@@ -24,3 +24,12 @@ IsUI10 = ("ui10.sdfarm.kr" in HOSTNAME)
 IsUI20 = ("ui20.sdfarm.kr" in HOSTNAME)
 IsSNU = ("snu" in HOSTNAME)
 IsKNU = ("knu" in HOSTNAME)
+
+
+
+if IsKISTI:
+  HostNickName = "KISTI"
+if IsSNU:
+  HostNickName = "SNU"
+if IsKNU:
+  HostNickName = "KNU"

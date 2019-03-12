@@ -3,7 +3,7 @@
 import os,sys,time
 from CommonPyTools.getEvn import *
 
-InputSample_Data = ["DoubleMuon", "DoubleEG", "SingleMuon", "SingleElectron", "SinglePhoton"]
+DATaSets = ["DoubleMuon", "DoubleEG", "SingleMuon", "SingleElectron", "SinglePhoton"]
 
 def DataPeriods(Year):
   AvailableDataPeriods = []
@@ -18,7 +18,7 @@ def DataPeriods(Year):
   
   return AvailableDataPeriods
 
-def SampleDataDir(Year):
+def SampleInfoDir(Year):
   SAMPLE_DATA_DIR = SKFlat_WD+'/data/'+SKFlatV+'/'+Year+'/Sample/'
   return SAMPLE_DATA_DIR
 
