@@ -25,6 +25,7 @@ public:
 
 private:
 
+  bool debug_;
 
   int IsMuMu;
   int IsElEl;
