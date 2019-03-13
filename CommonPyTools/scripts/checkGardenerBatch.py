@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import os,sys,time
 #import os.path
@@ -6,12 +6,12 @@ import argparse
 import datetime
 import random
 #sys.path.insert(0,'../../CommonTools/python')
-from CommonPyTools.getEvn import *
-from CommonPyTools.CheckJobStatus import *
-from CommonPyTools.TimeTools import *
+from CommonPyTools.python.getEvn import *
+from CommonPyTools.python.CheckJobStatus import *
+from CommonPyTools.python.TimeTools import *
 #sys.path.insert(0,'../../data/python')
 from CommonPyTools.DataSample.SampleDef import *
-from CommonPyTools.BatchTools import *
+from CommonPyTools.python.BatchTools import *
 
 parser = argparse.ArgumentParser(description='SKFlat Command')
 parser.add_argument('-a', dest='Analyzer', default="")
