@@ -19,6 +19,9 @@ public:
 
   void WriteHist();
 
+  int findInitialMoterIndex(int motherIndex, int currentIndex, vector<Gen> &gens); 
+  void selectDilepton(vector<Gen> &gens, std::map<int,int> &parIndex, std::map<int,int> &aparIndex, vector<int> &gparticleIndex, vector<int> &gaparticleIndex);
+
 private:
 
 

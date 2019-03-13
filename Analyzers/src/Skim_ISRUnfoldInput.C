@@ -189,15 +189,23 @@ void Skim_ISRUnfoldInput::executeEvent(){
   //===============================
 
   ZPtCor = 1;
-  std::cout << "gen loo start..........." << std::endl;
+  std::map<int, int> eleIndex;
+  std::map<int, int> posIndex;
+  std::map<int, int> muIndex;
+  std::map<int, int> antimuIndex;
+  std::cout << "gen loop start..........." << std::endl;
+
   if(MCSample.Contains("DYJets") || MCSample.Contains("DYJets10to50_MG")){
     Gen genL0, genL1, genFsr, genHardL0, genHardL1;
     TLorentzVector genZ;
     vector<Gen> gens = GetGens();
     // Check tau process
     for( int i(0); i<(int) gens.size(); i++){
-      //if( !gens.at(i).isPrompt()) continue; // not from hadron, muon, or tau
+
+      if( !gens.at(i).isPrompt()) continue; // not from hadron, muon, or tau
+
       if( gens.at(i).isHardProcess()){ // from ME
+
         if( genHardL0.IsEmpty() && (abs(gens.at(i).PID() ) == 11 || abs(gens.at(i).PID())==13 || abs(gens.at(i).PID())==15)){
           genHardL0 = gens.at(i);
         }else if(!genHardL0.IsEmpty() && gens.at(i).PID() == -genHardL0.PID()){
@@ -211,29 +219,51 @@ void Skim_ISRUnfoldInput::executeEvent(){
           }
         }
       }   
+
+      // search from the status 1 leptons 
       if(gens.at(i).Status() == 1){ // entering detector
-        if( (abs(gens.at(i).PID())==11) ){
-		std::cout << i << " mother index: " << gens.at(i).MotherIndex() << " fromHardProcessFinalState: " << gens.at(i).fromHardProcessFinalState() << " isPrompt: " << gens.at(i).isPrompt() << std::endl;
-                if(gens.at(i).MotherIndex() < (int) gens.size() && gens.at(i).MotherIndex() >= 0 ){
-                   std::cout << " check mother: " << gens.at(i).MotherIndex() << " mother : " << gens.at(gens.at(i).MotherIndex()).MotherIndex() << " mother ID: " << gens.at(gens.at(i).MotherIndex()).PID() << " fromHardProcessFinalState: " << gens.at(gens.at(i).MotherIndex()).fromHardProcessFinalState() << " isPrompt: " << gens.at(gens.at(i).MotherIndex()).isPrompt() << std::endl;
-                }
+
+        if( (abs(gens.at(i).PID())==11 || abs(gens.at(i).PID())==13) ){
+		std::cout << i << " pid: " << gens.at(i).PID() << " mother index: " << gens.at(i).MotherIndex() << " fromHardProcessFinalState: " << gens.at(i).fromHardProcessFinalState() << " isPrompt: " << gens.at(i).isPrompt() << " isPromptFinalState(): " << gens.at(i).isPromptFinalState() << std::endl;
+
+                int initIndex = findInitialMoterIndex( gens.at(i).MotherIndex(), i, gens); // find the initial index of the lepton (status 1 and prompt)
+                std::cout << " initial index: " << initIndex << " initial ID: " << gens.at(initIndex).PID() << " status: " << gens.at(initIndex).Status() << std::endl;
+                if( gens.at(i).PID() == 11 )  eleIndex.insert(std::make_pair(initIndex, i));
+                if( gens.at(i).PID() == -11 ) posIndex.insert(std::make_pair(initIndex, i));
+                if( gens.at(i).PID() == 13 )  muIndex.insert(std::make_pair(initIndex, i));
+                if( gens.at(i).PID() == -13 ) antimuIndex.insert(std::make_pair(initIndex, i));
         } 
-        if( genL0.IsEmpty() && ( (abs(gens.at(i).PID())==11 && gens.at(i).fromHardProcessFinalState()) || (abs(gens.at(i).PID())==13 && gens.at(i).fromHardProcessFinalState()) ) ){
-          genL0=gens.at(i);
-        }
-        else if( !genL0.IsEmpty() && gens.at(i).PID() == -genL0.PID() && gens.at(i).fromHardProcessFinalState()){ // FIXME only one pair of leptons with fromHardProcessFinalState() == 1
-               genL1=gens.at(i);
-        }
+
+        // TODO save photon index and check later if its mother index match to lepton index
         else if(gens.at(i).PID()==22){
-               int mIdx = gens.at(i).MotherIndex();
-               if(mIdx>=(int) gens.size()) continue;
-               Gen mp = gens.at(mIdx);
-               if( (abs(mp.PID()) == 11 || abs(mp.PID()) == 13) && mp.fromHardProcessDecayed() )
                   genFsr+=gens.at(i); 
         }
-      }   
-    }   
-   std::cout << "gen loop end..........." << std::endl;
+      }// status 1   
+    }// end of gen loop   
+
+    std::cout << "gen loop end..........." << std::endl;
+    std::cout << "electron map size : " << eleIndex.size() << std::endl;
+    std::cout << "positron map size : " << posIndex.size() << std::endl;
+    std::cout << "muon map size : " << muIndex.size() << std::endl;
+    std::cout << "anti muon map size : " << antimuIndex.size() << std::endl;
+
+    vector<int> electronindex, positronindex;
+    vector<int> muonindex, antimuonindex;
+
+    selectDilepton(gens, eleIndex, posIndex, electronindex, positronindex);
+    selectDilepton(gens, muIndex, antimuIndex, muonindex, antimuonindex);
+
+    std::cout << "check selectDilepton, electronindex size: " << electronindex.size() << " positronindex size: " << positronindex.size() << std::endl;
+    std::cout << "check selectDilepton, muonindex size: " << muonindex.size() << " antimuonindex size: " << antimuonindex.size() << std::endl;
+    if( electronindex.size() > 0 ){
+       std::cout << "ele first index: " << electronindex.at(0) << " second index: " << electronindex.at(1) << std::endl;
+       std::cout << "pos first index: " << positronindex.at(0) << " second index: " << positronindex.at(1) << std::endl;
+    }
+
+    if( muonindex.size() > 0 ){
+       std::cout << "mu first index: " << muonindex.at(0) << " second index: " << muonindex.at(1) << std::endl;
+       std::cout << "an-mu first index: " << antimuonindex.at(0) << " second index: " << antimuonindex.at(1) << std::endl;
+    }
 
     if( abs(genHardL0.PID()) != 15 ) if( (abs(genL1.PID()) == 11) || (abs(genL1.PID()) == 13) ){
       genZ = genL0 + genL1 + genFsr;
@@ -244,22 +274,6 @@ void Skim_ISRUnfoldInput::executeEvent(){
       if ( abs(genL1.PID()) == 13 ) 
 	  if( ((genL0.Pt() > 20. && genL1.Pt() > 10.) || (genL0.Pt() > 10. && genL1.Pt() > 20.)) && fabs(genL0.Eta()) < 2.4 && fabs(genL1.Eta()) < 2.4 ) isfiducialPreFSR = 1;  
 
-/*
-      if(isdielectron && (abs(genL1.PID()) == 13)){
-        std::cout << "dimass: " << (genZ).M() << " gen hard dimass: " << (genHardL0+genHardL1).M() << std::endl;
-        std::cout << "pt1: " << genL0.Pt() << " pt2: " << genL1.Pt() << std::endl;
-        std::cout << "isPromptFinalState: " << genL0.isPromptFinalState() << " " << genL1.isPromptFinalState() << std::endl;
-        std::cout << "isLastCopy: " << genL0.isLastCopy() << " " << genL1.isLastCopy() << std::endl;
-        std::cout << "fromHardProcessFinalState: " << genL0.fromHardProcessFinalState() << " " << genL1.fromHardProcessFinalState() << std::endl;
-        //std::cout << ": " << genL0.() << " " << genL1.() << std::endl;
-        if((genHardL0.PID() > 0 && genL0.PID() > 0) || (genHardL0.PID() < 0 && genL0.PID() < 0)){
-          std::cout << "dr1: " << sqrt(pow(genHardL0.Phi()-genL0.Phi(),2)+pow(genHardL0.Eta()-genL0.Eta(),2)) << " dr2: " << sqrt(pow(genHardL1.Phi()-genL1.Phi(),2)+pow(genHardL1.Eta()-genL1.Eta(),2)) << std::endl;
-        }
-        else{
-          std::cout << "dr1: " << sqrt(pow(genHardL1.Phi()-genL0.Phi(),2)+pow(genHardL1.Eta()-genL0.Eta(),2)) << " dr2: " << sqrt(pow(genHardL0.Phi()-genL1.Phi(),2)+pow(genHardL0.Eta()-genL1.Eta(),2)) << std::endl;
-        }
-      }
-*/
       ptPreFSR.push_back(genL0.Pt());
       ptPreFSR.push_back(genL1.Pt());
       ptPreFSR.push_back((genZ).Pt());
@@ -459,6 +473,75 @@ void Skim_ISRUnfoldInput::executeEvent(){
   newtree->Fill();
 }
 
+int Skim_ISRUnfoldInput::findInitialMoterIndex(int motherIndex, int currentIndex, vector<Gen> &gens){
+
+  int initIndex = -1;
+  // stop if reach the initial protons
+  if( gens.at(currentIndex).PID() == 2212 && gens.at(currentIndex).MotherIndex() == -1){
+    std::cout << " initial proton... " << std::endl;
+    return -1;
+  }
+  // stop if mother ID and current ID is different 
+  else if(gens.at(motherIndex).PID() != gens.at(currentIndex).PID()){
+          return currentIndex;
+  }
+  else{
+       std::cout << " mother index: " << motherIndex << " ID: " << gens.at(motherIndex).PID() <<  " cuurent index: " << currentIndex << " current ID: " << gens.at(currentIndex).PID() << " current isPrompt : " << gens.at(currentIndex).isPrompt() << std::endl; 
+       std::cout << "############### call again ######################" << std::endl; 
+       initIndex = findInitialMoterIndex(gens.at(motherIndex).MotherIndex(), motherIndex, gens);
+  }
+
+  return initIndex;
+}
+
+
+void Skim_ISRUnfoldInput::selectDilepton(vector<Gen> &gens, std::map<int,int> &parIndex, std::map<int,int> &aparIndex, vector<int> &gparticleIndex, vector<int> &gaparticleIndex){
+
+    TLorentzVector initialDilep;
+    std::map<int, int>::iterator it = parIndex.begin();
+    while(it != parIndex.end())
+    {
+        TLorentzVector tempDilep;
+        std::cout << "particle initial:" << it->first << " particle final: " << it->second << std::endl;
+
+        std::map<int, int>::iterator it_ = aparIndex.begin();
+        while(it_ != aparIndex.end()){
+              if( gens.at(it->first).MotherIndex() == gens.at(it_->first).MotherIndex()){ // check if the mother of the initial dielectron match 
+                 std::cout << "anti Particle initial:" << it_->first << " anti particle final: " << it_->second << std::endl;
+
+                 if(initialDilep.Eta() == 0 && initialDilep.Pt() == 0 && initialDilep.M() == 0){ // check if this is the first time to set the initialDilep
+                   initialDilep = (gens.at(it->first)+gens.at(it_->first));
+                   std::cout << "initial dilep mass: " << (gens.at(it->first)+gens.at(it_->first)).M() << std::endl;
+                   std::cout << "final dilep mass: " << (gens.at(it->second)+gens.at(it_->second)).M() << std::endl;
+		   gparticleIndex.push_back(it->first);
+		   gparticleIndex.push_back(it->second);
+
+		   gaparticleIndex.push_back(it_->first);
+		   gaparticleIndex.push_back(it_->second);
+ 
+                 }
+                 else{
+                     tempDilep = (gens.at(it->first)+gens.at(it_->first));
+                     if(tempDilep.M() > initialDilep.M() ){
+                        initialDilep = tempDilep;
+                        std::cout << "more than one dilep, mass: " << (gens.at(it->first)+gens.at(it_->first)).M() << std::endl;
+                        std::cout << "final dilep mass: " << (gens.at(it->second)+gens.at(it_->second)).M() << std::endl;
+
+                        // replace index with the larger dilepton masa
+		        gparticleIndex[0] = it->first;
+		        gparticleIndex[1] = it->second;
+
+		        gaparticleIndex[0] = it_->first;
+		        gaparticleIndex[1] = it_->second;
+                     }
+                 }// to save the dielectron pair with largest mass
+              }
+              it_++;
+        }
+        it++;
+    }
+
+}
 
 void Skim_ISRUnfoldInput::executeEventFromParameter(AnalyzerParameter param){
 
