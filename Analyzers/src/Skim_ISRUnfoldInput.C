@@ -65,6 +65,10 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
   newtree->Branch("mRec",&mRec);
   newtree->Branch("ptPreFSR",&ptPreFSR);
   newtree->Branch("mPreFSR",&mPreFSR);
+  newtree->Branch("ptPostFSR",&ptPostFSR);
+  newtree->Branch("mPostFSR",&mPostFSR);
+  newtree->Branch("particleFSR",&particleFSR);
+  newtree->Branch("anparticleFSR",&anparticleFSR);
   newtree->Branch("weightGen",&weightGen);
   newtree->Branch("weightRec",&weightRec);
   newtree->Branch("bTagReweight",&bTagReweight);
@@ -128,6 +132,11 @@ void Skim_ISRUnfoldInput::executeEvent(){
   mRec.clear();
   ptPreFSR.clear();
   mPreFSR.clear();
+  ptPostFSR.clear();
+  mPostFSR.clear();
+
+  particleFSR.clear();
+  anparticleFSR.clear();
 
   weightGen = 1.;
   weightRec = 1.;
@@ -193,13 +202,15 @@ void Skim_ISRUnfoldInput::executeEvent(){
   std::map<int, int> posIndex;
   std::map<int, int> muIndex;
   std::map<int, int> antimuIndex;
-  std::cout << "gen loop start..........." << std::endl;
 
   if(MCSample.Contains("DYJets") || MCSample.Contains("DYJets10to50_MG")){
-    Gen genL0, genL1, genFsr, genHardL0, genHardL1;
-    TLorentzVector genZ;
+    Gen genL0Fsr, genL1Fsr, genL0postFSR, genL1postFSR, genHardL0, genHardL1;
+    TLorentzVector genZ, genL0preFSR, genL1preFSR;
     vector<Gen> gens = GetGens();
+    vector<Gen> gphotons;
+
     // Check tau process
+    std::cout << "gen loop start..........." << std::endl;
     for( int i(0); i<(int) gens.size(); i++){
 
       if( !gens.at(i).isPrompt()) continue; // not from hadron, muon, or tau
@@ -234,55 +245,132 @@ void Skim_ISRUnfoldInput::executeEvent(){
                 if( gens.at(i).PID() == -13 ) antimuIndex.insert(std::make_pair(initIndex, i));
         } 
 
-        // TODO save photon index and check later if its mother index match to lepton index
         else if(gens.at(i).PID()==22){
-                  genFsr+=gens.at(i); 
+                gphotons.push_back(gens.at(i));
         }
       }// status 1   
     }// end of gen loop   
 
     std::cout << "gen loop end..........." << std::endl;
-    std::cout << "electron map size : " << eleIndex.size() << std::endl;
-    std::cout << "positron map size : " << posIndex.size() << std::endl;
-    std::cout << "muon map size : " << muIndex.size() << std::endl;
-    std::cout << "anti muon map size : " << antimuIndex.size() << std::endl;
 
-    vector<int> electronindex, positronindex;
-    vector<int> muonindex, antimuonindex;
+    if( DYtautau == 0 ){
+      vector<int> electronindex, positronindex;
+      vector<int> muonindex, antimuonindex;
+      vector<int> partindex, anpartindex;
 
-    selectDilepton(gens, eleIndex, posIndex, electronindex, positronindex);
-    selectDilepton(gens, muIndex, antimuIndex, muonindex, antimuonindex);
+      selectDilepton(gens, eleIndex, posIndex, electronindex, positronindex);
+      selectDilepton(gens, muIndex, antimuIndex, muonindex, antimuonindex);
 
-    std::cout << "check selectDilepton, electronindex size: " << electronindex.size() << " positronindex size: " << positronindex.size() << std::endl;
-    std::cout << "check selectDilepton, muonindex size: " << muonindex.size() << " antimuonindex size: " << antimuonindex.size() << std::endl;
-    if( electronindex.size() > 0 ){
-       std::cout << "ele first index: " << electronindex.at(0) << " second index: " << electronindex.at(1) << std::endl;
-       std::cout << "pos first index: " << positronindex.at(0) << " second index: " << positronindex.at(1) << std::endl;
-    }
+      if( electronindex.size() > 0 && muonindex.size() > 0 ){ // both electron and muon pair exist, select a pair with larger mass
+         if( (gens.at(electronindex.at(0))+gens.at(positronindex.at(0))).M() > (gens.at(muonindex.at(0))+gens.at(antimuonindex.at(0))).M() ){
+            partindex.push_back(electronindex.at(0));
+            partindex.push_back(electronindex.at(1));
 
-    if( muonindex.size() > 0 ){
-       std::cout << "mu first index: " << muonindex.at(0) << " second index: " << muonindex.at(1) << std::endl;
-       std::cout << "an-mu first index: " << antimuonindex.at(0) << " second index: " << antimuonindex.at(1) << std::endl;
-    }
+            anpartindex.push_back(positronindex.at(0));
+            anpartindex.push_back(positronindex.at(1));
+         }
+         else{
+            partindex.push_back(muonindex.at(0));
+            partindex.push_back(muonindex.at(1));
 
-    if( abs(genHardL0.PID()) != 15 ) if( (abs(genL1.PID()) == 11) || (abs(genL1.PID()) == 13) ){
-      genZ = genL0 + genL1 + genFsr;
+            anpartindex.push_back(antimuonindex.at(0));
+            anpartindex.push_back(antimuonindex.at(1));
+         }
+      }
+      else if ( electronindex.size() > 0 && muonindex.size() == 0 ){ // only electron pair
+              partindex.push_back(electronindex.at(0));
+              partindex.push_back(electronindex.at(1));
+
+              anpartindex.push_back(positronindex.at(0));
+              anpartindex.push_back(positronindex.at(1));
+      }
+      else if ( electronindex.size() == 0 && muonindex.size() > 0 ){ // only muon pair
+              partindex.push_back(muonindex.at(0));
+              partindex.push_back(muonindex.at(1));
+
+              anpartindex.push_back(antimuonindex.at(0));
+              anpartindex.push_back(antimuonindex.at(1));
+      }
+
+      std::cout << "check selectDilepton, electronindex size: " << electronindex.size() << " positronindex size: " << positronindex.size() << std::endl;
+      std::cout << "check selectDilepton, muonindex size: " << muonindex.size() << " antimuonindex size: " << antimuonindex.size() << std::endl;
+      if( electronindex.size() > 0 ){
+         std::cout << "ele first index: " << electronindex.at(0) << " second index: " << electronindex.at(1) << std::endl;
+         std::cout << "pos first index: " << positronindex.at(0) << " second index: " << positronindex.at(1) << std::endl;
+      }
+
+      if( muonindex.size() > 0 ){
+         std::cout << "mu first index: " << muonindex.at(0) << " second index: " << muonindex.at(1) << std::endl;
+         std::cout << "an-mu first index: " << antimuonindex.at(0) << " second index: " << antimuonindex.at(1) << std::endl;
+      }
+
+      std::cout << "selected lepton pair, first index particle : " << partindex.at(0) << " second index : " << partindex.at(1) << std::endl;
+
+      // store index from initial to final lepton
+      std::map<int, int> partindexmap;
+      saveMotherIndexMap(gens, partindex.at(1), partindex.at(0), partindexmap);
+      saveMotherIndexMap(gens, anpartindex.at(1), anpartindex.at(0), partindexmap);
+
+      std::map<int, int>::iterator it = partindexmap.begin();
+      while(it != partindexmap.end()){
+            std::cout << "check saveMotherIndexMap, index : " << it->first << " ID: " << it->second << std::endl; 
+            it++;
+      }
+
+      for(unsigned int i = 0; i < gphotons.size(); i++){
+         std::cout << i << " th photon, mother index: " << gphotons.at(i).MotherIndex() << " mother ID: " << gens.at(gphotons.at(i).MotherIndex()).PID() << " pt: " << gphotons.at(i).Pt() << std::endl;
+
+         if( partindexmap.find(gphotons.at(i).MotherIndex()) != partindexmap.end() ){
+           std::cout << "found mother lepton, lepton index: " << partindexmap.find(gphotons.at(i).MotherIndex())->first << " ID: " << partindexmap.find(gphotons.at(i).MotherIndex())->second << std::endl;
+           if(partindexmap.find(gphotons.at(i).MotherIndex())->second > 0){
+              genL0Fsr += gphotons.at(i);
+              particleFSR.push_back(gphotons.at(i));
+           }
+           else{
+               genL1Fsr += gphotons.at(i);
+               anparticleFSR.push_back(gphotons.at(i));
+           }
+         }
+      }
+
+      // Gen genL0preFSR, genL1preFSR, genL0Fsr, genL1Fsr, genL0postFSR, genL1postFSR, genHardL0, genHardL1;
+      //
+      genL0postFSR = gens.at(partindex.at(1));
+      genL1postFSR = gens.at(anpartindex.at(1));
+
+      std::cout << "dilep mass pos fsr: " << (genL0postFSR+genL1postFSR).M() << std::endl;
+      genL0preFSR = genL0postFSR + genL0Fsr;
+      genL1preFSR = genL1postFSR + genL1Fsr;
+      std::cout << "dilep mass pre fsr: " << (genL0preFSR+genL1preFSR).M() << std::endl;
+
+      genZ = genL0preFSR + genL1preFSR;
       ZPtCor = mcCorr->GetZPtWeight(genZ.Pt(),genZ.Rapidity(),abs(genHardL0.PID())==13 ? Lepton::Flavour::MUON : Lepton::Flavour::ELECTRON);
 
-      if ( abs(genL1.PID()) == 11 ) 
-	  if( ((genL0.Pt() > 25. && genL1.Pt() > 15.) || (genL0.Pt() > 15. && genL1.Pt() > 25.)) && fabs(genL0.Eta()) < 2.5 && fabs(genL1.Eta()) < 2.5 ) isfiducialPreFSR = 1;  
-      if ( abs(genL1.PID()) == 13 ) 
-	  if( ((genL0.Pt() > 20. && genL1.Pt() > 10.) || (genL0.Pt() > 10. && genL1.Pt() > 20.)) && fabs(genL0.Eta()) < 2.4 && fabs(genL1.Eta()) < 2.4 ) isfiducialPreFSR = 1;  
+      if ( abs(gens.at(partindex.at(1)).PID()) == 11 ) 
+          if( ((genL0preFSR.Pt() > 25. && genL1preFSR.Pt() > 15.) || (genL0preFSR.Pt() > 15. && genL1preFSR.Pt() > 25.)) && fabs(genL0preFSR.Eta()) < 2.5 && fabs(genL1preFSR.Eta()) < 2.5 ) isfiducialPreFSR = 1;  
+      if ( abs(gens.at(partindex.at(1)).PID() == 13) ) 
+          if( ((genL0preFSR.Pt() > 20. && genL1preFSR.Pt() > 10.) || (genL0preFSR.Pt() > 10. && genL1preFSR.Pt() > 20.)) && fabs(genL0preFSR.Eta()) < 2.4 && fabs(genL1preFSR.Eta()) < 2.4 ) isfiducialPreFSR = 1;  
 
-      ptPreFSR.push_back(genL0.Pt());
-      ptPreFSR.push_back(genL1.Pt());
+      // status 1 leptons + all photons
+      ptPreFSR.push_back(genL0preFSR.Pt());
+      ptPreFSR.push_back(genL1preFSR.Pt());
       ptPreFSR.push_back((genZ).Pt());
 
-      mPreFSR.push_back(genL0.M());
-      mPreFSR.push_back(genL1.M());
+      mPreFSR.push_back(genL0preFSR.M());
+      mPreFSR.push_back(genL1preFSR.M());
       mPreFSR.push_back((genZ).M());
-    }
-  }
+
+      // post fsr leptons
+      ptPostFSR.push_back(genL0postFSR.Pt());
+      ptPostFSR.push_back(genL1postFSR.Pt());
+      ptPostFSR.push_back((genL0postFSR+genL1postFSR).Pt());
+
+      mPostFSR.push_back(genL0postFSR.M());
+      mPostFSR.push_back(genL1postFSR.M());
+      mPostFSR.push_back((genL0postFSR+genL1postFSR).M());
+
+    }// not DY to tautau event
+  }// only for DY MC
 
   // Filters ====================
   if(PassMETFilter()){ 
@@ -541,6 +629,17 @@ void Skim_ISRUnfoldInput::selectDilepton(vector<Gen> &gens, std::map<int,int> &p
         it++;
     }
 
+}
+
+void Skim_ISRUnfoldInput::saveMotherIndexMap(vector<Gen> &gens, int currentIndex, int motherIndex, std::map<int,int> &partindexmap){
+
+    if(currentIndex==motherIndex){
+       partindexmap.insert(std::make_pair(currentIndex, gens.at(currentIndex).PID()));
+    }
+    else{
+         partindexmap.insert(std::make_pair(currentIndex, gens.at(currentIndex).PID()));
+         saveMotherIndexMap(gens, gens.at(currentIndex).MotherIndex(), motherIndex, partindexmap);
+    }
 }
 
 void Skim_ISRUnfoldInput::executeEventFromParameter(AnalyzerParameter param){
