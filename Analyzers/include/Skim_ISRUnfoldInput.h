@@ -19,8 +19,13 @@ public:
 
   void WriteHist();
 
+  int findInitialMoterIndex(int motherIndex, int currentIndex, vector<Gen> &gens); 
+  void selectDilepton(vector<Gen> &gens, std::map<int,int> &parIndex, std::map<int,int> &aparIndex, vector<int> &gparticleIndex, vector<int> &gaparticleIndex);
+  void saveMotherIndexMap(vector<Gen> &gens, int currentIndex, int motherIndex, std::map<int,int> &partindexmap);
+
 private:
 
+  bool debug_;
 
   int IsMuMu;
   int IsElEl;
@@ -72,6 +77,8 @@ private:
   // tree variables used in CatAnalyzer as a first trial
   std::vector<Double_t> ptRec,mRec;
   std::vector<Double_t> ptPreFSR,mPreFSR;
+  std::vector<Double_t> ptPostFSR,mPostFSR;
+  std::vector<TLorentzVector> particleFSR, anparticleFSR;
   Double_t weightGen, weightRec, bTagReweight;
   Int_t ispassRec,isfiducialPreFSR,DYtautau,isBveto;
   Int_t isdielectron, isdimuon;
