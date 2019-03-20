@@ -25,7 +25,7 @@ parser.add_argument('-o', dest='Outputdir', default="")
 parser.add_argument('-q', dest='Queue', default="fastq")
 parser.add_argument('-y', dest='Year', default="2017")
 parser.add_argument('--InSkim', dest='InSkim', default="")
-parser.add_argument('--no_exec', action='store_true')
+parser.add_argument('--dry_run', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="")
 parser.add_argument('--skimV', dest='skimV', default="0")
 parser.add_argument('--nTotFiles', dest='nTotFiles', default=0, type=int)
@@ -629,7 +629,7 @@ source ./run.C
       jobname = 'job_'+str(it_job)+'_'+args.Analyzer
       cmd = 'qsub -V -q '+args.Queue+' -N '+jobname+' -wd '+thisjob_dir+' commands.sh '
 
-      if not args.no_exec:
+      if not args.dry_run:
         cwd = os.getcwd()
         os.chdir(thisjob_dir)
 	print 'submitting',cmd
@@ -653,7 +653,7 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
       jobname = 'job_'+str(it_job)+'_'+args.Analyzer
       cmd = 'qsub -V -q '+args.Queue+' -N '+jobname+' commands.sh'
 
-      if not args.no_exec:
+      if not args.dry_run:
         cwd = os.getcwd()
         os.chdir(thisjob_dir)
         os.system(cmd+' > submitlog.log')
@@ -668,7 +668,7 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
     os.chdir(base_rundir)
     os.system('tar -czf runFile.tar.gz run_*.C')
     cmd = 'condor_submit submit.jds'
-    if not args.no_exec:
+    if not args.dry_run:
       os.system(cmd)
     else:
       print 'Dry run, command "'+cmd+'" will be excuted for real run at '+ base_rundir
@@ -676,7 +676,7 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
 
   else:
 
-    if args.no_exec:
+    if args.dry_run:
       continue
 
     ## Write Kill Command
@@ -719,8 +719,8 @@ if IsSNU or IsKNU:
 print '- output will be send to : '+ out_Path
 print '##################################################'
 
-if args.no_exec:
-  print "Exiting no_exec run"
+if args.dry_run:
+  print "Exiting dry_run "
   exit()
 
 if not args.MonitJob:

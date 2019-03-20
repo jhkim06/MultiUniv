@@ -1,34 +1,57 @@
 #!/usr/bin/python
-from CommonPyTools.DataSample.SampleDef import *
+
+import os
+from getEvn import *
+
+class batchJobs:
+  def __init__(self,jobName,Queue,jobDir,dry_run):
+    self.jobDir = jobDir
+    if self.jobDir[-1] != "/":
+      self.jobDir = self.jobDir + '/'
+
+    self.Queue = Queue
+    self.jobName = jobName
+    self.dry_run = dry_run
+
+    self.CmdShell = self.jobDir + 'commands.sh'
+    self.CmdPy    = self.jobDir + 'commands.py'
+
+    jFile = open(self.CmdShell,'w')
+    jFile.write('#!/bin/bash\n')
+    jFile.close()
+    os.system('chmod +x '+self.CmdShell)
+
+    pFile = open(self.CmdPy,'w')
+    pFile.close()
+
+  def AddPy2Sh(self):
+    jFile = open(self.CmdShell,'a')
+    command = 'python commands.py'
+    jFile.write(command+'\n')
+    jFile.close()
+  
+  def AddPy (self,command):
+    pFile = open(self.CmdPy, 'a')
+    pFile.write(command+'\n')
+    pFile.close()
 
 
-def GetInputSamples(InputSampleKey,DataPeriod,Year,Category,ProductionKey):
-  Dataperiods = DataPeriods(Year)
-  InputSamples = {}
-  StringForHash = ""
-  if InputSampleKey in DATaSets:
-    if DataPeriod=="ALL":
-      print InputSampleKey, Year,'ALL', Dataperiods
-      for period in Dataperiods:
-	InputSamples[InputSampleKey+":"+period]={'key':InputSampleKey}
-        StringForHash += InputSampleKey+":"+period
-    elif DataPeriod in Dataperiods:
-      print InputSampleKey, Year, DataPeriod
-      InputSamples[InputSampleKey+":"+DataPeriod]={'key':InputSampleKey}
-      StringForHash += InputSampleKey+":"+DataPeriod
-  else:
-    print 'File to import', Productions[Category][ProductionKey]['MC']
-    #importlib.import_module(Productions[Category][ProductionKey]['MC'])
-    #cmd = SKFlat_WD + Productions[Category][ProductionKey]['MC']
-    #cmd = 'MCsamples : '+Productions[Category][ProductionKey]['MC']
-    cmd = 'from '+Productions[Category][ProductionKey]['MC'] +' import *'
-    exec(cmd, globals())
-    #SampleInfo = __import__(Productions[Category][ProductionKey]['MC'])
-    #SampleName = getattr(SampleInfo, MCsamples)
-    #print sampleInfo
-    #print sampleName[InputSampleKey]['name']
-    #print sampleInfo[InputSampleKey]['name']
-    InputSamples[sampleInfo[InputSampleKey]['name']]={'key':InputSampleKey}
-    StringForHash += InputSampleKey
+  def Sub(self):
+    if IsTamsa1:
+      print 'tamsa1', 'Queue', self.Queue, 'jobName', self.jobName
+      cmd = 'qsub -V -q '+self.Queue+' -N '+self.jobName+' -wd '+self.jobDir+' commands.sh '
+      if not self.dry_run:
+	cwd = os.getcwd()
+	os.chdir(self.jobDir)
+	os.system(cmd+' > submitlog.log')
+	os.chdir(cwd)
+      else:
+	print'dry_run, cmd=',cmd
 
-  return InputSamples, StringForHash
+      sublog = open(self.jobDir+'/submitlog.log','a')
+      sublog.write('\nSubmission command was : '+cmd+'\n')
+      sublog.close()
+    else:
+      print HOSTNAME, 'is not ready for batchJob'
+
+

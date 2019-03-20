@@ -24,7 +24,8 @@ IsUI10 = ("ui10.sdfarm.kr" in HOSTNAME)
 IsUI20 = ("ui20.sdfarm.kr" in HOSTNAME)
 IsSNU = ("snu" in HOSTNAME)
 IsKNU = ("knu" in HOSTNAME)
-
+IsTamsa2 = ("tamsa2" in HOSTNAME)
+IsTamsa1 = ("cms.snu" in HOSTNAME)
 
 
 if IsKISTI:

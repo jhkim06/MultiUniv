@@ -17,7 +17,7 @@ parser.add_argument('-o', dest='Outputdir', default="")
 parser.add_argument('-q', dest='Queue', default="fastq")
 parser.add_argument('-y', dest='Year', default="2017")
 parser.add_argument('--skim', dest='Skim', default="")
-parser.add_argument('--no_exec', action='store_true')
+parser.add_argument('--dry_run', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="")
 args = parser.parse_args()
 
@@ -485,7 +485,7 @@ root -l -b -q run.C
       jobname = 'job_'+str(it_job)+'_'+args.Analyzer
       cmd = 'qsub -V -q '+args.Queue+' -N '+jobname+' -wd '+thisjob_dir+' commands.sh '
 
-      if not args.no_exec:
+      if not args.dry_run:
         cwd = os.getcwd()
         os.chdir(thisjob_dir)
         os.system(cmd+' > submitlog.log')
@@ -506,7 +506,7 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
       jobname = 'job_'+str(it_job)+'_'+args.Analyzer
       cmd = 'qsub -V -q '+args.Queue+' -N '+jobname+' commands.sh'
 
-      if not args.no_exec:
+      if not args.dry_run:
         cwd = os.getcwd()
         os.chdir(thisjob_dir)
         os.system(cmd+' > submitlog.log')
@@ -520,13 +520,13 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
     cwd = os.getcwd()
     os.chdir(base_rundir)
     os.system('tar -czf runFile.tar.gz run_*.C')
-    if not args.no_exec:
+    if not args.dry_run:
       os.system('condor_submit submit.jds')
     os.chdir(cwd)
 
   else:
 
-    if args.no_exec:
+    if args.dry_run:
       continue
 
     ## Write Kill Command
@@ -542,7 +542,7 @@ root -l -b -q run.C 1>stdout.log 2>stderr.log
 os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_data.tar.gz')
 os.system('rm -f '+SKFlat_WD+'/'+str_RandomNumber+'_lib.tar.gz')
 
-if args.no_exec:
+if args.dry_run:
   exit()
 
 ## Set Output directory
