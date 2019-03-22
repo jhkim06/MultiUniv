@@ -54,8 +54,10 @@ def GetInputSamples(InputSampleKeys,DataPeriod,Year,Category,ProductionKey):
   StringForHash = ""
   print 'File to import', Productions[Category][ProductionKey]['MC']
   cmd = 'from '+Productions[Category][ProductionKey]['MC'] +' import *'
+
   exec(cmd, globals())
 
+  print 'CommonTools InputSampleKey', InputSampleKeys
   for key in InputSampleKeys:
     if key in DATaSets:
       if DataPeriod=="ALL":
@@ -68,6 +70,7 @@ def GetInputSamples(InputSampleKeys,DataPeriod,Year,Category,ProductionKey):
         InputSamples[key+":"+DataPeriod]={'key':key}
         StringForHash += key+":"+DataPeriod
     else:
+      print 'key', key
       InputSamples[sampleInfo[key]['name']]={'key':key}
       StringForHash += key
 

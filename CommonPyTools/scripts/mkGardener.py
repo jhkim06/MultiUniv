@@ -37,6 +37,8 @@ args = parser.parse_args()
 print '=================================================================='
 print "Let's go for",SKFlatV,"to execute",args.Analyzer
 print '=================================================================='
+InputSampleName = []
+InputSampleName.append(args.InputSampleKey)
 ## make flags
 Userflags = []
 if args.Userflags != "":
@@ -116,7 +118,7 @@ if args.InputSampleKeyList is not "":
     InputSamples[line]=line
     StringForHash += line
 else:
-  InputSamples,StringForHash = GetInputSamples(args.InputSampleKey,args.DataPeriod,args.Year,args.Category,ProductionKey)
+  InputSamples,StringForHash = GetInputSamples(InputSampleName,args.DataPeriod,args.Year,args.Category,ProductionKey)
 
 FileRangesForEachSample = []
 
