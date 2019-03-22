@@ -4,8 +4,14 @@ ID	SF	passHEEPID_Barrel	HEEP_SF.root	SF_Et_Barrel	TGraphAsymmErrors
 ID	SF	passHEEPID_Endcap	HEEP_SF.root	SF_Et_Endcap	TGraphAsymmErrors
 ID	SF	passMediumID	2016LegacyReReco_ElectronMedium_Fall17V2.root	EGamma_SF2D	TH2F
 ############## Private SF ###############################
-########### Charge inclusive
-Trigger SF      LeadEle23_MediumID EGM_TrgEff_runBCDEFGH_LegEle23_MediumID_80X_JHKim_V1.root       	EGamma_SF2D TH2F
-Trigger SF      TailEle12_MediumID EGM_TrgEff_runBCDEFGH_LegEle12_MediumID_80X_JHKim_V1.root       	EGamma_SF2D TH2F
+################## Charge inclusive ####################
+Trigger SF      LeadEle23_MediumID EGM_TrigEff_runBCDEFGH_LegEle23_Medium80X_jihkim_v1.root       	EGamma_SF2D TH2F
+Trigger SF      TailEle12_MediumID EGM_TrigEff_runBCDEFGH_LegEle12_Medium80X_jihkim_v1.root       	EGamma_SF2D TH2F
 ## pt 10, 15,...
 ID      SF      MediumID_pt10  EGM_IdIso_runBCDEFGH_Medium80X_JHKim_V1.root 			EGamma_SF2D TH2F
+############### Strict charge separate #################
+ID	SF	Strict_MediumID_QPlus_pt10	EGMstrict_IdIso_runBCDEFGH_Medium94XV2_QPlus_jihkim_v1.root	EGamma_SF2D	TH2F
+ID	SF	Strict_MediumID_QMinus_pt10	EGMstrict_IdIso_runBCDEFGH_Medium94XV2_QMinus_jihkim_v1.root	EGamma_SF2D	TH2F
+ID	SF	Strict_TightID_QPlus_pt10	EGMstrict_IdIso_runBCDEFGH_Tight94XV2_QPlus_jihkim_v1.root	EGamma_SF2D	TH2F
+ID	SF	Strict_TightID_QMinus_pt10	EGMstrict_IdIso_runBCDEFGH_Tight94XV2_QMinus_jihkim_v1.root	EGamma_SF2D	TH2F
+
