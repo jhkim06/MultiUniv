@@ -7,6 +7,8 @@ import datetime
 import random
 import subprocess
 import ROOT
+import logging
+from collections import OrderedDict
 #import importlib
 
 from CommonPyTools.python.getEvn import *
@@ -23,20 +25,22 @@ parser = argparse.ArgumentParser(description='SKFlat Command')
 parser.add_argument('--InSkim', dest='InSkim', default="")
 parser.add_argument('--dry_run', action='store_true')
 parser.add_argument('--doBatch', action='store_true')
+parser.add_argument('--doHadd', action='store_true')
 parser.add_argument('--userflags', dest='Userflags', default="test")
 parser.add_argument('--skimV', dest='skimV', default="0")
 parser.add_argument('--nTotFiles', dest='nTotFiles', default=0, type=int)
 parser.add_argument('--MonitJob', dest='MonitJob', default=False, type=bool)
 parser.add_argument('--Category', dest='Category', default="SMP")
 parser.add_argument('--treeName', dest='treeName', default="")
+parser.add_argument('--cleanUp', dest='cleanUp', action='store_true')
 
 ROOT.gROOT.SetBatch()
 
 Tools.AddOptions(parser)
 Tools.LoadOptDefaults(parser)
-args = parser.parse_args()
+opt = parser.parse_args()
 print '=================================================================='
-print "Let's go for",SKFlatV,"to make histograms of", args.InputSampleKey
+print "Let's go for",SKFlatV,"to make histograms of", opt.InputSampleKey
 print '=================================================================='
 ##########################
 # Dump configurations
@@ -46,9 +50,9 @@ sys.path.append(os.getcwd())
 
 variables = {}
 columns = []
-if args.variableCfg != '':
-  if os.path.exists(args.variableCfg):
-    handle = open(args.variableCfg,'r')
+if opt.variableCfg != '':
+  if os.path.exists(opt.variableCfg):
+    handle = open(opt.variableCfg,'r')
     exec(handle)
     #exec(handle,globals())
     handle.close()
@@ -61,9 +65,9 @@ else:
 
 supercut = '1'
 cuts = {}
-if args.cutCfg != '':
-  if os.path.exists(args.cutCfg):
-    handle = open(args.cutCfg,'r')
+if opt.cutCfg != '':
+  if os.path.exists(opt.cutCfg):
+    handle = open(opt.cutCfg,'r')
     exec(handle)
     handle.close()
   else:
@@ -73,11 +77,11 @@ else:
   print 'You should have cut configuration file,  exiting...'
   exit()
 
-samples = {}
-#print 'sample cfg',args.sampleCfg
-if args.sampleCfg != '':
-  if os.path.exists(args.sampleCfg):
-    handle = open(args.sampleCfg,'r')
+samples = OrderedDict()
+#print 'sample cfg',opt.sampleCfg
+if opt.sampleCfg != '':
+  if os.path.exists(opt.sampleCfg):
+    handle = open(opt.sampleCfg,'r')
     exec(handle)
     handle.close()
   else:
@@ -88,17 +92,17 @@ else:
   exit()
 
 # Global Variables
-InSkimString = args.InSkim
-SAMPLE_INFO_DIR = SampleInfoDir(args.Year)
-ProductionKey = SKFlatV+'_'+args.Year
+InSkimString = opt.InSkim
+SAMPLE_INFO_DIR = SampleInfoDir(opt.Year)
+ProductionKey = SKFlatV+'_'+opt.Year
 ## make flags
 Userflags = []
-if args.Userflags != "":
-  Userflags = (args.Userflags).split(',')
+if opt.Userflags != "":
+  Userflags = (opt.Userflags).split(',')
 
 
 ## Set Output directory
-OutBase = Tools.GetOutDirBase(args.Category,ProductionKey,args.Outputdir,InSkimString,Userflags)
+OutBase = Tools.GetOutDirBase(opt.Category,ProductionKey,opt.Outputdir,InSkimString,Userflags)
 
 
 
@@ -121,28 +125,10 @@ SendLogToWeb = True
 if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
   SendLogToWeb = False
 
-######### Necessary End##############
-
-## Is Skim run?
-IsSKim = "Skim" in args.Analyzer
-IsHadd = "hadd" in args.Analyzer
-
-
-if IsSKim:
-  if IsSNU:
-    print  "Skim in SNU setting NJobs = 999999 !!!!!!!!!!!"
-    args.NJobs = 999999
-  elif IsKISTI:
-    print "Skim in Kisti"
-  else:
-    print "Skimming in ", HostNickName, "is not prepared kkk"
-    exit()
-
-
 
 ## Machine-dependent variables
 if IsKNU:
-  args.Queue = "cms"
+  opt.Queue = "cms"
 
 ## Make Sample List
 
@@ -158,7 +144,7 @@ StringForHash = ""
 InputSampleKeys = []
 for key in samples:
   InputSampleKeys.append(key)
-InputSamples,StringForHash = GetInputSamples(InputSampleKeys,args.DataPeriod,args.Year,args.Category,ProductionKey)
+InputSamples,StringForHash = GetInputSamples(InputSampleKeys,opt.DataPeriod,opt.Year,opt.Category,ProductionKey)
 print 'InputSamples', InputSamples  
 
 
@@ -166,10 +152,17 @@ print 'InputSamples', InputSamples
 ## Loop over samples
 ############################
 
+if opt.doHadd:
+  haddAllSample_cmd = 'hadd '+OutBase + '/'
+  for flag in Userflags:
+    haddAllSample_cmd += flag
+  haddAllSample_cmd += '.root '
+
+
 
 for InputSample in InputSamples:
 
-  NJobs = args.NJobs
+  NJobs = opt.NJobs
 
 
   ## Global Varialbes
@@ -191,7 +184,7 @@ for InputSample in InputSamples:
 
 
   ## Prepare RunDir
-  base_rundir = SKFlatRunlogDir+'/'+args.Analyzer+'_'+'Y'+args.Year+'_'+InputSamples[InputSample]['key']
+  base_rundir = SKFlatRunlogDir+'/'+opt.Analyzer+'_'+'Y'+opt.Year+'_'+InputSamples[InputSample]['key']
   if IsDATA:
     base_rundir = base_rundir + '_'+DataPeriod
   if InSkimString !="":
@@ -199,7 +192,7 @@ for InputSample in InputSamples:
   for flag in Userflags:
     base_rundir += '_'+flag
   print "base_rundir: ", base_rundir
-  if not args.overWrite:
+  if not opt.overWrite:
     if os.path.isdir(base_rundir):
       print 'base_rundir already exists exiting... remove or mv this directory to run again'
       exit()
@@ -209,6 +202,43 @@ for InputSample in InputSamples:
 
   ## Prepare OutPutDir
   OutSampleDir = GetOutDir(OutBase, InputSamples[InputSample]['key'],DataPeriod)
+  print 'OutSampleDir',OutSampleDir
+  if opt.doHadd and opt.doBatch:
+    print 'Hadd in Batch is not ready, exiting...'
+    exit()
+  elif opt.doHadd:
+    print 'Hadd interactive mode'
+    #print 'files to add',OutFullPathFile_List
+    here = os.getcwd()
+    os.chdir(OutSampleDir)
+    if IsDATA:
+      haddedSampleName = InputSamples[InputSample]['key']+'_'+DataPeriod+'.root '
+      cmd = 'hadd '+ haddedSampleName + InputSamples[InputSample]['key']+'_'+DataPeriod+'_tmp_*.root'
+      rm_cmd = 'rm '+InputSamples[InputSample]['key']+'_'+DataPeriod+'_tmp_*.root'
+    else:
+      haddedSampleName = InputSamples[InputSample]['key']+'.root '
+      cmd = 'hadd '+ haddedSampleName + InputSamples[InputSample]['key']+'_tmp_*.root'
+      rm_cmd = 'rm '+InputSamples[InputSample]['key']+'_tmp_*.root'
+
+    haddAllSample_cmd += OutSampleDir+'/'+haddedSampleName
+
+    if opt.dry_run:
+      print 'cmd is',cmd
+      print 'rm_cmd is',rm_cmd
+    elif opt.cleanUp:
+      os.system(cmd)
+      time.sleep(1)
+      os.system(rm_cmd)
+    else:
+      os.system(cmd)
+    os.chdir(here)
+  continue
+
+  ############################
+  # Do the hadd business here
+  ############################
+
+
   os.system('mkdir -p '+ OutSampleDir)
 
 
@@ -231,9 +261,9 @@ for InputSample in InputSamples:
   else:
     # Skim data list setup
     if IsDATA:
-      tmpSkimDir=Productions[args.Category][ProductionKey]['SkimDir']+'/'+InSkimString+'/'+ sampleBaseName + '/'
+      tmpSkimDir=Productions[opt.Category][ProductionKey]['SkimDir']+'/'+InSkimString+'/'+ sampleBaseName + '/'
     else:
-      tmpSkimDir=Productions[args.Category][ProductionKey]['SkimDir']+'/'+InSkimString+'/'+ sampleBaseName + '/'
+      tmpSkimDir=Productions[opt.Category][ProductionKey]['SkimDir']+'/'+InSkimString+'/'+ sampleBaseName + '/'
     
     print 'Input SkimDir',tmpSkimDir
     input_filelist = open(base_rundir+'/input_filelist,txt','w')
@@ -248,8 +278,8 @@ for InputSample in InputSamples:
   #print 'inputFiles',inputFileList
 
 
-  if args.nTotFiles > 0:
-    NTotalFiles = args.nTotFiles
+  if opt.nTotFiles > 0:
+    NTotalFiles = opt.nTotFiles
   else:
     NTotalFiles = len(inputFileList)
 
@@ -259,22 +289,22 @@ for InputSample in InputSamples:
     NJobs = NTotalFiles
 
 
-  SumFileSize=0
-  if 'hadd' in args.Analyzer:
-    with open(base_rundir+'/input_filelist','r') as filelist:
-      for afile in filelist:
-	afile = afile.rstrip('\n')
-	#print afile
-	SumFileSize += float(cmdline('ls -l '+afile + ' | cut -d " " -f 5'))
+  #SumFileSize=0
+  #if 'hadd' in opt.Analyzer:
+  #  with open(base_rundir+'/input_filelist','r') as filelist:
+  #    for afile in filelist:
+  #      afile = afile.rstrip('\n')
+  #      #print afile
+  #      SumFileSize += float(cmdline('ls -l '+afile + ' | cut -d " " -f 5'))
 
-    NJobs =int(SumFileSize/200000000)
-    if NJobs < 1: NJobs=1
-    nFilePerJob = NTotalFiles/NJobs
-    if nFilePerJob > 499:
-      nFilePerJob = 499;
-      NJobs = NTotalFiles/nFilePerJob
+  #  NJobs =int(SumFileSize/200000000)
+  #  if NJobs < 1: NJobs=1
+  #  nFilePerJob = NTotalFiles/NJobs
+  #  if nFilePerJob > 499:
+  #    nFilePerJob = 499;
+  #    NJobs = NTotalFiles/nFilePerJob
 
-    print 'hadd: Sum file size:', SumFileSize, 'NJobs',NJobs, 'nFilePerJob', nFilePerJob
+  #  print 'hadd: Sum file size:', SumFileSize, 'NJobs',NJobs, 'nFilePerJob', nFilePerJob
 
   SubmitOutput = open(base_rundir+'/SubmitOutput.log','w')
 
@@ -309,6 +339,7 @@ for InputSample in InputSamples:
   ## Write run script
 
   CheckTotalNFile=0
+  #OutFullPathFile_List =[]
   for it_job in range(0,len(FileRanges)):
     time.sleep(0.3)
 
@@ -319,7 +350,7 @@ for InputSample in InputSamples:
     CheckTotalNFile = CheckTotalNFile+len(FileRanges[it_job])
 
     thisjob_dir = (base_rundir+'/job_'+str(it_job)+'/').replace('///','/').replace('//','/')
-    print 'thisjob dir',thisjob_dir
+    #print 'thisjob dir',thisjob_dir
     os.system('mkdir -p '+thisjob_dir)
 
     inFileFullNames =[]
@@ -328,20 +359,22 @@ for InputSample in InputSamples:
 
     
     if IsDATA:
-      outFileName = InputSamples[InputSample]['key']+'_'+DataPeriod+'_'+str(it_job)+'.root'
+      outFileName = InputSamples[InputSample]['key']+'_'+DataPeriod+'_tmp_'+str(it_job)+'.root'
     else:
-      outFileName = InputSamples[InputSample]['key']+'_'+str(it_job)+'.root'
+      outFileName = InputSamples[InputSample]['key']+'_tmp_'+str(it_job)+'.root'
 
     OutFullPathFile = OutSampleDir + '/' + outFileName
+    #OutFullPathFile_List.append(OutFullPathFile)
 
 
-    if args.doBatch:
+    if opt.doBatch and not opt.doHadd:
+      print 'batch making histo'
       jobName = 'mkShape'+str(it_job)
-      jobs = batchJobs(jobName,args.Queue, thisjob_dir,args.dry_run)
+      jobs = batchJobs(jobName,opt.Queue, thisjob_dir,opt.dry_run)
       jobs.AddPy2Sh()
       jobs.AddPy("from ShapeAnalysis.python.ShapeFactory import ShapeFactory\n")
       jobs.AddPy("factory = ShapeFactory()")
-      jobs.AddPy('factory._treeName = '+'"'+args.treeName+'"' )
+      jobs.AddPy('factory._treeName = '+'"'+opt.treeName+'"' )
       instructions  = ""
       instructions += "factory.makeNominals( \n"
       instructions += "		'"+InputSamples[InputSample]['key'] + "', \n"
@@ -358,9 +391,9 @@ for InputSample in InputSamples:
 
 
       #cmd = thisjob_dir+'commands.sh'
-      #if args.dry_run:
+      #if opt.dry_run:
       #  print 'command is',cmd
-      #elif not args.doBatch:
+      #elif not opt.doBatch:
       #  print 'excuting',cmd
       #  logfile=open('mylog.log','w')
       #  process = subprocess.Popen(cmd, shell=True,stdout=logfile,stderr=logfile)
@@ -369,12 +402,27 @@ for InputSample in InputSamples:
       #  #os.system('sh '+cmd)
       #else:
       #  pass
-    else:
-      print "======== Running mkShape in interactive mode ======="
-      factory = ShapeFactory()
-      factory._treeName = args.treeName
-      factory.makeNominals(inFileFullNames,OutFullPathFile,variables, cuts,supercut, weight)
-      
+    elif not opt.doHadd:
+      print 'mkShape: histo making in interactive is not ready, use dry_run in doBatch for the test, exiting'
+      exit()
+      pass
+      #print "======== Running mkShape in interactive mode ======="
+      #factory = ShapeFactory()
+      #factory._treeName = opt.treeName
+      #factory.makeNominals(inFileFullNames,OutFullPathFile,variables, cuts,supercut, weight)
+
+  if CheckTotalNFile != NTotalFiles:
+    print 'mkShapes: CheckTotalNFile is not the same to NTotalFiles, plz check, exitting...'
+    exit()
+
+if opt.doHadd:
+  print "let's collect them all"
+  if opt.dry_run:
+    print haddAllSample_cmd
+  else:
+    os.system(haddAllSample_cmd)
+
+print 'All done, bye!!!'
 
 
 
