@@ -105,7 +105,8 @@ class ShapeFactory:
         #augmented_d = d.Define('totW',weight) \
         #               .Filter(cut) 
         #
-	hist = D_weighted.Filter(cut).Histo1D((self._sample,self._sample,var['range'][0],var['range'][1],var['range'][2]),var['name'],'totW')
+	hstName = 'histo_'+ self._sample
+	hist = D_weighted.Filter(cut).Histo1D((hstName,hstName,var['range'][0],var['range'][1],var['range'][2]),var['name'],'totW')
 	hist.SetXTitle(var['xaxis'])
 
 	hist.Write()

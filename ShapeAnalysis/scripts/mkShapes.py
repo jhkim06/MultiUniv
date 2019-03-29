@@ -232,7 +232,7 @@ for InputSample in InputSamples:
     else:
       os.system(cmd)
     os.chdir(here)
-  continue
+    continue
 
   ############################
   # Do the hadd business here
