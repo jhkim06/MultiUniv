@@ -19,6 +19,7 @@ def AddOptions (parser):
   parser.add_argument('--plotCfg', dest='plotCfg', default="")
   parser.add_argument('--variableCfg', dest='variableCfg', default="")
   parser.add_argument('--cutCfg', dest='cutCfg', default="")
+  parser.add_argument('--nuisancesCfg', dest='nuisancesCfg', default="")
   parser.add_argument('--lumi', dest='lumi', default=1, type=float)
 
 def findOptAndChange(parser, opt_name, opt_value):
