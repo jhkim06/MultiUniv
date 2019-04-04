@@ -36,11 +36,16 @@ Productions = {
         'SkimDir': '/data8/DATA/SMP/Run2Legacy_v1/2016/',
         },
       },
-    'LightCHToCB' : {
+    'TTSemiLep' : {
       'Run2Legacy_v1_2017' : {
-        'MC' : 'CommonPyTools.DataSample.Samples_LightCHToCB_Fall17_miniaodv2',
+        'MC' : 'CommonPyTools.DataSample.Samples_TTSemiLep_Fall17_miniaodv2',
         'DATA' : ['SingleElectron', 'SingleMuon' ],
-	'SkimDir': '/data8/DATA/LightCHToCB/Run2Legacy_v1/2017/',
+	    'SkimDir': '/data8/DATA/TTSemiLep/Run2Legacy_v1/2017/',
+        },
+      'Run2Legacy_v1_2016' : {
+        'MC' : 'CommonPyTools.DataSample.Samples_TTSemiLep_Summer16_miniaodv3',
+        'DATA' : ['SingleElectron', 'SingleMuon' ],
+        'SkimDir': '/data8/DATA/TTSemiLep/Run2Legacy_v1/2016/',
         },
       },
 }
