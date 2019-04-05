@@ -135,6 +135,7 @@ bool Electron::PassID(TString ID){
   if(ID=="passMVAID_iso_WP80") return passMVAID_iso_WP80();
   if(ID=="passMVAID_iso_WP90") return passMVAID_iso_WP90();
   //==== Customized
+  if(ID=="passLooseID_noIso") return Pass_CutBasedLooseNoIso();
   if(ID=="SUSYTight") return Pass_SUSYTight();
   if(ID=="SUSYLoose") return Pass_SUSYLoose();
   if(ID=="NOCUT") return true;

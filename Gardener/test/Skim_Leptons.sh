@@ -13,15 +13,16 @@
 # -n : number of jobs in SNU, it is 999999 whatever number you put in.
 # --nTotFiles : number of files to run
 
-for sample in DoubleEG DoubleMuon DYJets10to50_MG DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
+for sample in DoubleEG DoubleMuon SingleElectron SingleMuon DYJets10to50_MG DYJets TTJJ_powheg TTLJ_powheg TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia ttW ttZ
 do
   echo $sample
-  ./mkGardener.py --Category SMP -a Skim_Leptons -y 2017 -i $sample  -n 500 --nTotFiles 1  --userflags MetFt,L --skimV 9 --dry_run 
+  #./mkGardener.py --Category SMP -a Skim_Leptons -y 2017 -i $sample  -n 500 --nTotFiles 1  --userflags MetFt,L --skimV 1 --dry_run 
+  ./mkGardener.py --Category SMP -a Skim_Leptons -y 2017 -i $sample  -n 500 --nTotFiles 1  --userflags MetFt,L --skimV 1
 done
 
-#for sample in DoubleEG DoubleMuon DYJets10to50_MG DYJets TT_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
+#for sample in DoubleEG DoubleMuon SingleElectron SingleMuon DYJets10to50_MG DYJets TT_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia
 #do
 #  echo $sample
-#  ./mkGardener.py --Category SMP -a Skim_Leptons -y 2016 -i $sample  -n 500 --nTotFiles 1  --userflags MetFt,L --skimV 9 --dry_run 
+#  ./mkGardener.py --Category SMP -a Skim_Leptons -y 2016 -i $sample  -n 500 --nTotFiles 1  --userflags MetFt,L --skimV 1 --dry_run 
 #done
 

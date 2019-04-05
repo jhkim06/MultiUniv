@@ -37,6 +37,6 @@
 # --showIntegralLegend=1 default
 
 
-#mkShapes.py --pycfg  configuration.py -n 400 --nTotFiles 0  --overWrite --doBatch 
-#mkShapes.py --pycfg  configuration.py -n 400 --nTotFiles 0  --overWrite --doHadd --cleanUp
-mkPlot.py --pycfg configuration.py --inputFile=Output_MetFt_L_v0_LL_v0_MuMuOrElEl_v0_hadd_v0_DY/DY.root --onlyVariable=mll --minLogC=1 --maxLogC=1000
+python $SKFlat_WD/ShapeAnalysis/scripts/mkShapes.py --pycfg  configuration.py -n 400 --nTotFiles 0  --overWrite --doBatch 
+python $SKFlat_WD/ShapeAnalysis/scripts/mkShapes.py --pycfg  configuration.py -n 400 --nTotFiles 0  --overWrite --doHadd --cleanUp
+python $SKFlat_WD/ShapeAnalysis/scripts/mkPlot.py --pycfg configuration.py --inputFile=Output_MetFt_L_v0_LL_v0_MuMuOrElEl_v0_hadd_v0_DY/DY.root --onlyVariable=mll --minLogC=1 --maxLogC=1000
