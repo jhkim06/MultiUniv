@@ -31,8 +31,9 @@ def findOptAndChange(parser, opt_name, opt_value):
   return False
 
 def LoadOptDefaults(parser):
-  args = parser.parse_args()
-  pycfg = args.pycfg
+  opt = parser.parse_args()
+  pycfg = opt.pycfg
+  #print 'LoadOptDefaults:: pycfg',pycfg
   if os.path.exists(pycfg):
     print 'it exists',pycfg
     infile = open(pycfg,'r')

@@ -305,21 +305,15 @@ class PlotFactory:
 	      if is_this_nuisance_to_be_considered :
 		if 'name' in nuisance:
 		  shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisance['name']+"Up"
-		else:
-		  shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisanceName+"Up"
-		#print "loading shape variation", shapeNameUp
-		if type(fileIn) is dict:
-		  histoUp = fileIn[sampleName].Get(shapeNameUp)
-		else :
-		  histoUp = fileIn.Get(shapeNameUp)
-		if 'name' in nuisance:
 		  shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisance['name']+"Down"
 		else:
+		  shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisanceName+"Up"
 		  shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisanceName+"Down"
-		#print "loading shape variation", shapeNameDown
 		if type(fileIn) is dict:
-		  histoUp = fileIn[sampleName].Get(shapeNameDown)
+		  histoUp = fileIn[sampleName].Get(shapeNameUp)
+		  histoDown = fileIn[sampleName].Get(shapeNameDown)
 		else :
+		  histoUp = fileIn.Get(shapeNameUp)
 		  histoDown = fileIn.Get(shapeNameDown)
 
 		if histoUp == None:
