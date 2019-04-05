@@ -37,6 +37,6 @@
 # --showIntegralLegend=1 default
 
 
-python -m mkShapes.py --pycfg  configuration.py -n 400 --nTotFiles 0  --overWrite --doBatch 
-python -m mkShapes.py --pycfg  configuration.py -n 400 --nTotFiles 0  --overWrite --doHadd --cleanUp
-python -m mkPlot.py --pycfg configuration.py --inputFile=Output_MetFt_L_v0_LL_v0_MuMuOrElEl_v0_hadd_v0_DY/DY.root --onlyVariable=mll --minLogC=1 --maxLogC=1000
+mkShapes.py --pycfg  configuration.py -n 400 --nTotFiles 0  --overWrite --doBatch 
+mkShapes.py --pycfg  configuration.py -n 400 --nTotFiles 0  --overWrite --doHadd --cleanUp
+mkPlot.py --pycfg configuration.py --inputFile=Output_MetFt_L_v0_LL_v0_MuMuOrElEl_v0_hadd_v0_DY/DY.root --onlyVariable=mll --minLogC=1 --maxLogC=1000
