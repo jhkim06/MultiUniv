@@ -27,25 +27,13 @@ Productions = {
     'SMP' : {
       'Run2Legacy_v1_2017' : {
         'MC' : 'CommonPyTools.DataSample.Samples_SMP_Fall17_miniaodv2',
-	'DATA' : ['DoubleEG', 'DoubleMuon' ],
+	    'DATA' : ['DoubleEG', 'DoubleMuon', 'SingleElectron', 'SingleMuon' ],
         'SkimDir': '/data8/DATA/SMP/Run2Legacy_v1/2017/',
         },
       'Run2Legacy_v1_2016' : {
         'MC' : 'CommonPyTools.DataSample.Samples_SMP_Summer16_miniaodv3',
-        'DATA' : ['DoubleEG', 'DoubleMuon' ],
+        'DATA' : ['DoubleEG', 'DoubleMuon' 'SingleElectron', 'SingleMuon' ],
         'SkimDir': '/data8/DATA/SMP/Run2Legacy_v1/2016/',
-        },
-      },
-    'TTSemiLep' : {
-      'Run2Legacy_v1_2017' : {
-        'MC' : 'CommonPyTools.DataSample.Samples_TTSemiLep_Fall17_miniaodv2',
-        'DATA' : ['SingleElectron', 'SingleMuon' ],
-	    'SkimDir': '/data8/DATA/TTSemiLep/Run2Legacy_v1/2017/',
-        },
-      'Run2Legacy_v1_2016' : {
-        'MC' : 'CommonPyTools.DataSample.Samples_TTSemiLep_Summer16_miniaodv3',
-        'DATA' : ['SingleElectron', 'SingleMuon' ],
-        'SkimDir': '/data8/DATA/TTSemiLep/Run2Legacy_v1/2016/',
         },
       },
 }

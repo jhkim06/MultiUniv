@@ -1,4 +1,5 @@
 from CommonPyTools.python.CommonTools import *
+from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed
 
 # Signal only has the style, the other background has style 3001
 # lineWidth 2, this is another option
@@ -7,21 +8,21 @@ from CommonPyTools.python.CommonTools import *
 groupPlot['WJet'] = {
     'nameHR' : "WJet",
     'isSignal' : 0,
-    'color':  616,
+    'color':  kMagenta,
     'samples' : ['WJets_MG']
     }
 
 groupPlot['TT'] = {
     'nameHR' : "TT",
     'isSignal' : 0,
-    'color':  600,
+    'color':  kBlue,
     'samples' : ['TTLL_powheg']
     }
 
 groupPlot['VV'] = {
     'nameHR' : "VV",
     'isSignal' : 0,
-    'color':  432,
+    'color':  kCyan,
     'samples' : ['WW_pythia','WZ_pythia','ZZ_pythia']
     }
 
@@ -29,7 +30,7 @@ groupPlot['VV'] = {
 groupPlot['DY'] = {
     'nameHR' : "DY",
     'isSignal' :0,
-    'color': 798, 
+    'color': kOrange-2, 
     'style': 4050,
     'lineColor':807,
     'lineWidth':1,
@@ -46,7 +47,7 @@ groupPlot['DY'] = {
 #    }
 #
 plot['DYJets'] = {
-    'color': 400,
+    'color': kYellow,
     'isSignal' :1,
     'isData': 0,
     'style': 4050,
@@ -75,7 +76,7 @@ plot['TTLL_powheg'] = {
     'scale':1,
     }
 plot['WJets_MG'] = {
-    'color': 550,
+    'color': 550, #FIXME: same color with TTLL_powheg
     'isSignal' :0,
     'isData': 0,
     'plotName':'WJets',
@@ -83,7 +84,7 @@ plot['WJets_MG'] = {
     }
 
 plot['DoubleEG'] = {
-    'color':1,
+    'color':kBlack,
     'isSignal':0,
     'isData':1,
     'plotName':'DoubleEG',
