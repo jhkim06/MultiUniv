@@ -53,7 +53,7 @@ void Skim_TTSemiLep::executeEvent(){
   //XXX pt cuts are different from Skim_Leptons.C
   //XXX electron ID is different from Skim_Leptons.C
   muons=GetMuons("POGLoose",15.,2.4); //Loose muons without isolation cut
-  electrons=GetElectrons("passVetoID_noIso",15.,2.5); //Veto elections without isolation cut
+  electrons=GetElectrons("passLooseID_noIso",15.,2.5); //Veto elections without isolation cut
 
   //std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
 
