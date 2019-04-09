@@ -8,7 +8,7 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
   // Skim Types
   //=================================
    
-  debug_ = false;
+  debug_ = true;
 
   if( HasFlag("MuMu")){
     cout<<"[Skim_ISRUnfoldInput::initializeAnalyzer] MuMu Selection"<<endl;
@@ -74,9 +74,13 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
   newtree->Branch("weightRec",&weightRec);
   newtree->Branch("bTagReweight",&bTagReweight);
   newtree->Branch("ispassRec",&ispassRec);
+  newtree->Branch("isfiducialPostFSR",&isfiducialPostFSR);
   newtree->Branch("isfiducialPreFSR",&isfiducialPreFSR);
   newtree->Branch("DYtautau",&DYtautau);
   newtree->Branch("isBveto",&isBveto);
+
+  newtree->Branch("AlphaS",&AlphaS);
+  newtree->Branch("Scale",&Scale);
 
   //b_trgSF = newtree->Branch("trgSF", &trgSF,"trgSF/F");
   //b_trgSF_Up = newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/F");
@@ -136,6 +140,9 @@ void Skim_ISRUnfoldInput::executeEvent(){
   ptPostFSR.clear();
   mPostFSR.clear();
 
+  AlphaS.clear();
+  Scale.clear();
+
   particleFSR.clear();
   anparticleFSR.clear();
 
@@ -144,6 +151,7 @@ void Skim_ISRUnfoldInput::executeEvent(){
   bTagReweight = 1.;
 
   ispassRec = 0;
+  isfiducialPostFSR = 0;
   isfiducialPreFSR = 0;
   DYtautau = 0;
   isBveto = 0;
@@ -190,6 +198,14 @@ void Skim_ISRUnfoldInput::executeEvent(){
 
     //==== MCweight is +1 or -1. Should be multiplied if you are using e.g., aMC@NLO NLO samples
     weightGen *= evt->MCweight();
+
+    for(int i = 0;i<(int)PDFWeights_AlphaS->size();i++){ // 
+      AlphaS.push_back(PDFWeights_AlphaS->at(i));
+    }
+
+    for(int i=0;i<(int)PDFWeights_Scale->size();i++){
+      Scale.push_back(PDFWeights_Scale->at(i));
+    }
   }
 
   //===============================
@@ -365,6 +381,11 @@ void Skim_ISRUnfoldInput::executeEvent(){
           if( ((genL0preFSR.Pt() > 25. && genL1preFSR.Pt() > 15.) || (genL0preFSR.Pt() > 15. && genL1preFSR.Pt() > 25.)) && fabs(genL0preFSR.Eta()) < 2.5 && fabs(genL1preFSR.Eta()) < 2.5 ) isfiducialPreFSR = 1;  
       if ( abs(gens.at(partindex.at(1)).PID() == 13) ) 
           if( ((genL0preFSR.Pt() > 20. && genL1preFSR.Pt() > 10.) || (genL0preFSR.Pt() > 10. && genL1preFSR.Pt() > 20.)) && fabs(genL0preFSR.Eta()) < 2.4 && fabs(genL1preFSR.Eta()) < 2.4 ) isfiducialPreFSR = 1;  
+
+      if ( abs(gens.at(partindex.at(1)).PID()) == 11 )
+          if( ((genL0postFSR.Pt() > 25. && genL1postFSR.Pt() > 15.) || (genL0postFSR.Pt() > 15. && genL1postFSR.Pt() > 25.)) && fabs(genL0postFSR.Eta()) < 2.5 && fabs(genL1postFSR.Eta()) < 2.5 ) isfiducialPostFSR = 1;
+      if ( abs(gens.at(partindex.at(1)).PID() == 13) )
+          if( ((genL0postFSR.Pt() > 20. && genL1postFSR.Pt() > 10.) || (genL0postFSR.Pt() > 10. && genL1postFSR.Pt() > 20.)) && fabs(genL0postFSR.Eta()) < 2.4 && fabs(genL1postFSR.Eta()) < 2.4 ) isfiducialPostFSR = 1;
 
       // status 1 leptons + all photons
       ptPreFSR.push_back(genL0preFSR.Pt());
@@ -566,7 +587,7 @@ void Skim_ISRUnfoldInput::executeEvent(){
              float btag_sf = 1, misbtag_sf = 1.;
              BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 0, btag_sf, misbtag_sf);
              if(!IsDATA) bTagReweight = btag_sf * misbtag_sf;
-             //if(debug_) std::cout <<"misbtag_sf: " << misbtag_sf << " btag_sf : " << btag_sf << " n bjets (noSF): " << n_bjet_deepcsv_m_noSF << " n bjets: " << n_bjet_deepcsv_m << std::endl;
+             if(debug_) std::cout <<"misbtag_sf: " << misbtag_sf << " btag_sf : " << btag_sf << " n bjets (noSF): " << n_bjet_deepcsv_m_noSF << " n bjets: " << n_bjet_deepcsv_m << std::endl;
 
           } // kinematic cuts on leptons and opposite charge
         } // passing dilepton trigger, how about trigger matching?

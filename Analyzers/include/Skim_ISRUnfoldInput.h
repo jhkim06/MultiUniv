@@ -32,9 +32,6 @@ private:
 
   //RootHelper rootHelp;
   double DiLepTrg_SF(TString Leg0Key, TString Leg1Key, const vector<Lepton*>& leps, int sys);
-  //TBranch *b_trgSF;
-  //TBranch *b_trgSF_Up;
-  //TBranch *b_trgSF_Dn;
 
   vector<TString> DiMuTrgs;
   vector<TString> DiElTrgs;
@@ -75,12 +72,14 @@ private:
   double ZPtCor;
 
   // tree variables used in CatAnalyzer as a first trial
+  std::vector<Double_t> AlphaS;
+  std::vector<Double_t> Scale;
   std::vector<Double_t> ptRec,mRec;
   std::vector<Double_t> ptPreFSR,mPreFSR;
   std::vector<Double_t> ptPostFSR,mPostFSR;
   std::vector<TLorentzVector> particleFSR, anparticleFSR;
   Double_t weightGen, weightRec, bTagReweight;
-  Int_t ispassRec,isfiducialPreFSR,DYtautau,isBveto;
+  Int_t ispassRec,isfiducialPostFSR,isfiducialPreFSR,DYtautau,isBveto;
   Int_t isdielectron, isdimuon;
 
 };

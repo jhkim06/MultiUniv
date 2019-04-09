@@ -15,11 +15,12 @@
 
 rm JobCheck.log
 
-for sample in DYJets10to50_MG
+for sample in DYJets10to50_MG DYJets DoubleEG
 #for sample in DoubleEG DoubleMuon DYJets10to50_MG DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
 do
   echo $sample
-  mkGardener.py --Category SMP -a Skim_DiLep -y 2017 -i $sample -n 500 --nTotFiles 1 --InSkim MetFt_L_v0_LL_v0 --userflags MuMuOrElEl --skimV 999 --dry_run
+  #mkGardener.py --Category SMP -a Skim_DiLep -y 2016 -i $sample -n 500 --nTotFiles 1 --InSkim MetFt_L_v0_LL_v0 --userflags MuMuOrElEl --skimV 0
+  mkGardener.py --Category SMP -a Skim_Leptons -y 2016 -i $sample -n 500 --userflags MetFt,L --skimV 0 
   #checkGardenerBatch.py -a Skim_DiLep -y 2017 -i $sample -n 500 --nTotFiles 0 --RundirBase /data7/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0_LL_v0_MuMuOrElEl_v0
   #./mkGardener.py --Category SMP -a hadd -y 2017 -i $sample -n 500 --nTotFiles 0 --InSkim MetFt_L_v0_LL_v0_MuMuOrElEl_v0 --userflags hadd --skimV 0 --dry_run
   #checkGardenerBatch.py -a hadd -y 2017 -i $sample -n 500 --nTotFiles 0 --RundirBase /data7/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0_LL_v0_MuMuOrElEl_v0_hadd_v0
