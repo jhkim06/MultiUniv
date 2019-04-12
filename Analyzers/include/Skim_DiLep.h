@@ -30,13 +30,18 @@ private:
   double DiLepTrg_SF(TString Leg0Key, TString Leg1Key, const vector<Lepton*>& leps, int sys);
   //TBranch *b_trgSF;
   //TBranch *b_trgSF_Up;
-  //TBranch *b_trgSF_Dn;
+  //TBranch *b_trgSF_Do;
 
   vector<TString> DiMuTrgs;
   vector<TString> DiElTrgs;
 
-  TString trgSF_key0, trgSF_key1;
-  TString LeptonID_key,LeptonID_key_POG,LeptonISO_key;
+  TString trgSF_key0, trgSF_QPlus_key0, trgSF_QMinu_key0;
+  TString trgSF_key1, trgSF_QPlus_key1, trgSF_QMinu_key1;
+
+  TString LeptonISO_key;
+
+  TString LeptonID_key_POG;
+  TString LeptonID_key, LeptonID_QPlus_key, LeptonID_QMinu_key;
   Event* evt;
 
   std::vector<Muon> muons;
@@ -48,7 +53,7 @@ private:
   double (MCCorrection::*LeptonReco_SF)(double,double,int);
   double (MCCorrection::*PileUpWeight)(int,int);
  
-  double PUweight, PUweight_Up, PUweight_Dn;
+  double PUweight, PUweight_Up, PUweight_Do;
 
   bool PtEtaPass;
   double Aod_pt[2], Aod_eta[2];
@@ -56,22 +61,22 @@ private:
   double Lep1PtCut;
   double LepEtaCut;
 
-  Double_t trgSF;
-  Double_t trgSF_Up;
-  Double_t trgSF_Dn;
+  Double_t trgSF, trgSF_Up, trgSF_Do;
 
-  double recoSF;
-  double recoSF_Up;
-  double recoSF_Dn;
+  Double_t trgSF_Q, trgSF_Q_Up, trgSF_Q_Do;
 
-  double IdSF, IdSF_Up, IdSF_Dn;
-  double IsoSF, IsoSF_Up, IsoSF_Dn;
+  double recoSF, recoSF_Up, recoSF_Do;
+
+  double IdSF, IdSF_Up, IdSF_Do;
+  double IdSF_Q, IdSF_Q_Up, IdSF_Q_Do;
+  double IsoSF, IsoSF_Up, IsoSF_Do;
 
   TLorentzVector genZ;
   double ZPtCor;
 
   // diLepton Variables
   DiLepCh diLep_Ch;
+  bool diLep_passSelectiveQ;
   TLorentzVector diLep;
   double diLep_m;
   double diLep_pt;

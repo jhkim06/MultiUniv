@@ -16,6 +16,7 @@ Electron::Electron(){
   j_mvanoiso = -999.;
   j_EnergyUnCorr = -999.;
   j_passConversionVeto = false;
+  _isGsfCtfScPixChargeConsistent = false;
   j_NMissingHits = 0;
   j_Full5x5_sigmaIetaIeta = -999.;
   j_dEtaSeed = -999.;
@@ -55,6 +56,10 @@ void Electron::SetSC(double sceta, double scphi, double sce){
 void Electron::SetMVA(double mvaiso, double mvanoiso){
   j_mvaiso = mvaiso;
   j_mvanoiso = mvanoiso;
+}
+
+void Electron::SetSelectiveQ(bool isGsfCtfScPixChargeConsistent){
+  _isGsfCtfScPixChargeConsistent = isGsfCtfScPixChargeConsistent;
 }
 
 void Electron::SetUncorrE(double une){

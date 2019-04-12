@@ -220,8 +220,10 @@ class PlotFactory:
 		    tgrData_evy_up[iBin-1] = SumQ ( tgrData_evy_up[iBin-1], self.GetPoissError(histos[sampleName].GetBinContent(iBin), 0, 1) )
 		    tgrData_evy_do[iBin-1] = SumQ ( tgrData_evy_up[iBin-1], self.GetPoissError(histos[sampleName].GetBinContent(iBin), 1, 0) )
 
-
+          # _____________________________________________________________________________
           # MC style
+	  # _____________________________________________________________________________
+
 	  if plotdef['isData'] == 0 :
 	    # only background "filled" histogram
 	    histos[sampleName].SetFillColor(plotdef['color'])
@@ -316,6 +318,7 @@ class PlotFactory:
 		  histoUp = fileIn.Get(shapeNameUp)
 		  histoDown = fileIn.Get(shapeNameDown)
 
+                # No stored histogram case
 		if histoUp == None:
 		  if 'all' in nuisance.keys() and nuisance ['all'] == 1 : # for all samples
 		    if nuisance['type'] == 'lnN' :
@@ -365,7 +368,6 @@ class PlotFactory:
 			    else :
 			      histoUp = histo.Clone(cutName+"_"+variableName+'_histo_' + sampleName+"_"+nuisanceName+"Up")
 			    histoUp.Scale(up_variation)
-
 	        if histoDown == None:
 		  if 'all' in nuisance.keys() and nuisance ['all'] == 1 : # for all samples
 		    if nuisance['type'] == 'lnN' :
@@ -462,9 +464,12 @@ class PlotFactory:
 		    # add the central sample
 		    nuisances_vy_do[nuisanceName][iBin-1] += histos[sampleName].GetBinContent (iBin)
 
+          #________________________________________________________________________________________
+	  # Data and MC
+	  #________________________________________________________________________________________
 	  # create the group of histograms to plot
 	  # this has to be done after the scaling of the previous lines
-	  # andl also after all the rest, so that we inherit the style of the histograms
+	  # and also after all the rest, so that we inherit the style of the histograms
 	  for sampleNameGroup, sampleConfiguration in groupPlot.iteritems():
 	    if sampleName in sampleConfiguration['samples']:
 	      if sampleNameGroup in histos_grouped.keys() :
@@ -474,6 +479,10 @@ class PlotFactory:
 
      
 
+
+        #_________________________________________________________________________________
+	# Sample Loop Over by plot dictionary
+        #_________________________________________________________________________________
 
 
         # set the colors for the groups of samples
@@ -502,10 +511,10 @@ class PlotFactory:
 	  for iBin in range(1,thsBackground.GetStack().Last().GetNbinsX()+1):
 	    tgrMC_vy.append(thsBackground.GetStack().Last().GetBinContent(iBin))
 
-	#
+	#NOTE##################################################################
 	# and now  let's add the signal on top of the background stack
 	# It is important to do this after setting (without signal) tgrMC_vy
-	#
+	#######################################################################
 	for sampleName, plotdef in plot.iteritems():
 	  if 'samples' in variable and sampleName not in variable['samples'] :
 	    continue
@@ -526,7 +535,7 @@ class PlotFactory:
 	    for iBin in range(len(tgrMC_vy)):
 	      nuisances_err_up.append(0.)
 	      nuisances_err_do.append(0.)
-	  # now we need to tell wthether the variation is actually up or down ans sum in quadrature those with the same sign 
+	  # now we need to tell whether the variation is actually up or down and sum in quadrature those with the same sign 
 	  for iBin in range(len(tgrMC_vy)):
 	    if nuisances_vy_up[nuisanceName][iBin] - tgrMC_vy[iBin] > 0:
 	      nuisances_err_up[iBin] = self.SumQ (nuisances_err_up[iBin], nuisances_vy_up[nuisanceName][iBin] - tgrMC_vy[iBin])
@@ -836,6 +845,7 @@ class PlotFactory:
 	reversedSampleNames = list(self._samples)
 	reversedSampleNames.reverse()
 
+	TString legMarkStyle = "F"
 	if len(groupPlot.keys()) == 0:
 	  for sampleName in reversedSampleNames:
 	    try:
@@ -844,47 +854,45 @@ class PlotFactory:
 	      continue
 
 	    if plotdef['isData'] == 0 :
-	      if 'nameHR' in plotdef.keys() :
-		if plotdef['nameHR'] != '' :
-		  if self._showIntegralLegend == 0 :
-		    tlegend.AddEntry(histos[sampleName], plotdef['nameHR'], "F")
-		  else :
-		    if variable["divideByBinWidth"] == 1:
-		      nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1,"width")
-		    else :
-		      nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1)
-		    tlegend.AddEntry(histos[sampleName], plotdef['nameHR'] + " [" + str(round(nevents,1)) + "]", "F")
+	      legMarkStyle = "F"
+	    elif plotdef['isData'] == 1:
+	      legMarkStyle = "EPL"
+	    else :
+	      print 'Specify isData at plot.py !!!!!!!!!!!!!!!!!!!!!!!!'
+	      continue
+
+
+	    if 'nameHR' in plotdef.keys() :
+	      if plotdef['nameHR'] != '' :
+	        if self._showIntegralLegend == 0 :
+	          tlegend.AddEntry(histos[sampleName], plotdef['nameHR'], legMarkStyle)
+	        else :
+	          if variable["divideByBinWidth"] == 1:
+	            nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1,"width")
+	          else :
+	            nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1)
+	          tlegend.AddEntry(histos[sampleName], plotdef['nameHR'] + " [" + str(round(nevents,1)) + "]", legMarkStyle)
+	      else:
+	        if self._showIntegralLegend == 0 :
+	          tlegend.AddEntry(histos[sampleName], sampleName, legMarkStyle)
+	        else :
+	          if variable["divideByBinWidth"] == 1:
+	            nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1,"width")
+	          else :
+	            nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1)
+	          tlegend.AddEntry(histos[sampleName], sampleName + " [" + str(round(nevents,1)) + "]", legMarkStyle)
+	    else :
+	      if self._showIntegralLegend == 0 :
+	        tlegend.AddEntry(histos[sampleName], sampleName, legMarkStyle)
 	      else :
-		if self._showIntegralLegend == 0 :
-		  tlegend.AddEntry(histos[sampleName], sampleName, "F")
-		else :
-		  if variable["divideByBinWidth"] == 1:
-		    nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1,"width")
-		  else :
-		    nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1)
-		  tlegend.AddEntry(histos[sampleName], sampleName + " [" + str(round(nevents,1)) + "]", "F")
+	        if variable["divideByBinWidth"] == 1:
+	          nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1,"width")
+	        else :
+	          nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1)
+	        tlegend.AddEntry(histos[sampleName], sampleName + " [" + str(round(nevents,1)) + "]", legMarkStyle)
 
-	    elif plotdef['isData'] == 1 :
-	      if 'nameHR' in plotdef.keys() :
-		if self._showIntegralLegend == 0 :
-		  tlegend.AddEntry(histos[sampleName], plotdef['nameHR'], "EPL")
-		else :
-		  if variable["divideByBinWidth"] == 1:
-		    nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1,"width")
-		  else :
-		    nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1)
-		  tlegend.AddEntry(histos[sampleName], plotdef['nameHR'] + " [" + str(round(nevents,1)) + "]", "EPL")
-              else :
-		if self._showIntegralLegend == 0 :
-		  tlegend.AddEntry(histos[sampleName], sampleName, "EPL")
-		else :
-		  if variable["divideByBinWidth"] == 1:
-		    nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1,"width")
-		  else :
-		    nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1)
-		  tlegend.AddEntry(histos[sampleName], sampleName + " [" + str(round(nevents,1)) + "]", "EPL")
 
-	else:
+	else : #If there are groupPlots
 	  for sampleNameGroup, sampleConfiguration in groupPlot.iteritems():
 	    if 'samples' in variable and len(set(sampleConfiguration['samples']) & set(variable['samples'])) == 0:
 	      continue
@@ -1165,23 +1173,11 @@ class PlotFactory:
 	tcanvasRatio.SaveAs(self._outputDirPlots + "/" + canvasRatioNameTemplate + self._FigNamePF + ".png")
 	tcanvasRatio.SaveAs(self._outputDirPlots + "/" + canvasRatioNameTemplate + self._FigNamePF + ".root")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	# log Y axis
+	frameDistro.GetYaxis().SetRangeUser( min(self._minLogCratio, maxYused/1000), self._maxLogCratio * maxYused )
+	pad1.SetLogy()
+	tcanvasRatio.SaveAs(self._outputDirPlots + "/log_" + canvasRatioNameTemplate + self._FigNamePF + ".png")
+	pad1.SetLogy(0)
 
 
 
