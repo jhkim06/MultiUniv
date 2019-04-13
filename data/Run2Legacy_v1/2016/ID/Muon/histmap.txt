@@ -11,3 +11,18 @@ Trigger	Eff_DATA Tail8_POGTight_BCDEF	MuonTriggerEfficiency_ISR_Mu8_OR_TkMu8_Run
 Trigger	Eff_MC Tail8_POGTight_BCDEF	MuonTriggerEfficiency_ISR_Mu8_OR_TkMu8_RunBCDEF.root	TriggerEff_ISR_BCDEF_MC
 Trigger	Eff_DATA Tail8_POGTight_GH	MuonTriggerEfficiency_ISR_Mu8_OR_TkMu8_RunGH.root	TriggerEff_ISR_GH_Data
 Trigger	Eff_MC Tail8_POGTight_GH	MuonTriggerEfficiency_ISR_Mu8_OR_TkMu8_RunGH.root	TriggerEff_ISR_GH_MC
+#############################################################
+### AFB study: Charge Separate
+#############################################################
+IDISO   SF      runBCDEF_TightID_trkIso_QPlus_pt20	Mu_IdIso_runBCDEF_TightID_trkIso_QPlus_helee_v1.root	SF_abseta_pt	TH2D
+IDISO   SF      runBCDEF_TightID_trkIso_QMinus_pt20	Mu_IdIso_runBCDEF_TightID_trkIso_QMinus_helee_v1.root	SF_abseta_pt	TH2D
+IDISO   SF      runGH_TightID_trkIso_QPlus_pt20	Mu_IdIso_runGH_TightID_trkIso_QPlus_helee_v1.root	SF_abseta_pt	TH2D
+IDISO   SF      runGH_TightID_trkIso_QMinus_pt20	Mu_IdIso_runGH_TightID_trkIso_QMinus_helee_v1.root	SF_abseta_pt	TH2D
+Trigger SF      runBCDEF_LeadMu17_TightID_trkIso_QPlus	Mu_TrigEff_runBCDEF_LeadMu17_QPlus_helee_v1.root	SF_abseta_pt	TH2D
+Trigger SF      runBCDEF_LeadMu17_TightID_trkIso_QMinus	Mu_TrigEff_runBCDEF_LeadMu17_QMinus_helee_v1.root	SF_abseta_pt	TH2D
+Trigger SF      runGH_LeadMu17_TightID_trkIso_QPlus	Mu_TrigEff_runGH_LeadMu17_QPlus_helee_v1.root	SF_abseta_pt	TH2D
+Trigger SF      runGH_LeadMu17_TightID_trkIso_QMinus	Mu_TrigEff_runGH_LeadMu17_QMinus_helee_v1.root	SF_abseta_pt	TH2D
+Trigger SF      runBCDEF_TailMu8_TightID_trkIso_QPlus	Mu_TrigEff_runBCDEF_TailMu8_QPlus_helee_v1.root	SF_abseta_pt	TH2D
+Trigger SF      runBCDEF_TailMu8_TightID_trkIso_QMinus	Mu_TrigEff_runBCDEF_TailMu8_QMinus_helee_v1.root	SF_abseta_pt	TH2D
+Trigger SF      runGH_TailMu8_TightID_trkIso_QPlus	Mu_TrigEff_runGH_TailMu8_QPlus_helee_v1.root	SF_abseta_pt	TH2D
+Trigger SF      runGH_TailMu8_TightID_trkIso_QMinus	Mu_TrigEff_runGH_TailMu8_QMinus_helee_v1.root	SF_abseta_pt	TH2D

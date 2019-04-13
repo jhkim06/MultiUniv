@@ -153,6 +153,7 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(){
     el.SetIP3D(electron_3DIPVTX->at(i), electron_3DIPerrVTX->at(i));
     el.SetMVA(electron_MVAIso->at(i), electron_MVANoIso->at(i));
     el.SetPassConversionVeto(electron_passConversionVeto->at(i));
+    el.SetSelectiveQ(electron_isGsfCtfScPixChargeConsistent->at(i));
     el.SetNMissingHits(electron_mHits->at(i));
     el.SetRho(Rho);
 

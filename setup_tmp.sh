@@ -92,6 +92,7 @@ export MYBIN=$SKFlat_WD/bin/
 export PYTHONDIR=$SKFlat_WD/python/
 export PATH=${MYBIN}:${PYTHONDIR}:${PATH}
 export PATH=${SKFlat_WD}/CommonPyTools/scripts/:${PATH}
+export PATH=${SKFlat_WD}/ShapeAnalysis/scripts/:${PATH}
 
 export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKFlat_WD/AnalyzerTools/include/:$SKFlat_WD/Analyzers/include/:$SKFlat_WD/CommonTools/include/
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH

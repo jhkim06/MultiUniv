@@ -1,5 +1,12 @@
 from CommonPyTools.python.CommonTools import *
 
+###########################
+# Number of Leptons and WP
+###########################
+
+Nlep='2'
+eleWP='mediumSelectiveQ'
+
 McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
 
 samples['DYJets'] = {
