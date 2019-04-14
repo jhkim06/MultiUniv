@@ -20,7 +20,7 @@ Trigger SF	Tail8_POGTight	Mu_TrigEff_IsoMu17Mu8_Mu8_OR_TkMu8_Run2017BCDEF_v1.roo
 #############################################################
 IDISO	SF	TightID_trkIso_QPlus_pt20	Mu_IdIso_runBCDEF_TightID_trkIso_QPlus_wonjun_v1.root	SF_abseta_pt	TH2D
 IDISO	SF	TightID_trkIso_QMinus_pt20	Mu_IdIso_runBCDEF_TightID_trkIso_QMinus_wonjun_v1.root	SF_abseta_pt	TH2D
-# Trigger Effi - passing probe : TightID_trkIso
+# Trigger Effi's passing probe : TightID_trkIso
 Trigger	SF	LeadMu17_TightID_trkIso_QPlus	Mu_TrigEff_runBCDEF_LeadMu17_QPlus_wonjun_v1.root	SF_abseta_pt    TH2D
 Trigger	SF	LeadMu17_TightID_trkIso_QMinus	Mu_TrigEff_runBCDEF_LeadMu17_QMinus_wonjun_v1.root	SF_abseta_pt    TH2D
 Trigger	SF	TailMu8_TightID_trkIso_QPlus	Mu_TrigEff_runBCDEF_TailMu8_QPlus_wonjun_v1.root	SF_abseta_pt    TH2D
