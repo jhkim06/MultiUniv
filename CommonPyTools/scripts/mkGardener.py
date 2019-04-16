@@ -76,7 +76,7 @@ IsHadd = "hadd" in args.Analyzer
 if IsSKim:
   if IsSNU:
     print  "Skim in SNU setting NJobs = 999999 !!!!!!!!!!!"
-    args.NJobs = 999999
+    #args.NJobs = 999999
   elif IsKISTI:
     print "Skim in Kisti"
   else:

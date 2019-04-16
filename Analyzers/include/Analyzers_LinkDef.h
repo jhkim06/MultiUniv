@@ -17,5 +17,6 @@
 #pragma link C++ class Skim_TTSemiLep+;
 #pragma link C++ class SMP_Validation+;
 #pragma link C++ class Skim_ISRUnfoldInput+;
+#pragma link C++ class Skim_FakeEst+;
 
 #endif
