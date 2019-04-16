@@ -4,6 +4,7 @@ from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed
 # Signal only has the style, the other background has style 3001
 # lineWidth 2, this is another option
 # style 0 : noFillColor
+# no nameHR --> using sample keyname intead
 
 groupPlot['WJet'] = {
     'nameHR' : "WJet",
@@ -43,7 +44,6 @@ groupPlot['DY'] = {
 #    'isData': 0,
 #    'style': 4050,
 #    'scale':1,
-#    'plotName':'DY10to50',
 #    }
 #
 plot['DYJets'] = {
@@ -51,43 +51,38 @@ plot['DYJets'] = {
     'isSignal' :1,
     'isData': 0,
     'style': 4050,
-    'plotName':'DY',
     }
 
 plot['WZ_pythia'] = {
     'color': 450,
     'isSignal' :0,
     'isData': 0,
-    'plotName':'WZ',
     'scale':1,
     }
 plot['WW_pythia'] = {
     'color': 550,
     'isSignal' :0,
     'isData': 0,
-    'plotName':'WW',
     'scale':1,
     }
 plot['TTLL_powheg'] = {
     'color': 550,
     'isSignal' :0,
     'isData': 0,
-    'plotName':'TT',
     'scale':1,
     }
 plot['WJets_MG'] = {
     'color': 550, #FIXME: same color with TTLL_powheg
     'isSignal' :0,
     'isData': 0,
-    'plotName':'WJets',
     'scale':1,
     }
 
 plot['DoubleEG'] = {
+    'nameHR' : "DoubleEG",
     'color':kBlack,
     'isSignal':0,
     'isData':1,
-    'plotName':'DoubleEG',
     'scale':1,
     }
 

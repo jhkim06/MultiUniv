@@ -12,6 +12,7 @@ from CommonPyTools.python.TimeTools import *
 #sys.path.insert(0,'../../data/python')
 from CommonPyTools.DataSample.SampleDef import *
 from CommonPyTools.python.BatchTools import *
+from CommonPyTools.python.CommonTools import *
 
 parser = argparse.ArgumentParser(description='SKFlat Command')
 parser.add_argument('-a', dest='Analyzer', default="")
@@ -34,6 +35,8 @@ parser.add_argument('--Category', dest='Category', default="SMP")
 args = parser.parse_args()
 
 print "Let's go"
+InputSampleName = []
+InputSampleName.append(args.InputSampleKey)
 ## make flags
 SkimName = args.SkimName
 
@@ -74,7 +77,7 @@ if args.InputSampleList is not "":
     line = line.strip('\n')
     InputSamples[line]=line
 else:
-  InputSamples,StringForHash = GetInputSamples(args.InputSampleKey,args.DataPeriod,args.Year,args.Category,ProductionKey)
+  InputSamples,StringForHash = GetInputSamples(InputSampleName, args.DataPeriod, args.Year, args.Category, ProductionKey)
 
 
 print 'InputSamples', InputSamples

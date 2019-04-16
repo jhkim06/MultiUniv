@@ -12,6 +12,18 @@ Trigger Eff_MC		Mu50_POGHighPt		MuonTriggerEfficiency_ZprimeToNN_Mu50_Run2017BCD
 ##############################################################
 ### SMP study: private charge inclusive SF
 #########################################################
-# Id    ef,sf      wpName            rootfile                         histname
-Trigger SF	Lead17_POGTight	MuTrgEff_IsoMu17Mu8_Iso17_Run2017BCDEF_V1.root	TriggerEff_AFB_2017BCDEF_SF
-Trigger SF  Tail8_POGTight	MuTrgEff_IsoMu17Mu8_Mu8_OR_TkMu8_Run2017BCDEF_V1.root	TriggerEff_AFB_2017BCDEF_SF
+# Id    ef,sf   wpName   	rootfile                        		 histname
+Trigger SF	Lead17_POGTight	Mu_TrigEff_IsoMu17Mu8_Iso17_Run2017BCDEF_v1.root	TriggerEff_AFB_2017BCDEF_SF
+Trigger SF	Tail8_POGTight	Mu_TrigEff_IsoMu17Mu8_Mu8_OR_TkMu8_Run2017BCDEF_v1.root	TriggerEff_AFB_2017BCDEF_SF
+#############################################################
+### AFB study: Charge Separate
+#############################################################
+IDISO	SF	TightID_trkIso_QPlus_pt20	Mu_IdIso_runBCDEF_TightID_trkIso_QPlus_wonjun_v1.root	SF_abseta_pt	TH2D
+IDISO	SF	TightID_trkIso_QMinus_pt20	Mu_IdIso_runBCDEF_TightID_trkIso_QMinus_wonjun_v1.root	SF_abseta_pt	TH2D
+# Trigger Effi's passing probe : TightID_trkIso
+Trigger	SF	LeadMu17_TightID_trkIso_QPlus	Mu_TrigEff_runBCDEF_LeadMu17_QPlus_wonjun_v1.root	SF_abseta_pt    TH2D
+Trigger	SF	LeadMu17_TightID_trkIso_QMinus	Mu_TrigEff_runBCDEF_LeadMu17_QMinus_wonjun_v1.root	SF_abseta_pt    TH2D
+Trigger	SF	TailMu8_TightID_trkIso_QPlus	Mu_TrigEff_runBCDEF_TailMu8_QPlus_wonjun_v1.root	SF_abseta_pt    TH2D
+Trigger	SF	TailMu8_TightID_trkIso_QMinus	Mu_TrigEff_runBCDEF_TailMu8_QMinus_wonjun_v1.root	SF_abseta_pt    TH2D
+
+

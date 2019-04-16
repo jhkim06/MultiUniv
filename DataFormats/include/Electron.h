@@ -32,6 +32,9 @@ public:
   inline double MVAIso() const { return j_mvaiso; }
   inline double MVANoIso() const { return j_mvanoiso; }
 
+  void SetSelectiveQ(bool isGsfCtfScPixChargeConsistent);
+  inline bool SelectiveQ() const {return _isGsfCtfScPixChargeConsistent;}
+
   void SetUncorrE(double une);
   inline double UncorrE() const { return j_EnergyUnCorr; }
   inline double UncorrPt() const { return Pt() * j_EnergyUnCorr/E(); }
@@ -132,6 +135,7 @@ private:
   double j_mvaiso, j_mvanoiso;
   double j_EnergyUnCorr;
   bool j_passConversionVeto;
+  bool _isGsfCtfScPixChargeConsistent;
   int j_NMissingHits;
   double j_Full5x5_sigmaIetaIeta, j_dEtaSeed, j_dPhiIn, j_HoverE, j_InvEminusInvP, j_e2x5OverE5x5, j_e1x5OverE5x5, j_trkiso, j_dr03EcalRecHitSumEt, j_dr03HcalDepth1TowerSumEt;
   unsigned int j_IDBit;

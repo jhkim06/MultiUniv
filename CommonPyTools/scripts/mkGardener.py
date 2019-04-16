@@ -74,9 +74,12 @@ IsHadd = "hadd" in args.Analyzer
 
 
 if IsSKim:
+  print "skimskimskimskimskimskimskim"
   if IsSNU:
-    print  "Skim in SNU setting NJobs = 999999 !!!!!!!!!!!"
+    print  "Skim in SNU setting !!!!!!!!!!!"
+    print 'argss.NJobs',args.NJobs
     #args.NJobs = 999999
+    #print 'argss.NJobs to be',args.NJobs
   elif IsKISTI:
     print "Skim in Kisti"
   else:
@@ -118,7 +121,7 @@ if args.InputSampleKeyList is not "":
     InputSamples[line]=line
     StringForHash += line
 else:
-  InputSamples,StringForHash = GetInputSamples(InputSampleName,args.DataPeriod,args.Year,args.Category,ProductionKey)
+  InputSamples,StringForHash = GetInputSamples(InputSampleName, args.DataPeriod, args.Year, args.Category, ProductionKey)
 
 FileRangesForEachSample = []
 
@@ -153,6 +156,7 @@ if IsKISTI:
 for InputSample in InputSamples:
 
   NJobs = args.NJobs
+  #print 'NJobs', NJobs
 
 
   ## Global Varialbes
@@ -476,7 +480,7 @@ queue {2}
 
   CheckTotalNFile=0
   for it_job in range(0,len(FileRanges)):
-    time.sleep(0.3)
+    time.sleep(0.2)
 
     #print "["+str(it_job)+"th]",
     #print FileRanges[it_job],
@@ -546,6 +550,7 @@ void {2}(){{
       if IsSNU:
         tmp_inputFilename = inputFileList[ FileRanges[it_job][0] ].strip('\n')
 	#print 'tmp_inputFilename', tmp_inputFilename
+	#print "InputSamples[InputSample]['key']",InputSamples[InputSample]['key'] 
 	#print 'InputSample',InputSample
 	#if "_" in InputSample:
 	#  delemeter = InputSample.split('_')[0]+'_'
@@ -555,7 +560,9 @@ void {2}(){{
 	if IsDATA:
 	  chunkedInputFileName = InputSamples[InputSample]['key']+tmp_inputFilename.split(InputSamples[InputSample]['key'])[1]
 	else:
-	  chunkedInputFileName = InputSample+tmp_inputFilename.split(InputSample)[1]
+	  #print "split", tmp_inputFilename.split(InputSample)
+	  chunkedInputFileName = InputSample+tmp_inputFilename.split(InputSample)[-1]
+	  #chunkedInputFileName = InputSample+tmp_inputFilename.split(InputSample)[1]
 
 	#print 'chumkedInputFileName',chunkedInputFileName
 
@@ -577,11 +584,11 @@ void {2}(){{
 	#print "outPath", outPath
 	#outPath = FinalOutputPath + '/'+InSkimString
 	out_Path_FileName = FinalOutputPath+'/'+chunkedInputFileName
-	out_FileName = out_Path_FileName.split('/')[-1]
-	out_Path          = out_Path_FileName.replace(out_FileName,'')
 	#print 'out_Path_FileName',out_Path_FileName
-	#print 'out_Path',out_Path
+	out_FileName = out_Path_FileName.split('/')[-1]
 	#print 'out_FileName',out_FileName
+	out_Path          = out_Path_FileName.replace(out_FileName,'')
+	#print 'out_Path',out_Path
 	#fileName=InSkimString+str(it_job).zfill(3)+'root'
         os.system('mkdir -p '+ out_Path)
         out.write('  m.SetOutfilePath("'+out_Path_FileName+'");\n')
