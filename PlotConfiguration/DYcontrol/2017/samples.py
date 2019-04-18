@@ -7,7 +7,8 @@ from CommonPyTools.python.CommonTools import *
 Nlep='2'
 eleWP='mediumSelectiveQ'
 
-McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
+McWeight = 'baseW*PUweight*trgSF_Q*recoSF*IdSF_Q*IsoSF*ZPtCor'
+#McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
 
 samples['DYJets'] = {
     'weight' :McWeight,
@@ -43,7 +44,7 @@ samples['DoubleEG'] = {
     'weight' :'1',
     }
 
-samples['DoubleMuon'] = {
-    'weight' :'1',
-    }
-
+#samples['DoubleMuon'] = {
+#    'weight' :'1',
+#    }
+#

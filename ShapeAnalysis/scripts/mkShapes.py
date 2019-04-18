@@ -91,6 +91,19 @@ else:
   print 'You should have sample configuration file,  exiting...'
   exit()
 
+nuisances = {}
+if opt.nuisancesCfg != '':
+  if os.path.exists(opt.nuisancesCfg):
+    handle = open(opt.nuisancesCfg,'r')
+    exec(handle)
+    handle.close()
+  else:
+    print 'You should have nuisances configuration file,  exiting...'
+    exit()
+else:
+  print 'You should have nuisances configuration file,  exiting...'
+  exit()
+
 # Global Variables
 InSkimString = opt.InSkim
 SAMPLE_INFO_DIR = SampleInfoDir(opt.Year)
@@ -170,17 +183,17 @@ for InputSample in InputSamples:
   IsDATA = False
   DataPeriod = ""
   print 'InputSample', InputSample
-  weight = '1'
   if ":" in InputSample:
     IsDATA = True
     #tmp = InputSample
     #InputSample = tmp.split(":")[0]
     DataPeriod = InputSample.split(":")[1]
     print 'DataPeriod', DataPeriod
-  else:
-    weight = samples[InputSamples[InputSample]['key']]['weight']
 
-  #print 'weight',weight
+
+  sampleName = InputSamples[InputSample]['key']
+  sample     = samples[InputSamples[InputSample]['key']]
+
 
 
   ## Prepare RunDir
@@ -275,6 +288,9 @@ for InputSample in InputSamples:
 	  input_filelist.write(fileFullPathName+'\n')
 
     input_filelist.close()
+    if len(inputFileList) == 0 :
+      print 'there is no file at',tmpSkimDir ,'exiting...'
+      exit()
   #print 'inputFiles',inputFileList
 
 
@@ -283,11 +299,12 @@ for InputSample in InputSamples:
   else:
     NTotalFiles = len(inputFileList)
 
-  print "NTotalFiles: ", NTotalFiles
 
   if NJobs>NTotalFiles:
     NJobs = NTotalFiles
 
+  print "NTotalFiles: ", NTotalFiles
+  print "NJobs: ", NJobs
 
   #SumFileSize=0
   #if 'hadd' in opt.Analyzer:
@@ -354,6 +371,7 @@ for InputSample in InputSamples:
     os.system('mkdir -p '+thisjob_dir)
 
     inFileFullNames =[]
+    print 'FileRanges: ', FileRanges[it_job]
     for it_file in FileRanges[it_job]:
       inFileFullNames.append( inputFileList[it_file].strip('\n') )
 
@@ -367,8 +385,11 @@ for InputSample in InputSamples:
     #OutFullPathFile_List.append(OutFullPathFile)
 
 
+    #print 'mkShape: sample', sample
+
+
     if opt.doBatch and not opt.doHadd:
-      print 'batch making histo'
+      #print 'batch making histo'
       jobName = 'mkShape'+str(it_job)
       jobs = batchJobs(jobName,opt.Queue, thisjob_dir,opt.dry_run)
       jobs.AddPy2Sh()
@@ -377,14 +398,15 @@ for InputSample in InputSamples:
       jobs.AddPy('factory._treeName = '+'"'+opt.treeName+'"' )
       instructions  = ""
       instructions += "factory.makeNominals( \n"
-      instructions += "		'"+InputSamples[InputSample]['key'] + "', \n"
+      instructions += "		'"+ sampleName + "', \n"
+      instructions += "		"+str(sample) + ", \n"
       instructions += "		"+str(inFileFullNames) + ", \n"
       instructions += "		'"+OutFullPathFile +" ', \n"
       instructions += "		"+str(variables) + ", \n"
       instructions += "		"+str(columns) + ", \n"
       instructions += "		"+str(cuts) + ", \n"
       instructions += "		'"+supercut + "', \n"
-      instructions += "		'"+weight + "' ) \n"
+      instructions += "		"+str(nuisances) + ") \n"
       jobs.AddPy(instructions)
 
       jobs.Sub()

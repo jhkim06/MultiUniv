@@ -1,5 +1,4 @@
 
-
 ####################################################################################
 #                                                                                  #
 #            _     _____ _                         ____        _   _               #
@@ -35,6 +34,7 @@
 ############################################################################
 # --scaleToPlot : default 2.0
 # --showIntegralLegend=0 default
+# --onlyVariable=mll
 
 ############################################################################################
 #        _             _ _                 _           _     _           _             _   #
@@ -50,6 +50,6 @@
 
 
 
-mkShapes.py --pycfg  configuration.py -n 400 --nTotFiles 0  --overWrite --doBatch 
-#mkShapes.py --pycfg  configuration.py -n 400 --nTotFiles 0  --overWrite --doHadd --cleanUp
-#mkPlot.py --pycfg configuration.py --inputFile=Output_MetFt_L_v0_LL_v0_MuMuOrElEl_v0_hadd_v0_DY/DY.root --onlyVariable=mll --minLogC=1 --maxLogC=1000
+#mkShapes.py --pycfg  configuration.py -n 300 --nTotFiles 0  --overWrite --doBatch 
+#mkShapes.py --pycfg  configuration.py -n 300 --nTotFiles 0  --overWrite --doHadd --cleanUp
+mkPlot.py --pycfg configuration.py --inputFile=Output_MetFt_L_v0_LL_v0_MuMuOrElEl_v1_DY/DY.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1

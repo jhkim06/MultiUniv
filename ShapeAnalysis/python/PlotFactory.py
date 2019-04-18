@@ -80,7 +80,7 @@ class PlotFactory:
 	if not "divideByBinWidth" in variable.keys():
 	  variable["divideByBinWidth"] = 0
 	
-	tcanvas = ROOT.TCanvas( cutName + "_" + variableName, "" , 800, 600 )
+	tcanvas = ROOT.TCanvas( cutName + "_" + variableName, "distro" , 800, 600 )
 	tcanvasRatio = ROOT.TCanvas( "Ratio" + cutName + "_" + variableName, "Ratio", 800, 800 )
 	weight_X_tcanvasRatio = ROOT.TCanvas( "weight_X_tcanvasRatio" + cutName + "_" + variableName, "weight_X_tcanvasRatio", 800, 800 )
 	tcanvasDifference = ROOT.TCanvas( "Difference" + cutName + "_" + variableName, "Difference", 800, 800 )
@@ -294,6 +294,7 @@ class PlotFactory:
 	      if 'samples' in nuisance.keys() :
 		for sampleNuisName, configurationNuis in nuisance['samples'].iteritems() :
 		  if sampleNuisName == sampleName: # complain only if the nuisance was supposed to show up
+		    print 'nuisance cfg', configurationNuis, 'for', sampleName
 		    is_this_nuisance_to_be_considered = True
 	      elif 'all' in nuisance.keys() and nuisance ['all'] == 1 : # for all samples
 		is_this_nuisance_to_be_considered = True
@@ -845,7 +846,8 @@ class PlotFactory:
 	reversedSampleNames = list(self._samples)
 	reversedSampleNames.reverse()
 
-	TString legMarkStyle = "F"
+	legMarkStyle = "F"
+	#ROOT.TString legMarkStyle = "F"
 	if len(groupPlot.keys()) == 0:
 	  for sampleName in reversedSampleNames:
 	    try:

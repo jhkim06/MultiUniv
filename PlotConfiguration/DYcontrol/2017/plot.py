@@ -48,7 +48,7 @@ groupPlot['DY'] = {
 #
 plot['DYJets'] = {
     'color': kYellow,
-    'isSignal' :1,
+    'isSignal' :0,
     'isData': 0,
     'style': 4050,
     }
