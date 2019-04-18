@@ -1,10 +1,10 @@
-#ifndef Skim_ISRUnfoldInput_h
-#define Skim_ISRUnfoldInput_h
+#ifndef Skim_FakeEst_h
+#define Skim_FakeEst_h
 
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 
-class Skim_ISRUnfoldInput : public AnalyzerCore {
+class Skim_FakeEst : public AnalyzerCore {
 
 public:
 
@@ -12,8 +12,8 @@ public:
   void executeEventFromParameter(AnalyzerParameter param);
   void executeEvent();
 
-  Skim_ISRUnfoldInput();
-  ~Skim_ISRUnfoldInput();
+  Skim_FakeEst();
+  ~Skim_FakeEst();
 
   TTree *newtree;
 
@@ -78,6 +78,8 @@ private:
   std::vector<Double_t> ptPreFSR,mPreFSR;
   std::vector<Double_t> ptPostFSR,mPostFSR;
   std::vector<TLorentzVector> particleFSR, anparticleFSR;
+  Bool_t isOS;
+  std::vector<Double_t> lepIso;
   Double_t weightGen, weightRec, bTagReweight;
   Int_t ispassRec,isfiducialPostFSR,isfiducialPreFSR,DYtautau,isBveto;
   Int_t isdielectron, isdimuon;

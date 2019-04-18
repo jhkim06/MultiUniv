@@ -29,10 +29,10 @@ void Skim_DiLep::initializeAnalyzer(){
 
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");
-  newtree = fChain->CloneTree(0);
+  newtree = fChain->CloneTree(0); // JH : What relation does this outfile have with the fChain(created by SetTreeName)?
 
   // New Branch
-  newtree->Branch("IsMuMu", &IsMuMu,"IsMuMu/I");
+  newtree->Branch("IsMuMu", &IsMuMu,"IsMuMu/I"); // JH : What's the meaning of each arguments?
   newtree->Branch("IsElEl", &IsElEl,"IsElel/I");
 
 

@@ -1,6 +1,6 @@
-#include "Skim_ISRUnfoldInput.h"
+#include "Skim_FakeEst.h"
 
-void Skim_ISRUnfoldInput::initializeAnalyzer(){
+void Skim_FakeEst::initializeAnalyzer(){
 
   initializeAnalyzerTools(); //To use SF
 
@@ -11,16 +11,16 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
   debug_ = true;
 
   if( HasFlag("MuMu")){
-    cout<<"[Skim_ISRUnfoldInput::initializeAnalyzer] MuMu Selection"<<endl;
+    cout<<"[Skim_FakeEst::initializeAnalyzer] MuMu Selection"<<endl;
   }
   else if( HasFlag("ElEl")){
-    cout<<"[Skim_ISRUnfoldInput::initializeAnalyzer] ElEl Selection"<<endl;
+    cout<<"[Skim_FakeEst::initializeAnalyzer] ElEl Selection"<<endl;
   }
   else if( HasFlag("MuMuOrElEl")){
-    cout<<"[Skim_ISRUnfoldInput::initializeAnalyzer] MuMu or ElEl Selection"<<endl;
+    cout<<"[Skim_FakeEst::initializeAnalyzer] MuMu or ElEl Selection"<<endl;
   }
   else{
-    cout <<"[Skim_ISRUnfoldInput::executeEvent] Not ready for this Flags ";
+    cout <<"[Skim_FakeEst::executeEvent] Not ready for this Flags ";
     for(unsigned int i=0; i<Userflags.size(); i++){
       cout <<"  "<< Userflags.at(i);
     }
@@ -37,28 +37,6 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
   // New Branch
   newtree->Branch("IsMuMu", &IsMuMu,"IsMuMu/I");
   newtree->Branch("IsElEl", &IsElEl,"IsElel/I");
-
-  newtree->Branch("PUweight", &PUweight,"PUweight/D");
-  newtree->Branch("PUweight_Up", &PUweight_Up,"PUweight_Up/D");
-  newtree->Branch("PUweight_Dn", &PUweight_Dn,"PUweight_Dn/D");
-
-  newtree->Branch("trgSF",    &trgSF,   "trgSF/D");
-  newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/D");
-  newtree->Branch("trgSF_Dn", &trgSF_Dn,"trgSF_Dn/D");
-
-  newtree->Branch("recoSF",    &recoSF,   "recoSF/D");
-  newtree->Branch("recoSF_Up", &recoSF_Up,"recoSF_Up/D");
-  newtree->Branch("recoSF_Dn", &recoSF_Dn,"recoSF_Dn/D");
-
-  newtree->Branch("IdSF",    &IdSF,   "IdSF/D");
-  newtree->Branch("IdSF_Up", &IdSF_Up,"IdSF_Up/D");
-  newtree->Branch("IdSF_Dn", &IdSF_Dn,"IdSF_Dn/D");
-
-  newtree->Branch("IsoSF",    &IsoSF,   "IsoSF/D");
-  newtree->Branch("IsoSF_Up", &IsoSF_Up,"IsoSF_Up/D");
-  newtree->Branch("IsoSF_Dn", &IsoSF_Dn,"IsoSF_Dn/D");
-
-  newtree->Branch("ZPtCor", &ZPtCor,"ZPtCor/D");
 
   newtree->Branch("isdielectron",&isdielectron);
   newtree->Branch("isdimuon",&isdimuon);
@@ -78,6 +56,8 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
   newtree->Branch("isfiducialPreFSR",&isfiducialPreFSR);
   newtree->Branch("DYtautau",&DYtautau);
   newtree->Branch("isBveto",&isBveto);
+  newtree->Branch("isOS",&isOS);
+  newtree->Branch("lepIso",&lepIso);
 
   newtree->Branch("AlphaS",&AlphaS);
   newtree->Branch("Scale",&Scale);
@@ -90,7 +70,7 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
   DiMuTrgs.clear();
   DiElTrgs.clear();
 
-  cout << "[Skim_ISRUnfoldInput::initializeAnalyzer] Skim List====================== " << endl;
+  cout << "[Skim_FakeEst::initializeAnalyzer] Skim List====================== " << endl;
   if(DataYear==2016){
     DiMuTrgs = {
       "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v",
@@ -113,7 +93,7 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
     };
   }
   else{
-    cout<<"[Skim_ISRUnfoldInput::executeEvent] ERROR, this year "<<DataYear<<" is not prepared sorry, exiting..."<<endl;
+    cout<<"[Skim_FakeEst::executeEvent] ERROR, this year "<<DataYear<<" is not prepared sorry, exiting..."<<endl;
     exit(EXIT_FAILURE);
   }
 
@@ -127,7 +107,7 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
 
 }
 
-void Skim_ISRUnfoldInput::executeEvent(){
+void Skim_FakeEst::executeEvent(){
 
   muons.clear();
   electrons.clear();
@@ -155,6 +135,8 @@ void Skim_ISRUnfoldInput::executeEvent(){
   isfiducialPreFSR = 0;
   DYtautau = 0;
   isBveto = 0;
+  isOS = false;
+  lepIso.clear();
 
   isdielectron = 0;
   isdimuon = 0;
@@ -165,60 +147,21 @@ void Skim_ISRUnfoldInput::executeEvent(){
   newtree->SetBranchAddress("IsMuMu",   &IsMuMu);
   newtree->SetBranchAddress("IsElEl",   &IsElEl);
 
-  newtree->SetBranchAddress("PUweight",   &PUweight);
-  newtree->SetBranchAddress("PUweight_Up",&PUweight_Up);
-  newtree->SetBranchAddress("PUweight_Dn",&PUweight_Dn);
-
-  newtree->SetBranchAddress("trgSF",   &trgSF);
-  newtree->SetBranchAddress("trgSF_Up",&trgSF_Up);
-  newtree->SetBranchAddress("trgSF_Dn",&trgSF_Dn);
-
-  newtree->SetBranchAddress("recoSF",   &recoSF);
-  newtree->SetBranchAddress("recoSF_Up",&recoSF_Up);
-  newtree->SetBranchAddress("recoSF_Dn",&recoSF_Dn);
-
-  newtree->SetBranchAddress("IdSF",   &IdSF);
-  newtree->SetBranchAddress("IdSF_Up",&IdSF_Up);
-  newtree->SetBranchAddress("IdSF_Dn",&IdSF_Dn);
-
-  newtree->SetBranchAddress("IsoSF",   &IsoSF);
-  newtree->SetBranchAddress("IsoSF_Up",&IsoSF_Up);
-  newtree->SetBranchAddress("IsoSF_Dn",&IsoSF_Dn);
-
-  newtree->SetBranchAddress("ZPtCor",&ZPtCor);
-
   FillHist("CutFlow",5,1,30,0,30);
 
   if(!IsDATA){
     //==== weight_norm_1invpb is set to be event weight normalized to 1 pb-1
     //==== So, you have to multiply trigger luminosity
     //==== you can pass trigger names to ev.GetTriggerLumi(), but if you are using unprescaled trigger, simply pass "Full"
-
+    
     weightGen *= weight_norm_1invpb*evt->GetTriggerLumi("Full");
-
+    
     //==== MCweight is +1 or -1. Should be multiplied if you are using e.g., aMC@NLO NLO samples
     weightGen *= evt->MCweight();
-
-    for(int i = 0;i<(int)PDFWeights_AlphaS->size();i++){ // 
-      AlphaS.push_back(PDFWeights_AlphaS->at(i));
-    }
-
-    for(int i=0;i<(int)PDFWeights_Scale->size();i++){
-      Scale.push_back(PDFWeights_Scale->at(i));
-    }
+    
   }
 
-  //===============================
-  // Gen Info
-  // status code: http://home.thep.lu.se/~torbjorn/pythia81html/ParticleProperties.html
-  // genParticles status code: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePATMCMatchingExercise 
-  //===============================
-
   ZPtCor = 1;
-  std::map<int, int> eleIndex;
-  std::map<int, int> posIndex;
-  std::map<int, int> muIndex;
-  std::map<int, int> antimuIndex;
 
   if(MCSample.Contains("DYJets") || MCSample.Contains("DYJets10to50_MG")){
     Gen genL0Fsr, genL1Fsr, genL0postFSR, genL1postFSR, genHardL0, genHardL1;
@@ -240,173 +183,18 @@ void Skim_ISRUnfoldInput::executeEvent(){
         }else if(!genHardL0.IsEmpty() && gens.at(i).PID() == -genHardL0.PID()){
           genHardL1 = gens.at(i);
           if(debug_) std::cout << "genHardL1 ID: " << gens.at(i).PID() << " index: " << i << " pt: " << gens.at(i).Pt() << std::endl;
-          if(abs( genHardL1.PID()) == 11) isdielectron = 1;    
-          if(abs( genHardL1.PID()) == 13) isdimuon = 1;    
+          if(abs( genHardL1.PID()) == 11) isdielectron = 1;
+          if(abs( genHardL1.PID()) == 13) isdimuon = 1;
           if(abs( genHardL1.PID()) == 15){
- 	    DYtautau = 1;  
+            DYtautau = 1;
             //prefix = "tau_";
             break;
           }
         }
-      }   
-
-      // search from the status 1 leptons 
-      if(gens.at(i).Status() == 1){ // entering detector
-
-        if( (abs(gens.at(i).PID())==11 || abs(gens.at(i).PID())==13) ){
-		if(debug_) std::cout << i << " pid: " << gens.at(i).PID() << " mother index: " << gens.at(i).MotherIndex() << " fromHardProcessFinalState: " << gens.at(i).fromHardProcessFinalState() << " isPrompt: " << gens.at(i).isPrompt() << " isPromptFinalState(): " << gens.at(i).isPromptFinalState() << std::endl;
-
-                int initIndex = findInitialMoterIndex( gens.at(i).MotherIndex(), i, gens); // find the initial index of the lepton (status 1 and prompt)
-                if(debug_) std::cout << " initial index: " << initIndex << " initial ID: " << gens.at(initIndex).PID() << " status: " << gens.at(initIndex).Status() << std::endl;
-                if( gens.at(i).PID() == 11 )  eleIndex.insert(std::make_pair(initIndex, i));
-                if( gens.at(i).PID() == -11 ) posIndex.insert(std::make_pair(initIndex, i));
-                if( gens.at(i).PID() == 13 )  muIndex.insert(std::make_pair(initIndex, i));
-                if( gens.at(i).PID() == -13 ) antimuIndex.insert(std::make_pair(initIndex, i));
-        } 
-
-        else if(gens.at(i).PID()==22){
-                gphotons.push_back(gens.at(i));
-        }
-      }// status 1   
-    }// end of gen loop   
-
-    if(debug_) std::cout << "gen loop end..........." << std::endl;
-
-    if( DYtautau == 0 ){
-      vector<int> electronindex, positronindex;
-      vector<int> muonindex, antimuonindex;
-      vector<int> partindex, anpartindex;
-
-      selectDilepton(gens, eleIndex, posIndex, electronindex, positronindex);
-      selectDilepton(gens, muIndex, antimuIndex, muonindex, antimuonindex);
-
-      if( electronindex.size() > 0 && muonindex.size() > 0 ){ // both electron and muon pair exist, select a pair with larger mass
-         if( (gens.at(electronindex.at(0))+gens.at(positronindex.at(0))).M() > (gens.at(muonindex.at(0))+gens.at(antimuonindex.at(0))).M() ){
-            partindex.push_back(electronindex.at(0));
-            partindex.push_back(electronindex.at(1));
-
-            anpartindex.push_back(positronindex.at(0));
-            anpartindex.push_back(positronindex.at(1));
-         }
-         else{
-            partindex.push_back(muonindex.at(0));
-            partindex.push_back(muonindex.at(1));
-
-            anpartindex.push_back(antimuonindex.at(0));
-            anpartindex.push_back(antimuonindex.at(1));
-         }
       }
-      else if ( electronindex.size() > 0 && muonindex.size() == 0 ){ // only electron pair
-              partindex.push_back(electronindex.at(0));
-              partindex.push_back(electronindex.at(1));
+    }
+  }
 
-              anpartindex.push_back(positronindex.at(0));
-              anpartindex.push_back(positronindex.at(1));
-      }
-      else if ( electronindex.size() == 0 && muonindex.size() > 0 ){ // only muon pair
-              partindex.push_back(muonindex.at(0));
-              partindex.push_back(muonindex.at(1));
-
-              anpartindex.push_back(antimuonindex.at(0));
-              anpartindex.push_back(antimuonindex.at(1));
-      }
-
-      if(debug_) std::cout << "check selectDilepton, electronindex size: " << electronindex.size() << " positronindex size: " << positronindex.size() << std::endl;
-      if(debug_) std::cout << "check selectDilepton, muonindex size: " << muonindex.size() << " antimuonindex size: " << antimuonindex.size() << std::endl;
-      if( electronindex.size() > 0 ){
-         if(debug_) std::cout << "ele first index: " << electronindex.at(0) << " second index: " << electronindex.at(1) << std::endl;
-         if(debug_) std::cout << "pos first index: " << positronindex.at(0) << " second index: " << positronindex.at(1) << std::endl;
-      }
-
-      if( muonindex.size() > 0 ){
-         if(debug_) std::cout << "mu first index: " << muonindex.at(0) << " second index: " << muonindex.at(1) << std::endl;
-         if(debug_) std::cout << "an-mu first index: " << antimuonindex.at(0) << " second index: " << antimuonindex.at(1) << std::endl;
-      }
-
-      if(debug_) std::cout << "selected lepton pair, first index particle : " << partindex.at(0) << " second index : " << partindex.at(1) << std::endl;
-
-      // store index from initial to final lepton
-      std::map<int, int> partindexmap;
-      saveMotherIndexMap(gens, partindex.at(1), partindex.at(0), partindexmap);
-      saveMotherIndexMap(gens, anpartindex.at(1), anpartindex.at(0), partindexmap);
-
-      std::map<int, int>::iterator it = partindexmap.begin();
-      while(it != partindexmap.end()){
-            if(debug_) std::cout << "check saveMotherIndexMap, index : " << it->first << " ID: " << it->second << std::endl; 
-            it++;
-      }
-
-      for(unsigned int i = 0; i < gphotons.size(); i++){
-         if(debug_) std::cout << i << " th photon, mother index: " << gphotons.at(i).MotherIndex() << " mother ID: " << gens.at(gphotons.at(i).MotherIndex()).PID() << " pt: " << gphotons.at(i).Pt() << std::endl;
-
-         if( partindexmap.find(gphotons.at(i).MotherIndex()) != partindexmap.end() ){
-           if(debug_) std::cout << "found mother lepton, lepton index: " << partindexmap.find(gphotons.at(i).MotherIndex())->first << " ID: " << partindexmap.find(gphotons.at(i).MotherIndex())->second << std::endl;
-           if(partindexmap.find(gphotons.at(i).MotherIndex())->second > 0){
-              genL0Fsr += gphotons.at(i);
-              particleFSR.push_back(gphotons.at(i));
-           }
-           else{
-               genL1Fsr += gphotons.at(i);
-               anparticleFSR.push_back(gphotons.at(i));
-           }
-         }
-      }
-
-      // Gen genL0preFSR, genL1preFSR, genL0Fsr, genL1Fsr, genL0postFSR, genL1postFSR, genHardL0, genHardL1;
-      //
-      genL0postFSR = gens.at(partindex.at(1));
-      genL1postFSR = gens.at(anpartindex.at(1));
-      if(debug_){
-        if(debug_) std::cout << "post fsr lep0 pt: " << genL0postFSR.Pt() << " index: " << partindex.at(1) << " lep1 pt: " << genL1postFSR.Pt() << " index: " << anpartindex.at(1) << std::endl;
-      }
-
-      if(debug_) std::cout << "dilep mass pos fsr: " << (genL0postFSR+genL1postFSR).M() << std::endl;
-
-      if(particleFSR.size() > 0) genL0preFSR = genL0postFSR + genL0Fsr;
-      else genL0preFSR = genL0postFSR;
-      if(anparticleFSR.size() > 0) genL1preFSR = genL1postFSR + genL1Fsr;
-      else genL1preFSR = genL1postFSR;
-
-      if(debug_) std::cout << "dilep mass pre fsr: " << (genL0preFSR+genL1preFSR).M() << std::endl;
-
-      if(debug_){
-        std::cout << "full dressed lep0: " << genL0preFSR.Pt() << " initial lep0: " << gens.at(partindex.at(0)).Pt() << std::endl;
-        std::cout << "full dressed lep1: " << genL1preFSR.Pt() << " initial lep1: " << gens.at(anpartindex.at(0)).Pt() << std::endl;
-      }
-
-      genZ = genL0preFSR + genL1preFSR;
-      ZPtCor = mcCorr->GetZPtWeight(genZ.Pt(),genZ.Rapidity(),abs(genHardL0.PID())==13 ? Lepton::Flavour::MUON : Lepton::Flavour::ELECTRON);
-
-      if ( abs(gens.at(partindex.at(1)).PID()) == 11 ) 
-          if( ((genL0preFSR.Pt() > 25. && genL1preFSR.Pt() > 15.) || (genL0preFSR.Pt() > 15. && genL1preFSR.Pt() > 25.)) && fabs(genL0preFSR.Eta()) < 2.5 && fabs(genL1preFSR.Eta()) < 2.5 ) isfiducialPreFSR = 1;  
-      if ( abs(gens.at(partindex.at(1)).PID() == 13) ) 
-          if( ((genL0preFSR.Pt() > 20. && genL1preFSR.Pt() > 10.) || (genL0preFSR.Pt() > 10. && genL1preFSR.Pt() > 20.)) && fabs(genL0preFSR.Eta()) < 2.4 && fabs(genL1preFSR.Eta()) < 2.4 ) isfiducialPreFSR = 1;  
-
-      if ( abs(gens.at(partindex.at(1)).PID()) == 11 )
-          if( ((genL0postFSR.Pt() > 25. && genL1postFSR.Pt() > 15.) || (genL0postFSR.Pt() > 15. && genL1postFSR.Pt() > 25.)) && fabs(genL0postFSR.Eta()) < 2.5 && fabs(genL1postFSR.Eta()) < 2.5 ) isfiducialPostFSR = 1;
-      if ( abs(gens.at(partindex.at(1)).PID() == 13) )
-          if( ((genL0postFSR.Pt() > 20. && genL1postFSR.Pt() > 10.) || (genL0postFSR.Pt() > 10. && genL1postFSR.Pt() > 20.)) && fabs(genL0postFSR.Eta()) < 2.4 && fabs(genL1postFSR.Eta()) < 2.4 ) isfiducialPostFSR = 1;
-
-      // status 1 leptons + all photons
-      ptPreFSR.push_back(genL0preFSR.Pt());
-      ptPreFSR.push_back(genL1preFSR.Pt());
-      ptPreFSR.push_back((genZ).Pt());
-
-      mPreFSR.push_back(genL0preFSR.M());
-      mPreFSR.push_back(genL1preFSR.M());
-      mPreFSR.push_back((genZ).M());
-
-      // post fsr leptons
-      ptPostFSR.push_back(genL0postFSR.Pt());
-      ptPostFSR.push_back(genL1postFSR.Pt());
-      ptPostFSR.push_back((genL0postFSR+genL1postFSR).Pt());
-
-      mPostFSR.push_back(genL0postFSR.M());
-      mPostFSR.push_back(genL1postFSR.M());
-      mPostFSR.push_back((genL0postFSR+genL1postFSR).M());
-
-    }// not DY to tautau event
-  }// only for DY MC
 
   // Filters ====================
   if(PassMETFilter()){ 
@@ -417,7 +205,7 @@ void Skim_ISRUnfoldInput::executeEvent(){
      FillHist("CutFlow",6,1,30,0,30);
 
      // Lepton ID
-     muons=GetMuons("POGTightWithTightIso",7.,2.4);
+     muons=GetMuons("POGTight",7.,2.4); // Tight ID without isolation
      std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
      electrons=GetElectrons("passMediumID",9.,2.5);
      std::sort(electrons.begin(),electrons.end(),PtComparing);
@@ -473,7 +261,7 @@ void Skim_ISRUnfoldInput::executeEvent(){
         } //===========================================
 
 
-        if( leps.size() == 2 ){ // leps have leptons passing ID and trigger matching
+        if(IsMuMu && leps.size() == 2){ // leps have leptons passing ID and trigger matching
           // ================================
           // Kinematic cuts 
           // ================================
@@ -489,9 +277,129 @@ void Skim_ISRUnfoldInput::executeEvent(){
             }
           }
 
-	  if( Aod_pt[0] > Lep0PtCut && Aod_pt[1] > Lep1PtCut && fabs(Aod_eta[0]) < LepEtaCut && fabs(Aod_eta[1]) < LepEtaCut && (leps.at(0)->Charge() + leps.at(1)->Charge()) == 0 ){
+	  if( Aod_pt[0] > Lep0PtCut && Aod_pt[1] > Lep1PtCut && fabs(Aod_eta[0]) < LepEtaCut && fabs(Aod_eta[1]) < LepEtaCut && (*(leps.at(0))+*(leps.at(1))).Pt() < 100){
              // 
              ispassRec=1;
+	     Double_t dimass_temp = (*(leps.at(0))+*(leps.at(1))).M(); 
+	     Double_t dipt_temp = (*(leps.at(0))+*(leps.at(1))).Pt(); 
+
+             PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
+
+             PUweight=1.;
+
+             if(!IsDATA){
+               PUweight=(mcCorr->*PileUpWeight)(nPileUp,0);
+               weightRec *= PUweight;
+             }
+
+             trgSF    = 1;
+             recoSF    = 1;
+             IdSF    = 1;
+
+             if(!IsDATA){
+               for( int i(0); i<2 ; i++){
+                 recoSF    *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],0):1.;
+                 IdSF      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],0):1.;
+               }
+               //cout<<"Skim pt0: "<<leps[0]->Pt()<<endl;
+               trgSF      = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,0);
+
+               weightRec *= recoSF;
+               weightRec *= IdSF;
+               weightRec *= trgSF;
+             }
+
+
+	     if(leps.at(0)->Charge() != leps.at(1)->Charge()) isOS = true; 
+
+	     lepIso.push_back(leps.at(0)->RelIso()); 
+	     lepIso.push_back(leps.at(1)->RelIso()); 
+
+	     Double_t iso_abcd = 0.2;
+             const int nmassbin=5;
+             double massbin[nmassbin+1]={50,65,80,100,200,350};
+
+	     TString prefix = "";
+             if(DYtautau && (MCSample.Contains("DYJets") || MCSample.Contains("DYJets10to50_MG"))) prefix = "tautau"; 
+
+	     // just to show
+	     if( (fabs(leps.at(0)->RelIso()) < iso_abcd && fabs(leps.at(1)->RelIso()) < iso_abcd)  || (fabs(leps.at(0)->RelIso()) > iso_abcd && fabs(leps.at(1)->RelIso()) > iso_abcd)){
+               FillHist(prefix+"ABCD", leps.at(0)->RelIso(), isOS ? 1.5 : 0.5, weightGen*weightRec, 100, 0., 1., 2, 0., 2.);  
+	       FillHist(prefix+"ABCD", leps.at(1)->RelIso(), isOS ? 1.5 : 0.5, weightGen*weightRec, 100, 0., 1., 2, 0., 2.);  
+               if(fabs(leps.at(0)->RelIso()) < iso_abcd && fabs(leps.at(1)->RelIso()) < iso_abcd && !isOS){
+                 FillHist(prefix+"SS_Isolated_dimass",    dimass_temp, weightGen*weightRec, 100, 0., 500.); 
+                 if(dimass_temp>50 && dimass_temp<65)   FillHist(prefix+"SS_Isolated_dipt_mass5065",    dipt_temp, weightGen*weightRec, 20, 0., 100.); 
+                 if(dimass_temp>65 && dimass_temp<80)   FillHist(prefix+"SS_Isolated_dipt_mass6580",    dipt_temp, weightGen*weightRec, 20, 0., 100.); 
+                 if(dimass_temp>80 && dimass_temp<100)  FillHist(prefix+"SS_Isolated_dipt_mass80100",    dipt_temp, weightGen*weightRec, 20, 0., 100.); 
+                 if(dimass_temp>100 && dimass_temp<200) FillHist(prefix+"SS_Isolated_dipt_mass100200",    dipt_temp, weightGen*weightRec, 20, 0., 100.); 
+                 if(dimass_temp>200 && dimass_temp<350) FillHist(prefix+"SS_Isolated_dipt_mass200350",    dipt_temp, weightGen*weightRec, 20, 0., 100.); 
+               }
+               if(fabs(leps.at(0)->RelIso()) > iso_abcd && fabs(leps.at(1)->RelIso()) > iso_abcd && !isOS) FillHist(prefix+"SS_NonIsolated_dimass", dimass_temp, weightGen*weightRec, 500, 0., 500.); 
+               if(fabs(leps.at(0)->RelIso()) > iso_abcd && fabs(leps.at(1)->RelIso()) > iso_abcd && isOS)  FillHist(prefix+"OS_NonIsolated_dimass", dimass_temp, weightGen*weightRec, 500, 0., 500.); 
+             }
+	     else{
+               FillHist(prefix+"ABCD_", leps.at(0)->RelIso(), isOS ? 1.5 : 0.5, weightGen*weightRec, 100, 0., 1., 2, 0., 2.);  
+	       FillHist(prefix+"ABCD_", leps.at(1)->RelIso(), isOS ? 1.5 : 0.5, weightGen*weightRec, 100, 0., 1., 2, 0., 2.);  
+             }
+
+	     // scan isolation variable 
+             for(int iso_scan = 0; iso_scan < 20; iso_scan++){
+	        Double_t iso_abcd_scan = (35 * 0.01) - (iso_scan) * 0.01;
+		TString iso_;
+	        iso_.Form("0p%d", 35 - iso_scan);
+
+                if( (fabs(leps.at(0)->RelIso()) > 0.15 && fabs(leps.at(1)->RelIso()) > 0.15)){ 
+
+                  // for mass distribution
+	          // left region: closer region to signal
+                  if( (fabs(leps.at(0)->RelIso()) < iso_abcd_scan && fabs(leps.at(1)->RelIso()) < iso_abcd_scan) ){
+                    if(!isOS) FillHist(prefix+"SS_dimass_iso"+iso_+"_left", dimass_temp, weightGen*weightRec, 100, 0., 500.);
+                    if(!isOS) FillHist(prefix+"SS_dimass_iso"+iso_+"_left", dimass_temp, weightGen*weightRec, 100, 0., 500.);
+                    if(isOS)  FillHist(prefix+"OS_dimass_iso"+iso_+"_left", dimass_temp, weightGen*weightRec, 100, 0., 500.);
+                  }
+		  // transition region
+                  if( (fabs(leps.at(0)->RelIso()) < iso_abcd_scan + 0.015 && fabs(leps.at(0)->RelIso()) > iso_abcd_scan - 0.015) && (fabs(leps.at(1)->RelIso()) < iso_abcd_scan + 0.015 && fabs(leps.at(1)->RelIso()) > iso_abcd_scan - 0.015)){
+                    if(!isOS) FillHist(prefix+"SS_dimass_iso"+iso_+"_transfer", dimass_temp, weightGen*weightRec, 100, 0., 500.);
+                    if(!isOS) FillHist(prefix+"SS_dimass_iso"+iso_+"_transfer", dimass_temp, weightGen*weightRec, 100, 0., 500.);
+                    if(isOS)  FillHist(prefix+"OS_dimass_iso"+iso_+"_transfer", dimass_temp, weightGen*weightRec, 100, 0., 500.);
+                  } 
+
+                  if( (fabs(leps.at(0)->RelIso()) > iso_abcd_scan && fabs(leps.at(1)->RelIso()) > iso_abcd_scan) ){
+                    if(!isOS) FillHist(prefix+"SS_dimass_iso"+iso_+"_right", dimass_temp, weightGen*weightRec, 100, 0., 500.);
+                    if(!isOS) FillHist(prefix+"SS_dimass_iso"+iso_+"_right", dimass_temp, weightGen*weightRec, 100, 0., 500.);
+                    if(isOS)  FillHist(prefix+"OS_dimass_iso"+iso_+"_right", dimass_temp, weightGen*weightRec, 100, 0., 500.);
+                  } 
+
+		  // for pt distribution
+	          for(int imass = 0; imass < nmassbin; imass++){
+		      TString mass_low;
+	              mass_low.Form("%d", (int)massbin[imass]);
+		      TString mass_high;
+	              mass_high.Form("%d", (int)massbin[imass+1]);
+
+                     if(dimass_temp > massbin[imass] && dimass_temp < massbin[imass+1]){
+                       if( (fabs(leps.at(0)->RelIso()) < iso_abcd_scan && fabs(leps.at(1)->RelIso()) < iso_abcd_scan) ){
+                         if(!isOS) FillHist(prefix+"SS_dipt_m"+mass_low+mass_high+"_iso"+iso_+"_left", dipt_temp, weightGen*weightRec, 20, 0., 100.);
+                         if(!isOS) FillHist(prefix+"SS_dipt_m"+mass_low+mass_high+"_iso"+iso_+"_left", dipt_temp, weightGen*weightRec, 20, 0., 100.);
+                         if(isOS)  FillHist(prefix+"OS_dipt_m"+mass_low+mass_high+"_iso"+iso_+"_left", dipt_temp, weightGen*weightRec, 20, 0., 100.);
+                       } 
+                       // transition region
+                       if( (fabs(leps.at(0)->RelIso()) < iso_abcd_scan + 0.015 && fabs(leps.at(0)->RelIso()) > iso_abcd_scan - 0.015) && (fabs(leps.at(1)->RelIso()) < iso_abcd_scan + 0.015 && fabs(leps.at(1)->RelIso()) > iso_abcd_scan - 0.015)){
+                         if(!isOS) FillHist(prefix+"SS_dipt_m"+mass_low+mass_high+"_iso"+iso_+"_transfer", dipt_temp, weightGen*weightRec, 20, 0., 100.);
+                         if(!isOS) FillHist(prefix+"SS_dipt_m"+mass_low+mass_high+"_iso"+iso_+"_transfer", dipt_temp, weightGen*weightRec, 20, 0., 100.);
+                         if(isOS)  FillHist(prefix+"OS_dipt_m"+mass_low+mass_high+"_iso"+iso_+"_transfer", dipt_temp, weightGen*weightRec, 20, 0., 100.);
+                       }
+
+                       if( (fabs(leps.at(0)->RelIso()) > iso_abcd_scan && fabs(leps.at(1)->RelIso()) > iso_abcd_scan) ){
+                         if(!isOS) FillHist(prefix+"SS_dipt_m"+mass_low+mass_high+"_iso"+iso_+"_right", dipt_temp, weightGen*weightRec, 20, 0., 100.);
+                         if(!isOS) FillHist(prefix+"SS_dipt_m"+mass_low+mass_high+"_iso"+iso_+"_right", dipt_temp, weightGen*weightRec, 20, 0., 100.);
+                         if(isOS)  FillHist(prefix+"OS_dipt_m"+mass_low+mass_high+"_iso"+iso_+"_right", dipt_temp, weightGen*weightRec, 20, 0., 100.);
+                       }
+                     }
+                  }// mass bin loop
+
+	        }// non isolated two leptons: Region C and D
+	     }// iso variable loop
 
              ptRec.push_back(leps.at(0)->Pt());
              ptRec.push_back(leps.at(1)->Pt());
@@ -501,64 +409,6 @@ void Skim_ISRUnfoldInput::executeEvent(){
              mRec.push_back(leps.at(1)->M());
              mRec.push_back( (*(leps.at(0))+*(leps.at(1))).M() );
  
-             /////////////////PUreweight///////////////////
-             PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
-
-             PUweight=1.,PUweight_Up=1.,PUweight_Dn=1.;
-
-             if(!IsDATA){
-               PUweight=(mcCorr->*PileUpWeight)(nPileUp,0);
-               PUweight_Up=(mcCorr->*PileUpWeight)(nPileUp,1);
-               PUweight_Dn=(mcCorr->*PileUpWeight)(nPileUp,-1);
-               weightRec *= PUweight;
-             }
-
-             //==============================
-             // SF 
-             //==============================
-
-             trgSF    = 1;
-             trgSF_Up = 1;
-             trgSF_Dn = 1;
-
-             recoSF    = 1;
-             recoSF_Up = 1;
-             recoSF_Dn = 1;
-
-             IdSF    = 1;
-             IdSF_Up = 1;
-             IdSF_Dn = 1;
-
-             IsoSF =1;
-             IsoSF_Up =1;
-             IsoSF_Dn =1;
-
-             if(!IsDATA){
-               for( int i(0); i<2 ; i++){
-                 recoSF    *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],0):1.;
-                 recoSF_Up *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],1):1.;
-                 recoSF_Dn *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],-1):1.;
-
-                 IdSF      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],0):1.;
-                 IdSF_Up   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],1):1.;
-                 IdSF_Dn   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],-1):1.;
-
-                 IsoSF	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],0):1.;
-                 IsoSF_Up	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],1):1.;
-                 IsoSF_Dn	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],-1):1.;
-
-               }
-               //cout<<"Skim pt0: "<<leps[0]->Pt()<<endl;
-               trgSF      = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,0);
-               trgSF_Up   = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,1);
-               trgSF_Dn   = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,-1);
-
-               weightRec *= recoSF;
-               weightRec *= IdSF;
-               weightRec *= IsoSF;
-               weightRec *= trgSF;
-             }
-
              // b tag test
              //
              //==== Test btagging code
@@ -598,7 +448,7 @@ void Skim_ISRUnfoldInput::executeEvent(){
   newtree->Fill();
 }
 
-int Skim_ISRUnfoldInput::findInitialMoterIndex(int motherIndex, int currentIndex, vector<Gen> &gens){
+int Skim_FakeEst::findInitialMoterIndex(int motherIndex, int currentIndex, vector<Gen> &gens){
 
   int initIndex = -1;
   // stop if reach the initial protons
@@ -620,7 +470,7 @@ int Skim_ISRUnfoldInput::findInitialMoterIndex(int motherIndex, int currentIndex
 }
 
 
-void Skim_ISRUnfoldInput::selectDilepton(vector<Gen> &gens, std::map<int,int> &parIndex, std::map<int,int> &aparIndex, vector<int> &gparticleIndex, vector<int> &gaparticleIndex){
+void Skim_FakeEst::selectDilepton(vector<Gen> &gens, std::map<int,int> &parIndex, std::map<int,int> &aparIndex, vector<int> &gparticleIndex, vector<int> &gaparticleIndex){
 
     TLorentzVector initialDilep;
     std::map<int, int>::iterator it = parIndex.begin();
@@ -668,7 +518,7 @@ void Skim_ISRUnfoldInput::selectDilepton(vector<Gen> &gens, std::map<int,int> &p
 
 }
 
-void Skim_ISRUnfoldInput::saveMotherIndexMap(vector<Gen> &gens, int currentIndex, int motherIndex, std::map<int,int> &partindexmap){
+void Skim_FakeEst::saveMotherIndexMap(vector<Gen> &gens, int currentIndex, int motherIndex, std::map<int,int> &partindexmap){
 
     if(currentIndex==motherIndex){
        partindexmap.insert(std::make_pair(currentIndex, gens.at(currentIndex).PID()));
@@ -679,22 +529,22 @@ void Skim_ISRUnfoldInput::saveMotherIndexMap(vector<Gen> &gens, int currentIndex
     }
 }
 
-void Skim_ISRUnfoldInput::executeEventFromParameter(AnalyzerParameter param){
+void Skim_FakeEst::executeEventFromParameter(AnalyzerParameter param){
 
 }
 
-Skim_ISRUnfoldInput::Skim_ISRUnfoldInput(){
+Skim_FakeEst::Skim_FakeEst(){
 
 }
 
-Skim_ISRUnfoldInput::~Skim_ISRUnfoldInput(){
+Skim_FakeEst::~Skim_FakeEst(){
 
 }
 
-void Skim_ISRUnfoldInput::WriteHist(){
+void Skim_FakeEst::WriteHist(){
 
   //outfile->mkdir("recoTree");
-  //outfile->cd("recoTree"); Already at Skim_ISRUnfoldInput::initializeAnalyzer
+  //outfile->cd("recoTree"); Already at Skim_FakeEst::initializeAnalyzer
   newtree->AutoSave();
   //newtree->Write();
   outfile->cd();
