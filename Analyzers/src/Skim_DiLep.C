@@ -175,7 +175,6 @@ void Skim_DiLep::executeEvent(){
   FillHist("CutFlow",5,1,30,0,30);
   // Filters ====================
   //if( HasFlag("MetFilt"))if(!PassMETFilter()) return;
-  FillHist("CutFlow",6,1,30,0,30);
 
 
   muons=GetMuons("POGTightWithTightIso",7.,2.4);
@@ -194,6 +193,7 @@ void Skim_DiLep::executeEvent(){
   if(HasFlag("MuMu") )if(IsMuMu !=1 ) return;
   if(HasFlag("ElEl") )if(IsElEl !=1 ) return;
 
+  FillHist("CutFlow",6,1,30,0,30);
   //=======================================
   // Channel dependent cut and ftn set
   //=======================================
@@ -252,6 +252,7 @@ void Skim_DiLep::executeEvent(){
 
 
   } //===========================================
+  FillHist("CutFlow",7,1,30,0,30);
 
   // ================================
   // Kinematic cuts 
@@ -267,11 +268,13 @@ void Skim_DiLep::executeEvent(){
      if(fabs(Aod_eta[i])>1.4442&&fabs(Aod_eta[i])<1.566) return; // two lepton only
     }
   }
+  FillHist("CutFlow",8,1,30,0,30);
   if(Aod_pt[0] < Lep0PtCut) return;
   if(Aod_pt[1] < Lep1PtCut) return;
   if(fabs(Aod_eta[0]) > LepEtaCut) return;
   if(fabs(Aod_eta[1]) > LepEtaCut) return;
     
+  FillHist("CutFlow",9,1,30,0,30);
   //==============================
   // Kinematic Variables 
   //==============================

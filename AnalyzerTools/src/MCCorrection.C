@@ -30,6 +30,10 @@ void MCCorrection::ReadHistograms(){
     is >> d; // <rootfilename>
     is >> e; // <histname>
     is >> f; // Class
+    if ( e == ""){
+      cout<<"empty histname"<<endl;
+      continue;
+    }
     TFile *file = new TFile(IDpath+"/Electron/"+d);
 
     if(f=="TH2F"){
@@ -68,6 +72,11 @@ void MCCorrection::ReadHistograms(){
     is >> c; // <WPnames>
     is >> d; // <rootfilename>
     is >> e; // <histname>
+    if ( e == ""){
+      cout<<"empty histname"<<endl;
+      continue;
+    }
+    cout<<"[MCCorrection::MCCorrection] reading file"<<IDpath+"/Muon/"+d<<" for "<<a+"_"+b+"_"+c<<endl;
     TFile *file = new TFile(IDpath+"/Muon/"+d);
     map_hist_Muon[a+"_"+b+"_"+c] = (TH2F *)file->Get(e);
   }

@@ -47,8 +47,8 @@ IsHadd = "hadd" in args.Analyzer
 
 if IsSKim:
   if IsSNU:
-    print  "Skim in SNU setting NJobs = 999999 !!!!!!!!!!!"
-    args.NJobs = 999999
+    print  "Skim in SNU setting "
+    print 'argss.NJobs',args.NJobs
   elif IsKISTI:
     print "Skim in Kisti"
   else:
@@ -64,7 +64,7 @@ ProductionKey = SKFlatV+'_'+args.Year
 print 'Productions key:',ProductionKey
 InputSamples = {}
 StringForHash = ""
-print 'File to import', Productions[args.Category][ProductionKey]['MC']
+#print 'File to import', Productions[args.Category][ProductionKey]['MC']
 cmd = 'from '+Productions[args.Category][ProductionKey]['MC'] +' import *'
 exec(cmd, globals())
 
@@ -178,7 +178,9 @@ try:
           if "ERROR" in this_status:
             GotError = True
             statuslog.write("#### ERROR OCCURED ####\n")
+            CheckLog.write("#### ERROR OCCURED #### for job_"+str(it_job)+"\n")
             statuslog.write(this_status+'\n')
+            CheckLog.write(this_status+'\n')
             ErrorLog = this_status
             print '###################### ERROR OCCURED ##########################'
 	    print ErrorLog
