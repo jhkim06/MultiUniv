@@ -167,6 +167,8 @@ print 'InputSamples', InputSamples
 
 if opt.doHadd:
   haddAllSample_cmd = 'hadd '+OutBase + '/'
+  if opt.overWrite:
+    haddAllSample_cmd = 'hadd -f '+OutBase + '/'
   for flag in Userflags:
     haddAllSample_cmd += flag
   haddAllSample_cmd += '.root '
@@ -227,10 +229,14 @@ for InputSample in InputSamples:
     if IsDATA:
       haddedSampleName = InputSamples[InputSample]['key']+'_'+DataPeriod+'.root '
       cmd = 'hadd '+ haddedSampleName + InputSamples[InputSample]['key']+'_'+DataPeriod+'_tmp_*.root'
+      if opt.overWrite:
+        cmd = 'hadd -f '+ haddedSampleName + InputSamples[InputSample]['key']+'_'+DataPeriod+'_tmp_*.root'
       rm_cmd = 'rm '+InputSamples[InputSample]['key']+'_'+DataPeriod+'_tmp_*.root'
     else:
       haddedSampleName = InputSamples[InputSample]['key']+'.root '
       cmd = 'hadd '+ haddedSampleName + InputSamples[InputSample]['key']+'_tmp_*.root'
+      if opt.overWrite:
+        cmd = 'hadd -f '+ haddedSampleName + InputSamples[InputSample]['key']+'_tmp_*.root'
       rm_cmd = 'rm '+InputSamples[InputSample]['key']+'_tmp_*.root'
 
     haddAllSample_cmd += OutSampleDir+'/'+haddedSampleName
@@ -358,7 +364,7 @@ for InputSample in InputSamples:
   CheckTotalNFile=0
   #OutFullPathFile_List =[]
   for it_job in range(0,len(FileRanges)):
-    time.sleep(0.3)
+    time.sleep(0.2)
 
     #print "["+str(it_job)+"th]",
     #print FileRanges[it_job],

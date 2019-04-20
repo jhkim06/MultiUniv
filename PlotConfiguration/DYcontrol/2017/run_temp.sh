@@ -53,4 +53,4 @@
 #mkShapes.py --pycfg  configuration.py -n 300 --nTotFiles 0  --overWrite --doBatch 
 #mkShapes.py --pycfg  configuration.py -n 300 --nTotFiles 0  --overWrite --doHadd --cleanUp
 #mkPlot.py --pycfg configuration.py --inputFile=Output_MetFt_L_v0_LL_v0_MuMuOrElEl_v1_DY/DY.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
-#scp -r Plot_DY lxplus.cern.ch:www/
+scp -r Plot_DY lxplus.cern.ch:www/
