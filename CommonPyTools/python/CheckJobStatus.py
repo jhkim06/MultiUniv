@@ -42,7 +42,7 @@ def GetLogLastLine(lines):
 
 
 
-def CheckJobStatus(logfiledir, cycle, jobnumber, hostname, IsHadd):
+def CheckJobStatus(logfiledir, cycle, jobnumber, hostname, IsHadd=False):
   FinishString = "JOB FINISHED"
 
   path_log_e = ""
@@ -60,6 +60,8 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname, IsHadd):
     path_log_o = logfiledir+'/job_'+str(jobnumber)+'/stdout.log'
 
   if (not os.path.exists(path_log_e)) or (not os.path.exists(path_log_o)):
+    print "path_log_e",path_log_e
+    print "path_log_o",path_log_o
     return "BATCH JOB NOT STARTED"
 
   log_e = open(path_log_e).readlines()

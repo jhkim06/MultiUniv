@@ -426,7 +426,7 @@ double SMP_Validation::DileptonTrigger_SF(TString SFhistkey0,TString SFhistkey1,
     if(this_eta>etamax) this_eta=etamax-0.001;
     triggerSF*=this_hist[i]->GetBinContent(this_hist[i]->FindBin(this_eta,this_pt))+sys*this_hist[i]->GetBinError(this_hist[i]->FindBin(this_eta,this_pt));
     */
-    triggerSF*=GetBinContentUser(this_hist[i],this_eta,this_pt,sys);
+    triggerSF*=GetBinContent4SF(this_hist[i],this_eta,this_pt,sys);
   }
   return triggerSF;
 }
@@ -443,8 +443,8 @@ double SMP_Validation::GetZPtWeight(double zpt,double zrap,Lepton::Flavour flavo
     hzpt=hzpt_electron;
     hzpt_norm=hzpt_norm_electron;
   }
-  if(hzpt) valzptcor*=GetBinContentUser(hzpt,zpt,zrap,0);
-  if(hzpt_norm) valzptcor_norm*=GetBinContentUser(hzpt_norm,zpt,zrap,0);
+  if(hzpt) valzptcor*=GetBinContent4SF(hzpt,zpt,zrap,0);
+  if(hzpt_norm) valzptcor_norm*=GetBinContent4SF(hzpt_norm,zpt,zrap,0);
   return valzptcor*valzptcor_norm;
   /*
   double ptmin=hzpt->GetXaxis()->GetXmin();
@@ -482,7 +482,7 @@ SMP_Validation::~SMP_Validation(){
   if(hzpt_norm_electron) delete hzpt_norm_electron;
 }
 
-double SMP_Validation::GetBinContentUser(TH2* hist,double valx,double valy,int sys){
+double SMP_Validation::GetBinContent4SF(TH2* hist,double valx,double valy,int sys){
   double xmin=hist->GetXaxis()->GetXmin();
   double xmax=hist->GetXaxis()->GetXmax();
   double ymin=hist->GetYaxis()->GetXmin();

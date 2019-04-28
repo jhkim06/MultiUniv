@@ -71,6 +71,9 @@ private:
   double IdSF_Q, IdSF_Q_Up, IdSF_Q_Do;
   double IsoSF, IsoSF_Up, IsoSF_Do;
 
+  double doubleTmp;
+  double pdf_scale_Up, pdf_scale_Do;
+
   TLorentzVector genZ;
   double ZPtCor;
 

@@ -19,7 +19,7 @@
 //};
 //
 namespace RootHelper {
-  double GetBinContentUser(TH2* hist,double valx,double valy,int sys);
+  double GetBinContent4SF(TH2* hist, double valx, double valy, double sys);
 }
 
 #endif

@@ -1,7 +1,7 @@
 from CommonPyTools.python.CommonTools import *
 
-columns=['ALL'] # To read all
-#columns=['diLep_Ch','diLep_m','diLep_pt','nPV']
+#columns=['ALL'] # To read all
+columns=['diLep_Ch','diLep_m','diLep_pt','diLep_passSelectiveQ','IdSF_Q_Up','IdSF_Q_Do','IdSF_Q','baseW','PUweight','trgSF_Q','recoSF','IsoSF','ZPtCor','trgSF_Q_Up','trgSF_Q_Do','PDFWeights_AlphaS']
 
 # xaxis, yaxis to set title
 

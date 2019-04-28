@@ -63,6 +63,10 @@ void Skim_DiLep::initializeAnalyzer(){
   newtree->Branch("IsoSF_Up", &IsoSF_Up,"IsoSF_Up/D");
   newtree->Branch("IsoSF_Do", &IsoSF_Do,"IsoSF_Do/D");
 
+  newtree->Branch("pdf_scale_Up", &pdf_scale_Up,"pdf_scale_Up/D");
+  newtree->Branch("pdf_scale_Do", &pdf_scale_Do,"pdf_scale_Do/D");
+
+
   newtree->Branch("ZPtCor", &ZPtCor,"ZPtCor/D");
 
   // Kinematic Variables
@@ -165,6 +169,9 @@ void Skim_DiLep::executeEvent(){
   newtree->SetBranchAddress("IsoSF_Up",&IsoSF_Up);
   newtree->SetBranchAddress("IsoSF_Do",&IsoSF_Do);
 
+  newtree->SetBranchAddress("pdf_scale_Up",&pdf_scale_Up);
+  newtree->SetBranchAddress("pdf_scale_Do",&pdf_scale_Do);
+
   newtree->SetBranchAddress("ZPtCor",&ZPtCor);
   newtree->SetBranchAddress("diLep_Ch",&diLep_Ch);
   newtree->SetBranchAddress("diLep_passSelectiveQ",&diLep_passSelectiveQ);
@@ -261,6 +268,9 @@ void Skim_DiLep::executeEvent(){
     if(leps[i]->LeptonFlavour()==Lepton::MUON){
      Aod_pt[i]=((Muon*)leps.at(i))->MiniAODPt();
      Aod_eta[i]=leps.at(i)->Eta();
+     //double haah = mcCorr->MuonTrigger_SF("POGTight","IsoMu27",muons,0);
+     //haah = mcCorr->MuonTrigger_SF("POGTight","IsoMu27",muons,1);
+     //haah = mcCorr->MuonTrigger_SF("POGTight","IsoMu27",muons,-1);
     }else if(leps[i]->LeptonFlavour()==Lepton::ELECTRON){
      Aod_pt[i]=leps.at(i)->Pt();
      Aod_eta[i]=((Electron*)leps.at(i))->scEta();
@@ -329,6 +339,8 @@ void Skim_DiLep::executeEvent(){
 
   IsoSF =1; IsoSF_Up =1; IsoSF_Do =1;
   
+  pdf_scale_Up = 1; pdf_scale_Do = 1;
+  
 
 
   if(!IsDATA){
@@ -388,6 +400,18 @@ void Skim_DiLep::executeEvent(){
     }else {
       cout<<"Skim_DiLep: two charge combination is strange."<<endl;
       exit(EXIT_FAILURE);
+    }
+
+    if(DataYear==2016 || DataYear == 2017 || DataYear == 2018){
+      for( int i(0); i< (int) PDFWeights_Scale->size(); i++){
+	if( i == 5 || i == 7 ) continue;
+
+	doubleTmp = PDFWeights_Scale->at(i);
+	//cout<<" scale "<<i<<" "<<PDFWeights_Scale->at(i)<<endl;
+	if( doubleTmp > pdf_scale_Up) pdf_scale_Up = doubleTmp;
+	if( doubleTmp < pdf_scale_Do) pdf_scale_Do = doubleTmp;
+      }
+      //cout<<"scale up and do: "<<pdf_scaleUp<<" "<<pdf_scaleDo<<endl;
     }
 
   }

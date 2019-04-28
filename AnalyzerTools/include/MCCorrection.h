@@ -41,10 +41,12 @@ public:
   double MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, double eta, double pt, int sys=0);
   double MuonTrigger_SF(TString ID, TString trig, std::vector<Muon> muons, int sys=0);
   std::map< TString, TH2F* > map_hist_Muon;
+  std::map< TString, TString > map_VarOrder_Muon;
 
   double ElectronReco_SF(double sceta, double pt, int sys=0);
   double ElectronID_SF(TString ID, double sceta, double pt, int sys=0);
   std::map< TString, TH2F* > map_hist_Electron;
+  std::map< TString, TString > map_VarOrder_Electron;
   std::map< TString, TGraphAsymmErrors* > map_graph_Electron;
 
   std::map< TString, TH2F* > map_hist_prefire;
@@ -61,6 +63,8 @@ public:
 
 
   double DiLeptonTrg_SF(TString IdKey0,TString IdKey1,const vector<Lepton*>& leps,int sys);
+
+  TString _EtaPtOrder;
 
 };
 

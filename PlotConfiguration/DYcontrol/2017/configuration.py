@@ -6,7 +6,8 @@ Year        = '2017'
 #lumi        = 41.527540
 InSkim      = 'MetFt_L_v0_LL_v0_MuMuOrElEl_v1'
 # Userflags: separate by ','
-Userflags   = 'DY'
+Userflags   = 'AlPhaS'
+#Userflags   = 'DY'
 treeName    = 'recoTree/SKFlat'
 
 

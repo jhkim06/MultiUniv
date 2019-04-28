@@ -396,7 +396,7 @@ for InputSample in InputSamples:
 
     if opt.doBatch and not opt.doHadd:
       #print 'batch making histo'
-      jobName = 'mkShape'+str(it_job)
+      jobName = 'job_'+str(it_job)+'_mkShape'
       jobs = batchJobs(jobName,opt.Queue, thisjob_dir,opt.dry_run)
       jobs.AddPy2Sh()
       jobs.AddPy("from ShapeAnalysis.python.ShapeFactory import ShapeFactory\n")
