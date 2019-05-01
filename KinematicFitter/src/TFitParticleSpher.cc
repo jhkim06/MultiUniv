@@ -18,6 +18,9 @@
 #include <iostream>
 //#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "TFitParticleSpher.h"
+
+ClassImp(TFitParticleSpher)
+
 #include "TMath.h"
 
 

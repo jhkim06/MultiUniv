@@ -18,6 +18,9 @@
 #include <iostream>
 //#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "TFitParticleCart.h"
+
+ClassImp(TFitParticleCart)
+
 #include "TMath.h"
 
 

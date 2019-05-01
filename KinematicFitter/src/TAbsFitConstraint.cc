@@ -11,6 +11,9 @@
 //
 
 #include "TAbsFitConstraint.h"
+
+ClassImp(TAbsFitConstraint)
+
 //#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include <iostream>
 #include <sstream>

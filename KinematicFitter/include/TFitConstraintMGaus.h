@@ -38,6 +38,8 @@ protected :
   void init();
 
 
+  ClassDef(TFitConstraintMGaus,1)
+
 };
 
 #endif

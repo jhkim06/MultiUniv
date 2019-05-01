@@ -148,6 +148,8 @@ private :
   Int_t _status;        // Status of the last fit;_
   Int_t _nbIter;        // number of iteration performed in the fit
 
+  ClassDef(TKinFitter,1)
+
 };
 
 #endif

@@ -26,6 +26,9 @@
 //#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "TFitParticleEMomDev.h"
 
+ClassImp(TFitParticleEMomDev)
+
+
 
 //----------------
 // Constructor --

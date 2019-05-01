@@ -30,6 +30,8 @@ protected :
 
   void init(TLorentzVector* pini, const TMatrixD* theCovMatrix);
 
+  ClassDef(TFitParticleEScaledMomDev,1)
+
 };
 
 #endif

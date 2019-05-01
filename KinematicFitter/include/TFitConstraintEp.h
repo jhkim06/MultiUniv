@@ -15,7 +15,9 @@ public :
     pY,
     pZ,
     E
-  };
+    ClassDef(TFitConstraintEp,1)
+
+};
 
   TFitConstraintEp( );
 
@@ -37,7 +39,9 @@ public :
   void addParticles( TAbsFitParticle* p1, TAbsFitParticle* p2 = 0, TAbsFitParticle* p3 = 0, TAbsFitParticle* p4 = 0,
 		     TAbsFitParticle* p5 = 0, TAbsFitParticle* p6 = 0, TAbsFitParticle* p7 = 0, TAbsFitParticle* p8 = 0,
 		     TAbsFitParticle* p9 = 0, TAbsFitParticle* p10 = 0);
-  void setConstraint(Double_t constraint){_constraint = constraint;};
+  void setConstraint(Double_t constraint){_constraint = constraint;  ClassDef(TFitConstraintEp,1)
+
+};
 
   // returns derivative df/dP with P=(p,E) and f the constraint f=0.
   // The matrix contains one row (df/dp, df/dE).
@@ -55,6 +59,8 @@ private:
   std::vector<TAbsFitParticle*> _particles;    // Vector containing constrained particles
   Double_t _constraint;                   // Value of constraint
   TFitConstraintEp::component _component; // 4vector component to be constrained
+
+  ClassDef(TFitConstraintEp,1)
 
 };
 

@@ -1,5 +1,8 @@
 #include <iostream>
 #include "TSLToyGen.h"
+
+ClassImp(TSLToyGen)
+
 #include "TMatrixD.h" 
 #include "TFitConstraintM.h"
 #include "TFitConstraintEp.h"

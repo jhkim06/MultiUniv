@@ -19,6 +19,9 @@
 #include <iostream>
 //#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "TFitParticleEtEtaPhi.h"
+
+ClassImp(TFitParticleEtEtaPhi)
+
 #include "TMath.h"
 #include <cmath>
 

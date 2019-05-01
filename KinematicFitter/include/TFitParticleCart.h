@@ -35,6 +35,8 @@ protected :
 
 private:
   
+  ClassDef(TFitParticleCart,1)
+
 };
 
 #endif

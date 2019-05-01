@@ -14,6 +14,9 @@
 #include <iomanip>
 //#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "TKinFitter.h"
+
+ClassImp(TKinFitter)
+
 #include "TAbsFitParticle.h"
 #include "TAbsFitConstraint.h"
 

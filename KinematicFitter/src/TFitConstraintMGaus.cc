@@ -13,6 +13,9 @@
 #include <iostream>
 #include <iomanip>
 #include "TFitConstraintMGaus.h"
+
+ClassImp(TFitConstraintMGaus)
+
 //#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "TClass.h"
 

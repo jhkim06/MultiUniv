@@ -35,6 +35,8 @@ protected :
 
 private:
   
+  ClassDef(TFitParticleEtEtaPhi,1)
+
 };
 
 

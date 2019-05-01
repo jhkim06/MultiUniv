@@ -25,6 +25,9 @@
 #include <iostream>
 //#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "TFitParticleMomDev.h"
+
+ClassImp(TFitParticleMomDev)
+
 #include "TMath.h"
 
 

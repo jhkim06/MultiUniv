@@ -55,6 +55,8 @@ protected :
   TMatrixD _parameters;     // fitted parameters
 
 
+  ClassDef(TAbsFitConstraint,1)
+
 };
 
 #endif
