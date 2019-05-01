@@ -10,7 +10,6 @@
 class TFitParticleEtEtaPhi: public TAbsFitParticle {
 
 public :
-  ClassDef(TFitParticleEtEtaPhi,2); //since TFitConstraintM inherit TObject
   TFitParticleEtEtaPhi();
   TFitParticleEtEtaPhi( const TFitParticleEtEtaPhi& fitParticle );
   TFitParticleEtEtaPhi(TLorentzVector* pini, const TMatrixD* theCovMatrix);

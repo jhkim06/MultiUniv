@@ -13,7 +13,6 @@ class TLorentzVector;
 class TKinFitter : public TNamed {
 
 public :
-  ClassDef(TKinFitter,2); //since TFitConstraintM inherit TObject
   TKinFitter();
   TKinFitter(const TString &name, const TString &title);  
   ~TKinFitter();

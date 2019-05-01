@@ -11,7 +11,6 @@ class TAbsFitParticle;
 class TFitConstraintM: public TAbsFitConstraint {
 
 public :
-  ClassDef(TFitConstraintM,2); //since TFitConstraintM inherit TObject
   TFitConstraintM();
   TFitConstraintM(std::vector<TAbsFitParticle*>* ParList1,
 		  std::vector<TAbsFitParticle*>* ParList2,
