@@ -7,6 +7,9 @@ import datetime
 import random
 import subprocess
 import ROOT
+
+ROOT.gROOT.SetBatch()
+
 import logging
 from collections import OrderedDict
 #import importlib
@@ -34,7 +37,6 @@ parser.add_argument('--Category', dest='Category', default="SMP")
 parser.add_argument('--treeName', dest='treeName', default="")
 parser.add_argument('--cleanUp', dest='cleanUp', action='store_true')
 
-ROOT.gROOT.SetBatch()
 
 Tools.AddOptions(parser)
 Tools.LoadOptDefaults(parser)
@@ -132,8 +134,8 @@ string_ThisTime = ""
 
 
 if SKFlatLogEmail=='':
-  print '[mkGardener.py] Put your email address in setup.sh'
-  exit()
+  print '[mkShapes] Put your email address in setup.sh'
+
 SendLogToWeb = True
 if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
   SendLogToWeb = False
@@ -253,9 +255,9 @@ for InputSample in InputSamples:
     os.chdir(here)
     continue
 
-  ############################
-  # Do the hadd business here
-  ############################
+  #######################################
+  # Ending the hadd business, Exit here
+  #######################################
 
 
   os.system('mkdir -p '+ OutSampleDir)
@@ -396,9 +398,11 @@ for InputSample in InputSamples:
 
     if opt.doBatch and not opt.doHadd:
       #print 'batch making histo'
+      #jobName = 'mkShape'
       jobName = 'job_'+str(it_job)+'_mkShape'
       jobs = batchJobs(jobName,opt.Queue, thisjob_dir,opt.dry_run)
-      jobs.AddPy2Sh()
+      #jobs.AddSh(shCmd)
+      #jobs.AddPy2Sh()
       jobs.AddPy("from ShapeAnalysis.python.ShapeFactory import ShapeFactory\n")
       jobs.AddPy("factory = ShapeFactory()")
       jobs.AddPy('factory._treeName = '+'"'+opt.treeName+'"' )

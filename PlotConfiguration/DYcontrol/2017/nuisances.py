@@ -61,9 +61,9 @@ nuisances['alphaS'] = {
       	'DYJets'	: alphaS_syst ,
 	'TTLL_powheg'	: alphaS_syst ,
 	'WJets_MG'	: alphaS_syst ,
-	'WW_pythia'	: alphaS_syst ,
-	'WZ_pythia'	: alphaS_syst ,
-	'ZZ_pythia'	: alphaS_syst ,
+	#'WW_pythia'	: alphaS_syst ,
+	#'WZ_pythia'	: alphaS_syst ,
+	#'ZZ_pythia'	: alphaS_syst ,
 	},
 }
 

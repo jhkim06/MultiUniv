@@ -68,6 +68,45 @@ elif [[ $HOSTNAME == *"cms.snu.ac.kr"* ]]; then
   #cd -
   #source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_10_2_0/external/slc6_amd64_gcc630/bin/thisroot.sh
 
+elif [[ $HOSTNAME == *"tamsa2"* ]]; then
+
+  echo "Working on tamsa2"
+  export SKFlatRunlogDir="/data6/Users/$USER/SKFlatRunlog/"
+  export SKFlatOutputDir="/data9/Users/salee/Higgs"
+  #export SKFlatOutputDir="/data7/Users/$USER/SKFlatOutput/"
+  export DATA_DIR=$SKFlat_WD/data/$SKFlatV
+
+  #source /share/apps/root_v6-12-06/bin/thisroot.sh
+  #export GCC_HOME=/share/apps/gcc491
+  #export PATH=$GCC_HOME/bin:$PATH
+  #export LD_LIBRARY_PATH=$GCC_HOME/lib64:$GCC_HOME/lib:$LD_LIBRARY_PATH
+
+  #export CMS_PATH=/cvmfs/cms.cern.ch
+  #source $CMS_PATH/cmsset_default.sh
+  #export SCRAM_ARCH=slc6_amd64_gcc630
+  #cd /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_9_cand2/src/
+  #eval `scramv1 runtime -sh`
+  #cd -
+  #source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_9_cand2/external/slc6_amd64_gcc630/bin/thisroot.sh
+
+  #source /share/apps/root_v6-14-04/bin/thisroot.sh
+  #export GCC_HOME=/share/apps/gcc491
+  #export PATH=$GCC_HOME/bin:$PATH
+  #export LD_LIBRARY_PATH=$GCC_HOME/lib64:$GCC_HOME/lib:$LD_LIBRARY_PATH
+  #export LD_LIBRARY_PATH=/share/apps/python2.7/lib/:$LD_LIBRARY_PATH
+  #export PATH=/share/apps/python2.7/bin/:$PATH
+
+  #export CMS_PATH=/cvmfs/cms.cern.ch
+  #source $CMS_PATH/cmsset_default.sh
+  #export SCRAM_ARCH=slc6_amd64_gcc630
+  #cd /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_10_2_0/src/
+  #eval `scramv1 runtime -sh`
+  #cd -
+  #source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_10_2_0/external/slc6_amd64_gcc630/bin/thisroot.sh
+  source /cvmfs/sft.cern.ch/lcg/app/releases/ROOT/6.14.06/x86_64-centos7-gcc48-opt/bin/thisroot.sh
+  #source /data6/Users/salee/ROOT616/bin/thisroot.sh
+  #export PYTHONPATH=$PYTHONPATH:/data6/Users/salee/ROOTLib
+
 
 elif [[ $HOSTNAME == *"knu"* ]]; then
 
