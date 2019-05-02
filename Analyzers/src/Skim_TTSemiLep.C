@@ -9,14 +9,14 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   //=================================
    
 
-  if( HasFlag("TTSemiLepMu")){
-    cout<<"[Skim_TTSemiLep::initializeAnalyzer] TTSemiLepMu Selection"<<endl;
+  if( HasFlag("Mu")){
+    cout<<"[Skim_TTSemiLep::initializeAnalyzer] Mu Selection"<<endl;
   }
-  else if( HasFlag("TTSemiLepEl")){
-    cout<<"[Skim_TTSemiLep::initializeAnalyzer] TTSemiLepEl Selection"<<endl;
+  else if( HasFlag("El")){
+    cout<<"[Skim_TTSemiLep::initializeAnalyzer] El Selection"<<endl;
   }
-  else if( HasFlag("TTSemiLepMuOrEl")){
-    cout<<"[Skim_TTSemiLep::initializeAnalyzer] TTSemiLepMuOrEl Selection"<<endl;
+  else if( HasFlag("MuOrEl")){
+    cout<<"[Skim_TTSemiLep::initializeAnalyzer] Mu or El Selection"<<endl;
   }
   else{
     cout <<"[Skim_TTSemiLep::executeEvent] Not ready for this Flags ";
@@ -29,45 +29,58 @@ void Skim_TTSemiLep::initializeAnalyzer(){
 
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");
-  newtree = fChain->CloneTree(0);
+  newtree = fChain->CloneTree(0); // JH : What relation does this outfile have with the fChain(created by SetTreeName)?
 
   // New Branch
-  newtree->Branch("IsMu", &IsMu,"IsMu/I");
+  newtree->Branch("IsMu", &IsMu,"IsMu/I"); // JH : What's the meaning of each arguments?
   newtree->Branch("IsEl", &IsEl,"IsElel/I");
 
 
   newtree->Branch("PUweight", &PUweight,"PUweight/D");
   newtree->Branch("PUweight_Up", &PUweight_Up,"PUweight_Up/D");
-  newtree->Branch("PUweight_Dn", &PUweight_Dn,"PUweight_Dn/D");
+  newtree->Branch("PUweight_Do", &PUweight_Do,"PUweight_Do/D");
 
   newtree->Branch("trgSF",    &trgSF,   "trgSF/D");
   newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/D");
-  newtree->Branch("trgSF_Dn", &trgSF_Dn,"trgSF_Dn/D");
+  newtree->Branch("trgSF_Do", &trgSF_Do,"trgSF_Do/D");
+  newtree->Branch("trgSF_Q",    &trgSF_Q,   "trgSF_Q/D");
+  newtree->Branch("trgSF_Q_Up", &trgSF_Q_Up,"trgSF_Q_Up/D");
+  newtree->Branch("trgSF_Q_Do", &trgSF_Q_Do,"trgSF_Q_Do/D");
 
   newtree->Branch("recoSF",    &recoSF,   "recoSF/D");
   newtree->Branch("recoSF_Up", &recoSF_Up,"recoSF_Up/D");
-  newtree->Branch("recoSF_Dn", &recoSF_Dn,"recoSF_Dn/D");
+  newtree->Branch("recoSF_Do", &recoSF_Do,"recoSF_Do/D");
 
   newtree->Branch("IdSF",    &IdSF,   "IdSF/D");
   newtree->Branch("IdSF_Up", &IdSF_Up,"IdSF_Up/D");
-  newtree->Branch("IdSF_Dn", &IdSF_Dn,"IdSF_Dn/D");
+  newtree->Branch("IdSF_Do", &IdSF_Do,"IdSF_Do/D");
+
+  newtree->Branch("IdSF_Q",    &IdSF_Q,   "IdSF_Q/D");
+  newtree->Branch("IdSF_Q_Up", &IdSF_Q_Up,"IdSF_Q_Up/D");
+  newtree->Branch("IdSF_Q_Do", &IdSF_Q_Do,"IdSF_Q_Do/D");
 
   newtree->Branch("IsoSF",    &IsoSF,   "IsoSF/D");
   newtree->Branch("IsoSF_Up", &IsoSF_Up,"IsoSF_Up/D");
-  newtree->Branch("IsoSF_Dn", &IsoSF_Dn,"IsoSF_Dn/D");
+  newtree->Branch("IsoSF_Do", &IsoSF_Do,"IsoSF_Do/D");
 
+  newtree->Branch("pdf_scale_Up", &pdf_scale_Up,"pdf_scale_Up/D");
+  newtree->Branch("pdf_scale_Do", &pdf_scale_Do,"pdf_scale_Do/D");
+
+  //XXX: Do I need ZPtCor?
   newtree->Branch("ZPtCor", &ZPtCor,"ZPtCor/D");
 
   // Kinematic Variables
-  //
+  //TODO: will add something?
+  /*
   newtree->Branch("diLep_Ch", &diLep_Ch,"diLep_Ch/I");
+  newtree->Branch("diLep_passSelectiveQ", &diLep_passSelectiveQ,"diLep_passSelectiveQ/O");
   newtree->Branch("diLep_m", &diLep_m,"diLep_m/D");
   newtree->Branch("diLep_pt", &diLep_pt,"diLep_pt/D");
   newtree->Branch("diLep_eta", &diLep_eta,"diLep_eta/D");
-
+  */
   //b_trgSF = newtree->Branch("trgSF", &trgSF,"trgSF/F");
   //b_trgSF_Up = newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/F");
-  //b_trgSF_Dn = newtree->Branch("trgSF_Dn", &trgSF_Dn,"trgSF_Dn/F");
+  //b_trgSF_Do = newtree->Branch("trgSF_Do", &trgSF_Do,"trgSF_Do/F");
 
 
 
@@ -79,25 +92,18 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   cout << "[Skim_TTSemiLep::initializeAnalyzer] Skim List====================== " << endl;
   if(DataYear==2016){
     SingleMuTrgs = {
-      "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v",
-      "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v",
-      "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v",
-      "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",
-      "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v",
-      "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v",
+      "HLT_IsoMu24_v"
     };
-      //"HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v", need to evaluate the trig effi 
-      //"HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v",
     SingleElTrgs = {
-      "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"
+      "HLT_Ele27_WPTight_Gsf_v"
     };
   }
   else if(DataYear==2017){
     SingleMuTrgs = {
-      "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v",
+      "HLT_IsoMu27_v"
     };
     SingleElTrgs = {
-      "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"
+      "HLT_Ele35_WPTight_Gsf_v"
     };
   }
   else{
@@ -121,6 +127,8 @@ void Skim_TTSemiLep::executeEvent(){
   electrons.clear();
   leps.clear();
 
+  //diLep_passSelectiveQ = false;
+
   evt = new Event;
   *evt = GetEvent();
 
@@ -129,36 +137,47 @@ void Skim_TTSemiLep::executeEvent(){
 
   newtree->SetBranchAddress("PUweight",   &PUweight);
   newtree->SetBranchAddress("PUweight_Up",&PUweight_Up);
-  newtree->SetBranchAddress("PUweight_Dn",&PUweight_Dn);
+  newtree->SetBranchAddress("PUweight_Do",&PUweight_Do);
 
   newtree->SetBranchAddress("trgSF",   &trgSF);
   newtree->SetBranchAddress("trgSF_Up",&trgSF_Up);
-  newtree->SetBranchAddress("trgSF_Dn",&trgSF_Dn);
+  newtree->SetBranchAddress("trgSF_Do",&trgSF_Do);
+
+  newtree->SetBranchAddress("trgSF_Q",   &trgSF_Q);
+  newtree->SetBranchAddress("trgSF_Q_Up",&trgSF_Q_Up);
+  newtree->SetBranchAddress("trgSF_Q_Do",&trgSF_Q_Do);
 
   newtree->SetBranchAddress("recoSF",   &recoSF);
   newtree->SetBranchAddress("recoSF_Up",&recoSF_Up);
-  newtree->SetBranchAddress("recoSF_Dn",&recoSF_Dn);
+  newtree->SetBranchAddress("recoSF_Do",&recoSF_Do);
 
   newtree->SetBranchAddress("IdSF",   &IdSF);
   newtree->SetBranchAddress("IdSF_Up",&IdSF_Up);
-  newtree->SetBranchAddress("IdSF_Dn",&IdSF_Dn);
+  newtree->SetBranchAddress("IdSF_Do",&IdSF_Do);
+
+  newtree->SetBranchAddress("IdSF_Q",   &IdSF_Q);
+  newtree->SetBranchAddress("IdSF_Q_Up",&IdSF_Q_Up);
+  newtree->SetBranchAddress("IdSF_Q_Do",&IdSF_Q_Do);
 
   newtree->SetBranchAddress("IsoSF",   &IsoSF);
   newtree->SetBranchAddress("IsoSF_Up",&IsoSF_Up);
-  newtree->SetBranchAddress("IsoSF_Dn",&IsoSF_Dn);
+  newtree->SetBranchAddress("IsoSF_Do",&IsoSF_Do);
+
+  newtree->SetBranchAddress("pdf_scale_Up",&pdf_scale_Up);
+  newtree->SetBranchAddress("pdf_scale_Do",&pdf_scale_Do);
 
   newtree->SetBranchAddress("ZPtCor",&ZPtCor);
-  newtree->SetBranchAddress("diLep_Ch",&diLep_Ch);
-  newtree->SetBranchAddress("diLep_m",&diLep_m);
-  newtree->SetBranchAddress("diLep_pt",&diLep_pt);
-  newtree->SetBranchAddress("diLep_eta",&diLep_eta);
+  //newtree->SetBranchAddress("diLep_Ch",&diLep_Ch);
+  //newtree->SetBranchAddress("diLep_passSelectiveQ",&diLep_passSelectiveQ);
+  //newtree->SetBranchAddress("diLep_m",&diLep_m);
+  //newtree->SetBranchAddress("diLep_pt",&diLep_pt);
+  //newtree->SetBranchAddress("diLep_eta",&diLep_eta);
 
   FillHist("CutFlow",5,1,30,0,30);
   // Filters ====================
   //if( HasFlag("MetFilt"))if(!PassMETFilter()) return;
-  FillHist("CutFlow",6,1,30,0,30);
 
-
+  //FIXME: fix lepton ID later
   muons=GetMuons("POGTightWithTightIso",7.,2.4);
   std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
   electrons=GetElectrons("passMediumID",9.,2.5);
@@ -169,12 +188,14 @@ void Skim_TTSemiLep::executeEvent(){
   //=========================
   // DiLepton condition
   //=========================
-  if(muons.size() == 2   )if(electrons.size() == 0) IsMu = 1;
-  if(muons.size() == 0   )if(electrons.size() == 2) IsEl = 1;
+  //FIXME: slopy lepton cut this time!
+  if(muons.size() == 1   )if(electrons.size() == 0) IsMu = 1;
+  if(muons.size() == 0   )if(electrons.size() == 1) IsEl = 1;
   if(IsMu != 1 && IsEl != 1) return;
-  if(HasFlag("TTSemiLepMu") )if(IsMu !=1 ) return;
-  if(HasFlag("TTSemiLepEl") )if(IsEl !=1 ) return;
+  if(HasFlag("Mu") )if(IsMu !=1 ) return;
+  if(HasFlag("El") )if(IsEl !=1 ) return;
 
+  FillHist("CutFlow",6,1,30,0,30);
   //=======================================
   // Channel dependent cut and ftn set
   //=======================================
@@ -194,12 +215,23 @@ void Skim_TTSemiLep::executeEvent(){
     LeptonISO_SF=&MCCorrection::MuonISO_SF;
     // key for private or official SF
     LeptonID_key="NUM_TightID_DEN_genTracks";
+    LeptonID_QPlus_key="NUM_TightID_DEN_genTracks";
+    LeptonID_QMinu_key="NUM_TightID_DEN_genTracks";
+
     LeptonISO_key="NUM_TightRelIso_DEN_TightIDandIPCut";
+
     trgSF_key0="Lead17_POGTight";  // For 2016 separated period BCDEF, GH 
+    trgSF_QPlus_key0="Lead17_POGTight";  // For 2016 separated period BCDEF, GH 
+    trgSF_QMinu_key0="Lead17_POGTight";  // For 2016 separated period BCDEF, GH 
+
     trgSF_key1="Tail8_POGTight"; 
+    trgSF_QPlus_key1="Tail8_POGTight"; 
+    trgSF_QMinu_key1="Tail8_POGTight"; 
+
   } //---------------------------------------------
   if(IsEl == 1){ // Electron =======================
     if(! evt->PassTrigger(SingleElTrgs) )return;
+    //if(electrons[0].SelectiveQ() )if(electrons[1].SelectiveQ())  diLep_passSelectiveQ = true;
     leps=MakeLeptonPointerVector(electrons);
     Lep0PtCut=25.;
     Lep1PtCut=15.;
@@ -207,19 +239,33 @@ void Skim_TTSemiLep::executeEvent(){
     LeptonID_SF  = &MCCorrection::ElectronID_SF;
     LeptonReco_SF= &MCCorrection::ElectronReco_SF;
     // key for private or official SF
-    LeptonID_key    = "MediumID_pt10";
     LeptonID_key_POG= "passMediumID";
+    LeptonID_key    = "MediumID_pt10";
+    LeptonID_QPlus_key    = "MediumID_QPlus_pt10";
+    LeptonID_QMinu_key    = "MediumID_QMinus_pt10";
+
     trgSF_key0="LeadEle23_MediumID";
+    trgSF_QPlus_key0="Selective_LeadEle23_MediumID_QPlus";
+    trgSF_QMinu_key0="Selective_LeadEle23_MediumID_QMinus";
+
     trgSF_key1="TailEle12_MediumID";
+    trgSF_QPlus_key1="Selective_TailEle12_MediumID_QPlus";
+    trgSF_QMinu_key1="Selective_TailEle12_MediumID_QMinus";
+
+
   } //===========================================
+  FillHist("CutFlow",7,1,30,0,30);
 
   // ================================
   // Kinematic cuts 
   // ================================
-  for(int i(0); i < 2; i++){ // two lepton only, pt eta the same to TnP
+  for(int i(0); i < 1; i++){ // one lepton only, pt eta the same to TnP
     if(leps[i]->LeptonFlavour()==Lepton::MUON){
      Aod_pt[i]=((Muon*)leps.at(i))->MiniAODPt();
      Aod_eta[i]=leps.at(i)->Eta();
+     //double haah = mcCorr->MuonTrigger_SF("POGTight","IsoMu27",muons,0);
+     //haah = mcCorr->MuonTrigger_SF("POGTight","IsoMu27",muons,1);
+     //haah = mcCorr->MuonTrigger_SF("POGTight","IsoMu27",muons,-1);
     }else if(leps[i]->LeptonFlavour()==Lepton::ELECTRON){
      Aod_pt[i]=leps.at(i)->Pt();
      Aod_eta[i]=((Electron*)leps.at(i))->scEta();
@@ -227,15 +273,18 @@ void Skim_TTSemiLep::executeEvent(){
      if(fabs(Aod_eta[i])>1.4442&&fabs(Aod_eta[i])<1.566) return; // two lepton only
     }
   }
+  FillHist("CutFlow",8,1,30,0,30);
   if(Aod_pt[0] < Lep0PtCut) return;
   if(Aod_pt[1] < Lep1PtCut) return;
   if(fabs(Aod_eta[0]) > LepEtaCut) return;
   if(fabs(Aod_eta[1]) > LepEtaCut) return;
     
+  FillHist("CutFlow",9,1,30,0,30);
   //==============================
   // Kinematic Variables 
   //==============================
-
+  //TODO: add variables ??
+  /*
   diLep_Ch = DiLepCh::NA;
 
   diLep_m  = DEFAULT;
@@ -260,58 +309,107 @@ void Skim_TTSemiLep::executeEvent(){
     diLep_eta = diLep.Eta();
     diLep_m  = diLep.M();
   }
-
+  */
   /////////////////PUreweight///////////////////
   PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
 
-  PUweight=1.,PUweight_Up=1.,PUweight_Dn=1.;
+  PUweight=1.,PUweight_Up=1.,PUweight_Do=1.;
 
   if(!IsDATA){
     PUweight=(mcCorr->*PileUpWeight)(nPileUp,0);
     PUweight_Up=(mcCorr->*PileUpWeight)(nPileUp,1);
-    PUweight_Dn=(mcCorr->*PileUpWeight)(nPileUp,-1);
+    PUweight_Do=(mcCorr->*PileUpWeight)(nPileUp,-1);
   }
   //==============================
   // SF 
   //==============================
 
 
-  trgSF    = 1;
-  trgSF_Up = 1;
-  trgSF_Dn = 1;
+  trgSF    = 1; trgSF_Up   = 1; trgSF_Do   = 1;
+  trgSF_Q  = 1; trgSF_Q_Up = 1; trgSF_Q_Do = 1;
 
-  recoSF    = 1;
-  recoSF_Up = 1;
-  recoSF_Dn = 1;
+  recoSF   = 1; recoSF_Up  = 1; recoSF_Do = 1;
 
-  IdSF    = 1;
-  IdSF_Up = 1;
-  IdSF_Dn = 1;
+  IdSF    = 1; IdSF_Up   = 1; IdSF_Do   = 1;
+  IdSF_Q  = 1; IdSF_Q_Up = 1; IdSF_Q_Do = 1;
 
-  IsoSF =1;
-  IsoSF_Up =1;
-  IsoSF_Dn =1;
+  IsoSF =1; IsoSF_Up =1; IsoSF_Do =1;
+  
+  pdf_scale_Up = 1; pdf_scale_Do = 1;
+  
 
 
   if(!IsDATA){
-    for( int i(0); i<2 ; i++){
-      recoSF    *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],0):1.;
-      recoSF_Up *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],1):1.;
-      recoSF_Dn *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],-1):1.;
+    for( int i(0); i<1 ; i++){
 
-      IdSF      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],0):1.;
-      IdSF_Up   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],1):1.;
-      IdSF_Dn   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],-1):1.;
+      recoSF    *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i], Aod_pt[i],  0) : 1.;
+      recoSF_Up *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i], Aod_pt[i],  1) : 1.;
+      recoSF_Do *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i], Aod_pt[i], -1) : 1.;
 
-      IsoSF	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],0):1.;
-      IsoSF_Up	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],1):1.;
-      IsoSF_Dn	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],-1):1.;
+      IdSF      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key, Aod_eta[i], Aod_pt[i],  0) : 1.;
+      IdSF_Up   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key, Aod_eta[i], Aod_pt[i],  1) : 1.;
+      IdSF_Do   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key, Aod_eta[i], Aod_pt[i], -1) : 1.;
 
+      IsoSF	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key, Aod_eta[i], Aod_pt[i],  0) : 1.;
+      IsoSF_Up	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key, Aod_eta[i], Aod_pt[i],  1) : 1.;
+      IsoSF_Do	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key, Aod_eta[i], Aod_pt[i], -1) : 1.;
+
+      if(leps[i]->Charge() == 1){
+        IdSF_Q      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_QPlus_key, Aod_eta[i], Aod_pt[i],  0) : 1.;
+        IdSF_Q_Up   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_QPlus_key, Aod_eta[i], Aod_pt[i],  1) : 1.;
+        IdSF_Q_Do   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_QPlus_key, Aod_eta[i], Aod_pt[i], -1) : 1.;
+      }
+      else if(leps[i]->Charge() == -1){
+        IdSF_Q      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_QMinu_key, Aod_eta[i], Aod_pt[i],  0) : 1.;
+        IdSF_Q_Up   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_QMinu_key, Aod_eta[i], Aod_pt[i],  1) : 1.;
+        IdSF_Q_Do   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_QMinu_key, Aod_eta[i], Aod_pt[i], -1) : 1.;
+      }else{
+	cout<<"Skim_TTSemiLep: leps charage strange: "<<leps[i]->Charge()<<endl;
+        exit(EXIT_FAILURE);
+      }
     }
+    //FIXME: trgSF for SingleLep
     //cout<<"Skim pt0: "<<leps[0]->Pt()<<endl;
-    trgSF      = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,0);
-    trgSF_Up   = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,1);
-    trgSF_Dn   = mcCorr->DiLeptonTrg_SF(trgSF_key0,trgSF_key1,leps,-1);
+    trgSF      = mcCorr->DiLeptonTrg_SF(trgSF_key0, trgSF_key1, leps,  0);
+    trgSF_Up   = mcCorr->DiLeptonTrg_SF(trgSF_key0, trgSF_key1, leps,  1);
+    trgSF_Do   = mcCorr->DiLeptonTrg_SF(trgSF_key0, trgSF_key1, leps, -1);
+
+    if( leps[0]->Charge() == 1 && leps[1]->Charge() == 1  ){
+      trgSF_Q      = mcCorr->DiLeptonTrg_SF(trgSF_QPlus_key0, trgSF_QPlus_key1, leps,  0);
+      trgSF_Q_Up   = mcCorr->DiLeptonTrg_SF(trgSF_QPlus_key0, trgSF_QPlus_key1, leps,  1);
+      trgSF_Q_Do   = mcCorr->DiLeptonTrg_SF(trgSF_QPlus_key0, trgSF_QPlus_key1, leps, -1);
+    }
+    else if( leps[0]->Charge() == 1 && leps[1]->Charge() == -1 ){
+      trgSF_Q      = mcCorr->DiLeptonTrg_SF(trgSF_QPlus_key0, trgSF_QMinu_key1, leps,  0);
+      trgSF_Q_Up   = mcCorr->DiLeptonTrg_SF(trgSF_QPlus_key0, trgSF_QMinu_key1, leps,  1);
+      trgSF_Q_Do   = mcCorr->DiLeptonTrg_SF(trgSF_QPlus_key0, trgSF_QMinu_key1, leps, -1);
+    }
+    else if( leps[0]->Charge() == -1 && leps[1]->Charge() == 1 ){
+      trgSF_Q      = mcCorr->DiLeptonTrg_SF(trgSF_QMinu_key0, trgSF_QPlus_key1, leps,  0);
+      trgSF_Q_Up   = mcCorr->DiLeptonTrg_SF(trgSF_QMinu_key0, trgSF_QPlus_key1, leps,  1);
+      trgSF_Q_Do   = mcCorr->DiLeptonTrg_SF(trgSF_QMinu_key0, trgSF_QPlus_key1, leps, -1);
+    }
+    else if( leps[0]->Charge() == -1 && leps[1]->Charge() == -1 ){
+      trgSF_Q      = mcCorr->DiLeptonTrg_SF(trgSF_QMinu_key0, trgSF_QMinu_key1, leps,  0);
+      trgSF_Q_Up   = mcCorr->DiLeptonTrg_SF(trgSF_QMinu_key0, trgSF_QMinu_key1, leps,  1);
+      trgSF_Q_Do   = mcCorr->DiLeptonTrg_SF(trgSF_QMinu_key0, trgSF_QMinu_key1, leps, -1);
+    }else {
+      cout<<"Skim_TTSemiLep: two charge combination is strange."<<endl;
+      exit(EXIT_FAILURE);
+    }
+
+    if(DataYear==2016 || DataYear == 2017 || DataYear == 2018){
+      for( int i(0); i< (int) PDFWeights_Scale->size(); i++){
+	if( i == 5 || i == 7 ) continue;
+
+	doubleTmp = PDFWeights_Scale->at(i);
+	//cout<<" scale "<<i<<" "<<PDFWeights_Scale->at(i)<<endl;
+	if( doubleTmp > pdf_scale_Up) pdf_scale_Up = doubleTmp;
+	if( doubleTmp < pdf_scale_Do) pdf_scale_Do = doubleTmp;
+      }
+      //cout<<"scale up and do: "<<pdf_scaleUp<<" "<<pdf_scaleDo<<endl;
+    }
+
   }
 
   //===============================
@@ -320,6 +418,7 @@ void Skim_TTSemiLep::executeEvent(){
   // genParticles status code: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePATMCMatchingExercise 
   //===============================
 
+  //XXX: Do I need this?
   ZPtCor = 1;
   if(MCSample.Contains("DYJets") || MCSample.Contains("DYJets10to50_MG")){
     Gen genL0, genL1, genFsr, genHardL0, genHardL1;
@@ -382,7 +481,9 @@ void Skim_TTSemiLep::executeEvent(){
     if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,true,0)) n_bjet_deepcsv_m++; // method for getting btag with SF applied to MC
     if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)) n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
   }
-
+  //require more than 2b tagged jets
+  if(n_bjet_deepcsv_m_noSF < 2) return;
+  FillHist("CutFlow",10,1,30,0,30);
   //
   //for(int i=0;i<(int)PDFWeights_Scale->size();i++){
   //  cout<<"Scale: "<<i<<" "<<PDFWeights_Scale->at(i)<<endl;
@@ -390,7 +491,7 @@ void Skim_TTSemiLep::executeEvent(){
 
   //b_trgSF->Fill();
   //b_trgSF_Up->Fill();
-  //b_trgSF_Dn->Fill();
+  //b_trgSF_Do->Fill();
   newtree->Fill();
 
 
