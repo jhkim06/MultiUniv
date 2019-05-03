@@ -231,7 +231,7 @@ void TKinFitterDriver::FindBestChi2Fit(){
 }
 
 
-double TKinFitterDriver::GetStatus(){
+int TKinFitterDriver::GetStatus(){
   return status;
 }
 
