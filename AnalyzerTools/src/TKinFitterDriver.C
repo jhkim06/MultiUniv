@@ -205,10 +205,9 @@ void TKinFitterDriver::Fit(){
   if(status==0){ // 0 means converge
     chi2 = fitter->getS(); // save chi2
     const TLorentzVector *fitted_jet1, *fitted_jet2;
-    const TLorentzVector dijet;
     fitted_jet1 = fit_hadronic_w_ch_jet1->getCurr4Vec(); // get address of fitted object
     fitted_jet2 = fit_hadronic_w_ch_jet2->getCurr4Vec(); // get address of fitted object
-    dijet = (*fitted_jet1) + (*fitted_jet2);
+    const TLorentzVector dijet = (*fitted_jet1) + (*fitted_jet2);
     dijet_M = dijet.M(); // save dijet mass
   }
 }
