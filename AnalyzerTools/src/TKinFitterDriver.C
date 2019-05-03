@@ -165,9 +165,9 @@ void TKinFitterDriver::SetMET(TLorentzVector met_){
 
 void TKinFitterDriver::SetConstraint(){
   //TODO: will update to be able to set top-mass
-  constrain_hadronic_top_M = new TFitConstraintM("hadronic_top_mass_constraint", 0, 0, 172.5);
-  constrain_leptonic_top_M = new TFitConstraintM("leptonic_top_mass_constraint", 0, 0, 172.5);
-  constrain_leptonic_W_M = new TFitConstraintM("leptonic_w_mass_constraint", 0, 0, 80.4);
+  constrain_hadronic_top_M = new TFitConstraintM("hadronic_top_mass_constraint", "hadronic_top_mass_constraint", 0, 0, 172.5);
+  constrain_leptonic_top_M = new TFitConstraintM("leptonic_top_mass_constraint", "leptonic_top_mass_constraint", 0, 0, 172.5);
+  constrain_leptonic_W_M = new TFitConstraintM("leptonic_w_mass_constraint", "leptonic_w_mass_constraint", 0, 0, 80.4);
   // reset constrain
   constrain_hadronic_top_M.addParticles1(fit_hadronic_top_b_jet, fit_hadronic_w_ch_jet1, fit_hadronic_w_ch_jet2);
   constrain_leptonic_top_M.addParticles1(fit_leptonic_top_b_jet, fit_lepton, fit_neutrino);
