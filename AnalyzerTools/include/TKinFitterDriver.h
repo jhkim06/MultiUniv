@@ -30,7 +30,7 @@ public:
   void SetMET(TLorentzVector met_);
   void Fit();
   void FindBestChi2Fit();
-  bool GetStatus();
+  int GetStatus();
   double GetChi2();
   double GetFittedDijetMass();
 
