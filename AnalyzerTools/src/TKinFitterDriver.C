@@ -4,12 +4,12 @@ TKinFitterDriver::TKinFitterDriver(){
 
   fitter = new TKinFitter("fitter","fitter");
 
-  error_hadronic_top_b_jet.Allocate(3,3); 
-  error_leptonic_top_b_jet.Allocate(3,3);
-  error_hadronic_w_ch_jet1.Allocate(3,3);
-  error_hadronic_w_ch_jet2.Allocate(3,3);
-  error_lepton.Allocate(3,3);
-  error_neutrino.Allocate(3,3);
+  error_hadronic_top_b_jet = error_hadronic_top_b_jet(3,3); 
+  error_leptonic_top_b_jet = error_leptonic_top_b_jet(3,3);
+  error_hadronic_w_ch_jet1 = error_hadronic_w_ch_jet1(3,3);
+  error_hadronic_w_ch_jet2 = error_hadronic_w_ch_jet2(3,3);
+  error_lepton = error_lepton(3,3);
+  error_neutrino = error_neutrino(3,3);
 
   error_hadronic_top_b_jet.Zero(); 
   error_leptonic_top_b_jet.Zero();
