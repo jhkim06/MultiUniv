@@ -3,6 +3,7 @@
 
 #include "TString.h"
 #include <iostream>
+#include <numeric>
 
 #include "TFitConstraintM.h"
 #include "TFitParticleEtEtaPhi.h"
