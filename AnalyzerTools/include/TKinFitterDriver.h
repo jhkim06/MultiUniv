@@ -8,6 +8,7 @@
 #include "TFitConstraintM.h"
 #include "TFitParticleEtEtaPhi.h"
 #include "TKinFitter.h"
+#include "Jet.h"
 
 using namespace std;
 
@@ -18,7 +19,7 @@ public:
   TKinFitterDriver();
   ~TKinFitterDriver();
 
-  void SetAllObjects(std::vector<TLorentzVector> jet_vector_,
+  void SetAllObjects(std::vector<Jet> jet_vector_,
                      std::vector<bool> btag_vector_,
                      TLorentzVector lepton_,
                      TLorentzVector met_);
@@ -33,6 +34,9 @@ public:
   int GetStatus();
   double GetChi2();
   double GetFittedDijetMass();
+  double GetInitialDijetMass();
+  double GetBestFittedDijetMass();
+  double GetBestInitialDijetMass();
 
   enum JET_ASSIGNMENT{
     HADRONIC_TOP_B,
@@ -91,8 +95,11 @@ private:
 
   double chi2;
   double dijet_M;
+  double fitted_dijet_M;
+  double initial_dijet_M;
   double best_chi2;
-  double best_dijet_M;
+  double best_fitted_dijet_M;
+  double best_initial_dijet_M;
 
 };
 

@@ -9,15 +9,17 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   //=================================
    
 
-  if( HasFlag("Mu")){
-    cout<<"[Skim_TTSemiLep::initializeAnalyzer] Mu Selection"<<endl;
+  if( HasFlag("TTSemiLepMu")){
+    cout<<"[Skim_TTSemiLep::initializeAnalyzer] TTSemiLepMu Selection"<<endl;
   }
-  else if( HasFlag("El")){
-    cout<<"[Skim_TTSemiLep::initializeAnalyzer] El Selection"<<endl;
+  else if( HasFlag("TTSemiLepEl")){
+    cout<<"[Skim_TTSemiLep::initializeAnalyzer] TTSemiLepEl Selection"<<endl;
   }
+  /*
   else if( HasFlag("MuOrEl")){
     cout<<"[Skim_TTSemiLep::initializeAnalyzer] Mu or El Selection"<<endl;
   }
+  */
   else{
     cout <<"[Skim_TTSemiLep::executeEvent] Not ready for this Flags ";
     for(unsigned int i=0; i<Userflags.size(); i++){
@@ -82,6 +84,10 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   //b_trgSF_Up = newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/F");
   //b_trgSF_Do = newtree->Branch("trgSF_Do", &trgSF_Do,"trgSF_Do/F");
 
+  newtree->Branch("initial_dijet_m", &initial_dijet_m,"initial_dijet_m/D");
+  newtree->Branch("fitted_dijet_m", &fitted_dijet_m,"fitted_dijet_m/D");
+  newtree->Branch("best_chi2", &best_chi2,"best_chi2/D");
+  newtree->Branch("n_bjet_deepcsv_m_noSF", &n_bjet_deepcsv_m_noSF,"n_bjet_deepcsv_m_noSF/I");
 
 
   // clear vector residual
@@ -119,6 +125,7 @@ void Skim_TTSemiLep::initializeAnalyzer(){
     cout << "\t" << SingleElTrgs.at(i) << endl;
   }
 
+  fitter_driver = new TKinFitterDriver(); 
 }
 
 void Skim_TTSemiLep::executeEvent(){
@@ -173,6 +180,10 @@ void Skim_TTSemiLep::executeEvent(){
   //newtree->SetBranchAddress("diLep_pt",&diLep_pt);
   //newtree->SetBranchAddress("diLep_eta",&diLep_eta);
 
+  newtree->SetBranchAddress("initial_dijet_m",&initial_dijet_m);
+  newtree->SetBranchAddress("fitted_dijet_m",&fitted_dijet_m);
+  newtree->SetBranchAddress("best_chi2",&best_chi2);
+  newtree->SetBranchAddress("n_bjet_deepcsv_m_noSF",&n_bjet_deepcsv_m_noSF);
   FillHist("CutFlow",5,1,30,0,30);
   // Filters ====================
   //if( HasFlag("MetFilt"))if(!PassMETFilter()) return;
@@ -192,8 +203,8 @@ void Skim_TTSemiLep::executeEvent(){
   if(muons.size() == 1   )if(electrons.size() == 0) IsMu = 1;
   if(muons.size() == 0   )if(electrons.size() == 1) IsEl = 1;
   if(IsMu != 1 && IsEl != 1) return;
-  if(HasFlag("Mu") )if(IsMu !=1 ) return;
-  if(HasFlag("El") )if(IsEl !=1 ) return;
+  if(HasFlag("TTSemiLepMu") )if(IsMu !=1 ) return;
+  if(HasFlag("TTSemiLepEl") )if(IsEl !=1 ) return;
 
   FillHist("CutFlow",6,1,30,0,30);
   //=======================================
@@ -472,18 +483,26 @@ void Skim_TTSemiLep::executeEvent(){
   SetupBTagger(vtaggers,v_wps, true, true);
 
   vector<Jet> this_AllJets = GetAllJets();
-  vector<Jet> jets = SelectJets(this_AllJets, "tight", 30., 2.4);
+  vector<Jet> jets = SelectJets(this_AllJets, "tight", 20., 2.4);
 
-  int n_bjet_deepcsv_m=0;
-  int n_bjet_deepcsv_m_noSF=0;
+  if(jets.size()<4) return;
+  FillHist("CutFlow",10,1,30,0,30);
+
+  std::vector<bool> btag_vector_noSF;
+  n_bjet_deepcsv_m_noSF=0;
 
   for(unsigned int ij = 0 ; ij < jets.size(); ij++){
-    if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,true,0)) n_bjet_deepcsv_m++; // method for getting btag with SF applied to MC
-    if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)) n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
+    if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)){
+      n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
+      btag_vector_noSF.push_back(true);
+    }
+    else{
+      btag_vector_noSF.push_back(false);
+    }
   }
   //require more than 2b tagged jets
   if(n_bjet_deepcsv_m_noSF < 2) return;
-  FillHist("CutFlow",10,1,30,0,30);
+  FillHist("CutFlow",11,1,30,0,30);
   //
   //for(int i=0;i<(int)PDFWeights_Scale->size();i++){
   //  cout<<"Scale: "<<i<<" "<<PDFWeights_Scale->at(i)<<endl;
@@ -492,6 +511,36 @@ void Skim_TTSemiLep::executeEvent(){
   //b_trgSF->Fill();
   //b_trgSF_Up->Fill();
   //b_trgSF_Do->Fill();
+  
+    ///////////////////////////////////////////////////////////
+   // !!!!!!!!!!!!!!!!!! execute fitter !!!!!!!!!!!!!!!!!!! //
+  ///////////////////////////////////////////////////////////
+  if(IsMu){
+    fitter_driver->SetAllObjects(jets, 
+                                 btag_vector_noSF,
+                                 (TLorentzVector)muons.at(0),
+                                 (TLorentzVector)evt->GetMETVector()
+                                );
+  }
+  else if(IsEl){
+    fitter_driver->SetAllObjects(jets,
+                                 btag_vector_noSF,
+                                 (TLorentzVector)electrons.at(0),
+                                 (TLorentzVector)evt->GetMETVector()
+                                );
+  }
+  fitter_driver->FindBestChi2Fit(true);
+  if(fitter_driver->GetStatus()==0){ //0 means fit converge
+
+    initial_dijet_m = fitter_driver->GetBestInitialDijetMass();
+    fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
+    best_chi2 = fitter_driver->GetChi2();
+  }
+  else{
+    initial_dijet_m = -1;
+    fitted_dijet_m = -1;
+    best_chi2 = -1;
+  }
   newtree->Fill();
 
 
@@ -508,7 +557,7 @@ Skim_TTSemiLep::Skim_TTSemiLep(){
 }
 
 Skim_TTSemiLep::~Skim_TTSemiLep(){
-
+ delete fitter_driver;
 }
 
 void Skim_TTSemiLep::WriteHist(){

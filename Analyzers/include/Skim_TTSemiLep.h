@@ -4,6 +4,7 @@
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 #include "Definitions.h"
+#include "TKinFitterDriver.h"
 
 class Skim_TTSemiLep : public AnalyzerCore {
 
@@ -22,6 +23,7 @@ public:
 
 private:
 
+  TKinFitterDriver* fitter_driver;
 
   int IsMu;
   int IsEl;
@@ -87,6 +89,10 @@ private:
   double diLep_pt;
   double diLep_eta;
   */
+  double initial_dijet_m;
+  double fitted_dijet_m;
+  double best_chi2;
+  int n_bjet_deepcsv_m_noSF;
 };
 
 

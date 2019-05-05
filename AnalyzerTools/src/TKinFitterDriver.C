@@ -49,12 +49,15 @@ TKinFitterDriver::~TKinFitterDriver(){
 }
 
 
-void TKinFitterDriver::SetAllObjects(std::vector<TLorentzVector> jet_vector_,
+void TKinFitterDriver::SetAllObjects(std::vector<Jet> jet_vector_,
                                      std::vector<bool> btag_vector_,
                                      TLorentzVector lepton_,
                                      TLorentzVector met_){
 
-  jet_vector = jet_vector_;
+  jet_vector.clear();
+  for(UInt_t i=0; i<jet_vector_.size(); i++){
+    jet_vector.push_back((TLorentzVector)jet_vector_.at(i));
+  }
   btag_vector = btag_vector_;
 
   njets = jet_vector.size();
@@ -250,8 +253,12 @@ void TKinFitterDriver::Fit(){
     chi2 = fitter->getS(); // save chi2
     const TLorentzVector *fitted_jet1 = fit_hadronic_w_ch_jet1->getCurr4Vec(); // get address of fitted object
     const TLorentzVector *fitted_jet2 = fit_hadronic_w_ch_jet2->getCurr4Vec(); // get address of fitted object
-    const TLorentzVector dijet = (*fitted_jet1) + (*fitted_jet2);
-    dijet_M = dijet.M(); // save dijet mass
+    const TLorentzVector fitted_dijet = (*fitted_jet1) + (*fitted_jet2);
+    fitted_dijet_M = fitted_dijet.M(); // save dijet mass
+    const TLorentzVector *initial_jet1 = fit_hadronic_w_ch_jet1->getIni4Vec(); // get address of fitted object
+    const TLorentzVector *initial_jet2 = fit_hadronic_w_ch_jet2->getIni4Vec(); // get address of fitted object
+    const TLorentzVector initial_dijet = (*initial_jet1) + (*initial_jet2);
+    initial_dijet_M = initial_dijet.M(); // save dijet mass
   }
 }
 
@@ -266,7 +273,8 @@ void TKinFitterDriver::FindBestChi2Fit(bool UseLeading4Jets){
     this->Fit();
     if(status==0 && chi2 < best_chi2){
       best_chi2 = chi2;
-      best_dijet_M = dijet_M;
+      best_fitted_dijet_M = fitted_dijet_M;
+      best_initial_dijet_M = initial_dijet_M;
       isUpdated=true;
     }
   }while(this->NextPermutation(UseLeading4Jets));
@@ -285,8 +293,24 @@ double TKinFitterDriver::GetChi2(){
 
 
 double TKinFitterDriver::GetFittedDijetMass(){
-  return dijet_M;
+  return fitted_dijet_M;
 }
+
+
+double TKinFitterDriver::GetInitialDijetMass(){
+  return initial_dijet_M;
+}
+
+
+double TKinFitterDriver::GetBestFittedDijetMass(){
+  return best_fitted_dijet_M;
+}
+
+
+double TKinFitterDriver::GetBestInitialDijetMass(){
+  return best_initial_dijet_M;
+}
+
 
 
 bool TKinFitterDriver::NextPermutation(bool UseLeading4Jets){
