@@ -22,10 +22,10 @@ HOSTNAME = os.environ['HOSTNAME']
 IsKISTI = ("sdfarm.kr" in HOSTNAME)
 IsUI10 = ("ui10.sdfarm.kr" in HOSTNAME)
 IsUI20 = ("ui20.sdfarm.kr" in HOSTNAME)
-IsSNU = ("snu" in HOSTNAME)
 IsKNU = ("knu" in HOSTNAME)
 IsTAMSA2 = ("tamsa2" in HOSTNAME)
 IsTAMSA1 = ("cms.snu" in HOSTNAME)
+IsSNU = IsTAMSA1 or IsTAMSA2
 
 
 if IsKISTI:

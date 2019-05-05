@@ -1,4 +1,5 @@
-all: CommonTools DataFormats  AnalyzerTools Analyzers Archive
+all: CommonTools DataFormats  AnalyzerTools Analyzers 
+#all: CommonTools DataFormats  AnalyzerTools Analyzers Archive
 
 CommonTools::
 	(cd CommonTools; make)

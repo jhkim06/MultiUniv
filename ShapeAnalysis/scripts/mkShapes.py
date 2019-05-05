@@ -365,6 +365,7 @@ for InputSample in InputSamples:
 
   CheckTotalNFile=0
   #OutFullPathFile_List =[]
+  cmdType = 'python'
   for it_job in range(0,len(FileRanges)):
     time.sleep(0.2)
 
@@ -400,7 +401,9 @@ for InputSample in InputSamples:
       #print 'batch making histo'
       #jobName = 'mkShape'
       jobName = 'job_'+str(it_job)+'_mkShape'
-      jobs = batchJobs(jobName,opt.Queue, thisjob_dir,opt.dry_run)
+      jobs = batchJobs(jobName,opt.Queue, thisjob_dir,cmdType, opt.dry_run)
+      jobs.mkShCommand()
+      jobs.mkJds()
       #jobs.AddSh(shCmd)
       #jobs.AddPy2Sh()
       jobs.AddPy("from ShapeAnalysis.python.ShapeFactory import ShapeFactory\n")
