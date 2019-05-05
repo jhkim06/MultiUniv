@@ -22,27 +22,36 @@ public:
                      std::vector<bool> btag_vector_,
                      TLorentzVector lepton_,
                      TLorentzVector met_);
-  void SetHadronicBJets(TLorentzVector jet_); // it doesn't check tagging status
-  void SetLeptonicBJets(TLorentzVector jet_); // it doesn't check tagging status
+  void SetHadronicTopBJets(TLorentzVector jet_); // it doesn't check tagging status
+  void SetLeptonicTopBJets(TLorentzVector jet_); // it doesn't check tagging status
   void SetWCHUpTypeJets(TLorentzVector jet_); // u/c jet from W(H+)
   void SetWCHDownTypeJets(TLorentzVector jet_); // d/s/b jet from W(H+)
   void SetLepton(TLorentzVector lepton_);
   void SetMET(TLorentzVector met_);
   void Fit();
-  void FindBestChi2Fit();
+  void FindBestChi2Fit(bool UseLeading4Jets=false);
   int GetStatus();
   double GetChi2();
   double GetFittedDijetMass();
 
+  enum JET_ASSIGNMENT{
+    HADRONIC_TOP_B,
+    LEPTONIC_TOP_B,
+    W_CH_UP_TYPE,
+    W_CH_DOWN_TYPE,
+    NONE
+  };
+
 private:
 
-  void Clear(); // clear objects except 'fitter'
   void SetError(TMatrixD *matrix,  double Et, double Eta);
   double ErrEt(double Et, double Eta); // hard coding parameter this time
   double ErrEta(double Et, double Eta); // hard coding parameter this time
   double ErrPhi(double Et, double Eta); // hard coding parameter this time
   void SetConstraint();
   void SetFitter();
+  void SetCurrentPermutationJets();
+  bool Check_BJet_Assignment();
   bool NextPermutation(bool UseLeading4Jets=false);
 
   TKinFitter *fitter;
@@ -53,7 +62,7 @@ private:
   int njets;
   int nbtags;
   int status; //fitter status
-  std::vector<int> permutation_vector;
+  std::vector<TKinFitterDriver::JET_ASSIGNMENT> permutation_vector;
 
   TLorentzVector hadronic_top_b_jet; // b jet comes from hadronic top 
   TLorentzVector leptonic_top_b_jet; // b jet comes from leptonic top
