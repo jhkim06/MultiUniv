@@ -11,7 +11,7 @@ def AddOptions (parser):
   parser.add_argument('-n', dest='NJobs', default=1, type=int)
   parser.add_argument('--debug', dest='debug', default=0, type=int)
   parser.add_argument('-o', dest='Outputdir', default="")
-  parser.add_argument('-q', dest='Queue', default="fastq")
+  parser.add_argument('-q', dest='Queue', default="")
   parser.add_argument('-y', dest='Year', default="2017")
   parser.add_argument('--overWrite',default=False, action='store_true')
   parser.add_argument('--pycfg', dest='pycfg', default="configuration.py")

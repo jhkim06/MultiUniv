@@ -50,10 +50,9 @@
 
 
 
-#mkShapes.py --pycfg  configuration.py -n 300 --nTotFiles 0  --overWrite --doBatch
+mkShapes.py --pycfg  configuration.py -n 300 --nTotFiles 1  --overWrite --doBatch 
 
-rm JobCheck.log
-checkMakeShapeBatch.py -y 2017 -n 300 --nTotFiles 0 --RundirBase /data7/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0_LL_v0_MuMuOrElEl_v1_AlPhaS
+#checkMakeShapeBatch.py -y 2017 -n 300 --nTotFiles 0 --RundirBase /data7/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0_LL_v0_MuMuOrElEl_v1_AlPhaS
 
 #mkShapes.py --pycfg  configuration.py -n 300 --nTotFiles 0  --overWrite --doHadd --cleanUp
 #mkPlot.py --pycfg configuration.py --inputFile=Output_MetFt_L_v0_LL_v0_MuMuOrElEl_v1_AlPhaS/AlPhaS.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1

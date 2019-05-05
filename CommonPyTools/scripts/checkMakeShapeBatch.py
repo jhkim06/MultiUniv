@@ -65,225 +65,185 @@ AllSampleFinished = False
 GotError = False
 ErrorLog = ""
 
-try:
-  while not AllSampleFinished:
+os.system('rm JobCheck.log')
+CheckLog = open('JobCheck.log','w')
+    #for it_sample in range(0,len(InputSamples)):
+for it_sample in InputSamples:
 
-    if GotError:
+  print 'checking for sample:',it_sample
+  IsDATA = False
+  DataPeriod = ""
+  if ":" in it_sample:
+    IsDATA = True
+    InputSample = it_sample.split(":")[0]
+    DataPeriod  = it_sample.split(":")[1]
+    InputSample = InputSample+'_'+DataPeriod
+  if IsDATA == False:
+    InputSample = InputSamples[it_sample]['key']
+  CheckLog.write('checking for sample:'+InputSample+'\n')
+  ## Prepare output
+  ## This should be copied from above
+  base_rundir = opt.RundirBase+'/'+opt.Analyzer + '_Y'+opt.Year+'_'+InputSample
+  base_rundir += '_'+opt.SkimName+'/'
+  for line in open(base_rundir+'SubmitOutput.log','r'):
+    line = line.rstrip('\n')
+    if 'NJobs' in line:
+      NJobs = int(line.split(' ')[3])
       break
 
-    AllSampleFinished = True
+  print 'from',base_rundir+'SubmitOutput.log','NJobs', NJobs
 
-    CheckLog = open('JobCheck.log','a')
-    #for it_sample in range(0,len(InputSamples)):
-    for it_sample in InputSamples:
+  #NJobs = 1
+  #this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'')
+  #os.system('mkdir -p '+this_webdir)
 
-      print 'checking for sample:',it_sample
-      IsDATA = False
-      DataPeriod = ""
-      if ":" in it_sample:
-        IsDATA = True
-        InputSample = it_sample.split(":")[0]
-        DataPeriod  = it_sample.split(":")[1]
-	InputSample = InputSample+'_'+DataPeriod
-      if IsDATA == False:
-	InputSample = InputSamples[it_sample]['key']
+  statuslog = open(base_rundir+'/JobStatus.log','w')
+  statuslog.write('JobNumber\t| Status\n')
 
-      CheckLog.write('checking for sample:'+InputSample+'\n')
-      SampleFinished = SampleFinishedForEachSample[it_sample]
-      if SampleFinished:
+  ToStatuslog = []
+  n_eventran = 0
+  finished = []
+  EventDone = 0
+  EventTotal = 0
+
+  TotalEventRunTime = 0
+  MaxTimeLeft = 0
+  MaxEventRunTime = 0
+
+  CheckLog.write('Njob: '+ str(NJobs)+'\n')
+
+  for it_job in range(0,NJobs):
+    this_status = ""
+    this_status = CheckJobStatus(base_rundir, opt.Analyzer, it_job, HostNickName)
+    print base_rundir, opt.Analyzer, 'job',it_job
+    print "this_status",this_status
+
+    if "ERROR" in this_status:
+      statuslog.write("#### ERROR OCCURED ####\n")
+      CheckLog.write("#### ERROR OCCURED #### for job_"+str(it_job)+"\n")
+      statuslog.write(this_status+'\n')
+      CheckLog.write(this_status+'\n')
+      CheckLog.write("Passing checking the other jobs of this sample"+'\n')
+      print '###################### ERROR OCCURED ##########################'
+      print this_status
+
+      break
+
+    if "FINISHED" not in this_status:
+      CheckLog.write('Not FINISHED at job # '+ str(it_job)+'\n' )
+      CheckLog.write(this_status+'\n' )
+
+    outlog = ""
+    if "FINISHED" in this_status:
+      finished.append("Finished")
+      if IsHadd:
         continue
-      else:
-	pass
-        #AllSampleFinished = False
 
-      ## Prepare output
-      ## This should be copied from above
-      base_rundir = opt.RundirBase+'/'+opt.Analyzer + '_Y'+opt.Year+'_'+InputSample
-      base_rundir += '_'+opt.SkimName+'/'
-      for line in open(base_rundir+'SubmitOutput.log','r'):
-        line = line.rstrip('\n')
-	if 'NJobs' in line:
-	  NJobs = int(line.split(' ')[3])
-	  break
+      EventInfo = this_status.split()[1].split(':')
 
-      print 'from',base_rundir+'SubmitOutput.log','NJobs', NJobs
+      # Finished status, this is a trick to make Ntotal = NDone
+      this_EventDone = int(EventInfo[2])
+      this_EventTotal = int(EventInfo[2])
 
-      #NJobs = 1
-      this_webdir = webdirpathbase+'/'+base_rundir.replace(SKFlatRunlogDir,'')
-      os.system('mkdir -p '+this_webdir)
+      EventDone += this_EventDone
+      EventTotal += this_EventTotal
 
-      if not SampleFinished:
+      #### start
+      line_EventRunTime = this_status.split()[2]+' '+this_status.split()[3]
+      this_jobstarttime = GetDatetimeFromMyFormat(line_EventRunTime)
+      #### end
+      line_EventEndTime = this_status.split()[4]+' '+this_status.split()[5]
+      this_jobendtime   = GetDatetimeFromMyFormat(line_EventEndTime)
 
-        ## This sample was not finished in the previous monitoring
-        ## Monitor again this time
+      this_diff = this_jobendtime-this_jobstarttime
+      this_EventRunTime = 86400*this_diff.days+this_diff.seconds
 
-        ThisSampleFinished = True
+      this_TimePerEvent = float(this_EventRunTime)/float(this_EventDone)
+      this_TimeLeft = (this_EventTotal-this_EventDone)*this_TimePerEvent
 
-        ## Write Job status until it's done
-        statuslog = open(base_rundir+'/JobStatus.log','w')
-        statuslog.write('JobNumber\t| Status\n')
+      TotalEventRunTime += this_EventRunTime
+      MaxTimeLeft = max(MaxTimeLeft,this_TimeLeft)
+      MaxEventRunTime = max(MaxEventRunTime,this_EventRunTime)
 
-        ToStatuslog = []
-        n_eventran = 0
-        finished = []
-        EventDone = 0
-        EventTotal = 0
+    elif "RUNNING" in this_status:
+      outlog = str(it_job)+'\t| '+this_status.split()[1]+' %'
 
-        TotalEventRunTime = 0
-        MaxTimeLeft = 0
-        MaxEventRunTime = 0
+      if len(this_status.split())<3 :
+        SubmitOutput.write('len(this_status.split())<3;; Priting this_status.split()\n')
+        SubmitOutput.write(this_status.split()+'\n')
 
-	CheckLog.write('Njob: '+ str(NJobs)+'\n')
+      EventInfo = this_status.split()[2].split(':')
 
-        for it_job in range(0,NJobs):
-          this_status = ""
-          this_status = CheckJobStatus(base_rundir, opt.Analyzer, it_job, HostNickName)
-	  print base_rundir, opt.Analyzer, 'job',it_job
-	  print "this_status",this_status
+      this_EventDone = int(EventInfo[1])
+      this_EventTotal = int(EventInfo[2])
 
+      EventDone += this_EventDone
+      EventTotal += this_EventTotal
 
-          if "ERROR" in this_status:
-            GotError = True
-            statuslog.write("#### ERROR OCCURED ####\n")
-            CheckLog.write("#### ERROR OCCURED #### for job_"+str(it_job)+"\n")
-            statuslog.write(this_status+'\n')
-            CheckLog.write(this_status+'\n')
-            ErrorLog = this_status
-            print '###################### ERROR OCCURED ##########################'
-	    print ErrorLog
+      line_EventRunTime = this_status.split()[3]+' '+this_status.split()[4]
+      this_jobstarttime = GetDatetimeFromMyFormat(line_EventRunTime)
+      this_diff = datetime.datetime.now()-this_jobstarttime
+      this_EventRunTime = 86400*this_diff.days+this_diff.seconds
 
-            break
+      if this_EventDone==0:
+        this_EventDone = 1
 
-          if "FINISHED" not in this_status:
-	    CheckLog.write('Not FINISHED at job # '+ str(it_job)+'\n' )
-	    CheckLog.write(this_status+'\n' )
-            ThisSampleFinished = False
+      this_TimePerEvent = float(this_EventRunTime)/float(this_EventDone)
+      this_TimeLeft = (this_EventTotal-this_EventDone)*this_TimePerEvent
 
-          outlog = ""
-          if "FINISHED" in this_status:
-            finished.append("Finished")
-	    if IsHadd:
-	      continue
+      TotalEventRunTime += this_EventRunTime
+      MaxTimeLeft = max(MaxTimeLeft,this_TimeLeft)
+      MaxEventRunTime = max(MaxEventRunTime,this_EventRunTime)
 
-            EventInfo = this_status.split()[1].split(':')
+      round_this_TimeLeft = round(this_TimeLeft,1)
+      round_this_EventRunTime = round(this_EventRunTime,1)
 
-	    # Finished status, this is a trick to make Ntotal = NDone
-            this_EventDone = int(EventInfo[2])
-            this_EventTotal = int(EventInfo[2])
+      outlog += ' ('+str(round_this_EventRunTime)+' s ran, and '+str(round_this_TimeLeft)+' s left)'
+      ToStatuslog.append(outlog)
+      n_eventran += 1
 
-            EventDone += this_EventDone
-            EventTotal += this_EventTotal
+    else:
+      outlog = str(it_job)+'\t| '+this_status
+      ToStatuslog.append(outlog)
 
-            #### start
-            line_EventRunTime = this_status.split()[2]+' '+this_status.split()[3]
-            this_jobstarttime = GetDatetimeFromMyFormat(line_EventRunTime)
-            #### end
-            line_EventEndTime = this_status.split()[4]+' '+this_status.split()[5]
-            this_jobendtime   = GetDatetimeFromMyFormat(line_EventEndTime)
+      ##---- END it_job loop
+  for l in ToStatuslog:
+    statuslog.write(l+'\n')
+  statuslog.write('\n==============================================================\n')
+  statuslog.write('HostNickName = '+HostNickName+'\n')
+  statuslog.write('queue = '+opt.Queue+'\n')
+  statuslog.write(str(NJobs)+' jobs submitted\n')
+  statuslog.write(str(n_eventran)+' jobs are running\n')
+  statuslog.write(str(len(finished))+' jobs are finished\n')
 
-            this_diff = this_jobendtime-this_jobstarttime
-            this_EventRunTime = 86400*this_diff.days+this_diff.seconds
+  ThisTime = datetime.datetime.now()
+  string_ThisTime =  ThisTime.strftime('%Y-%m-%d %H:%M:%S')
 
-            this_TimePerEvent = float(this_EventRunTime)/float(this_EventDone)
-            this_TimeLeft = (this_EventTotal-this_EventDone)*this_TimePerEvent
+  statuslog.write('EventDone = '+str(EventDone)+'\n')
+  statuslog.write('EventTotal = '+str(EventTotal)+'\n')
+  statuslog.write('EventLeft = '+str(EventTotal-EventDone)+'\n')
+  statuslog.write('TotalEventRunTime = '+str(TotalEventRunTime)+'\n')
+  statuslog.write('MaxTimeLeft = '+str(MaxTimeLeft)+'\n')
+  statuslog.write('MaxEventRunTime = '+str(MaxEventRunTime)+'\n')
 
-            TotalEventRunTime += this_EventRunTime
-            MaxTimeLeft = max(MaxTimeLeft,this_TimeLeft)
-            MaxEventRunTime = max(MaxEventRunTime,this_EventRunTime)
+  t_per_event = 1
+  if EventDone is not 0:
+    t_per_event = float(TotalEventRunTime)/float(EventDone)
+  statuslog.write('t_per_event = '+str(t_per_event)+'\n')
 
-          elif "RUNNING" in this_status:
-            outlog = str(it_job)+'\t| '+this_status.split()[1]+' %'
+  EstTime = ThisTime+datetime.timedelta(0, MaxTimeLeft)
 
-            if len(this_status.split())<3 :
-              SubmitOutput.write('len(this_status.split())<3;; Priting this_status.split()\n')
-              SubmitOutput.write(this_status.split()+'\n')
+  statuslog.write('Estimated Finishing Time : '+EstTime.strftime('%Y-%m-%d %H:%M:%S')+'\n')
+  statuslog.write('Last checked at '+string_ThisTime+'\n')
+  statuslog.close()
 
-            EventInfo = this_status.split()[2].split(':')
+  ## copy statuslog to webdir
+  #os.system('cp '+base_rundir+'/JobStatus.log '+this_webdir)
 
-            this_EventDone = int(EventInfo[1])
-            this_EventTotal = int(EventInfo[2])
-
-            EventDone += this_EventDone
-            EventTotal += this_EventTotal
-
-            line_EventRunTime = this_status.split()[3]+' '+this_status.split()[4]
-            this_jobstarttime = GetDatetimeFromMyFormat(line_EventRunTime)
-            this_diff = datetime.datetime.now()-this_jobstarttime
-            this_EventRunTime = 86400*this_diff.days+this_diff.seconds
-
-            if this_EventDone==0:
-              this_EventDone = 1
-
-            this_TimePerEvent = float(this_EventRunTime)/float(this_EventDone)
-            this_TimeLeft = (this_EventTotal-this_EventDone)*this_TimePerEvent
-
-            TotalEventRunTime += this_EventRunTime
-            MaxTimeLeft = max(MaxTimeLeft,this_TimeLeft)
-            MaxEventRunTime = max(MaxEventRunTime,this_EventRunTime)
-
-            round_this_TimeLeft = round(this_TimeLeft,1)
-            round_this_EventRunTime = round(this_EventRunTime,1)
-
-            outlog += ' ('+str(round_this_EventRunTime)+' s ran, and '+str(round_this_TimeLeft)+' s left)'
-            ToStatuslog.append(outlog)
-            n_eventran += 1
-
-          else:
-            outlog = str(it_job)+'\t| '+this_status
-            ToStatuslog.append(outlog)
-
-          ##---- END it_job loop
-
-        if GotError:
-          ## When error occured, change both Finished/PostJob Flag to True
-          SampleFinishedForEachSample[it_sample] = True
-          break
-
-        for l in ToStatuslog:
-          statuslog.write(l+'\n')
-        statuslog.write('\n==============================================================\n')
-        statuslog.write('HostNickName = '+HostNickName+'\n')
-        statuslog.write('queue = '+opt.Queue+'\n')
-        statuslog.write(str(NJobs)+' jobs submitted\n')
-        statuslog.write(str(n_eventran)+' jobs are running\n')
-        statuslog.write(str(len(finished))+' jobs are finished\n')
-
-        ThisTime = datetime.datetime.now()
-        string_ThisTime =  ThisTime.strftime('%Y-%m-%d %H:%M:%S')
-
-        statuslog.write('EventDone = '+str(EventDone)+'\n')
-        statuslog.write('EventTotal = '+str(EventTotal)+'\n')
-        statuslog.write('EventLeft = '+str(EventTotal-EventDone)+'\n')
-        statuslog.write('TotalEventRunTime = '+str(TotalEventRunTime)+'\n')
-        statuslog.write('MaxTimeLeft = '+str(MaxTimeLeft)+'\n')
-        statuslog.write('MaxEventRunTime = '+str(MaxEventRunTime)+'\n')
-
-        t_per_event = 1
-        if EventDone is not 0:
-          t_per_event = float(TotalEventRunTime)/float(EventDone)
-        statuslog.write('t_per_event = '+str(t_per_event)+'\n')
-
-        EstTime = ThisTime+datetime.timedelta(0, MaxTimeLeft)
-
-        statuslog.write('Estimated Finishing Time : '+EstTime.strftime('%Y-%m-%d %H:%M:%S')+'\n')
-        statuslog.write('Last checked at '+string_ThisTime+'\n')
-        statuslog.close()
-
-        ## copy statuslog to webdir
-        os.system('cp '+base_rundir+'/JobStatus.log '+this_webdir)
-
-        ## This time, it is found to be finished
-        ## Change the flag
-        if ThisSampleFinished:
-          SampleFinishedForEachSample[it_sample] = True
-        ##---- END if finished
-
-      else:
-	pass
-
-    
-    CheckLog.close()
-    print 'possible error recoded on JobCheck.log'
+  ## This time, it is found to be finished
+  ## Change the flag
+CheckLog.close()
+print 'possible error recoded on JobCheck.log'
 
     #if SendLogToWeb:
 
@@ -291,9 +251,6 @@ try:
     #  os.system('ssh -Y '+SKFlatLogWeb+' chmod -R 777 '+SKFlatLogWebDir+'/'+opt.Analyzer+"*")
 
     #time.sleep(5)
-
-except KeyboardInterrupt:
-  print('interrupted!')
 
 
 # Send Email now
