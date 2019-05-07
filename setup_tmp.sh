@@ -89,11 +89,21 @@ elif [[ $HOSTNAME == *"tamsa2"* ]]; then
   #cd -
   #source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_9_4_9_cand2/external/slc6_amd64_gcc630/bin/thisroot.sh
 
-  #source /share/apps/root_v6-14-04/bin/thisroot.sh
-  #export GCC_HOME=/share/apps/gcc491
-  #export PATH=$GCC_HOME/bin:$PATH
+  export GCC_HOME=/usr/
+  export PATH=$GCC_HOME/bin:$PATH
+  export PATH=$HOME/bin/cmake-3.14.3-Linux-x86_64/bin:$PATH
+  export LD_LIBRARY_PATH=$GCC_HOME/lib:$GCC_HOME/lib64:$LD_LIBRARY_PATH
+  source /data6/Users/salee/ROOT616/bin/thisroot.sh
   #export LD_LIBRARY_PATH=$GCC_HOME/lib64:$GCC_HOME/lib:$LD_LIBRARY_PATH
-  #export LD_LIBRARY_PATH=/share/apps/python2.7/lib/:$LD_LIBRARY_PATH
+  #export LD_LIBRARY_PATH=/home/salee/lib/cling/lib/:$LD_LIBRARY_PATH
+  ##export PATH=/home/salee/lib/cling/bin:$PATH
+  #export CC=/opt/ohpc/pub/compiler/gcc/7.3.0/gcc
+  #export CXX=/opt/ohpc/pub/compiler/gcc/7.3.0/g++
+  #export CPP=/opt/ohpc/pub/compiler/gcc/7.3.0/cpp
+  #export LD=/opt/ohpc/pub/compiler/gcc/7.3.0/gcc
+  #alias  ld='/opt/ohpc/pub/compiler/gcc/7.3.0/gcc'
+  #alias  cc='/opt/ohpc/pub/compiler/gcc/7.3.0/gcc'
+  #source /data6/Users/salee/ROOT616/bin/thisroot.sh
   #export PATH=/share/apps/python2.7/bin/:$PATH
 
   #export CMS_PATH=/cvmfs/cms.cern.ch
@@ -103,7 +113,7 @@ elif [[ $HOSTNAME == *"tamsa2"* ]]; then
   #eval `scramv1 runtime -sh`
   #cd -
   #source /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_10_2_0/external/slc6_amd64_gcc630/bin/thisroot.sh
-  source /cvmfs/sft.cern.ch/lcg/app/releases/ROOT/6.14.06/x86_64-centos7-gcc48-opt/bin/thisroot.sh
+  #source /cvmfs/sft.cern.ch/lcg/app/releases/ROOT/6.14.06/x86_64-centos7-gcc48-opt/bin/thisroot.sh
   #source /data6/Users/salee/ROOT616/bin/thisroot.sh
   #export PYTHONPATH=$PYTHONPATH:/data6/Users/salee/ROOTLib
 
@@ -132,6 +142,7 @@ export PYTHONDIR=$SKFlat_WD/python/
 export PATH=${MYBIN}:${PYTHONDIR}:${PATH}
 export PATH=${SKFlat_WD}/CommonPyTools/scripts/:${PATH}
 export PATH=${SKFlat_WD}/ShapeAnalysis/scripts/:${PATH}
+export PATH=${SKFlat_WD}/Gardener/scripts/:${PATH}
 
 export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKFlat_WD/AnalyzerTools/include/:$SKFlat_WD/Analyzers/include/:$SKFlat_WD/CommonTools/include/
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH

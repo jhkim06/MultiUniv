@@ -2,7 +2,7 @@
 
 void Skim_DiLep::initializeAnalyzer(){
 
-  initializeAnalyzerTools(); //To use SF
+  //initializeAnalyzerTools(); //To use SF, executed by root macro
 
   //=================================
   // Skim Types

@@ -1,4 +1,5 @@
-all: CommonTools DataFormats  AnalyzerTools KinematicFitter Analyzers Archive
+all: CommonTools DataFormats  AnalyzerTools KinematicFitter Analyzers
+#all: CommonTools DataFormats  AnalyzerTools KinematicFitter Analyzers Archive
 
 CommonTools::
 	(cd CommonTools; make)
