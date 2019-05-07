@@ -62,6 +62,7 @@ class PlotFactory:
 
     generalCounter = 0
 
+    print 'inputFile', inputFile
     fileIn = ROOT.TFile(inputFile, 'READ')
 
     #---- save one TCanvas for every cut and every variable
@@ -153,12 +154,15 @@ class PlotFactory:
 	  if type(fileIn) is dict:
 	    histo = fileIn[sampleName].Get(shapeName)
 	  else:
+	    print 'before getting', shapeName
 	    histo = fileIn.Get(shapeName)
+	    print 'after getting', shapeName
 
 	  histos[sampleName] = histo.Clone('new_histo_' + sampleName + '_' + cutName + '_' + variableName)
 
 	  if 'scale' in plotdef.keys():
 	    histos[sampleName].Scale(plotdef['scale'])
+	  print 'after clone', sampleName
 
           # apply cut dependent scale factors
 	  # for example when plotting different phase spaces
@@ -622,10 +626,13 @@ class PlotFactory:
 	    histo_total = None
 	else:
 	  histo_total = fileIn.Get(special_shapeName)
+	  print 'special_shapeName', special_shapeName
 	
 	if variable['divideByBinWidth'] == 1:
-	  histo_total.Scale(1,"width")
-	print ' --> ', histo_total
+	  if(histo_total) :
+	    histo_total.Scale(1,"width")
+	if(histo_total) :
+	  print ' --> ', histo_total
 
 	if len(mynuisances.keys()) != 0:
 	  tgrMC = ROOT.TGraphAsymmErrors() 

@@ -27,21 +27,21 @@ variables['passSelectQ'] = {
 
 variables['IdSF_Q_Up'] = {
     'name': 'IdSF_Q_Up',
-    'range':(40,-1,1.5),
+    'range':(40,-1,2.0),
     'xaxis': 'IdSF_Q_Up',
     'fold' : 3
     }
 
 variables['IdSF_Q_Do'] = {
     'name': 'IdSF_Q_Do',
-    'range':(40,-1,1.5),
+    'range':(40,-1,2.0),
     'xaxis': 'IdSF_Q_Do',
     'fold' : 3
     }
 
 variables['IdSF_Q'] = {
     'name': 'IdSF_Q',
-    'range':(40,-1,1.5),
+    'range':(40,-1,2.0),
     'xaxis': 'IdSF_Q',
     'fold' : 3
     }
