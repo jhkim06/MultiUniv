@@ -39,8 +39,12 @@ public:
   TLorentzVector Get_leptonic_top_b_jet();
   TLorentzVector Get_down_type_jet();
   TLorentzVector Get_up_type_jet();
-  TLorentzVector Get_neutrino();
 
+  TLorentzVector Get_hadronic_top_b_parton();
+  TLorentzVector Get_leptonic_top_b_parton();
+  TLorentzVector Get_down_type_parton();
+  TLorentzVector Get_up_type_parton();
+  TLorentzVector Get_neutrino();
 private:
 
   bool FindMinDeltaRMatching(matchedPartonJet &partonjet);

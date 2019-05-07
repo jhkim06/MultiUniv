@@ -169,6 +169,34 @@ TLorentzVector GenMatching_CHToCB::Get_down_type_jet(){
   return down_type_quark.matched_jet;
 }
 
+TLorentzVector GenMatching_CHToCB::Get_hadronic_top_b_parton(){
+  if(negative_lepton_charge==1){
+    return b_from_top.matched_parton;
+  }
+  else if(negative_lepton_charge==0){
+    return b_from_anti_top.matched_parton;
+  }
+  return TLorentzVector();
+}
+
+TLorentzVector GenMatching_CHToCB::Get_leptonic_top_b_parton(){
+  if(negative_lepton_charge==1){
+    return b_from_anti_top.matched_parton;
+  }
+  else if(negative_lepton_charge==0){
+    return b_from_top.matched_parton;
+  }
+  return TLorentzVector();
+}
+
+TLorentzVector GenMatching_CHToCB::Get_up_type_parton(){
+  return up_type_quark.matched_parton;
+}
+
+TLorentzVector GenMatching_CHToCB::Get_down_type_parton(){
+  return down_type_quark.matched_parton;
+}
+
 TLorentzVector GenMatching_CHToCB::Get_neutrino(){
   return neutrino.matched_parton;
 }
