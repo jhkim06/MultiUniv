@@ -83,7 +83,7 @@ void TFitConstraintMGaus::setMassConstraint(Double_t Mass, Double_t Width) {
   _TheMassConstraint = Mass;
   _width = Width;
   setCovMatrix( 0 );
-  if(!Mass) throw cms::Exception("Configuration")
+  if(!Mass) std::cout
     << "Error occured!\n"
     << "Object type : TFitConstraintMGaus\n"
     << "Object name : " << GetName() << "\n"

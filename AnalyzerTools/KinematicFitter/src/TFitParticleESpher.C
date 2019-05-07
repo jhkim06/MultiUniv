@@ -1,25 +1,25 @@
-// Classname: TFitParticleSpher
+// Classname: TFitParticleESpher
 // Author: Jan E. Sundermann, Verena Klose (TU Dresden)      
 
 
 //________________________________________________________________
 // 
-// TFitParticleSpher::
+// TFitParticleESpher::
 // --------------------
 //
 // Particle with spherical  parametrization of the momentum 4vector and
-// free mass (4 free parameters). The parametrization is chosen as
+// free energy (4 free parameters). The parametrization is chosen as
 // follows:
 //
 // p = (r, theta, phi)
-// E(fit) =  Sqrt( |p|^2 + d^2*m^2 )
+// E(fit) =  d * E_meas
 //
 
 #include <iostream>
 //#include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "TFitParticleSpher.h"
+#include "TFitParticleESpher.h"
 
-ClassImp(TFitParticleSpher)
+ClassImp(TFitParticleESpher)
 
 #include "TMath.h"
 
@@ -27,13 +27,13 @@ ClassImp(TFitParticleSpher)
 //----------------
 // Constructor --
 //----------------
-TFitParticleSpher::TFitParticleSpher()
+TFitParticleESpher::TFitParticleESpher()
   :TAbsFitParticle()  
 {
   init(0, 0);
 }
 
-TFitParticleSpher::TFitParticleSpher( const TFitParticleSpher& fitParticle )
+TFitParticleESpher::TFitParticleESpher( const TFitParticleESpher& fitParticle )
   :TAbsFitParticle( fitParticle.GetName(), fitParticle.GetTitle() )
 {
 
@@ -52,23 +52,23 @@ TFitParticleSpher::TFitParticleSpher( const TFitParticleSpher& fitParticle )
 
 }
 
-TFitParticleSpher::TFitParticleSpher(TLorentzVector* pini, const TMatrixD* theCovMatrix)
+TFitParticleESpher::TFitParticleESpher(TLorentzVector* pini, const TMatrixD* theCovMatrix)
   :TAbsFitParticle()  
 {
   init(pini, theCovMatrix);
 }
 
-TFitParticleSpher::TFitParticleSpher(const TString &name, const TString &title, 
+TFitParticleESpher::TFitParticleESpher(const TString &name, const TString &title, 
 			   TLorentzVector* pini, const TMatrixD* theCovMatrix)
   :TAbsFitParticle(name, title)  
 {
   init(pini, theCovMatrix);
 }
 
-TAbsFitParticle* TFitParticleSpher::clone( const TString& newname ) const {
+TAbsFitParticle* TFitParticleESpher::clone( const TString& newname ) const {
   // Returns a copy of itself
   
-  TAbsFitParticle* myclone = new TFitParticleSpher( *this );
+  TAbsFitParticle* myclone = new TFitParticleESpher( *this );
   if ( newname.Length() > 0 ) myclone->SetName(newname);
   return myclone;
 
@@ -77,14 +77,14 @@ TAbsFitParticle* TFitParticleSpher::clone( const TString& newname ) const {
 //--------------
 // Destructor --
 //--------------
-TFitParticleSpher::~TFitParticleSpher() {
+TFitParticleESpher::~TFitParticleESpher() {
 
 }
 
 //--------------
 // Operations --
 //--------------
-void TFitParticleSpher::init(TLorentzVector* pini, const TMatrixD* theCovMatrix ) {
+void TFitParticleESpher::init(TLorentzVector* pini, const TMatrixD* theCovMatrix ) {
 
   _nPar = 4;
   setIni4Vec(pini);
@@ -92,7 +92,7 @@ void TFitParticleSpher::init(TLorentzVector* pini, const TMatrixD* theCovMatrix 
 
 }
 
-TLorentzVector* TFitParticleSpher::calc4Vec( const TMatrixD* params ) {
+TLorentzVector* TFitParticleESpher::calc4Vec( const TMatrixD* params ) {
   // Calculates a 4vector corresponding to the given
   // parameter values
 
@@ -102,7 +102,7 @@ TLorentzVector* TFitParticleSpher::calc4Vec( const TMatrixD* params ) {
 
   if ( params->GetNcols() != 1 || params->GetNrows() !=_nPar ) {
     //edm::LogError ("WrongMatrixSize")
-      << GetName() << "::calc4Vec - Parameter matrix has wrong size.";
+    //<< GetName() << "::calc4Vec - Parameter matrix has wrong size.";
     return 0;
   }
 
@@ -114,14 +114,14 @@ TLorentzVector* TFitParticleSpher::calc4Vec( const TMatrixD* params ) {
   Double_t X = r*TMath::Cos(phi)*TMath::Sin(theta);
   Double_t Y = r*TMath::Sin(phi)*TMath::Sin(theta);
   Double_t Z = r*TMath::Cos(theta);
-  Double_t E = TMath::Sqrt( X*X + Y*Y + Z*Z + d*d*_pini.M2() );
+  Double_t E = d * _pini.E();
 		
   TLorentzVector* vec = new TLorentzVector( X, Y, Z, E );
   return vec;
 
 }
 
-void TFitParticleSpher::setIni4Vec(const TLorentzVector* pini) {
+void TFitParticleESpher::setIni4Vec(const TLorentzVector* pini) {
   // Set the initial 4vector. Will also set the 
   // inital parameter values 
 
@@ -171,7 +171,7 @@ void TFitParticleSpher::setIni4Vec(const TLorentzVector* pini) {
 
 }
 
-TMatrixD* TFitParticleSpher::getDerivative() {
+TMatrixD* TFitParticleESpher::getDerivative() {
   // returns derivative dP/dy with P=(p,E) and y=(r, theta, phi, d) 
   // the free parameters of the fit. The columns of the matrix contain 
   // (dP/dr, dP/dtheta, ...).
@@ -182,7 +182,7 @@ TMatrixD* TFitParticleSpher::getDerivative() {
   Double_t r = _parameters(0,0);
   Double_t theta = _parameters(1,0);
   Double_t phi = _parameters(2,0);
-  Double_t d = _parameters(3,0);
+  //Double_t d = _parameters(3,0);
 
   //1st column: dP/dr
   (*DerivativeMatrix)(0,0) = TMath::Cos(phi)*TMath::Sin(theta);
@@ -206,13 +206,13 @@ TMatrixD* TFitParticleSpher::getDerivative() {
   (*DerivativeMatrix)(0,3) = 0.;
   (*DerivativeMatrix)(1,3) = 0.;
   (*DerivativeMatrix)(2,3) = 0.;
-  (*DerivativeMatrix)(3,3) = _pini.M()*_pini.M()*d/_pcurr.E();
+  (*DerivativeMatrix)(3,3) = _pini.E();
 
   return DerivativeMatrix;
 
 }
 
-TMatrixD* TFitParticleSpher::transform(const TLorentzVector& vec) {
+TMatrixD* TFitParticleESpher::transform(const TLorentzVector& vec) {
   // Returns the parameters corresponding to the given 
   // 4vector
 
@@ -221,7 +221,7 @@ TMatrixD* TFitParticleSpher::transform(const TLorentzVector& vec) {
   (*tparams)(0,0) = vec.P();
   (*tparams)(1,0) = vec.Theta();
   (*tparams)(2,0) = vec.Phi();
-  (*tparams)(3,0) = vec.M()/_pini.M();
+  (*tparams)(3,0) = vec.E()/_pini.E();
 
   return tparams;
 

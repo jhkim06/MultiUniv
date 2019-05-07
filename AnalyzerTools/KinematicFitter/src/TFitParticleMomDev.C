@@ -151,7 +151,7 @@ TLorentzVector* TFitParticleMomDev::calc4Vec( const TMatrixD* params ) {
 
   if ( params->GetNcols() != 1 || params->GetNrows() !=_nPar ) {
     //edm::LogError ("WrongMatrixSize")
-      << GetName() << "::calc4Vec - Parameter matrix has wrong size.";
+    //  << GetName() << "::calc4Vec - Parameter matrix has wrong size.";
     return 0;
   }
 

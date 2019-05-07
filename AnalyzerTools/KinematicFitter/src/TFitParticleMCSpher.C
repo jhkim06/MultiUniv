@@ -1,25 +1,25 @@
-// Classname: TFitParticleMCPInvSpher
+// Classname: TFitParticleMCSpher
 // Author: Jan E. Sundermann, Verena Klose (TU Dresden)      
 
 
 //________________________________________________________________
 // 
-// TFitParticleMCPInvSpher::
+// TFitParticleMCSpher::
 // --------------------
 //
-// Particle with 1/r, theta, and phi parametrization of the momentum 4vector and
+// Particle with spherical  parametrization of the momentum 4vector and
 // constant mass (3 free parameters). The parametrization is chosen as
 // follows:
 //
-// p = (1/r, theta, phi)
+// p = (r, theta, phi)
 // E(fit) =  Sqrt( |p|^2 + m^2 )
 //
 
 #include <iostream>
 //#include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "TFitParticleMCPInvSpher.h"
+#include "TFitParticleMCSpher.h"
 
-ClassImp(TFitParticleMCPInvSpher)
+ClassImp(TFitParticleMCSpher)
 
 #include "TMath.h"
 
@@ -27,13 +27,13 @@ ClassImp(TFitParticleMCPInvSpher)
 //----------------
 // Constructor --
 //----------------
-TFitParticleMCPInvSpher::TFitParticleMCPInvSpher()
+TFitParticleMCSpher::TFitParticleMCSpher()
   :TAbsFitParticle()
 { 
   init( 0, 0., 0);
 }
 
-TFitParticleMCPInvSpher::TFitParticleMCPInvSpher( const TFitParticleMCPInvSpher& fitParticle )
+TFitParticleMCSpher::TFitParticleMCSpher( const TFitParticleMCSpher& fitParticle )
   :TAbsFitParticle( fitParticle.GetName(), fitParticle.GetTitle() )
 {
 
@@ -52,23 +52,23 @@ TFitParticleMCPInvSpher::TFitParticleMCPInvSpher( const TFitParticleMCPInvSpher&
 
 }
 
-TFitParticleMCPInvSpher::TFitParticleMCPInvSpher(TVector3* p, Double_t M, const TMatrixD* theCovMatrix)
+TFitParticleMCSpher::TFitParticleMCSpher(TVector3* p, Double_t M, const TMatrixD* theCovMatrix)
   :TAbsFitParticle()
 { 
   init(p, M, theCovMatrix);
 }
 
-TFitParticleMCPInvSpher::TFitParticleMCPInvSpher(const TString &name, const TString &title,
+TFitParticleMCSpher::TFitParticleMCSpher(const TString &name, const TString &title,
 			       TVector3* p, Double_t M, const TMatrixD* theCovMatrix)
   :TAbsFitParticle(name, title)
 { 
   init(p, M, theCovMatrix);
 }
 
-TAbsFitParticle* TFitParticleMCPInvSpher::clone( const TString& newname ) const {
+TAbsFitParticle* TFitParticleMCSpher::clone( const TString& newname ) const {
   // Returns a copy of itself
   
-  TAbsFitParticle* myclone = new TFitParticleMCPInvSpher( *this );
+  TAbsFitParticle* myclone = new TFitParticleMCSpher( *this );
   if ( newname.Length() > 0 ) myclone->SetName(newname);
   return myclone;
 
@@ -77,7 +77,7 @@ TAbsFitParticle* TFitParticleMCPInvSpher::clone( const TString& newname ) const 
 //--------------
 // Destructor --
 //--------------
-TFitParticleMCPInvSpher::~TFitParticleMCPInvSpher() {
+TFitParticleMCSpher::~TFitParticleMCSpher() {
 
 }
 
@@ -85,7 +85,7 @@ TFitParticleMCPInvSpher::~TFitParticleMCPInvSpher() {
 //--------------
 // Operations --
 //--------------
-void TFitParticleMCPInvSpher::init(TVector3* p, Double_t M, const TMatrixD* theCovMatrix) {
+void TFitParticleMCSpher::init(TVector3* p, Double_t M, const TMatrixD* theCovMatrix) {
 
   _nPar = 3;
   setIni4Vec(p, M);
@@ -93,7 +93,7 @@ void TFitParticleMCPInvSpher::init(TVector3* p, Double_t M, const TMatrixD* theC
   
 }
  
-TLorentzVector* TFitParticleMCPInvSpher::calc4Vec( const TMatrixD* params ) {
+TLorentzVector* TFitParticleMCSpher::calc4Vec( const TMatrixD* params ) {
   // Calculates a 4vector corresponding to the given
   // parameter values
 
@@ -103,7 +103,7 @@ TLorentzVector* TFitParticleMCPInvSpher::calc4Vec( const TMatrixD* params ) {
 
   if ( params->GetNcols() != 1 || params->GetNrows() !=_nPar ) {
     //edm::LogError ("WrongMatrixSize")
-      << GetName() << "::calc4Vec - Parameter matrix has wrong size.";
+      //<< GetName() << "::calc4Vec - Parameter matrix has wrong size.";
     return 0;
   }
   
@@ -111,9 +111,9 @@ TLorentzVector* TFitParticleMCPInvSpher::calc4Vec( const TMatrixD* params ) {
   Double_t theta = (*params)(1,0);
   Double_t phi = (*params)(2,0);
 
-  Double_t X = 1/r*TMath::Cos(phi)*TMath::Sin(theta);
-  Double_t Y = 1/r*TMath::Sin(phi)*TMath::Sin(theta);
-  Double_t Z = 1/r*TMath::Cos(theta);
+  Double_t X = r*TMath::Cos(phi)*TMath::Sin(theta);
+  Double_t Y = r*TMath::Sin(phi)*TMath::Sin(theta);
+  Double_t Z = r*TMath::Cos(theta);
   Double_t E = TMath::Sqrt(  X*X + Y*Y + Z*Z + _pini.M2() );
 
   TLorentzVector* vec = new TLorentzVector( X, Y, Z, E );
@@ -121,7 +121,7 @@ TLorentzVector* TFitParticleMCPInvSpher::calc4Vec( const TMatrixD* params ) {
 
 }
 
-void TFitParticleMCPInvSpher::setIni4Vec(const TLorentzVector* pini) {
+void TFitParticleMCSpher::setIni4Vec(const TLorentzVector* pini) {
   // Set the initial 4vector. Will also set the 
   // inital parameter values 
 
@@ -130,7 +130,7 @@ void TFitParticleMCPInvSpher::setIni4Vec(const TLorentzVector* pini) {
 
 }
 
-void TFitParticleMCPInvSpher::setIni4Vec(const TVector3* p, Double_t M) {
+void TFitParticleMCSpher::setIni4Vec(const TVector3* p, Double_t M) {
   // Set the initial 4vector. Will also set the 
   // inital parameter values 
 
@@ -152,7 +152,7 @@ void TFitParticleMCPInvSpher::setIni4Vec(const TVector3* p, Double_t M) {
     _pini.SetXYZM( p->x(), p->y(), p->z(), M);
     _pcurr = _pini;
 
-    Double_t r = 1/_pini.P();
+    Double_t r = _pini.P();
     Double_t theta = _pini.Theta();
     Double_t phi = _pini.Phi();
 
@@ -171,7 +171,7 @@ void TFitParticleMCPInvSpher::setIni4Vec(const TVector3* p, Double_t M) {
 
 }
 
-TMatrixD* TFitParticleMCPInvSpher::getDerivative() {
+TMatrixD* TFitParticleMCSpher::getDerivative() {
   // returns derivative dP/dy with P=(p,E) and y=(r, theta, phi) 
   // the free parameters of the fit. The columns of the matrix contain 
   // (dP/dr, dP/dtheta, ...).
@@ -180,25 +180,24 @@ TMatrixD* TFitParticleMCPInvSpher::getDerivative() {
   (*DerivativeMatrix) *= 0.;
 
   Double_t r = _parameters(0,0);
-  Double_t p = 1./r;
   Double_t theta = _parameters(1,0);
   Double_t phi = _parameters(2,0);
 
   //1st column: dP/dr
-  (*DerivativeMatrix)(0,0) = -1.*p*p*TMath::Cos(phi)*TMath::Sin(theta);
-  (*DerivativeMatrix)(1,0) = -1.*p*p*TMath::Sin(phi)*TMath::Sin(theta);
-  (*DerivativeMatrix)(2,0) = -1.*p*p*TMath::Cos(theta);
-  (*DerivativeMatrix)(3,0) = -1.*p*p*p/_pcurr.E();
+  (*DerivativeMatrix)(0,0) = TMath::Cos(phi)*TMath::Sin(theta);
+  (*DerivativeMatrix)(1,0) = TMath::Sin(phi)*TMath::Sin(theta);
+  (*DerivativeMatrix)(2,0) = TMath::Cos(theta);
+  (*DerivativeMatrix)(3,0) = r/_pcurr.E();
 
   //2nd column: dP/dtheta
-  (*DerivativeMatrix)(0,1) = p*TMath::Cos(phi)*TMath::Cos(theta);
-  (*DerivativeMatrix)(1,1) = p*TMath::Sin(phi)*TMath::Cos(theta);
-  (*DerivativeMatrix)(2,1) = -1.*p*TMath::Sin(theta);
+  (*DerivativeMatrix)(0,1) = r*TMath::Cos(phi)*TMath::Cos(theta);
+  (*DerivativeMatrix)(1,1) = r*TMath::Sin(phi)*TMath::Cos(theta);
+  (*DerivativeMatrix)(2,1) = -1.*r*TMath::Sin(theta);
   (*DerivativeMatrix)(3,1) = 0.;
 
    //3rd column: dP/dphi
-  (*DerivativeMatrix)(0,2) = -1.*p*TMath::Sin(phi)*TMath::Sin(theta);
-  (*DerivativeMatrix)(1,2) = p*TMath::Cos(phi)*TMath::Sin(theta);;
+  (*DerivativeMatrix)(0,2) = -1.*r*TMath::Sin(phi)*TMath::Sin(theta);
+  (*DerivativeMatrix)(1,2) = r*TMath::Cos(phi)*TMath::Sin(theta);;
   (*DerivativeMatrix)(2,2) = 0.;
   (*DerivativeMatrix)(3,2) = 0.;
 
@@ -206,13 +205,13 @@ TMatrixD* TFitParticleMCPInvSpher::getDerivative() {
 
 }
 
-TMatrixD* TFitParticleMCPInvSpher::transform(const TLorentzVector& vec) {
+TMatrixD* TFitParticleMCSpher::transform(const TLorentzVector& vec) {
   // Returns the parameters corresponding to the given 
   // 4vector
 
   // retrieve parameters
   TMatrixD* tparams = new TMatrixD( _nPar, 1 );
-  (*tparams)(0,0) = 1./vec.P();
+  (*tparams)(0,0) = vec.P();
   (*tparams)(1,0) = vec.Theta();
   (*tparams)(2,0) = vec.Phi();
 

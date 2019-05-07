@@ -4,12 +4,12 @@ TKinFitterDriver::TKinFitterDriver(){
 
   fitter = new TKinFitter("fitter","fitter");
 
-  error_hadronic_top_b_jet = error_hadronic_top_b_jet(3,3); 
-  error_leptonic_top_b_jet = error_leptonic_top_b_jet(3,3);
-  error_hadronic_w_ch_jet1 = error_hadronic_w_ch_jet1(3,3);
-  error_hadronic_w_ch_jet2 = error_hadronic_w_ch_jet2(3,3);
-  error_lepton = error_lepton(3,3);
-  error_neutrino = error_neutrino(3,3);
+  error_hadronic_top_b_jet.ResizeTo(3,3); 
+  error_leptonic_top_b_jet.ResizeTo(3,3);
+  error_hadronic_w_ch_jet1.ResizeTo(3,3);
+  error_hadronic_w_ch_jet2.ResizeTo(3,3);
+  error_lepton.ResizeTo(3,3);
+  error_neutrino.ResizeTo(3,3);
 
   error_hadronic_top_b_jet.Zero(); 
   error_leptonic_top_b_jet.Zero();
@@ -29,6 +29,7 @@ TKinFitterDriver::TKinFitterDriver(){
   constrain_leptonic_top_M = NULL;
   constrain_leptonic_W_M = NULL;
 
+  //cout <<"TKinFitterDriver::TKinFitterDriver : initialized" << endl;
 }
 
 
@@ -54,15 +55,20 @@ void TKinFitterDriver::SetAllObjects(std::vector<Jet> jet_vector_,
                                      TLorentzVector lepton_,
                                      TLorentzVector met_){
 
+  //cout << "jet vector size " << jet_vector_.size() << endl; 
+  //cout << "btag vector size " << btag_vector_.size() << endl; 
   jet_vector.clear();
   for(UInt_t i=0; i<jet_vector_.size(); i++){
     jet_vector.push_back((TLorentzVector)jet_vector_.at(i));
   }
-  btag_vector = btag_vector_;
-
+  btag_vector.clear();
+  for(UInt_t i=0; i<btag_vector_.size(); i++){
+    btag_vector.push_back(btag_vector_.at(i));
+  }
   njets = jet_vector.size();
   nbtags = std::accumulate(btag_vector.begin(), btag_vector.end(),0);
 
+  permutation_vector.clear();
   for(int i(0); i<njets; i++){
     if(i==0) permutation_vector.push_back( HADRONIC_TOP_B );
     else if(i==1) permutation_vector.push_back( LEPTONIC_TOP_B );
@@ -74,6 +80,8 @@ void TKinFitterDriver::SetAllObjects(std::vector<Jet> jet_vector_,
  
   this->SetLepton(lepton_);
   this->SetMET(met_); 
+  
+  //cout <<"TKinFitterDriver::SetAllObjects : " << endl;
 }
 
 
@@ -89,6 +97,8 @@ void TKinFitterDriver::SetHadronicTopBJets(TLorentzVector jet_){
                                                     &hadronic_top_b_jet,
                                                     &error_hadronic_top_b_jet
                                                    );
+  //cout <<"TKinFitterDriver::SetHadronicTopBJets : " << endl;
+
 }
 
 
@@ -104,6 +114,7 @@ void TKinFitterDriver::SetLeptonicTopBJets(TLorentzVector jet_){
                                                     &leptonic_top_b_jet,
                                                     &error_leptonic_top_b_jet
                                                    );
+  //cout <<"TKinFitterDriver::SetLeptonicTopBJets : " << endl;
 }
 
 
@@ -119,6 +130,7 @@ void TKinFitterDriver::SetWCHUpTypeJets(TLorentzVector jet_){
                                                     &hadronic_w_ch_jet1,
                                                     &error_hadronic_w_ch_jet1
                                                    );
+  //cout <<"TKinFitterDriver::SetWCHUpTypeJets : " << endl;
 }
 
 
@@ -127,37 +139,50 @@ void TKinFitterDriver::SetWCHDownTypeJets(TLorentzVector jet_){
   double Et = hadronic_w_ch_jet2.Et();
   double Eta = hadronic_w_ch_jet2.Eta();
   this->SetError(&error_hadronic_w_ch_jet2, Et, Eta);
-
   if(!fit_hadronic_w_ch_jet2) delete fit_hadronic_w_ch_jet2;
   fit_hadronic_w_ch_jet2 = new TFitParticleEtEtaPhi("hadronic_w_ch_jet2",
                                                     "hadronic_w_ch_jet2",
                                                     &hadronic_w_ch_jet2,
                                                     &error_hadronic_w_ch_jet2
                                                    );
+  //cout << "TKinFitterDriver::SetWCHDownTypeJets : " << endl;
 }
 
 
 void TKinFitterDriver::SetLepton(TLorentzVector lepton_){
   lepton=lepton_;
-
+  double Et = lepton.Et();
+  double Eta = lepton.Eta();
+  //this->SetError(&error_lepton, Et, Eta);
+  error_lepton(0,0)=0.01;
+  error_lepton(1,1)=0.01;
+  error_lepton(2,2)=0.01;
   if(!fit_lepton) delete fit_lepton;
   fit_lepton = new TFitParticleEtEtaPhi("lepton",
                                         "lepton",
                                         &lepton,
                                         &error_lepton
                                        );
+  //cout << "TKinFitterDriver::SetLepton : " << endl;
 }
 
 
 void TKinFitterDriver::SetMET(TLorentzVector met_){
   neutrino=met_; //TODO: will update this with Pz sol.
-
+  double Et = neutrino.Et();
+  double Eta = neutrino.Eta();
+  //this->SetError(&error_neutrino, Et, Eta);
+  error_neutrino(0,0)=0.01;
+  error_neutrino(1,1)=0.01;
+  error_neutrino(2,2)=0.01;
   if(!fit_neutrino) delete fit_neutrino;
   fit_neutrino = new TFitParticleEtEtaPhi("neutrino",
                                           "neutrino",
                                           &neutrino,
                                           &error_neutrino
                                          );
+  
+  //cout << "TKinFitterDriver::SetMET : " << endl;
 }
 
 
@@ -171,7 +196,7 @@ void TKinFitterDriver::SetCurrentPermutationJets(){
     else if( jet_assignment_idx == W_CH_UP_TYPE ) m=i;
     else if( jet_assignment_idx == W_CH_DOWN_TYPE ) n=i;
   }
-  
+  //cout << k << l << m << n << endl;
   this->SetHadronicTopBJets( jet_vector.at(k) );
   this->SetLeptonicTopBJets( jet_vector.at(l) );
   this->SetWCHUpTypeJets( jet_vector.at(m) );
@@ -199,8 +224,8 @@ bool TKinFitterDriver::Check_BJet_Assignment(){
   if(nbtags==2 && nbtags_in_four_jets==2) true_bjet_assignment=true;
   else if(nbtags>=3 && nbtags_in_four_jets>=3) true_bjet_assignment=true;
 
+  //cout << "TKinFitterDriver::Check_BJet_Assignment : " << endl; 
   return true_bjet_assignment;
-
 }
 
 
@@ -230,8 +255,10 @@ void TKinFitterDriver::SetFitter(){
   // TODO: currently, fitter dose not fit MET.
   // To fit MET, it is required to know uncertainty of MET
   // Also, Px, Py should be constrained
-  fitter->addUnmeasParticle( fit_lepton );
-  fitter->addUnmeasParticle( fit_neutrino );
+  fitter->addMeasParticle( fit_lepton );
+  fitter->addMeasParticle( fit_neutrino );
+  //fitter->addUnmeasParticle( fit_lepton );
+  //fitter->addUnmeasParticle( fit_neutrino );
   //add Constraint
   fitter->addConstraint( constrain_hadronic_top_M );
   fitter->addConstraint( constrain_leptonic_top_M );
@@ -240,7 +267,8 @@ void TKinFitterDriver::SetFitter(){
   fitter->setMaxNbIter( 30 );
   fitter->setMaxDeltaS( 1e-2 );
   fitter->setMaxF( 1e-1 );
-  fitter->setVerbosity(0);
+  fitter->setVerbosity(1);
+  //cout << "TKinFitterDriver::SetFitter : " << endl;
 }
 
 
@@ -260,6 +288,7 @@ void TKinFitterDriver::Fit(){
     const TLorentzVector initial_dijet = (*initial_jet1) + (*initial_jet2);
     initial_dijet_M = initial_dijet.M(); // save dijet mass
   }
+  //cout << "TKinFitterDriver::Fit : " << endl;
 }
 
 
@@ -328,9 +357,10 @@ bool TKinFitterDriver::NextPermutation(bool UseLeading4Jets){
 
 
 void TKinFitterDriver::SetError(TMatrixD *matrix,  double Et, double Eta){
-  (*matrix)(0,0) = this->ErrEt(Et,Eta);
-  (*matrix)(1,1) = this->ErrEta(Et,Eta);
-  (*matrix)(2,2) = this->ErrPhi(Et,Eta);
+  (*matrix)(0,0) = this->ErrEt(Et, Eta);
+  (*matrix)(1,1) = this->ErrEt(Et, Eta);
+  (*matrix)(2,2) = this->ErrEt(Et, Eta);
+
 }
 
 
@@ -347,7 +377,8 @@ double TKinFitterDriver::ErrEt(double Et, double Eta){
     c = 0.043;
   }
   InvPerr2 = (a * a) + (b * b) * Et + (c * c) * Et * Et;
-  return InvPerr2;
+  //return InvPerr2;
+  return 20;
 }
 
 

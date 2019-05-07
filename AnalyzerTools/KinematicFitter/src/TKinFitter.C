@@ -390,6 +390,8 @@ Int_t TKinFitter::fit() {
     prevS = currS;
     currS = getS();
 
+    //std::cout << "calculate F ans S" << std::endl;
+
     if( TMath::IsNaN(currF) ) {
       //edm::LogInfo ("KinFitter") << "The current value of F is NaN. Fit will be aborted.";
       _status = -10;
@@ -414,6 +416,7 @@ Int_t TKinFitter::fit() {
       currS = getS();
     }
     
+    //std::cout << "reduce step" << std::endl;
     // Test convergence
     isConverged = converged(currF, prevS, currS);
 

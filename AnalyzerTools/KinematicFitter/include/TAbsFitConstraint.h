@@ -6,6 +6,7 @@
 #include "TMatrixD.h"
 #include "TNamed.h"
 #include "TString.h"
+#include <sstream>
 
 class TAbsFitConstraint : public TNamed {
 
