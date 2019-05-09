@@ -97,6 +97,7 @@ public:
   bool PassID(TString ID);
   bool Pass_POGTight();
   bool Pass_POGTightWithTightIso();
+  bool Pass_POGLooseWithLooseIso();
   bool Pass_POGHighPtWithLooseTrkIso();
   bool Pass_TESTID();
 

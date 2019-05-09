@@ -27,6 +27,11 @@ private:
 
   int IsMu;
   int IsEl;
+  int passTightID; // for ABCD method
+  int passIso; // for ABCD method
+  int passAntiIso; // for ABCD method
+  int passAntiIso_Up; // for ABCD method
+  int passAntiIso_Do; // for ABCD method
 
   //RootHelper rootHelp;
   double DiLepTrg_SF(TString Leg0Key, TString Leg1Key, const vector<Lepton*>& leps, int sys);
@@ -60,7 +65,6 @@ private:
   bool PtEtaPass;
   double Aod_pt[2], Aod_eta[2];
   double Lep0PtCut;
-  double Lep1PtCut;
   double LepEtaCut;
 
   Double_t trgSF, trgSF_Up, trgSF_Do;

@@ -336,23 +336,23 @@ bool Electron::isAntiIso(TString ID, int syst){
   if(ID=="Tight"){
     if(syst==0){
       reliso_min_b=0.0287+0.506/UncorrPt(); //reliso cut at POGTight ID
-      reliso_max_b=0.112+0.506/UncorrPt(); // reliso cut at POGLoose ID
+      reliso_max_b=0.198+0.506/UncorrPt(); // reliso cut at POGVeto ID
       reliso_min_e=0.0445+0.963/UncorrPt(); //reliso cut at POGTight ID
-      reliso_max_e=0.108+0.963/UncorrPt(); // reliso cut at POGLoose ID
+      reliso_max_e=0.203+0.963/UncorrPt(); // reliso cut at POGVeto ID
     }
     else if(syst==1){
       //XXX: currently same as central
-      reliso_min_b=0.0287+0.506/UncorrPt();
-      reliso_max_b=0.112+0.506/UncorrPt();
-      reliso_min_e=0.0445+0.963/UncorrPt();
-      reliso_max_e=0.108+0.963/UncorrPt();
+      reliso_min_b=0.0287+0.506/UncorrPt(); //reliso cut at POGTight ID
+      reliso_max_b=0.198+0.506/UncorrPt(); // reliso cut at POGVeto ID
+      reliso_min_e=0.0445+0.963/UncorrPt(); //reliso cut at POGTight ID
+      reliso_max_e=0.203+0.963/UncorrPt(); // reliso cut at POGVeto ID
     }
     else if(syst==-1){
       //XXX: currently same as central
-      reliso_min_b=0.0287+0.506/UncorrPt();
-      reliso_max_b=0.112+0.506/UncorrPt();
-      reliso_min_e=0.0445+0.963/UncorrPt();
-      reliso_max_e=0.108+0.963/UncorrPt();
+      reliso_min_b=0.0287+0.506/UncorrPt(); //reliso cut at POGTight ID
+      reliso_max_b=0.198+0.506/UncorrPt(); // reliso cut at POGVeto ID
+      reliso_min_e=0.0445+0.963/UncorrPt(); //reliso cut at POGTight ID
+      reliso_max_e=0.203+0.963/UncorrPt(); // reliso cut at POGVeto ID
     }
     else{
       cout << "[Electron::isAntiIso] No syst flag : " << syst << endl;
@@ -368,12 +368,14 @@ bool Electron::isAntiIso(TString ID, int syst){
       reliso_max_e=0.108+0.963/UncorrPt(); // reliso cut at POGLoose ID
     }
     else if(syst==1){
+      //XXX: currently same as central
       reliso_min_b=0.0478+0.506/UncorrPt();
       reliso_max_b=0.112+0.506/UncorrPt();
       reliso_min_e=0.0658+0.963/UncorrPt();
       reliso_max_e=0.108+0.963/UncorrPt();
     }
     else if(syst==-1){
+      //XXX: currently same as central
       reliso_min_b=0.0478+0.506/UncorrPt();
       reliso_max_b=0.112+0.506/UncorrPt();
       reliso_min_e=0.0658+0.963/UncorrPt();
