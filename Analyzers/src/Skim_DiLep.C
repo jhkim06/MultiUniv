@@ -246,8 +246,8 @@ void Skim_DiLep::executeEvent(){
     // key for private or official SF
     LeptonID_key_POG= "passMediumID";
     LeptonID_key    = "MediumID_pt10";
-    LeptonID_QPlus_key    = "MediumID_QPlus_pt10";
-    LeptonID_QMinu_key    = "MediumID_QMinus_pt10";
+    LeptonID_QPlus_key    = "Selective_MediumID_QPlus_pt10"; // currently only selective charge dependent SFs exist for 2016
+    LeptonID_QMinu_key    = "Selective_MediumID_QMinus_pt10";
 
     trgSF_key0="LeadEle23_MediumID";
     trgSF_QPlus_key0="Selective_LeadEle23_MediumID_QPlus";
@@ -402,6 +402,7 @@ void Skim_DiLep::executeEvent(){
       exit(EXIT_FAILURE);
     }
 
+    /*
     if(DataYear==2016 || DataYear == 2017 || DataYear == 2018){
       for( int i(0); i< (int) PDFWeights_Scale->size(); i++){
 	if( i == 5 || i == 7 ) continue;
@@ -413,6 +414,7 @@ void Skim_DiLep::executeEvent(){
       }
       //cout<<"scale up and do: "<<pdf_scaleUp<<" "<<pdf_scaleDo<<endl;
     }
+    */
 
   }
 
