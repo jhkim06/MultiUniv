@@ -88,6 +88,7 @@ bool Muon::PassID(TString ID){
   if(ID=="POGMedium") return isPOGMedium();
   if(ID=="POGLoose") return isPOGLoose();
   if(ID=="POGTightWithTightIso") return Pass_POGTightWithTightIso();
+  if(ID=="POGLooseWithLooseIso") return Pass_POGLooseWithLooseIso();
   if(ID=="POGHighPtWithLooseTrkIso") return Pass_POGHighPtWithLooseTrkIso();
   //==== Customized
   if(ID=="TEST") return Pass_TESTID();
@@ -98,11 +99,39 @@ bool Muon::PassID(TString ID){
   return false;
 
 }
+
+bool Muon::isPOGTightIso(){
+  if(!( RelIso()<0.15 ))  return false;
+  return true;
+}
+
+bool Muon::isAntiIso(int syst){
+  double reliso = RelIso();
+  double reliso_min=0.17; //TODO: need discussion
+  double reliso_max=0.25;
+  if(syst==1){ reliso_min = 0.18; }//TODO: need discussion
+  else if(syst==-1){ reliso_min = 0.16; }//TODO: need discussion
+  else{
+    cout << "[Muon::isAntiIso] No syst flag : " << syst << endl;
+    exit(EXIT_FAILURE);
+    return false;
+  }
+  if(!(reliso>reliso_min && reliso<reliso_max)) return false;
+  return true;
+}
+
 bool Muon::Pass_POGTightWithTightIso(){
   if(!( isPOGTight() )) return false;
   if(!( RelIso()<0.15 ))  return false;
   return true;
 }
+
+bool Muon::Pass_POGLooseWithLooseIso(){
+  if(!( isPOGLoose() )) return false;
+  if(!( RelIso()<0.25 ))  return false;
+  return true;
+}
+
 bool Muon::Pass_POGHighPtWithLooseTrkIso(){
   if(!( isPOGHighPt() )) return false;
   if(!( TrkIso()/TuneP4().Pt()<0.1 )) return false;

@@ -140,6 +140,8 @@ bool Electron::PassID(TString ID){
   if(ID=="passMVAID_iso_WP80") return passMVAID_iso_WP80();
   if(ID=="passMVAID_iso_WP90") return passMVAID_iso_WP90();
   //==== Customized
+  if(ID=="passTightID_noIso") return Pass_CutBasedTightNoIso();
+  if(ID=="passMediumID_noIso") return Pass_CutBasedMediumNoIso();
   if(ID=="passLooseID_noIso") return Pass_CutBasedLooseNoIso();
   if(ID=="SUSYTight") return Pass_SUSYTight();
   if(ID=="SUSYLoose") return Pass_SUSYLoose();
@@ -206,7 +208,67 @@ bool Electron::Pass_TESTID(){
   return true;
 }
 
+bool Electron::Pass_CutBasedTightNoIso(){
 
+  if( fabs(scEta()) <= 1.479 ){
+
+    if(! (Full5x5_sigmaIetaIeta() < 0.0104) ) return false;
+    if(! (fabs(dEtaSeed()) < 0.00255) ) return false;
+    if(! (fabs(dPhiIn()) < 0.022) ) return false;
+    if(! (HoverE() < 0.026 + 1.15/scE() + 0.0324*Rho()/scE()) ) return false;
+    if(! (fabs(InvEminusInvP()) < 0.159) ) return false;
+    if(! (NMissingHits() <= 1) ) return false;
+    if(! (PassConversionVeto()) ) return false;
+
+    return true;
+
+  }
+  else{
+
+    if(! (Full5x5_sigmaIetaIeta() < 0.0353) ) return false;
+    if(! (fabs(dEtaSeed()) < 0.00501) ) return false;
+    if(! (fabs(dPhiIn()) <  0.0236 ) ) return false;
+    if(! (HoverE() < 0.0188 + 2.06/scE() + 0.183*Rho()/scE()) ) return false;
+    if(! (fabs(InvEminusInvP()) < 0.0197) ) return false;
+    if(! (NMissingHits() <= 1) ) return false;
+    if(! (PassConversionVeto()) ) return false;
+
+    return true;
+
+  }
+
+}
+
+bool Electron::Pass_CutBasedMediumNoIso(){
+
+  if( fabs(scEta()) <= 1.479 ){
+
+    if(! (Full5x5_sigmaIetaIeta() < 0.0106) ) return false;
+    if(! (fabs(dEtaSeed()) < 0.0032) ) return false;
+    if(! (fabs(dPhiIn()) < 0.0547) ) return false;
+    if(! (HoverE() < 0.046 + 1.16/scE() + 0.0324*Rho()/scE()) ) return false;
+    if(! (fabs(InvEminusInvP()) < 0.184) ) return false;
+    if(! (NMissingHits() <= 1) ) return false;
+    if(! (PassConversionVeto()) ) return false;
+
+    return true;
+
+  }
+  else{
+
+    if(! (Full5x5_sigmaIetaIeta() < 0.0387) ) return false;
+    if(! (fabs(dEtaSeed()) < 0.00632) ) return false;
+    if(! (fabs(dPhiIn()) <  0.0394 ) ) return false;
+    if(! (HoverE() < 0.0275 + 2.52/scE() + 0.183*Rho()/scE()) ) return false;
+    if(! (fabs(InvEminusInvP()) < 0.0721) ) return false;
+    if(! (NMissingHits() <= 1) ) return false;
+    if(! (PassConversionVeto()) ) return false;
+
+    return true;
+
+  }
+
+}
 
 bool Electron::Pass_CutBasedLooseNoIso(){
 
@@ -237,6 +299,107 @@ bool Electron::Pass_CutBasedLooseNoIso(){
 
   }
 
+}
+
+bool Electron::isCutBasedTightIso(){
+
+  if( fabs(scEta()) <= 1.479 ){
+    if(! (RelIso() < 0.0287+0.506/UncorrPt()) ) return false;
+    return true;
+  }
+  else{
+    if(! (RelIso() < 0.0445+0.963/UncorrPt()) ) return false;
+    return true;
+  }
+}
+
+bool Electron::isCutBasedMediumIso(){
+
+  if( fabs(scEta()) <= 1.479 ){
+    if(! (RelIso() < 0.0478+0.506/UncorrPt()) ) return false;
+    return true;
+  }
+  else{
+    if(! (RelIso() < 0.0658+0.963/UncorrPt()) ) return false;
+    return true;
+  }
+}
+
+bool Electron::isAntiIso(TString ID, int syst){
+  // for ChargedHiggsToCB : ID==Tight
+  // for ISR : ID==Medium
+  double reliso = RelIso();
+  double reliso_min_b=0; //b means barrel
+  double reliso_max_b=0;
+  double reliso_min_e=0; // e means endcap
+  double reliso_max_e=0;
+  if(ID=="Tight"){
+    if(syst==0){
+      reliso_min_b=0.0287+0.506/UncorrPt(); //reliso cut at POGTight ID
+      reliso_max_b=0.198+0.506/UncorrPt(); // reliso cut at POGVeto ID
+      reliso_min_e=0.0445+0.963/UncorrPt(); //reliso cut at POGTight ID
+      reliso_max_e=0.203+0.963/UncorrPt(); // reliso cut at POGVeto ID
+    }
+    else if(syst==1){
+      //XXX: currently same as central
+      reliso_min_b=0.0287+0.506/UncorrPt(); //reliso cut at POGTight ID
+      reliso_max_b=0.198+0.506/UncorrPt(); // reliso cut at POGVeto ID
+      reliso_min_e=0.0445+0.963/UncorrPt(); //reliso cut at POGTight ID
+      reliso_max_e=0.203+0.963/UncorrPt(); // reliso cut at POGVeto ID
+    }
+    else if(syst==-1){
+      //XXX: currently same as central
+      reliso_min_b=0.0287+0.506/UncorrPt(); //reliso cut at POGTight ID
+      reliso_max_b=0.198+0.506/UncorrPt(); // reliso cut at POGVeto ID
+      reliso_min_e=0.0445+0.963/UncorrPt(); //reliso cut at POGTight ID
+      reliso_max_e=0.203+0.963/UncorrPt(); // reliso cut at POGVeto ID
+    }
+    else{
+      cout << "[Electron::isAntiIso] No syst flag : " << syst << endl;
+      exit(EXIT_FAILURE);
+      return false;
+    }
+  }
+  else if(ID=="Medium"){
+    if(syst==0){
+      reliso_min_b=0.0478+0.506/UncorrPt(); //reliso cut at POGMedium ID
+      reliso_max_b=0.112+0.506/UncorrPt(); // reliso cut at POGLoose ID
+      reliso_min_e=0.0658+0.963/UncorrPt(); //reliso cut at POGMedium ID
+      reliso_max_e=0.108+0.963/UncorrPt(); // reliso cut at POGLoose ID
+    }
+    else if(syst==1){
+      //XXX: currently same as central
+      reliso_min_b=0.0478+0.506/UncorrPt();
+      reliso_max_b=0.112+0.506/UncorrPt();
+      reliso_min_e=0.0658+0.963/UncorrPt();
+      reliso_max_e=0.108+0.963/UncorrPt();
+    }
+    else if(syst==-1){
+      //XXX: currently same as central
+      reliso_min_b=0.0478+0.506/UncorrPt();
+      reliso_max_b=0.112+0.506/UncorrPt();
+      reliso_min_e=0.0658+0.963/UncorrPt();
+      reliso_max_e=0.108+0.963/UncorrPt();
+    }
+    else{
+      cout << "[Electron::isAntiIso] No syst flag : " << syst << endl;
+      exit(EXIT_FAILURE);
+      return false;
+    }
+  }
+  else{
+    cout << "[Muon::isAntiIso] No id : " << ID << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  if( fabs(scEta()) <= 1.479 ){
+      if(! ( reliso > reliso_min_b && reliso < reliso_max_b )) return false;
+      return true;
+  }
+  else{
+    if(! ( reliso > reliso_min_e && reliso < reliso_max_e) ) return false;
+    return true;
+  }
 }
 
 bool Electron::Pass_CutBasedVetoNoIso(){

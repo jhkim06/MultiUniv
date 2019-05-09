@@ -34,7 +34,10 @@ void Skim_DiLep::initializeAnalyzer(){
   // New Branch
   newtree->Branch("IsMuMu", &IsMuMu,"IsMuMu/I"); // JH : What's the meaning of each arguments?
   newtree->Branch("IsElEl", &IsElEl,"IsElel/I");
-
+  newtree->Branch("passIso", &passIso,"passIso/I");
+  newtree->Branch("passAntiIso", &passAntiIso,"passAntiIso/I");
+  newtree->Branch("passAntiIso_Up", &passAntiIso_Up,"passAntiIso_Up/I");
+  newtree->Branch("passAntiIso_Do", &passAntiIso_Do,"passAntiIso_Do/I");
 
   newtree->Branch("PUweight", &PUweight,"PUweight/D");
   newtree->Branch("PUweight_Up", &PUweight_Up,"PUweight_Up/D");
@@ -140,6 +143,10 @@ void Skim_DiLep::executeEvent(){
 
   newtree->SetBranchAddress("IsMuMu",   &IsMuMu);
   newtree->SetBranchAddress("IsElEl",   &IsElEl);
+  newtree->SetBranchAddress("passIso",   &passIso);
+  newtree->SetBranchAddress("passAntiIso",   &passAntiIso);
+  newtree->SetBranchAddress("passAntiIso_Up",   &passAntiIso_Up);
+  newtree->SetBranchAddress("passAntiIso_Do",   &passAntiIso_Do);
 
   newtree->SetBranchAddress("PUweight",   &PUweight);
   newtree->SetBranchAddress("PUweight_Up",&PUweight_Up);
@@ -184,18 +191,30 @@ void Skim_DiLep::executeEvent(){
   //if( HasFlag("MetFilt"))if(!PassMETFilter()) return;
 
 
-  muons=GetMuons("POGTightWithTightIso",7.,2.4);
+  muons=GetMuons("POGTight",7.,2.4); //without isolation cut
   std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
   electrons=GetElectrons("passMediumID",9.,2.5);
   std::sort(electrons.begin(),electrons.end(),PtComparing);
 
   IsMuMu = 0;
   IsElEl = 0;
+  int number_of_tight_muon=0;
+  for(std::vector<Muon>::iterator it=muons.begin(); it!=muons.end(); it++){
+    if(it->isPOGTightIso()) number_of_tight_muon++;
+  }
   //=========================
   // DiLepton condition
   //=========================
-  if(muons.size() == 2   )if(electrons.size() == 0) IsMuMu = 1;
-  if(muons.size() == 0   )if(electrons.size() == 2) IsElEl = 1;
+  if(muons.size() == 2  && electrons.size() == 0){
+    IsMuMu = 1;
+    passIso = muons.at(0).isPOGTightIso() && muons.at(1).isPOGTightIso();
+    passAntiIso =  muons.at(0).isAntiIso(0) && muons.at(1).isAntiIso(0);
+    passAntiIso_Up =  muons.at(0).isAntiIso(1) && muons.at(1).isAntiIso(1);
+    passAntiIso_Do =  muons.at(0).isAntiIso(-1) && muons.at(1).isAntiIso(-1);
+  }
+  if(number_of_tight_muon == 0 && electrons.size() == 2){
+    IsElEl = 1;
+  }
   if(IsMuMu != 1 && IsElEl != 1) return;
   if(HasFlag("MuMu") )if(IsMuMu !=1 ) return;
   if(HasFlag("ElEl") )if(IsElEl !=1 ) return;

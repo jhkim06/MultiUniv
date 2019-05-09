@@ -25,6 +25,10 @@ private:
 
   int IsMuMu;
   int IsElEl;
+  int passIso; // for ABCD method, MuMu pass isolation requirement
+  int passAntiIso; // for ABCD method, MuMu pass anti-isolation requirement
+  int passAntiIso_Up; // for ABCD method
+  int passAntiIso_Do; // for ABCD method
 
   //RootHelper rootHelp;
   double DiLepTrg_SF(TString Leg0Key, TString Leg1Key, const vector<Lepton*>& leps, int sys);

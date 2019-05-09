@@ -64,6 +64,9 @@ public:
   inline bool isPOGMedium() const {return PassSelector(CutBasedIdMedium);}
   inline bool isPOGLoose() const {return PassSelector(CutBasedIdLoose);}
 
+  bool isPOGTightIso(); // for ABCD method
+  bool isAntiIso(int syst=0); // for ABCD method
+
   void SetIso(double ch04, double nh04, double ph04, double pu04, double trkiso);
   void CalcPFRelIso();
   inline double TrkIso() const {return j_trkiso;}
@@ -94,6 +97,7 @@ public:
   bool PassID(TString ID);
   bool Pass_POGTight();
   bool Pass_POGTightWithTightIso();
+  bool Pass_POGLooseWithLooseIso();
   bool Pass_POGHighPtWithLooseTrkIso();
   bool Pass_TESTID();
 
