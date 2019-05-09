@@ -118,12 +118,18 @@ public:
   bool PassID(TString ID);
   bool Pass_TESTID();
 
+  bool Pass_CutBasedTightNoIso();
+  bool Pass_CutBasedMediumNoIso();
   bool Pass_CutBasedLooseNoIso();
   bool Pass_CutBasedVetoNoIso();
   bool Pass_CutBasedLoose();
   bool Pass_CutBasedVeto();
   void SetRho(double r);
   inline double Rho() const { return j_Rho; }
+
+  bool isCutBasedTightIso(); // for ABCD method
+  bool isCutBasedMediumIso(); // for ABCD method
+  bool isAntiIso(TString ID,  int syst=0); // for ABCD method
 
 private:
 
