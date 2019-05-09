@@ -35,7 +35,12 @@ void Skim_TTSemiLep::initializeAnalyzer(){
 
   // New Branch
   newtree->Branch("IsMu", &IsMu,"IsMu/I"); // JH : What's the meaning of each arguments?
-  newtree->Branch("IsEl", &IsEl,"IsElel/I");
+  newtree->Branch("IsEl", &IsEl,"IsEl/I");
+  newtree->Branch("passTightID", &passTightID,"passTightID/I");
+  newtree->Branch("passIso", &passIso,"passIso/I");
+  newtree->Branch("passAntiIso", &passAntiIso,"passAntiIso/I");
+  newtree->Branch("passAntiIso_Up", &passAntiIso_Up,"passAntiIso_Up/I");
+  newtree->Branch("passAntiIso_Do", &passAntiIso_Do,"passAntiIso_Do/I");
 
 
   newtree->Branch("PUweight", &PUweight,"PUweight/D");
@@ -142,6 +147,12 @@ void Skim_TTSemiLep::executeEvent(){
   newtree->SetBranchAddress("IsMu",   &IsMu);
   newtree->SetBranchAddress("IsEl",   &IsEl);
 
+  newtree->SetBranchAddress("passTightID",   &passTightID);
+  newtree->SetBranchAddress("passIso",   &passIso);
+  newtree->SetBranchAddress("passAntiIso",   &passAntiIso);
+  newtree->SetBranchAddress("passAntiIso_Up",   &passAntiIso_Up);
+  newtree->SetBranchAddress("passAntiIso_Do",   &passAntiIso_Do);
+
   newtree->SetBranchAddress("PUweight",   &PUweight);
   newtree->SetBranchAddress("PUweight_Up",&PUweight_Up);
   newtree->SetBranchAddress("PUweight_Do",&PUweight_Do);
@@ -189,23 +200,42 @@ void Skim_TTSemiLep::executeEvent(){
   //if( HasFlag("MetFilt"))if(!PassMETFilter()) return;
 
   //FIXME: fix lepton ID later
-  muons=GetMuons("POGTightWithTightIso",7.,2.4);
+  muons=GetMuons("POGLooseWithLooseIso",15.,2.4);
   std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
-  electrons=GetElectrons("passMediumID",9.,2.5);
+  electrons=GetElectrons("passVetoID",15.,2.5);
   std::sort(electrons.begin(),electrons.end(),PtComparing);
 
   IsMu = 0;
   IsEl = 0;
   //=========================
-  // DiLepton condition
+  // SingleLepton condition
   //=========================
-  //FIXME: slopy lepton cut this time!
-  if(muons.size() == 1   )if(electrons.size() == 0) IsMu = 1;
-  if(muons.size() == 0   )if(electrons.size() == 1) IsEl = 1;
+  if(muons.size() == 1 && electrons.size() == 0){
+    IsMu = 1;
+  }
+  if(muons.size() == 0 && electrons.size() == 1){
+    IsEl = 1;
+  }
   if(IsMu != 1 && IsEl != 1) return;
   if(HasFlag("TTSemiLepMu") )if(IsMu !=1 ) return;
   if(HasFlag("TTSemiLepEl") )if(IsEl !=1 ) return;
-
+  //=========================
+  // check ID and isolation condition
+  //=========================
+  if(IsMu){
+    passTightID=muons.at(0).isPOGTight();
+    passIso=muons.at(0).isPOGTightIso();
+    passAntiIso=muons.at(0).isAntiIso(0);
+    passAntiIso_Up=muons.at(0).isAntiIso(1);
+    passAntiIso_Do=muons.at(0).isAntiIso(-1);
+  }
+  else if(IsEl){
+    passTightID=electrons.at(0).Pass_CutBasedTightNoIso();
+    passIso=electrons.at(0).isCutBasedTightIso();
+    passAntiIso=electrons.at(0).isAntiIso("Tight",0);
+    passAntiIso_Up=electrons.at(0).isAntiIso("Tight",1);
+    passAntiIso_Do=electrons.at(0).isAntiIso("Tight",-1);
+  }
   FillHist("CutFlow",6,1,30,0,30);
   //=======================================
   // Channel dependent cut and ftn set
@@ -219,8 +249,7 @@ void Skim_TTSemiLep::executeEvent(){
   if(IsMu == 1){ // Muon-----------------------------
     if(! evt->PassTrigger(SingleMuTrgs) )return;
     leps=MakeLeptonPointerVector(muons);
-    Lep0PtCut=20.;
-    Lep1PtCut=10.;
+    Lep0PtCut=15.; //FIXME: set by year
     LepEtaCut = 2.4;
     LeptonID_SF =&MCCorrection::MuonID_SF;
     LeptonISO_SF=&MCCorrection::MuonISO_SF;
@@ -235,7 +264,7 @@ void Skim_TTSemiLep::executeEvent(){
     trgSF_QPlus_key0="Lead17_POGTight";  // For 2016 separated period BCDEF, GH 
     trgSF_QMinu_key0="Lead17_POGTight";  // For 2016 separated period BCDEF, GH 
 
-    trgSF_key1="Tail8_POGTight"; 
+    trgSF_key1="Tail8_POGTight"; //FIXME: function for single lep trigger
     trgSF_QPlus_key1="Tail8_POGTight"; 
     trgSF_QMinu_key1="Tail8_POGTight"; 
 
@@ -244,13 +273,12 @@ void Skim_TTSemiLep::executeEvent(){
     if(! evt->PassTrigger(SingleElTrgs) )return;
     //if(electrons[0].SelectiveQ() )if(electrons[1].SelectiveQ())  diLep_passSelectiveQ = true;
     leps=MakeLeptonPointerVector(electrons);
-    Lep0PtCut=25.;
-    Lep1PtCut=15.;
+    Lep0PtCut=15.; //FIXME: set by year
     LepEtaCut = 2.5;
     LeptonID_SF  = &MCCorrection::ElectronID_SF;
     LeptonReco_SF= &MCCorrection::ElectronReco_SF;
     // key for private or official SF
-    LeptonID_key_POG= "passMediumID";
+    LeptonID_key_POG= "passMediumID"; //FIXME: H+ ->cb use Tight electron
     LeptonID_key    = "MediumID_pt10";
     LeptonID_QPlus_key    = "MediumID_QPlus_pt10";
     LeptonID_QMinu_key    = "MediumID_QMinus_pt10";
@@ -259,7 +287,7 @@ void Skim_TTSemiLep::executeEvent(){
     trgSF_QPlus_key0="Selective_LeadEle23_MediumID_QPlus";
     trgSF_QMinu_key0="Selective_LeadEle23_MediumID_QMinus";
 
-    trgSF_key1="TailEle12_MediumID";
+    trgSF_key1="TailEle12_MediumID";  //FIXME: function for single lepton trigger
     trgSF_QPlus_key1="Selective_TailEle12_MediumID_QPlus";
     trgSF_QMinu_key1="Selective_TailEle12_MediumID_QMinus";
 
@@ -286,41 +314,13 @@ void Skim_TTSemiLep::executeEvent(){
   }
   FillHist("CutFlow",8,1,30,0,30);
   if(Aod_pt[0] < Lep0PtCut) return;
-  if(Aod_pt[1] < Lep1PtCut) return;
   if(fabs(Aod_eta[0]) > LepEtaCut) return;
-  if(fabs(Aod_eta[1]) > LepEtaCut) return;
     
   FillHist("CutFlow",9,1,30,0,30);
   //==============================
   // Kinematic Variables 
   //==============================
   //TODO: add variables ??
-  /*
-  diLep_Ch = DiLepCh::NA;
-
-  diLep_m  = DEFAULT;
-  diLep_pt  = DEFAULT;
-  diLep_eta  = DEFAULT;
-
-  if(leps.size() > 1){
-    if(leps[0]->LeptonFlavour() == Lepton::MUON)if(leps[1]->LeptonFlavour() == Lepton::MUON){
-      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == 1) diLep_Ch = DiLepCh::MuMuPP;
-      if(leps[0]->Charge() == -1)if(leps[1]->Charge() == -1)diLep_Ch = DiLepCh::MuMuMM;
-      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == -1)diLep_Ch = DiLepCh::MuMuOS;
-      if(leps[0]->Charge() == -1)if(leps[1]->Charge() ==  1)diLep_Ch = DiLepCh::MuMuOS;
-    }
-    if(leps[0]->LeptonFlavour() == Lepton::ELECTRON)if(leps[1]->LeptonFlavour() == Lepton::ELECTRON){
-      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == 1) diLep_Ch = DiLepCh::ElElPP;
-      if(leps[0]->Charge() == -1)if(leps[1]->Charge() == -1)diLep_Ch = DiLepCh::ElElMM;
-      if(leps[0]->Charge() == 1) if(leps[1]->Charge() == -1)diLep_Ch = DiLepCh::ElElOS;
-      if(leps[0]->Charge() == -1)if(leps[1]->Charge() ==  1)diLep_Ch = DiLepCh::ElElOS;
-    }
-    diLep    = *leps.at(0) + *leps.at(1);
-    diLep_pt = diLep.Pt();
-    diLep_eta = diLep.Eta();
-    diLep_m  = diLep.M();
-  }
-  */
   /////////////////PUreweight///////////////////
   PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
 

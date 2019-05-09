@@ -88,6 +88,7 @@ bool Muon::PassID(TString ID){
   if(ID=="POGMedium") return isPOGMedium();
   if(ID=="POGLoose") return isPOGLoose();
   if(ID=="POGTightWithTightIso") return Pass_POGTightWithTightIso();
+  if(ID=="POGLooseWithLooseIso") return Pass_POGLooseWithLooseIso();
   if(ID=="POGHighPtWithLooseTrkIso") return Pass_POGHighPtWithLooseTrkIso();
   //==== Customized
   if(ID=="TEST") return Pass_TESTID();
@@ -122,6 +123,12 @@ bool Muon::isAntiIso(int syst){
 bool Muon::Pass_POGTightWithTightIso(){
   if(!( isPOGTight() )) return false;
   if(!( RelIso()<0.15 ))  return false;
+  return true;
+}
+
+bool Muon::Pass_POGLooseWithLooseIso(){
+  if(!( isPOGLoose() )) return false;
+  if(!( RelIso()<0.25 ))  return false;
   return true;
 }
 
