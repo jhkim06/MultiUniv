@@ -149,8 +149,19 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH
 
 source $SKFlat_WD/bin/BashColorSets.sh
 
+# TODO
+# Sample list: set the xsec errors
+# L1 Skim:
+# (1) pdf_err: calculate and put into tree,
+# (2)pdf_err, muF,R, alphaS: if empty, 0, or nan, then check size and fill 1 or check at the last calculation?
+#  mkShape: (1) muF,R : envelop? (2) static_error [SangEun]
+
+
+
 ## Todo list ##
 python python/PrintToDoLists.py
+
+
 source $SKFlat_WD/tmp/ToDoLists.sh
 rm $SKFlat_WD/tmp/ToDoLists.sh
 
