@@ -26,7 +26,6 @@ void Skim_Leptons::initializeAnalyzer(){
   newtree = fChain->CloneTree(0);
 
 
-  // TODO: find better way to check existing branch
   // New Branch
   TBranch* b_baseW =(TBranch*) newtree->GetListOfBranches()->FindObject("baseW");
   Is_baseW = false;
@@ -34,15 +33,6 @@ void Skim_Leptons::initializeAnalyzer(){
   else{
     newtree->Branch("baseW", &baseW,"baseW/D");
   }
-
-  TBranch* b_pdf_error_Up =(TBranch*) newtree->GetListOfBranches()->FindObject("pdf_error_Up");
-  Is_pdf_error = false;
-  if(b_pdf_error_Up) {Is_pdf_error = true;}
-  else{
-    newtree->Branch("pdf_error_Up", &pdf_error_Up,"pdf_error_Up/D");
-    newtree->Branch("pdf_error_Do", &pdf_error_Do,"pdf_error_Do/D");
-  }
-
 
   //if(Is_baseW == false){
   //  newtree->Branch("baseW", &baseW,"baseW/D");
@@ -60,11 +50,6 @@ void Skim_Leptons::executeEvent(){
 
   if(Is_baseW == false){
     newtree->SetBranchAddress("baseW",&baseW);
-  }
-
-  if(Is_pdf_error == false){
-    newtree->SetBranchAddress("pdf_error_Up",&pdf_error_Up);
-    newtree->SetBranchAddress("pdf_error_Do",&pdf_error_Do);
   }
 
   FillHist("CutFlow",0,1,30,0,30);
@@ -113,27 +98,9 @@ void Skim_Leptons::executeEvent(){
     }
   }
 
-  if(Is_pdf_error == false){
-    pdf_error_Up = 1.;
-    pdf_error_Do = 1.;
-
-    if(!IsDATA){
-       double pdf_error_sum2_temp = 0.;
-
-       for(int i=0;i<(int)PDFWeights_Error->size();i++){
-	  if( std::isnan(PDFWeights_Error->at(i))) continue;
-	  pdf_error_sum2_temp += pow(1-PDFWeights_Error->at(i),2);
-       }// loop for PDF error
-
-       pdf_error_Up = 1 + sqrt(pdf_error_sum2_temp);
-       pdf_error_Do = 1 - sqrt(pdf_error_sum2_temp);
-    }// 
-  }//  
-
   newtree->Fill();
 
   return;
-
 
 }
 
