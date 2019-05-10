@@ -25,13 +25,18 @@ void Skim_Leptons::initializeAnalyzer(){
   outfile->cd("recoTree");
   newtree = fChain->CloneTree(0);
 
+
   // New Branch
   TBranch* b_baseW =(TBranch*) newtree->GetListOfBranches()->FindObject("baseW");
   Is_baseW = false;
   if(b_baseW) {Is_baseW = true;}
-  if(Is_baseW == false){
+  else{
     newtree->Branch("baseW", &baseW,"baseW/D");
   }
+
+  //if(Is_baseW == false){
+  //  newtree->Branch("baseW", &baseW,"baseW/D");
+  //}
 
 
 
@@ -47,7 +52,6 @@ void Skim_Leptons::executeEvent(){
     newtree->SetBranchAddress("baseW",&baseW);
   }
 
-
   FillHist("CutFlow",0,1,30,0,30);
 
   // Filters ====================
@@ -55,7 +59,7 @@ void Skim_Leptons::executeEvent(){
   FillHist("CutFlow",1,1,30,0,30);
 
   muons=GetMuons("POGLoose",7.,2.4);
-  TString ElectronID = HasFlag("L") ? "passLooseID_noIso" : "passLooseID";
+  TString ElectronID = HasFlag("L") ? "passVetoID" : "passLooseID";
   electrons=GetElectrons(ElectronID,9.,2.5);
   //std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
 
@@ -94,11 +98,9 @@ void Skim_Leptons::executeEvent(){
     }
   }
 
-
   newtree->Fill();
 
   return;
-
 
 }
 

@@ -28,8 +28,6 @@ private:
 
   std::vector<Muon> muons;
   std::vector<Electron> electrons;
- 
-
 
 };
 
