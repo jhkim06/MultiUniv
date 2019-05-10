@@ -25,13 +25,18 @@ void Skim_Leptons::initializeAnalyzer(){
   outfile->cd("recoTree");
   newtree = fChain->CloneTree(0);
 
+
   // New Branch
   TBranch* b_baseW =(TBranch*) newtree->GetListOfBranches()->FindObject("baseW");
   Is_baseW = false;
   if(b_baseW) {Is_baseW = true;}
-  if(Is_baseW == false){
+  else{
     newtree->Branch("baseW", &baseW,"baseW/D");
   }
+
+  //if(Is_baseW == false){
+  //  newtree->Branch("baseW", &baseW,"baseW/D");
+  //}
 
 
 
@@ -46,7 +51,6 @@ void Skim_Leptons::executeEvent(){
   if(Is_baseW == false){
     newtree->SetBranchAddress("baseW",&baseW);
   }
-
 
   FillHist("CutFlow",0,1,30,0,30);
 
@@ -94,11 +98,9 @@ void Skim_Leptons::executeEvent(){
     }
   }
 
-
   newtree->Fill();
 
   return;
-
 
 }
 
