@@ -421,20 +421,6 @@ void Skim_DiLep::executeEvent(){
       exit(EXIT_FAILURE);
     }
 
-    /*
-    if(DataYear==2016 || DataYear == 2017 || DataYear == 2018){
-      for( int i(0); i< (int) PDFWeights_Scale->size(); i++){
-	if( i == 5 || i == 7 ) continue;
-
-	doubleTmp = PDFWeights_Scale->at(i);
-	//cout<<" scale "<<i<<" "<<PDFWeights_Scale->at(i)<<endl;
-	if( doubleTmp > pdf_scale_Up) pdf_scale_Up = doubleTmp;
-	if( doubleTmp < pdf_scale_Do) pdf_scale_Do = doubleTmp;
-      }
-      //cout<<"scale up and do: "<<pdf_scaleUp<<" "<<pdf_scaleDo<<endl;
-    }
-    */
-
   }
 
   //===============================

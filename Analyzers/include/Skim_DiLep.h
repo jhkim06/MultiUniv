@@ -77,6 +77,7 @@ private:
 
   double doubleTmp;
   double pdf_scale_Up, pdf_scale_Do;
+  double pdf_error_Up, pdf_error_Do;
 
   TLorentzVector genZ;
   double ZPtCor;

@@ -25,11 +25,11 @@ private:
 
   bool   Is_baseW;
   double baseW;
+  bool   Is_pdf_error;
+  double pdf_error_Up, pdf_error_Do;
 
   std::vector<Muon> muons;
   std::vector<Electron> electrons;
- 
-
 
 };
 
