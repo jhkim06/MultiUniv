@@ -59,7 +59,7 @@ void Skim_Leptons::executeEvent(){
   FillHist("CutFlow",1,1,30,0,30);
 
   muons=GetMuons("POGLoose",7.,2.4);
-  TString ElectronID = HasFlag("L") ? "passLooseID_noIso" : "passLooseID";
+  TString ElectronID = HasFlag("L") ? "passVetoID" : "passLooseID";
   electrons=GetElectrons(ElectronID,9.,2.5);
   //std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
 

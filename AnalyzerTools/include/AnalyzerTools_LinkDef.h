@@ -14,5 +14,6 @@
 #pragma link C++ class BTagSFUtil+;
 #pragma link C++ class TKinFitterDriver+;
 #pragma link C++ class GenMatching_CHToCB+;
+#pragma link C++ class ABCDNormalizationEstimator+;
 
 #endif
