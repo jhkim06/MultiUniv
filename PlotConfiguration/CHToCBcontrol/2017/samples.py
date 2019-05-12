@@ -40,11 +40,11 @@ samples['ZZ_pythia'] = {
     'weight' :McWeight,
     }
 
-samples['DoubleEG'] = {
+samples['SingleElectron'] = {
     'weight' :'1',
     }
 
-#samples['DoubleMuon'] = {
-#    'weight' :'1',
-#    }
-#
+samples['SingleMuon'] = {
+    'weight' :'1',
+    }
+
