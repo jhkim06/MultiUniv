@@ -10,3 +10,8 @@ class DiLepCh:
   MuMuPP = 4
   MuMuMM = 5
   NA = 6
+
+class SingleLepCh:
+  Mu = 0
+  El = 1
+  NA = 2

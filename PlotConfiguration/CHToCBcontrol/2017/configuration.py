@@ -6,7 +6,8 @@ Year        = '2017'
 #lumi        = 41.527540
 InSkim      = 'MetFt_L_v0_TTSemiLepMu_v0_MetCut_v0' #TODO: this skim is not exist currently
 # Userflags: separate by ','
-Userflags   = 'AlPhaS'
+Userflags   = 'CHToCB' # flag appends to ouput directory name
+#Userflags   = 'AlPhaS'
 #Userflags   = 'DY'
 treeName    = 'recoTree/SKFlat'
 
