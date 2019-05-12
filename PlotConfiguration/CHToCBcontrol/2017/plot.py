@@ -38,6 +38,18 @@ groupPlot['DY'] = {
     'samples' : ['DYJets']
     }
 
+groupPlot['QCD'] = {
+    'nameHR' : "QCD",
+    'isSignal' :0,
+    'color': kYellow, #color is not defined yet
+    'style': 4050,
+    'lineColor':807,
+    'lineWidth':1,
+    'samples' : ['SingleMuon_QCD','TTLL_powheg_QCD','WJets_MG_QCD','DYJets_QCD','WW_pythia_QCD','WZ_pythia_QCD','ZZ_pythia_QCD']
+    }
+
+
+
 #plot['DYJets10to50_MG'] = {
 #    'color': 418,
 #    'isSignal' :1,

@@ -74,8 +74,8 @@ class ShapeFactory:
       print 'cut',cutName,'::',cut
       self.outFile.mkdir(cutName)
       for variableName, variable in variables.iteritems():
-	self.outFile.mkdir(cutName+"/"+variableName)
-	self.outFile.cd(cutName+"/"+variableName)
+	    self.outFile.mkdir(cutName+"/"+variableName)
+	    self.outFile.cd(cutName+"/"+variableName)
         print variableName
         print 'variable[name]', variable['name']
 	print 'variable[range]', variable['range'][0],':', variable['range'][1],':', variable['range'][2]
@@ -87,42 +87,56 @@ class ShapeFactory:
 	
 	# create histogram
 	if 'weights' in sample.keys() :
-	  outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True)
+      if 'cut' in sample.keys():
+	    outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], sample['weights'], totCut, sample['cut'], sampleName, trees, columns, doFold, cutName, variableName, sample, True)
+      else:
+	    outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], sample['weights'], totCut, [],            sampleName, trees, columns, doFold, cutName, variableName, sample, True)
 	else :
-	  outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True)
+      if 'cut' in sample.keys():
+	    outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], [],                totCut, sample['cut'], sampleName, trees, columns, doFold, cutName, variableName, sample, True)
+      else:
+	    outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], [],                totCut, [],            sampleName, trees, columns, doFold, cutName, variableName, sample, True)
 
 	outputsHisto.Write()
 
  
-        # weight based nuisances: kind = weight
+    # weight based nuisances: kind = weight
 	for nuisanceName, nuisance in nuisances.iteritems():
 	  if ('cuts' not in nuisance) or ( ('cuts' in nuisance) and (cutName in nuisance['cuts']) ) :
 	    if 'kind' in  nuisance :
 	      if nuisance['kind'] == 'weight' :
-		for sampleNuisName, configurationNuis in nuisance['samples'].iteritems() :
-		  if sampleNuisName ==  sampleName :
-		    newSampleNameUp = sampleName + '_' + nuisance['name'] + 'Up'
-		    newSampleNameDo = sampleName + '_' + nuisance['name'] + 'Down'
-		    #                                 the first weight is "up", the second is "down"
-		    newSampleWeightUp = sample['weight'] + '* (' + configurationNuis[0]  + ")"
-		    newSampleWeightDo = sample['weight'] + '* (' + configurationNuis[1]  + ")"
+		    for sampleNuisName, configurationNuis in nuisance['samples'].iteritems() :
+		      if sampleNuisName ==  sampleName :
+		        newSampleNameUp = sampleName + '_' + nuisance['name'] + 'Up'
+		        newSampleNameDo = sampleName + '_' + nuisance['name'] + 'Down'
+		        #                                 the first weight is "up", the second is "down"
+		        newSampleWeightUp = sample['weight'] + '* (' + configurationNuis[0]  + ")"
+		        newSampleWeightDo = sample['weight'] + '* (' + configurationNuis[1]  + ")"
 
-		    if 'weights' in sample.keys() :
-		      outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, sample['weights'], totCut, newSampleNameUp, trees, columns, doFold, cutName, variableName, sample, False)
-		      outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, sample['weights'], totCut, newSampleNameDo, trees, columns, doFold, cutName, variableName, sample, False)
-		    else :
-		      #print 'newSampleWeightUp', newSampleWeightUp
-		      outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, [],                totCut, newSampleNameUp, trees, columns, doFold, cutName, variableName, sample, False)
-		      outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, [],                totCut, newSampleNameDo, trees, columns, doFold, cutName, variableName, sample, False)
+		        if 'weights' in sample.keys() :
+                  if 'cut' in sample.keys():
+		            outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, sample['weights'], totCut, sample['cut'], newSampleNameUp, trees, columns, doFold, cutName, variableName, sample, False)
+		            outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, sample['weights'], totCut, sample['cut'], newSampleNameDo, trees, columns, doFold, cutName, variableName, sample, False)
+                  else:
+		            outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, sample['weights'], totCut, [],            newSampleNameUp, trees, columns, doFold, cutName, variableName, sample, False)
+		            outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, sample['weights'], totCut, [],            newSampleNameDo, trees, columns, doFold, cutName, variableName, sample, False)
+		        else :
+                  if 'cut' in sample.keys():
+		            #print 'newSampleWeightUp', newSampleWeightUp
+		            outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, [],                totCut, sample['cut'], newSampleNameUp, trees, columns, doFold, cutName, variableName, sample, False)
+		            outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, [],                totCut, sample['cut'], newSampleNameDo, trees, columns, doFold, cutName, variableName, sample, False)
+                  else:
+		            outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, [],                totCut, [],            newSampleNameUp, trees, columns, doFold, cutName, variableName, sample, False)
+		            outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, [],                totCut, [],            newSampleNameDo, trees, columns, doFold, cutName, variableName, sample, False)
 
-		    outputsHistoUp.Write()
-		    outputsHistoDo.Write()
+		        outputsHistoUp.Write()
+		        outputsHistoDo.Write()
 
 
     self.outFile.Close()
 
 
-  def _draw(self, var, rng, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros) :
+  def _draw(self, var, rng, global_weight, weights, totCut, sampleCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros) :
     '''
     var           :   the variable to plot
     rng           :   the variable to plot
@@ -137,18 +151,20 @@ class ShapeFactory:
     numTree = 0
     bigName = 'histo_' + sampleName + '_' + cutName + '_' + variableName
     hTotal = self._makeshape(bigName, rng)
+    if len(sampleCut) !=0:
+      totCut = totCut+"&&"+sampleCut
     for tree in trees :
       #chain = TChain(self._treeName)
       #chain.AddFile(aFile)
       print '        {0:<20} : {1:^9}'.format(sampleName,tree.GetEntries())
       RDF = RDataFrame
       if ('ALL' in columns) or (len(columns) == 0) :
-	Dtree = RDF(tree)
+	    Dtree = RDF(tree)
       else :
-	v_columns = vector('string')()
-	for column in columns:
-	  v_columns.push_back(column)
-	Dtree = RDF(tree,v_columns)
+	    v_columns = vector('string')()
+	    for column in columns:
+	      v_columns.push_back(column)
+	      Dtree = RDF(tree,v_columns)
       #shape = Dtree.Histo1D(('mine','mine',100,0,100),'diLep_pt')
       #shape = Dtree.Histo1D(('mine','mine',rng[0],rng[1],rng[2]),var)
       totalWeight = global_weight
@@ -183,24 +199,24 @@ class ShapeFactory:
       nTries = shape.Integral()
       print 'integral', nTries
       if nTries == 0 :
-	print 'Warning : entries is 0 for', hModel
+	    print 'Warning : entries is 0 for', hModel
       if math.isnan(nTries) :
-	print 'ERROR : entries is nan for', hModel
+	    print 'ERROR : entries is nan for', hModel
 
       if (numTree == 0) :
-	shape.SetTitle(bigName)
-	shape.SetName(bigName)
-	hTotal = shape
+	    shape.SetTitle(bigName)
+	    shape.SetName(bigName)
+	    hTotal = shape
       else :
-	hTotal.Add(shape)
+	    hTotal.Add(shape)
       
       numTree += 1
 
       # fold if needed
       if doFold == 1 or doFold == 3 :
-	self._FoldOverflow (hTotal)
+	    self._FoldOverflow (hTotal)
       if doFold == 2 or doFold == 3 :
-	self._FoldUnderflow (hTotal)
+	    self._FoldUnderflow (hTotal)
       
       # go 1d
       hTotalFinal = self._h2toh1(hTotal)
@@ -215,7 +231,7 @@ class ShapeFactory:
       # To be used with caution -> do not use this option if you don't know what you are playing with
       #
       if fixZeros and 'suppressNegative' in sample.keys() and ( cutName in sample['suppressNegative'] or 'all' in sample['suppressNegative']) : 
-	self._fixNegativeBinAndError(hTotalFinal)
+	    self._fixNegativeBinAndError(hTotalFinal)
 
       
       return hTotalFinal
@@ -232,9 +248,9 @@ class ShapeFactory:
       nx = h.GetNbinsX()
       ny = h.GetNbinsY()
       for i in xrange(1,nx+1):
-	ShapeFactory._moveAddBin(h,(i,0 ),(i, 1 ) )
+	    ShapeFactory._moveAddBin(h,(i,0 ),(i, 1 ) )
       for j in xrange(1,ny+1):
-	ShapeFactory._moveAddBin(h,(0,    j),(1, j) )
+	    ShapeFactory._moveAddBin(h,(0,    j),(1, j) )
 
       # 0,0 -> 1,1
       # 0,ny+1 -> 1,ny+1
@@ -255,16 +271,16 @@ class ShapeFactory:
       nx = h.GetNbinsX()
       ny = h.GetNbinsY()
       for i in xrange(1,nx+1):
-	ShapeFactory._moveAddBin(h,(i,ny+1),(i, ny) )
+	    ShapeFactory._moveAddBin(h,(i,ny+1),(i, ny) )
       for j in xrange(1,ny+1):
-	ShapeFactory._moveAddBin(h,(nx+1, j),(nx,j) )
-	# 0,ny+1 -> 0,ny
-	# nx+1,0 -> nx,0
-	# nx+1,ny+1 ->nx,ny
+	    ShapeFactory._moveAddBin(h,(nx+1, j),(nx,j) )
+	  # 0,ny+1 -> 0,ny
+	  # nx+1,0 -> nx,0
+	  # nx+1,ny+1 ->nx,ny
 
-	ShapeFactory._moveAddBin(h, (0,ny+1),(0,ny) )
-	ShapeFactory._moveAddBin(h, (nx+1,0),(nx,0) )
-	ShapeFactory._moveAddBin(h, (nx+1,ny+1),(nx,ny) )
+	  ShapeFactory._moveAddBin(h, (0,ny+1),(0,ny) )
+	  ShapeFactory._moveAddBin(h, (nx+1,0),(nx,0) )
+	  ShapeFactory._moveAddBin(h, (nx+1,ny+1),(nx,ny) )
 
   def _h2toh1(self, h):
     import array
@@ -311,12 +327,12 @@ class ShapeFactory:
 
     for ibin in range(1, histogram_to_be_fixed.GetNbinsX()+1) :
       if histogram_to_be_fixed.GetBinContent(ibin) < 0 :
-	histogram_to_be_fixed.SetBinContent(ibin, 0) 
+	    histogram_to_be_fixed.SetBinContent(ibin, 0) 
 
     # the SetBinError does not allow asymmetric -> fine, maximum uncertainty set
     for ibin in range(1, histogram_to_be_fixed.GetNbinsX()+1) :
       if histogram_to_be_fixed.GetBinContent(ibin) - histogram_to_be_fixed.GetBinErrorLow(ibin) < 0 :
-	histogram_to_be_fixed.SetBinError(ibin, histogram_to_be_fixed.GetBinContent(ibin)) 
+	    histogram_to_be_fixed.SetBinError(ibin, histogram_to_be_fixed.GetBinContent(ibin)) 
 
 
   @staticmethod
