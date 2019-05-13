@@ -442,6 +442,9 @@ void Skim_ISRUnfoldInput::executeEvent(){
         PileUpWeight = NULL;
 
         if(IsMuMu == 1){ // Muon-----------------------------
+          TString data_roc = getenv("DATA_DIR");
+          data_roc += "/roccor_Run2_v3/RoccoR"+TString::Itoa(DataYear,10)+".txt";
+	  rc.init(data_roc.Data());
           if(evt->PassTrigger(DiMuTrgs) ){
              leps=MakeLeptonPointerVector(muons);
              Lep0PtCut=20.;

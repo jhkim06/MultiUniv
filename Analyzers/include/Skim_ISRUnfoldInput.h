@@ -2,6 +2,7 @@
 #define Skim_ISRUnfoldInput_h
 
 #include "AnalyzerCore.h"
+#include "RoccoR.h"
 #include "RootHelper.h"
 
 class Skim_ISRUnfoldInput : public AnalyzerCore {
@@ -29,6 +30,8 @@ private:
 
   int IsMuMu;
   int IsElEl;
+
+  RoccoR rc;
 
   //RootHelper rootHelp;
   double DiLepTrg_SF(TString Leg0Key, TString Leg1Key, const vector<Lepton*>& leps, int sys);

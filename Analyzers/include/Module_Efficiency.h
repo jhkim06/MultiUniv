@@ -1,6 +1,7 @@
 #ifndef Module_Efficiency_h
 #define Module_Efficiency_h
 
+#include "RoccoR.h"
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 
@@ -21,6 +22,8 @@ public:
   void WriteHist();
 
 private:
+
+  RoccoR rc;
 
   std::vector<Lepton*> leps;
   double Aod_pt[2], Aod_eta[2]; //TODO lets use vector later
