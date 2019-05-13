@@ -29,12 +29,17 @@ private:
   double trgSF_Up;
   double trgSF_Dn;
 
-  double recoSF;
-  double recoSF_Up;
-  double recoSF_Dn;
+  double ElrecoSF, ElrecoSF_Up, ElrecoSF_Dn;
+  double ElIdSF, ElIdSF_Up, ElIdSF_Dn;
 
-  double IdSF, IdSF_Up, IdSF_Dn;
-  double IsoSF, IsoSF_Up, IsoSF_Dn;
+  double MuIdSF, MuIdSF_Up, MuIdSF_Dn;
+  double MuIsoSF, MuIsoSF_Up, MuIsoSF_Dn;
+
+  double DiElrecoSF, DiElrecoSF_Up, DiElrecoSF_Dn;
+  double DiElIdSF, DiElIdSF_Up, DiElIdSF_Dn;
+
+  double DiMuIdSF, DiMuIdSF_Up, DiMuIdSF_Dn;
+  double DiMuIsoSF, DiMuIsoSF_Up, DiMuIsoSF_Dn;
 
   double (MCCorrection::*LeptonID_SF)(TString,double,double,int);
   double (MCCorrection::*LeptonISO_SF)(TString,double,double,int);

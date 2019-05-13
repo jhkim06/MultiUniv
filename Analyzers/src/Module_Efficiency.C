@@ -26,17 +26,48 @@ void Module_Efficiency::initializeAnalyzer(){
   newtree = fChain->CloneTree(0);
 
   // New Branch
-  newtree->Branch("recoSF",    &recoSF,   "recoSF/D");
-  newtree->Branch("recoSF_Up", &recoSF_Up,"recoSF_Up/D");
-  newtree->Branch("recoSF_Dn", &recoSF_Dn,"recoSF_Dn/D");
+  if(HasFlag("L")){
 
-  newtree->Branch("IdSF",    &IdSF,   "IdSF/D");
-  newtree->Branch("IdSF_Up", &IdSF_Up,"IdSF_Up/D");
-  newtree->Branch("IdSF_Dn", &IdSF_Dn,"IdSF_Dn/D");
+        // electron
+        newtree->Branch("ElrecoSF",    &ElrecoSF,   "ElrecoSF/D");
+        newtree->Branch("ElrecoSF_Up", &ElrecoSF_Up,"ElrecoSF_Up/D");
+        newtree->Branch("ElrecoSF_Dn", &ElrecoSF_Dn,"ElrecoSF_Dn/D");
 
-  newtree->Branch("IsoSF",    &IsoSF,   "IsoSF/D");
-  newtree->Branch("IsoSF_Up", &IsoSF_Up,"IsoSF_Up/D");
-  newtree->Branch("IsoSF_Dn", &IsoSF_Dn,"IsoSF_Dn/D");
+        newtree->Branch("ElIdSF",    &ElIdSF,   "ElIdSF/D");
+        newtree->Branch("ElIdSF_Up", &ElIdSF_Up,"ElIdSF_Up/D");
+        newtree->Branch("ElIdSF_Dn", &ElIdSF_Dn,"ElIdSF_Dn/D");
+
+        // muon
+        newtree->Branch("MuIdSF",    &MuIdSF,   "MuIdSF/D");
+        newtree->Branch("MuIdSF_Up", &MuIdSF_Up,"MuIdSF_Up/D");
+        newtree->Branch("MuIdSF_Dn", &MuIdSF_Dn,"MuIdSF_Dn/D");
+
+        newtree->Branch("MuIsoSF",    &MuIsoSF,   "MuIsoSF/D");
+        newtree->Branch("MuIsoSF_Up", &MuIsoSF_Up,"MuIsoSF_Up/D");
+        newtree->Branch("MuIsoSF_Dn", &MuIsoSF_Dn,"MuIsoSF_Dn/D");
+
+  }
+  if(HasFlag("LL")){
+
+        // electron
+  	newtree->Branch("DiElrecoSF",    &DiElrecoSF,   "DiElrecoSF/D");
+  	newtree->Branch("DiElrecoSF_Up", &DiElrecoSF_Up,"DiElrecoSF_Up/D");
+  	newtree->Branch("DiElrecoSF_Dn", &DiElrecoSF_Dn,"DiElrecoSF_Dn/D");
+
+  	newtree->Branch("DiElIdSF",    &DiElIdSF,   "DiElIdSF/D");
+  	newtree->Branch("DiElIdSF_Up", &DiElIdSF_Up,"DiElIdSF_Up/D");
+  	newtree->Branch("DiElIdSF_Dn", &DiElIdSF_Dn,"DiElIdSF_Dn/D");
+
+        // muon
+        newtree->Branch("DiMuIdSF",    &DiMuIdSF,   "DiMuIdSF/D");
+        newtree->Branch("DiMuIdSF_Up", &DiMuIdSF_Up,"DiMuIdSF_Up/D");
+        newtree->Branch("DiMuIdSF_Dn", &DiMuIdSF_Dn,"DiMuIdSF_Dn/D");
+
+        newtree->Branch("DiMuIsoSF",    &DiMuIsoSF,   "DiMuIsoSF/D");
+        newtree->Branch("DiMuIsoSF_Up", &DiMuIsoSF_Up,"DiMuIsoSF_Up/D");
+        newtree->Branch("DiMuIsoSF_Dn", &DiMuIsoSF_Dn,"DiMuIsoSF_Dn/D");
+
+  }
 
 }
 
@@ -49,24 +80,78 @@ void Module_Efficiency::executeEvent(){
   evt = new Event;
   *evt = GetEvent();
 
-  newtree->SetBranchAddress("recoSF",   &recoSF);
-  newtree->SetBranchAddress("recoSF_Up",&recoSF_Up);
-  newtree->SetBranchAddress("recoSF_Dn",&recoSF_Dn);
+  if(HasFlag("L")){
+     newtree->SetBranchAddress("ElrecoSF",   &ElrecoSF);
+     newtree->SetBranchAddress("ElrecoSF_Up",&ElrecoSF_Up);
+     newtree->SetBranchAddress("ElrecoSF_Dn",&ElrecoSF_Dn);
 
-  newtree->SetBranchAddress("IdSF",   &IdSF);
-  newtree->SetBranchAddress("IdSF_Up",&IdSF_Up);
-  newtree->SetBranchAddress("IdSF_Dn",&IdSF_Dn);
+     newtree->SetBranchAddress("ElIdSF",   &ElIdSF);
+     newtree->SetBranchAddress("ElIdSF_Up",&ElIdSF_Up);
+     newtree->SetBranchAddress("ElIdSF_Dn",&ElIdSF_Dn);
 
-  newtree->SetBranchAddress("IsoSF",   &IsoSF);
-  newtree->SetBranchAddress("IsoSF_Up",&IsoSF_Up);
-  newtree->SetBranchAddress("IsoSF_Dn",&IsoSF_Dn);
+     newtree->SetBranchAddress("MuIdSF",   &MuIdSF);
+     newtree->SetBranchAddress("MuIdSF_Up",&MuIdSF_Up);
+     newtree->SetBranchAddress("MuIdSF_Dn",&MuIdSF_Dn);
+
+     newtree->SetBranchAddress("MuIsoSF",   &MuIsoSF);
+     newtree->SetBranchAddress("MuIsoSF_Up",&MuIsoSF_Up);
+     newtree->SetBranchAddress("MuIsoSF_Dn",&MuIsoSF_Dn);
+
+  }
+
+  if(HasFlag("LL")){
+     newtree->SetBranchAddress("DiElrecoSF",   &DiElrecoSF);
+     newtree->SetBranchAddress("DiElrecoSF_Up",&DiElrecoSF_Up);
+     newtree->SetBranchAddress("DiElrecoSF_Dn",&DiElrecoSF_Dn);
+
+     newtree->SetBranchAddress("DiElIdSF",   &DiElIdSF);
+     newtree->SetBranchAddress("DiElIdSF_Up",&DiElIdSF_Up);
+     newtree->SetBranchAddress("DiElIdSF_Dn",&DiElIdSF_Dn);
+
+     newtree->SetBranchAddress("DiMuIdSF",   &DiMuIdSF);
+     newtree->SetBranchAddress("DiMuIdSF_Up",&DiMuIdSF_Up);
+     newtree->SetBranchAddress("DiMuIdSF_Dn",&DiMuIdSF_Dn);
+
+     newtree->SetBranchAddress("DiMuIsoSF",   &DiMuIsoSF);
+     newtree->SetBranchAddress("DiMuIsoSF_Up",&DiMuIsoSF_Up);
+     newtree->SetBranchAddress("DiMuIsoSF_Dn",&DiMuIsoSF_Dn);
+
+  }
 
   bool isSaveSFs = false;
   LeptonID_SF  = NULL;
   LeptonISO_SF = NULL;
   LeptonReco_SF= NULL;
 
-  if( HasFlag("LL") ){ // save dilepton SFs for ISR analysis
+  if( HasFlag("L") ){ // save dilepton SFs for ISR analysis
+
+        muons=GetMuons("POGTightWithTightIso",7.,2.4);
+        electrons=GetElectrons("passTightID",9.,2.5);
+
+        if(muons.size() > 0){
+           isSaveSFs = true;
+           leps=MakeLeptonPointerVector(muons);
+           LeptonID_SF =&MCCorrection::MuonID_SF;
+           LeptonISO_SF=&MCCorrection::MuonISO_SF;
+
+           LeptonID_key= "NUM_TightID_DEN_genTracks";
+           LeptonISO_key="NUM_TightRelIso_DEN_TightIDandIPCut";
+
+           trgSF_key0="Lead17_POGTight";
+           trgSF_key1="Tail8_POGTight";
+        }
+        if(electrons.size() > 0){
+           isSaveSFs = true;
+           leps=MakeLeptonPointerVector(electrons);
+           LeptonID_SF  = &MCCorrection::ElectronID_SF;
+           LeptonReco_SF= &MCCorrection::ElectronReco_SF;
+
+           LeptonID_key= "passTightID";
+           trgSF_key0="LeadEle23_TightID";
+           trgSF_key1="TailEle12_TightID";
+        }
+  }
+  else if( HasFlag("LL") ){ // save dilepton SFs for ISR analysis
 
   	muons=GetMuons("POGTightWithTightIso",7.,2.4);
   	electrons=GetElectrons("passMediumID",9.,2.5);
@@ -107,54 +192,107 @@ void Module_Efficiency::executeEvent(){
   trgSF_Up = 1;
   trgSF_Dn = 1;
 
-  recoSF    = 1;
-  recoSF_Up = 1;
-  recoSF_Dn = 1;
+  ElrecoSF    = 1;
+  ElrecoSF_Up = 1;
+  ElrecoSF_Dn = 1;
 
-  IdSF    = 1;
-  IdSF_Up = 1;
-  IdSF_Dn = 1;
+  ElIdSF    = 1;
+  ElIdSF_Up = 1;
+  ElIdSF_Dn = 1;
 
-  IsoSF =1;
-  IsoSF_Up =1;
-  IsoSF_Dn =1;
+  MuIdSF    = 1;
+  MuIdSF_Up = 1;
+  MuIdSF_Dn = 1;
+
+  MuIsoSF =1;
+  MuIsoSF_Up =1;
+  MuIsoSF_Dn =1;
+
+
+  DiElrecoSF    = 1;
+  DiElrecoSF_Up = 1;
+  DiElrecoSF_Dn = 1;
+
+  DiElIdSF    = 1;
+  DiElIdSF_Up = 1;
+  DiElIdSF_Dn = 1;
+
+  DiMuIdSF    = 1;
+  DiMuIdSF_Up = 1;
+  DiMuIdSF_Dn = 1;
+
+  DiMuIsoSF =1;
+  DiMuIsoSF_Up =1;
+  DiMuIsoSF_Dn =1;
+
 
   if(isSaveSFs){
 
      int nLep = 0;
-     if( HasFlag("L") ) nLep = 1;
-     if( HasFlag("LL") ) nLep = 2;
      if( HasFlag("LLL") ) nLep = 3;
 
      if(!IsDATA){
 
-        for(int i(0); i < nLep; i++){ // two lepton only, pt eta the same to TnP
-          if(leps[i]->LeptonFlavour()==Lepton::MUON){
-           Aod_pt[i]=((Muon*)leps.at(i))->MiniAODPt();
-           Aod_eta[i]=leps.at(i)->Eta();
-          }else if(leps[i]->LeptonFlavour()==Lepton::ELECTRON){
-           Aod_pt[i]=leps.at(i)->Pt();
-           Aod_eta[i]=((Electron*)leps.at(i))->scEta();
-           // TODO do we need this gap veto? it is already in Electron.h for id pass ftn
-           //if(fabs(Aod_eta[i])>1.4442&&fabs(Aod_eta[i])<1.566) return; // two lepton only
-          }
+        if( HasFlag("L") ){
+           nLep = 1;
+           for(int i(0); i < nLep; i++){ // two lepton only, pt eta the same to TnP
+             if(leps[i]->LeptonFlavour()==Lepton::MUON){
+                Aod_pt[i]=((Muon*)leps.at(i))->MiniAODPt();
+                Aod_eta[i]=leps.at(i)->Eta();
+
+                MuIdSF      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],0):1.;
+                MuIdSF_Up   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],1):1.;
+                MuIdSF_Dn   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],-1):1.;
+
+                MuIsoSF  *= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],0):1.;
+                MuIsoSF_Up       *= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],1):1.;
+                MuIsoSF_Dn       *= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],-1):1.;
+             }else if(leps[i]->LeptonFlavour()==Lepton::ELECTRON){
+                      Aod_pt[i]=leps.at(i)->Pt();
+                      Aod_eta[i]=((Electron*)leps.at(i))->scEta();
+                      // TODO do we need this gap veto? it is already in Electron.h for id pass ftn
+                      //if(fabs(Aod_eta[i])>1.4442&&fabs(Aod_eta[i])<1.566) return; // two lepton only
+                      ElrecoSF    *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i], Aod_pt[i],  0) : 1.; 
+                      ElrecoSF_Up *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i], Aod_pt[i],  1) : 1.; 
+                      ElrecoSF_Dn *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i], Aod_pt[i], -1) : 1.; 
+
+                      ElIdSF      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],0):1.;
+                      ElIdSF_Up   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],1):1.;
+                      ElIdSF_Dn   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],-1):1.;
+             }
+           }
         }
 
-       for( int i(0); i<nLep ; i++){
+        if( HasFlag("LL") ){
+           nLep = 2;
+           for(int i(0); i < nLep; i++){ // two lepton only, pt eta the same to TnP
+             if(leps[i]->LeptonFlavour()==Lepton::MUON){
+                Aod_pt[i]=((Muon*)leps.at(i))->MiniAODPt();
+                Aod_eta[i]=leps.at(i)->Eta();
 
-         recoSF    *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i], Aod_pt[i],  0) : 1.;
-         recoSF_Up *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i], Aod_pt[i],  1) : 1.;
-         recoSF_Dn *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i], Aod_pt[i], -1) : 1.;
+                DiMuIdSF      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],0):1.;
+                DiMuIdSF_Up   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],1):1.;
+                DiMuIdSF_Dn   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],-1):1.;
 
-         IdSF      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],0):1.;
-         IdSF_Up   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],1):1.;
-         IdSF_Dn   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],-1):1.;
+                DiMuIsoSF  *= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],0):1.;
+                DiMuIsoSF_Up       *= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],1):1.;
+                DiMuIsoSF_Dn       *= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],-1):1.;
+             }else if(leps[i]->LeptonFlavour()==Lepton::ELECTRON){
+                      Aod_pt[i]=leps.at(i)->Pt();
+                      Aod_eta[i]=((Electron*)leps.at(i))->scEta();
+                      // TODO do we need this gap veto? it is already in Electron.h for id pass ftn
+                      //if(fabs(Aod_eta[i])>1.4442&&fabs(Aod_eta[i])<1.566) return; // two lepton only
+                      DiElrecoSF    *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i], Aod_pt[i],  0) : 1.; 
+                      DiElrecoSF_Up *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i], Aod_pt[i],  1) : 1.; 
+                      DiElrecoSF_Dn *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i], Aod_pt[i], -1) : 1.; 
 
-         IsoSF  *= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],0):1.;
-         IsoSF_Up       *= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],1):1.;
-         IsoSF_Dn       *= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key,Aod_eta[i],Aod_pt[i],-1):1.;
+                      DiElIdSF      *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],0):1.;
+                      DiElIdSF_Up   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],1):1.;
+                      DiElIdSF_Dn   *= LeptonID_SF?(mcCorr->*LeptonID_SF)(LeptonID_key,Aod_eta[i],Aod_pt[i],-1):1.;
+             }
+           }
+        }
 
-       }
      }
   }// save SFs if there are enough leptons
 
