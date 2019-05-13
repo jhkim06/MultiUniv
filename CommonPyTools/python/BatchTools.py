@@ -143,6 +143,39 @@ cp ../x509up_u{1} /tmp/
 echo "[mkGardener.py] Okay, let's run the analysis"
 {2} 1>stdout.log 2>stderr.log
 '''.format(thisjob_dir, UID, self.exCmd)
+    elif IsTAMSA1:
+      print>>sFile,'''#!/bin/bash
+SECTION=`printf $1`
+WORKDIR=`pwd`
+SumNoAuth=999
+Trial=0
+export GCC_HOME=/usr/
+export PATH=$GCC_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$GCC_HOME/lib/gcc/x86_64-redhat-linux:$GCC_HOME/lib64:$LD_LIBRARY_PATH
+source /data6/Users/salee/ROOT616/bin/thisroot.sh
+
+while [ "$SumNoAuth" -ne 0 ]; do
+  if [ "$Trial" -gt 9999 ]; then
+    break
+  fi
+  echo "#### running ####"
+  {0} 2> err.log
+  NoAuthError_Open=`grep "Error in <TNetXNGFile::Open>" err.log -R | wc -l`
+  NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" err.log -R | wc -l`
+
+  SumNoAuth=$(($NoAuthError_Open + $NoAuthError_Close))
+
+  if [ "$SumNoAuth" -ne 0 ]; then
+    echo "SumNoAuth="$SumNoAuth
+    echo "AUTH error occured.. running again in 30 seconds.."
+    Trial=$((Trial+=1))
+    sleep 30
+  fi
+
+done
+cat err.log >&2
+'''.format(self.exCmd)
+      sFile.close()
     else:
       print>>sFile,'''#!/bin/bash
 SECTION=`printf $1`
@@ -174,6 +207,7 @@ done
 cat err.log >&2
 '''.format(self.exCmd)
       sFile.close()
+
       #os.system('chmod +x '+self.MacShell)
 #TODO export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH
 
