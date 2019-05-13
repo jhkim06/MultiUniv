@@ -38,6 +38,17 @@ groupPlot['DY'] = {
     'samples' : ['DYJets']
     }
 
+groupPlot['QCD'] = {
+    'nameHR' : "QCD",
+    'isSignal' :0,
+    'color': kYellow, #color is not defined yet
+    'style': 4050,
+    'lineColor':807,
+    'lineWidth':1,
+    'samples' : ['SingleMuon_QCD','SingleElectron_QCD','TTLL_powheg_QCD','WJets_MG_QCD','DYJets_QCD','WW_pythia_QCD','WZ_pythia_QCD','ZZ_pythia_QCD']
+    }
+
+
 #plot['DYJets10to50_MG'] = {
 #    'color': 418,
 #    'isSignal' :1,
@@ -65,6 +76,12 @@ plot['WW_pythia'] = {
     'isData': 0,
     'scale':1,
     }
+plot['ZZ_pythia'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
 plot['TTLL_powheg'] = {
     'color': 550,
     'isSignal' :0,
@@ -85,7 +102,6 @@ plot['SingleMuon'] = {
     'isData':1,
     'scale':1,
     }
-"""
 plot['SingleElectron'] = {
     'nameHR' : "SingleElectron",
     'color':kBlack,
@@ -93,7 +109,59 @@ plot['SingleElectron'] = {
     'isData':1,
     'scale':1,
     }
-"""
+
+###### QCD
+plot['DYJets_QCD'] = {
+    'color': kYellow,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':-1,
+    }
+
+plot['WZ_pythia_QCD'] = {
+    'color': 450,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':-1,
+    }
+plot['WW_pythia_QCD'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':-1,
+    }
+plot['ZZ_pythia_QCD'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':-1,
+    }
+plot['TTLL_powheg_QCD'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':-1,
+    }
+plot['WJets_MG_QCD'] = {
+    'color': 550, #FIXME: same color with TTLL_powheg
+    'isSignal' :0,
+    'isData': 0,
+    'scale':-1,
+    }
+
+plot['SingleMuon_QCD'] = {
+    'color':kBlack,
+    'isSignal':0,
+    'isData':0, # 0 for QCD sample
+    'scale':1,
+    }
+plot['SingleElectron_QCD'] = {
+    'color':kBlack,
+    'isSignal':0,
+    'isData':0, # o for QCD sample
+    'scale':1,
+    }
+
 legend['lumi'] = 'L = 41.5/fb'
 legend['sqrt'] = '#sqrt{s} = 13 TeV'
 # extraText default is Preliminary

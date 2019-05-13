@@ -20,8 +20,8 @@ def GetJobID(logfiledir, cycle, jobnumber, hostname):
 
   jobid = ""
 
-  if hostname=="SNU":
-    jobid = open(logfiledir+'/submitlog.log').readlines()[0].split()[2]
+  #if hostname=="SNU":
+  #  jobid = open(logfiledir+'/submitlog.log').readlines()[0].split()[2]
   if hostname=="KNU":
     jobid = open(logfiledir+'/submitlog.log').readlines()[0].split('.')[0]
 

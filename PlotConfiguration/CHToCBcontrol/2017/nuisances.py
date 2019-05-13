@@ -1,4 +1,22 @@
 
+#nuisances['lumi'] = {
+#    'name' : 'lumi_13TeV',
+#    'type' : 'lnN',
+#    'samples' : {
+#      'DY'	: '1.023',
+#      }
+#    }
+
+#nuisances['ttxsec'] = {
+#    'name' : 'ttxsec',
+#    'type' : 'lnN',
+#    'samples' : {
+#      'TTLJ_powheg'	: '1.06114',
+#      'TTLL_powheg'	: '1.06114',
+#      'TTJJ_powheg'	: '1.06114',
+#      }
+#    }
+
 #nuisances['pileup'] = {
 #    'name' :'pileup',
 #    'kind' : 'weight',
@@ -7,16 +25,64 @@
 #      'DYJet'       : ['puWup/puW', 'puWdown/puW'],
 #      'TTLL_powheg' : ['puWup/puW', 'puWdown/puW'],
 #      }
-#    }
+#}
 
-#nuisances['lumi'] = {
-#    'name' : 'lumi_13TeV',
+#nuisances['BTagSF'] = {
+#    'name' : 'BTagSF',
+#    'kind'	: 'weight',
+#    'type'	: 'shape',
 #    'samples' : {
-#      'DY'	: '1.023',
+#      'TTLJ_powheg'	: ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+#      'TTLL_powheg'	: ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+#      'TTJJ_powheg'	: ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
 #      }
-#    'type' : 'lnN',
-#    }
+#}
 
+#nuisances['leptonSF'] = {
+#    'name' : 'leptonSF',
+#    'kind'	: 'weight',
+#    'type'	: 'shape',
+#    'samples' : {
+#      'TTLJ_powheg'	: ['leptonSF_Up/leptonSF','leptonSF_Do/leptonSF'],
+#      'TTLL_powheg'	: ['leptonSF_Up/leptonSF','leptonSF_Do/leptonSF'],
+#      'TTJJ_powheg'	: ['leptonSF_Up/leptonSF','leptonSF_Do/leptonSF'],
+#      }
+#}
+
+#nuisances['ttbbxsec'] = {
+#    'name' : 'ttbbxsec',
+#    'kind'	: 'weight', 
+#    'type'	: 'shape',
+#    'samples' : {
+#      'TTLJ_powheg'	: ['ttbbxsec_Up/ttbbxsec','ttbbxsec_Do/ttbbxsec'],
+#      'TTLL_powheg'	: ['ttbbxsec_Up/ttbbxsec','ttbbxsec_Do/ttbbxsec'],
+#      'TTJJ_powheg'	: ['ttbbxsec_Up/ttbbxsec','ttbbxsec_Do/ttbbxsec'],
+#      }
+#}
+
+#nuisances['generator'] = {
+#    'name' : 'generator',
+#    'kind'	: 'weight', # Down is the same as nominal, nuisance for Signal sample
+#    'type'	: 'shape',
+#    'samples' : {
+#      'CHToCB_M090'	: ['generator','1'],
+#      'CHToCB_M100'	: ['generator','1'],
+#      'CHToCB_M110'	: ['generator','1'],
+#      }
+#}
+
+#nuisances['gentoppt_reweight'] = {
+#    'name' : 'gentoppt_reweight',
+#    'kind'	: 'weight', # Down is the same as nominal
+#    'type'	: 'shape',
+#    'samples' : {
+#      'TTLJ_powheg'	: ['gentoppt_reweight' , '1.'],
+#      'TTLL_powheg'	: ['gentoppt_reweight' , '1.'],
+#      'TTJJ_powheg'	: ['gentoppt_reweight' , '1.'],
+#      }
+#}
+
+## other systematics(JEC/JER/top_mass/MEtoPS/generator) are not defined as event-by-event weight
 
 ########## Efficiency and Energy Scale
 trg_syst = ['trgSF_Q_Up/trgSF_Q', 'trgSF_Q_Do/trgSF_Q']

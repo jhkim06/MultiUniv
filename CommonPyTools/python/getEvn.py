@@ -24,17 +24,16 @@ IsUI10 = ("ui10.sdfarm.kr" in HOSTNAME)
 IsUI20 = ("ui20.sdfarm.kr" in HOSTNAME)
 IsKNU = ("knu" in HOSTNAME)
 IsTAMSA2 = ("tamsa2" in HOSTNAME)
-IsTAMSA1 = ("cms.snu" in HOSTNAME)
+IsTAMSA1 = ("tamsa1" in HOSTNAME)
 IsSNU = IsTAMSA1 or IsTAMSA2
+
 
 
 if IsKISTI:
   HostNickName = "KISTI"
-#if IsSNU:
-#  HostNickName = "SNU"
-if IsTAMSA2:
-  HostNickName = "TAMSA2"
-if IsTAMSA1:
-  HostNickName = "TAMSA1"
-if IsKNU:
+elif IsSNU:
+  HostNickName = "SNU"
+elif IsKNU:
   HostNickName = "KNU"
+else:
+  raise RuntimeError("    getEnv.py: HostNickName for %s is unknown"%HOSTNAME)
