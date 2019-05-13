@@ -287,7 +287,7 @@ for InputSample in InputSamples:
       tmpSkimDir=Productions[opt.Category][ProductionKey]['SkimDir']+'/'+InSkimString+'/'+ sampleBaseName + '/'
     
     print 'Input SkimDir',tmpSkimDir
-    input_filelist = open(base_rundir+'/input_filelist,txt','w')
+    input_filelist = open(base_rundir+'/input_filelist.txt','w')
     for dirName, subdirList, fileList in os.walk(tmpSkimDir):
       for aFile in fileList:
 	if '.root' in aFile:
