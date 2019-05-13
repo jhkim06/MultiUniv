@@ -71,9 +71,24 @@ def GetInputSamples(InputSampleKeys,DataPeriod,Year,Category,ProductionKey):
         print key, Year, DataPeriod
         InputSamples[key+":"+DataPeriod]={'key':key}
         StringForHash += key+":"+DataPeriod
+    elif key in DATaSets_Fake:
+      if DataPeriod=="ALL":
+        print key, Year,'ALL', Dataperiods
+        tmp_key = key.split('_')[0]
+        for period in Dataperiods:
+          InputSamples[tmp_key+":"+period]={'key':tmp_key}
+          StringForHash += tmp_key+":"+period
+      elif DataPeriod in Dataperiods:
+        print key, Year, DataPeriod
+        tmp_key = key.split('_')[0]
+        InputSamples[tmp_key+":"+DataPeriod]={'key':tmp_key}
+        StringForHash += tmp_key+":"+DataPeriod
+    elif 'Fake' in key:
+      raise RuntimeError('Fake sample %s is not defined!!'%key)
     else:
       print 'key', key
-      InputSamples[sampleInfo[key]['name']]={'key':key}
+      fullName=sampleInfo[key]['name'] #full MC name defined in CommonPyTools/DataSample/Samples
+      InputSamples[fullName]={'key':key}
       StringForHash += key
 
   return InputSamples, StringForHash
