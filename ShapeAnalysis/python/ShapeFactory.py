@@ -118,6 +118,19 @@ class ShapeFactory:
 		    outputsHistoUp.Write()
 		    outputsHistoDo.Write()
 
+	      elif nuisance['kind' ] == 'PDF' :
+		for sampleNuisName, configurationNuis in nuisance['samples'].iteritems() :
+		  if sampleNuisName ==  sampleName :
+		    newSampleName = sampleName + '_' + nuisance['name'] 
+
+		    if 'weights' in sample.keys() :
+		      outputsHistoUp, outputsHistoDo = self._drawPDF(nuisance['type'], configurationNuis[0], variable['name'], variable['range'], sample['weight'], sample['weights'], totCut, newSampleName, trees, columns, doFold, cutName, variableName, sample, False)
+		    else :
+		      #print 'newSampleWeightUp', newSampleWeightUp
+		      outputsHistoUp, outputsHistoDo = self._drawPDF(nuisance['type'], configurationNuis[0], variable['name'], variable['range'], sample['weight'], [],                totCut, newSampleName, trees, columns, doFold, cutName, variableName, sample, False)
+
+		    outputsHistoUp.Write()
+		    outputsHistoDo.Write()
 
     self.outFile.Close()
 
@@ -196,29 +209,95 @@ class ShapeFactory:
       
       numTree += 1
 
-      # fold if needed
-      if doFold == 1 or doFold == 3 :
-	self._FoldOverflow (hTotal)
-      if doFold == 2 or doFold == 3 :
-	self._FoldUnderflow (hTotal)
-      
-      # go 1d
-      hTotalFinal = self._h2toh1(hTotal)
-      hTotalFinal.SetTitle('histo_' + sampleName)
-      hTotalFinal.SetName('histo_' + sampleName)
+    # fold if needed
+    if doFold == 1 or doFold == 3 :
+      self._FoldOverflow (hTotal)
+    if doFold == 2 or doFold == 3 :
+      self._FoldUnderflow (hTotal)
+    
+    # go 1d
+    hTotalFinal = self._h2toh1(hTotal)
+    hTotalFinal.SetTitle('histo_' + sampleName)
+    hTotalFinal.SetName('histo_' + sampleName)
 
-      # fix negative (almost never happening)
-      # don't do it here by default, because you may have interference that is actually negative!
-      # do this only if triggered: use with caution!
-      # This also checks that only in specific phase spaces this is activated, "cutName"
-      #
-      # To be used with caution -> do not use this option if you don't know what you are playing with
-      #
-      if fixZeros and 'suppressNegative' in sample.keys() and ( cutName in sample['suppressNegative'] or 'all' in sample['suppressNegative']) : 
-	self._fixNegativeBinAndError(hTotalFinal)
+    # fix negative (almost never happening)
+    # don't do it here by default, because you may have interference that is actually negative!
+    # do this only if triggered: use with caution!
+    # This also checks that only in specific phase spaces this is activated, "cutName"
+    #
+    # To be used with caution -> do not use this option if you don't know what you are playing with
+    #
+    if fixZeros and 'suppressNegative' in sample.keys() and ( cutName in sample['suppressNegative'] or 'all' in sample['suppressNegative']) : 
+      self._fixNegativeBinAndError(hTotalFinal)
 
+    
+    return hTotalFinal
+
+  def _drawPDF(self, pdfType, pdfW, var, rng, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros) :
+    '''
+    pdfType       : alphaS,...
+    pdfW          :  pdfW
+    var           :   the variable to plot
+    rng           :   the variable to plot
+    global_weight :   sample global_weight 
+    weights       :   the wieghts 'root file' dependent
+    totCut           :   the selection
+    trees        :   the list of input files for this particular sample
+    '''
+
+    self._logger.info('Yields by process')
+    print 'pdfW treeName', pdfW
+
+    numTree = 0
+    bigNameUp = 'histo_' + sampleName + 'Up_' + cutName + '_' + variableName
+    bigNameDo = 'histo_' + sampleName + 'Do_' + cutName + '_' + variableName
+    hTotalUp = self._makeshape(bigNameUp, rng)
+    hTotalDo = self._makeshape(bigNameDo, rng)
+    for tree in trees :
+      #myBr = tree.GetBranch(pdfW)
+      #myBr = tree.GetBranch(pdfW).GetListOfLeaves()
+      print '        {0:<20} : {1:^9}'.format(sampleName,tree.GetEntries())
+      #anEvent = tree.GetEntry(1)
+      #print 'pdfW size', anEvent.PDFWeights_AlphaS.size()
+      #print 'pdfW value0', myBr.GetValue(0)
+      if pdfW is 'PDFWeights_AlphaS':
+	print 'checking size of PDFWeights_AlphaS'
+        for event in tree:
+  	  size = event.PDFWeights_AlphaS.size()
+	  break
+	if size != 2:
+	  print 'PDFWeights_AlphaS size is not 2, it is', size, 'exiting.....'
+	  exit()
       
-      return hTotalFinal
+    # fold if needed
+    if doFold == 1 or doFold == 3 :
+      self._FoldOverflow (hTotalUp)
+      self._FoldOverflow (hTotalDo)
+    if doFold == 2 or doFold == 3 :
+      self._FoldUnderflow (hTotalUp)
+      self._FoldUnderflow (hTotalDo)
+    
+    # go 1d
+    hTotalFinalUp = self._h2toh1(hTotalUp)
+    hTotalFinalDo = self._h2toh1(hTotalDo)
+    hTotalFinalUp.SetTitle('histo_' + sampleName+ 'Up')
+    hTotalFinalDo.SetTitle('histo_' + sampleName+ 'Do')
+    hTotalFinalUp.SetName('histo_' + sampleName + 'Up')
+    hTotalFinalDo.SetName('histo_' + sampleName + 'Do')
+
+    # fix negative (almost never happening)
+    # don't do it here by default, because you may have interference that is actually negative!
+    # do this only if triggered: use with caution!
+    # This also checks that only in specific phase spaces this is activated, "cutName"
+    #
+    # To be used with caution -> do not use this option if you don't know what you are playing with
+    #
+    if fixZeros and 'suppressNegative' in sample.keys() and ( cutName in sample['suppressNegative'] or 'all' in sample['suppressNegative']) : 
+      self._fixNegativeBinAndError(hTotalFinalUp)
+      self._fixNegativeBinAndError(hTotalFinalDo)
+
+    
+    return hTotalFinalUp, hTotalFinalDo
 
 
   def _FoldUnderflow(self, h) :
