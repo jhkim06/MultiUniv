@@ -31,8 +31,6 @@ private:
   int IsMuMu;
   int IsElEl;
 
-  RoccoR rc;
-
   //RootHelper rootHelp;
   double DiLepTrg_SF(TString Leg0Key, TString Leg1Key, const vector<Lepton*>& leps, int sys);
 

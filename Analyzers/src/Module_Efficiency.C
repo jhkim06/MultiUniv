@@ -58,12 +58,6 @@ void Module_Efficiency::initializeAnalyzer(){
   	newtree->Branch("DiElIdSF_Up", &DiElIdSF_Up,"DiElIdSF_Up/D");
   	newtree->Branch("DiElIdSF_Dn", &DiElIdSF_Dn,"DiElIdSF_Dn/D");
 
-
-        // just test it works... 
-     	TString data_roc = getenv("DATA_DIR");
-        data_roc += "/../roccor_Run2_v3/RoccoR"+TString::Itoa(DataYear,10)+".txt";
-        rc.init(data_roc.Data());
-
         // muon
         newtree->Branch("DiMuIdSF",    &DiMuIdSF,   "DiMuIdSF/D");
         newtree->Branch("DiMuIdSF_Up", &DiMuIdSF_Up,"DiMuIdSF_Up/D");

@@ -23,8 +23,6 @@ public:
 
 private:
 
-  RoccoR rc;
-
   std::vector<Lepton*> leps;
   double Aod_pt[2], Aod_eta[2]; //TODO lets use vector later
 

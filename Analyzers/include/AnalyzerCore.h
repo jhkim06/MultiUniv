@@ -23,6 +23,7 @@
 #include "CFBackgroundEstimator.h"
 #include "BTagSFUtil.h"
 #include "PDFReweight.h"
+#include "RoccoR.h"
 
 #define M_Z 91.1876
 #define M_W 80.379
@@ -187,6 +188,8 @@ public:
   int GetGenPhotonType(Gen genph, std::vector<Gen> gens);
   bool IsSignalPID(int pid);
 
+  void UpdateMumentumScaleAndError(Muon& mu);// set momentum correction on the fly
+
   //==== Plotting
 
   std::map< TString, TH1D* > maphist_TH1D;
@@ -240,6 +243,9 @@ public:
   std::map<TString,BTagSFUtil*> MapBTagSF;
   
 
+  private:
+
+  RoccoR rc;
 };
 
 
