@@ -11,6 +11,12 @@ Ntuple_Reader::Ntuple_Reader(){
 
 Ntuple_Reader::~Ntuple_Reader(){
 
+  for(map<TString,TFile*>::iterator it=MapTFile.begin(); it!=MapTFile.end(); it++){
+    delete it->second;
+  }
+  for(map<TString,TNtuple*>::iterator it=MapTNtuple.begin(); it!=MapTNtuple.end(); it++){
+    delete it->second;
+  }
 
 } // end of function
 
