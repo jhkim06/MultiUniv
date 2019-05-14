@@ -22,6 +22,7 @@
 trg_syst = ['trgSF_Q_Up/trgSF_Q', 'trgSF_Q_Do/trgSF_Q']
 id_syst  = ['IdSF_Q_Up/IdSF_Q', 'IdSF_Q_Do/IdSF_Q']
 alphaS_syst  = ['PDFWeights_AlphaS']
+pdfScale_syst  = ['PDFWeights_Scale']
 #alphaS_syst  = ['PDFWeights_AlphaS', 'PDFWeights_AlphaS[1]']
 #id_syst_ele = ['LepSF'+Nlep+'l_ele_'+eleWP+'_Up', 'LepSF'+Nlep+'l_ele_'+eleWP+'_Do']
 
@@ -54,17 +55,31 @@ alphaS_syst  = ['PDFWeights_AlphaS']
 #	},
 #}
 
-nuisances['alphaS'] = {
-    'name'	: 'alphaS',
+#nuisances['alphaS'] = {
+#    'name'	: 'alphaS',
+#    'kind'	: 'PDF',
+#    'type'	: 'alphaS',
+#    'samples'	: {
+#      	'DYJets'	: alphaS_syst ,
+#	'TTLL_powheg'	: alphaS_syst ,
+#	'WJets_MG'	: alphaS_syst ,
+#	'WW_pythia'	: alphaS_syst ,
+#	'WZ_pythia'	: alphaS_syst ,
+#	#'ZZ_pythia'	: alphaS_syst ,
+#	},
+#}
+
+nuisances['pdfScale'] = {
+    'name'	: 'pdfScale',
     'kind'	: 'PDF',
-    'type'	: 'alphaS',
+    'type'	: 'pdfScale',
     'samples'	: {
-      	'DYJets'	: alphaS_syst ,
-	'TTLL_powheg'	: alphaS_syst ,
-	'WJets_MG'	: alphaS_syst ,
-	'WW_pythia'	: alphaS_syst ,
-	'WZ_pythia'	: alphaS_syst ,
-	#'ZZ_pythia'	: alphaS_syst ,
+      	'DYJets'	: pdfScale_syst ,
+	'TTLL_powheg'	: pdfScale_syst ,
+	'WJets_MG'	: pdfScale_syst ,
+	'WW_pythia'	: pdfScale_syst ,
+	'WZ_pythia'	: pdfScale_syst ,
+	#'ZZ_pythia'	: pdfScale_syst ,
 	},
 }
 
