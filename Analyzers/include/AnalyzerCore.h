@@ -61,8 +61,8 @@ public:
   std::vector<Electron> GetAllElectrons();
   std::vector<Electron> GetElectrons(TString id, double ptmin, double fetamax);
 
-  std::vector<Muon> GetAllMuons();
-  std::vector<Muon> GetMuons(TString id, double ptmin, double fetamax);
+  std::vector<Muon> GetAllMuons(bool apply_roc = true);
+  std::vector<Muon> GetMuons(TString id, double ptmin, double fetamax, bool apply_roc = true);
 
   std::vector<Photon> GetAllPhotons();
   std::vector<Photon> GetPhotons(TString id, double ptmin, double fetamax);
