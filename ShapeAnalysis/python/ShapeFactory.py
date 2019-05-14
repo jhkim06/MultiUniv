@@ -131,7 +131,7 @@ class ShapeFactory:
 
                     print 'length of histoList', len(histoList)
 		    for ahist in histoList :
-		      print 'writing ahist'
+		      #print 'writing ahist'
 		      ahist.Write()
 		    #outputsHistoUp.Write()
 		    #outputsHistoDo.Write()
@@ -290,6 +290,9 @@ class ShapeFactory:
         # if weight is not given for a given root file, '-', do not apply file dependent weight for that root file
         if weights[numTree] != '-' :
           totalWeight = "(" + totalWeight + ") * (" + weights[numTree] + ")" 
+      ################################################
+      # PDFWeights_AlphaS
+      ################################################
       if pdfW is 'PDFWeights_AlphaS':
 	print 'checking size of PDFWeights_AlphaS'
         for event in tree:
@@ -344,6 +347,9 @@ class ShapeFactory:
           hTotalUp.Add(shapeUp)
           hTotalDo.Add(shapeDo)
 
+      #####################################################
+      #  PDFWeights_Scale
+      #####################################################
       if pdfW is 'PDFWeights_Scale':
 	# Using Three nuisances for muR up/do, muF up/do, correlated up/do
 	# as recommanded: https://indico.cern.ch/event/494682/contributions/1172505/attachments/1223578/1800218/mcaod-Feb15-2016.pdf
@@ -354,11 +360,11 @@ class ShapeFactory:
 	#  break
 	tree.GetEntry(0)
 	size = len( tree.PDFWeights_Scale )
-	for idx in xrange(size) :
-	  if idx == 5 or idx == 7:
-	    continue
-	  print idx, tree.PDFWeights_Scale[idx]
-	print 'scale size', size
+	#for idx in xrange(size) :
+	#  if idx == 5 or idx == 7:
+	#    continue
+	#  print idx, tree.PDFWeights_Scale[idx]
+	#print 'scale size', size
 	if size == 9:
 	  print 'saving scale nuisance variation: Renormalization and Factorization order changing'
 	  totalW_muAUp  = "(" + totalWeight + ") * (PDFWeights_Scale[1])"
@@ -382,10 +388,10 @@ class ShapeFactory:
 			   .Define('totalW_muABUp', totalW_muABUp) \
 			   .Define('totalW_muABDo', totalW_muABDo)
         # New histogram
-        shapeNameAUp = 'histo_' + sampleName + 'AUp' + str(numTree)
-        shapeNameADo = 'histo_' + sampleName + 'ADo' + str(numTree)
-        shapeNameBUp = 'histo_' + sampleName + 'BUp' + str(numTree)
-        shapeNameBDo = 'histo_' + sampleName + 'BDo' + str(numTree)
+        shapeNameAUp  = 'histo_' + sampleName + 'AUp' + str(numTree)
+        shapeNameADo  = 'histo_' + sampleName + 'ADo' + str(numTree)
+        shapeNameBUp  = 'histo_' + sampleName + 'BUp' + str(numTree)
+        shapeNameBDo  = 'histo_' + sampleName + 'BDo' + str(numTree)
         shapeNameABUp = 'histo_' + sampleName + 'ABUp' + str(numTree)
         shapeNameABDo = 'histo_' + sampleName + 'ABDo' + str(numTree)
 	# prepare a dummy to fill
@@ -480,6 +486,54 @@ class ShapeFactory:
           hTotalABUp.Add(shapeABUp)
           hTotalABDo.Add(shapeABDo)
 
+      #########################################
+      # PDFWeights_Error
+      #########################################
+      # 0-100, 0=> nominal?
+      if pdfW is 'PDFWeights_Error':
+	totalW_pdfErr = []
+	tree.GetEntry(0)
+	size = len( tree.PDFWeights_Error )
+	if  size > 101:
+	  print 'size of PDFWeights_Error is gt 101, exiting...'
+	  exit()
+	for idx in xrange(size) :
+	  #print idx, tree.PDFWeights_Error[idx]
+	  totalW_pdfErr.append("(" + totalWeight + ") * (PDFWeights_Error[" + str(idx) + "])")
+	for idx in xrange(101 - size) :
+	  totalW_pdfErr.append("1")
+	print 'PDFWeights_Error size', size
+	hTotal = [None] * 101
+	for idx in xrange(101):
+	#  print idx, totalW_pdfErr[idx]
+	  augmented_d = Dtree.Define('totalW_pdfErr'+str(idx), totalW_pdfErr[idx])
+	  # new histogram
+	  shapeName = 'histo_' + sampleName + '_' + str(idx) + '_' + str(numTree)
+	  # prepare a dummy to fill
+          hclass, hargs, ndim = self._bins2hclass( rng)
+          hModel  = (shapeName,  shapeName,)  + hargs
+	  if ndim == 1 :
+            shape  = augmented_d.Filter(totCut).Histo1D( hModel,  var, 'totalW_pdfErr'+str(idx))
+	  elif ndim == 2 :
+            shape  = augmented_d.Filter(totCut).Histo2D( hModel,  var, 'totalW_pdfErr'+str(idx))
+	  else :
+	    print 'this dim of hist not ready', ndim, 'exiting'
+	    exit()
+          nTries = shape.Integral()
+          print idx, 'integral  ', nTries
+          if nTries == 0 :
+            print 'Warning : entries is 0 for', hModel
+          if math.isnan(nTries) :
+            print 'ERROR : entries is nan for', hModel
+          if (numTree == 0) :
+            bigName = 'histo_' + sampleName + str(idx) +'_' + cutName + '_' + variableName
+            shape.SetTitle(bigName)
+            shape.SetName(bigName)
+            hTotal[idx] = shape
+	  else :
+	    hTotal[idx].Add(shape)
+
+
       numTree += 1
 
       
@@ -495,6 +549,9 @@ class ShapeFactory:
         self._FoldOverflow (hTotalBDo)
         self._FoldOverflow (hTotalABUp)
         self._FoldOverflow (hTotalABDo)
+      if pdfW is 'PDFWeights_Error':
+	for idx in xrange(101):
+          self._FoldOverflow (hTotal[idx])
     if doFold == 2 or doFold == 3 :
       if pdfW is 'PDFWeights_AlphaS':
         self._FoldUnderflow (hTotalUp)
@@ -506,6 +563,9 @@ class ShapeFactory:
         self._FoldUnderflow (hTotalBDo)
         self._FoldUnderflow (hTotalABUp)
         self._FoldUnderflow (hTotalABDo)
+      if pdfW is 'PDFWeights_Error':
+	for idx in xrange(101):
+          self._FoldUnderflow (hTotal[idx])
     
     # go 1d
     if pdfW is 'PDFWeights_AlphaS':
@@ -538,7 +598,15 @@ class ShapeFactory:
       hTotalFinalABUp.SetName('histo_' + sampleName + 'ABUp')
       hTotalFinalABDo.SetName('histo_' + sampleName + 'ABDo')
 
-    # fix negative (almost never happening)
+
+    if pdfW is 'PDFWeights_Error':
+      hTotalFinal = [None] * 101
+      for idx in xrange(101):
+        hTotalFinal[idx] = self._h2toh1(hTotal[idx])
+        hTotalFinal[idx].SetTitle('histo_' + sampleName+ str(idx).zfill(3))
+        hTotalFinal[idx].SetName('histo_' + sampleName + str(idx).zfill(3))
+
+    #fix negative (almost never happening)
     # don't do it here by default, because you may have interference that is actually negative!
     # do this only if triggered: use with caution!
     # This also checks that only in specific phase spaces this is activated, "cutName"
@@ -556,6 +624,9 @@ class ShapeFactory:
         self._fixNegativeBinAndError(hTotalFinalBDo)
         self._fixNegativeBinAndError(hTotalFinalABUp)
         self._fixNegativeBinAndError(hTotalFinalABDo)
+      if pdfW is 'PDFWeights_Error':
+        for idx in xrange(101):
+          self._fixNegativeBinAndError(hTotalFinal[idx])
 
     histoList = []
     if pdfW is 'PDFWeights_AlphaS':
@@ -569,8 +640,10 @@ class ShapeFactory:
       histoList.append(hTotalFinalABUp)
       histoList.append(hTotalFinalABDo)
 
-    
-    return histoList
+    if pdfW is 'PDFWeights_Error':
+      return hTotalFinal
+    else:
+      return histoList
     #return hTotalFinalUp, hTotalFinalDo
 
 

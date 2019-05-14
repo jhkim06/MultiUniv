@@ -50,7 +50,7 @@
 
 
 
-mkShapes.py --pycfg  configuration.py -n 300 --nTotFiles 1  --overWrite --doBatch --dry_run
+mkShapes.py --pycfg  configuration.py -n 300 --nTotFiles 0  --overWrite --doBatch 
 
 #checkMakeShapeBatch.py -y 2017 -n 300 --nTotFiles 0 --RundirBase /data6/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0_LL_v0_MuMuOrElEl_v1_AlPhaS
 
