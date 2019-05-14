@@ -80,6 +80,9 @@ public:
   inline double MiniAODPt() const {return j_MiniAODPt;}
   inline double MiniAODTunePPt() const {return j_MiniAODTunePPt;}
 
+
+  void SetTrackerLayersWithMeasurement(int trackerLayers);
+  inline int GetTrackerLayersWithMeasurement(){ return j_trackerLayers; }
   void SetMomentumScaleAndError(double rc, double rc_err);
   inline double MomentumScale() const {return j_rc;}
   inline double MomentumScaleError() const {return j_rc_err;}
@@ -103,6 +106,7 @@ public:
 
 private:
 
+  int j_trackerLayers;
   unsigned int j_TypeBit, j_IDBit;
   double j_chi2;
   double j_PFCH04, j_PFNH04, j_PFPH04, j_PU04, j_trkiso;

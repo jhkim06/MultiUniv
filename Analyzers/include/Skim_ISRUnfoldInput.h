@@ -2,6 +2,7 @@
 #define Skim_ISRUnfoldInput_h
 
 #include "AnalyzerCore.h"
+#include "RoccoR.h"
 #include "RootHelper.h"
 
 class Skim_ISRUnfoldInput : public AnalyzerCore {

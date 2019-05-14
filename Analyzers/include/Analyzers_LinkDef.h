@@ -18,6 +18,7 @@
 #pragma link C++ class SMP_Validation+;
 #pragma link C++ class Skim_ISRUnfoldInput+;
 #pragma link C++ class Skim_FakeEst+;
+#pragma link C++ class Module_Efficiency+;
 
 #pragma link C++ class Get_Matched_Jet_Parton_Tree_CHToCB+;
 

@@ -49,6 +49,7 @@ SKFlatNtuple::SKFlatNtuple(){
   IsDATA = false;
   DataStream = "";
   MCSample = "";
+  IsFastSim = false;
   DataYear = 2017;
   xsec = 1.;
   sumW = 1.;
