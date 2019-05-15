@@ -20,6 +20,8 @@ public:
   ~GenMatching_CHToCB();
 
   struct matchedPartonJet{
+    matchedPartonJet(){}
+    ~matchedPartonJet(){}
     Int_t truth_index;
     Int_t parton_flavour;
     TLorentzVector matched_parton;
@@ -35,16 +37,11 @@ public:
   bool FindHardProcessParton();
   bool MatchJets();
 
-  TLorentzVector Get_hadronic_top_b_jet();
-  TLorentzVector Get_leptonic_top_b_jet();
-  TLorentzVector Get_down_type_jet();
-  TLorentzVector Get_up_type_jet();
-
-  TLorentzVector Get_hadronic_top_b_parton();
-  TLorentzVector Get_leptonic_top_b_parton();
-  TLorentzVector Get_down_type_parton();
-  TLorentzVector Get_up_type_parton();
-  TLorentzVector Get_neutrino();
+  const GenMatching_CHToCB::matchedPartonJet *Get_hadronic_top_b_jet();
+  const GenMatching_CHToCB::matchedPartonJet *Get_leptonic_top_b_jet();
+  const GenMatching_CHToCB::matchedPartonJet *Get_down_type_jet();
+  const GenMatching_CHToCB::matchedPartonJet *Get_up_type_jet();
+  const GenMatching_CHToCB::matchedPartonJet *Get_neutrino();
 private:
 
   bool FindMinDeltaRMatching(matchedPartonJet &partonjet);

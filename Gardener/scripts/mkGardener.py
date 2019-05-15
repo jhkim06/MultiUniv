@@ -405,7 +405,7 @@ void {0}(){{
         IncludeLine+='  m.IsDATA = false;\n'
         IncludeLine+='  m.xsec = '+str(this_xsec)+';\n'
         IncludeLine+='  m.sumW = '+str(this_sumw)+';\n'
-        if args.FastSim:
+        if opt.FastSim:
           IncludeLine+='  m.IsFastSim = true;\n'
         else:
           IncludeLine+='  m.IsFastSim = false;\n'
