@@ -161,7 +161,7 @@ InputSampleSkims = {}
 for key in samples:
   InputSampleKeys.append(key)
   tmp_skim_string = samples[key]['skim']
-  if tmp_skim_string = '': # use default skim defined in configuration.py
+  if tmp_skim_string is '': # use default skim defined in configuration.py
     tmp_skim_string= InSkimString
   InputSampleSkims[key]=tmp_skim_string
 InputSamples,StringForHash = GetInputSamples(InputSampleKeys,opt.DataPeriod,opt.Year,opt.Category,ProductionKey)
@@ -201,7 +201,7 @@ for InputSample in InputSamples:
 
   # variable 'InputSample' is full name of sample
   sampleName = InputSamples[InputSample]['key']
-  SampleInSkimString = InpueSampleSkims[sampleName]
+  SampleInSkimString = InputSampleSkims[sampleName]
   sample     = samples[sampleName]
 
 
