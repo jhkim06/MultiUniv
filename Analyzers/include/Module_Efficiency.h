@@ -1,6 +1,7 @@
 #ifndef Module_Efficiency_h
 #define Module_Efficiency_h
 
+#include "RoccoR.h"
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 

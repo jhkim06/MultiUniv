@@ -59,7 +59,7 @@ Event AnalyzerCore::GetEvent(){
 
 }
 
-std::vector<Muon> AnalyzerCore::GetAllMuons(){
+std::vector<Muon> AnalyzerCore::GetAllMuons(bool apply_roc){
 
   std::vector<Muon> out;
   for(unsigned int i=0; i<muon_pt->size(); i++){
@@ -69,16 +69,23 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     mu.SetCharge(muon_charge->at(i));
     mu.SetMiniAODPt(muon_pt->at(i));
     mu.SetMiniAODTunePPt(muon_TuneP_pt->at(i));
+    mu.SetTrackerLayersWithMeasurement(muon_trackerLayers->at(i));
 
     double rc = muon_roch_sf->at(i);
     double rc_err = muon_roch_sf_up->at(i)-rc;
     mu.SetMomentumScaleAndError(rc, rc_err);
-    mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
+
+    if(apply_roc){
+      UpdateMumentumScaleAndError(mu); // set momentum correction on the fly
+      rc = mu.MomentumScale();
+      rc_err = mu.MomentumScaleError();
+      mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
+    }
 
     //==== TuneP
     //==== Apply rochester correction for pt<200 GeV
     double this_tuneP_pt = muon_TuneP_pt->at(i);
-    if(this_tuneP_pt < 200.) this_tuneP_pt *= rc;
+    if(this_tuneP_pt < 200. && apply_roc) this_tuneP_pt *= rc;
     mu.SetTuneP4(this_tuneP_pt, muon_TuneP_ptError->at(i), muon_TuneP_eta->at(i), muon_TuneP_phi->at(i), muon_TuneP_charge->at(i));
 
     mu.SetdXY(muon_dxyVTX->at(i), muon_dxyerrVTX->at(i));
@@ -102,13 +109,67 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(){
     out.push_back(mu);
 
   }
+
+  std::sort(out.begin(),out.end(),PtComparing);
   return out;
 
 }
 
-std::vector<Muon> AnalyzerCore::GetMuons(TString id, double ptmin, double fetamax){
+void AnalyzerCore::UpdateMumentumScaleAndError(Muon& mu){
 
-  std::vector<Muon> muons = GetAllMuons();
+    // copy & pasted from SKFlatMaker: https://github.com/CMSSNU/SKFlatMaker/blob/Run2Legacy_v3/SKFlatMaker/src/SKFlatMaker.cc#L1815
+    double this_roccor = 1.;
+    double this_roccor_err = 0.;
+
+    if(mu.Pt()>10.){
+
+      //==== Data
+      if(IsDATA){
+        this_roccor = rc.kScaleDT(mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), 0, 0); //data
+        this_roccor_err = rc.kScaleDTerror(mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi());
+        mu.SetMomentumScaleAndError(this_roccor, this_roccor_err);
+      }
+      else{
+
+	  gRandom->SetSeed( event );
+          double u = gRandom->Rndm();
+
+
+          // check there is a matched gen muon then use the gen pt in kSpreadMC() 
+          vector<Gen> gens = GetGens();
+          int counter=0;
+          double this_genpt=-999.;
+          double mindr = 0.2;
+          for(unsigned int i=0; i<gens.size(); i++){
+
+            Gen gen = gens.at(i);
+
+            if( fabs(gen.PID()) != 13 ) continue;
+            if( gen.Status() != 1 ) continue;
+
+            double this_dr = gen.DeltaR( mu );
+            if( this_dr < mindr ){
+              this_genpt = gen.Pt();
+              mindr = this_dr;
+            }
+         }
+
+         if(this_genpt>0){
+           this_roccor     = rc.kSpreadMC     (mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), this_genpt, 0, 0);
+           this_roccor_err = rc.kSpreadMCerror(mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), this_genpt);
+         }
+         else{
+           this_roccor     = rc.kSmearMC     (mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), mu.GetTrackerLayersWithMeasurement(), u, 0, 0);
+           this_roccor_err = rc.kSmearMCerror(mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), mu.GetTrackerLayersWithMeasurement(), u);
+         }
+         mu.SetMomentumScaleAndError(this_roccor, this_roccor_err);
+      }
+    }
+}
+
+std::vector<Muon> AnalyzerCore::GetMuons(TString id, double ptmin, double fetamax, bool apply_roc){
+
+  std::vector<Muon> muons = GetAllMuons(apply_roc);
   std::vector<Muon> out;
   for(unsigned int i=0; i<muons.size(); i++){
     Muon this_muon=muons.at(i);
@@ -787,6 +848,10 @@ void AnalyzerCore::initializeAnalyzerTools(){
   //==== CFBackgroundEstimator
   cfEst->SetDataYear(DataYear);
   cfEst->ReadHistograms();
+
+  TString data_roc = getenv("ROC_DIR");
+  data_roc+="v3";
+  rc.init(data_roc.Data());
 
 }
 

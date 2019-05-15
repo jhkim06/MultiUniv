@@ -24,36 +24,43 @@ samples['DYJets'] = {
 #    'weight' :McWeight,
 #    }
 #
-#
-#samples['TTLL_powheg'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#
-#samples['WJets_MG'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['WW_pythia'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['WZ_pythia'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
+samples['TTLL_powheg'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'weight' :McWeight,
+    }
 
-#samples['ZZ_pythia'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
+samples['WJets_MG'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
 
+samples['WW_pythia'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['WZ_pythia'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['ZZ_pythia'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['DoubleEG'] = {
+    'skim'   :'',
+    'weight' :'1',
+    }
+
+#samples['DoubleMuon'] = {
+#    'weight' :'1',
+#    }
 #--------------------    
 # DATA driven QCD
 #--------------------
+'''
 samples['DoubleEG_FakeElEl'] = {
     'skim'   :'MetFt_L_v0_LL_v0_MuMuOrElElFake_v1', #TODO: this skim is not exist currently
     'weight' :'1',
@@ -63,15 +70,4 @@ samples['DobuleMuon_FakeMuMu'] = {
     'skim'   :'MetFt_L_v0_LL_v0_MuMuOrElElFake_v1', #TODO: this skim is not exist currently
     'weight' :'1',
     }
-#--------------------    
-# DATA
-#--------------------    
-samples['DoubleEG'] = {
-    'skim'   :'',
-    'weight' :'1',
-    }
-
-samples['DoubleMuon'] = {
-    'skim'   :'',
-    'weight' :'1',
-    }
+'''
