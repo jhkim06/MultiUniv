@@ -40,6 +40,7 @@ void GetTSCorrTree::initializeAnalyzer(){
   newtree->Branch("b_parton_from_anti_top","TLorentzVector",&b_parton_from_anti_top);
   newtree->Branch("down_type_parton_from_w_ch","TLorentzVector",&down_type_parton_from_w_ch);
   newtree->Branch("up_type_parton_from_w_ch","TLorentzVector",&up_type_parton_from_w_ch);
+  newtree->Branch("neutrino","TLorentzVector",&neutrino);
   newtree->Branch("down_type_parton_flavour",&down_type_parton_flavour,"down_type_parton_flavour/I");
   newtree->Branch("up_type_parton_flavour",&up_type_parton_flavour,"up_type_parton_flavour/I");
 
