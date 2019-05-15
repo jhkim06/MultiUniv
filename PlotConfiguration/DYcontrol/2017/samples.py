@@ -19,31 +19,31 @@ samples['DYJets'] = {
 #    }
 #
 #
-#samples['TTLL_powheg'] = {
-#    'weight' :McWeight,
-#    }
-#
-#
-#samples['WJets_MG'] = {
-#    'weight' :McWeight,
-#    }
-#
-#samples['WW_pythia'] = {
-#    'weight' :McWeight,
-#    }
-#
+samples['TTLL_powheg'] = {
+    'weight' :McWeight,
+    }
+
+
+samples['WJets_MG'] = {
+    'weight' :McWeight,
+    }
+
+samples['WW_pythia'] = {
+    'weight' :McWeight,
+    }
+
 samples['WZ_pythia'] = {
     'weight' :McWeight,
     }
 
-#samples['ZZ_pythia'] = {
-#    'weight' :McWeight,
-#    }
-#
-#samples['DoubleEG'] = {
-#    'weight' :'1',
-#    }
-#
+samples['ZZ_pythia'] = {
+    'weight' :McWeight,
+    }
+
+samples['DoubleEG'] = {
+    'weight' :'1',
+    }
+
 #samples['DoubleMuon'] = {
 #    'weight' :'1',
 #    }

@@ -1,6 +1,6 @@
-#include "Get_Matched_Jet_Parton_Tree_CHToCB.h"
+#include "GetTSCorrTree.h"
 
-void Get_Matched_Jet_Parton_Tree_CHToCB::initializeAnalyzer(){
+void GetTSCorrTree::initializeAnalyzer(){
 
   //initializeAnalyzerTools();
   //=================================
@@ -41,20 +41,32 @@ void Get_Matched_Jet_Parton_Tree_CHToCB::initializeAnalyzer(){
   newtree->Branch("down_type_parton_from_w_ch","TLorentzVector",&down_type_parton_from_w_ch);
   newtree->Branch("up_type_parton_from_w_ch","TLorentzVector",&up_type_parton_from_w_ch);
   newtree->Branch("neutrino","TLorentzVector",&neutrino);
+  newtree->Branch("down_type_parton_flavour",&down_type_parton_flavour,"down_type_parton_flavour/I");
+  newtree->Branch("up_type_parton_flavour",&up_type_parton_flavour,"up_type_parton_flavour/I");
 
   gen_matcher = new GenMatching_CHToCB();
 }
 
-void Get_Matched_Jet_Parton_Tree_CHToCB::executeEvent(){
+void GetTSCorrTree::executeEvent(){
 
   muons.clear();
   electrons.clear();
+  //out obj. reco
+  newtree->SetBranchAddress("b_jet_from_top",&b_jet_from_top);
+  newtree->SetBranchAddress("b_jet_from_anti_top",&b_jet_from_anti_top);
+  newtree->SetBranchAddress("down_type_jet_from_w_ch",&down_type_jet_from_w_ch);
+  newtree->SetBranchAddress("up_type_jet_from_w_ch",&up_type_jet_from_w_ch);
+  newtree->SetBranchAddress("lepton",&lepton);
+  newtree->SetBranchAddress("METv",&METv);
+  //out obj. truth
+  newtree->SetBranchAddress("b_parton_from_top",&b_parton_from_top);
+  newtree->SetBranchAddress("b_parton_from_anti_top",&b_parton_from_anti_top);
+  newtree->SetBranchAddress("down_type_parton_from_w_ch",&down_type_parton_from_w_ch);
+  newtree->SetBranchAddress("up_type_parton_from_w_ch",&up_type_parton_from_w_ch);
+  newtree->SetBranchAddress("neutrino",&neutrino);
+  newtree->SetBranchAddress("down_type_parton_flavour",&down_type_parton_flavour);
+  newtree->SetBranchAddress("up_type_parton_flavour",&up_type_parton_flavour);
 
-  FillHist("CutFlow",0,1,30,0,30);
-
-  // Filters ====================
-  if(!PassMETFilter()) return;
-  FillHist("CutFlow",1,1,30,0,30);
 
   // select obj, XXX: slopy this time
   muons=GetMuons("POGTight",30.,2.4);
@@ -89,19 +101,19 @@ void Get_Matched_Jet_Parton_Tree_CHToCB::executeEvent(){
   if(!gen_matcher->MatchJets()) return; // match parton-jet min-delta R
   FillHist("CutFlow",6,1,30,0,30);
 
-  *b_jet_from_top = gen_matcher->Get_hadronic_top_b_jet();
-  *b_jet_from_anti_top = gen_matcher->Get_leptonic_top_b_jet();
-  *down_type_jet_from_w_ch = gen_matcher->Get_down_type_jet();
-  *up_type_jet_from_w_ch = gen_matcher->Get_up_type_jet();
+  *b_jet_from_top = gen_matcher->Get_hadronic_top_b_jet()->matched_jet;
+  *b_jet_from_anti_top = gen_matcher->Get_leptonic_top_b_jet()->matched_jet;
+  *down_type_jet_from_w_ch = gen_matcher->Get_down_type_jet()->matched_jet;
+  *up_type_jet_from_w_ch = gen_matcher->Get_up_type_jet()->matched_jet;
   *lepton = reco_lepton;
   *METv = MET_vector;
 
   //out obj. truth
-  *b_parton_from_top = gen_matcher->Get_hadronic_top_b_parton();
-  *b_parton_from_anti_top = gen_matcher->Get_leptonic_top_b_parton();
-  *down_type_parton_from_w_ch = gen_matcher->Get_down_type_parton();
-  *up_type_parton_from_w_ch = gen_matcher->Get_up_type_parton();
-  *neutrino = gen_matcher->Get_neutrino();
+  *b_parton_from_top = gen_matcher->Get_hadronic_top_b_jet()->matched_parton;
+  *b_parton_from_anti_top = gen_matcher->Get_leptonic_top_b_jet()->matched_parton;
+  *down_type_parton_from_w_ch = gen_matcher->Get_down_type_jet()->matched_parton;
+  *up_type_parton_from_w_ch = gen_matcher->Get_up_type_jet()->matched_parton;
+  *neutrino = gen_matcher->Get_neutrino()->matched_parton;
 
   newtree->Fill();
 
@@ -110,15 +122,15 @@ void Get_Matched_Jet_Parton_Tree_CHToCB::executeEvent(){
 }
 
 
-void Get_Matched_Jet_Parton_Tree_CHToCB::executeEventFromParameter(AnalyzerParameter param){
+void GetTSCorrTree::executeEventFromParameter(AnalyzerParameter param){
 
 }
 
-Get_Matched_Jet_Parton_Tree_CHToCB::Get_Matched_Jet_Parton_Tree_CHToCB(){
+GetTSCorrTree::GetTSCorrTree(){
 
 }
 
-Get_Matched_Jet_Parton_Tree_CHToCB::~Get_Matched_Jet_Parton_Tree_CHToCB(){
+GetTSCorrTree::~GetTSCorrTree(){
   delete newtree;
   //out obj. reco
   delete b_jet_from_top;
@@ -138,10 +150,10 @@ Get_Matched_Jet_Parton_Tree_CHToCB::~Get_Matched_Jet_Parton_Tree_CHToCB(){
   delete gen_matcher;
 }
 
-void Get_Matched_Jet_Parton_Tree_CHToCB::WriteHist(){
+void GetTSCorrTree::WriteHist(){
 
   //outfile->mkdir("recoTree");
-  //outfile->cd("recoTree"); Already at Get_Matched_Jet_Parton_Tree_CHToCB::initializeAnalyzer
+  //outfile->cd("recoTree"); Already at GetTSCorrTree::initializeAnalyzer
   //newtree->AutoSave();
   newtree->Write();
   outfile->cd();

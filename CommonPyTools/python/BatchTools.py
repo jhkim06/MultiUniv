@@ -144,6 +144,9 @@ echo "[mkGardener.py] Okay, let's run the analysis"
 {2} 1>stdout.log 2>stderr.log
 '''.format(thisjob_dir, UID, self.exCmd)
     elif IsTAMSA1:
+      #export GCC_HOME=/usr/
+      #export PATH=$GCC_HOME/bin:$PATH
+      #export LD_LIBRARY_PATH=$GCC_HOME/lib/gcc/x86_64-redhat-linux:$GCC_HOME/lib64:$LD_LIBRARY_PATH
       print>>sFile,'''#!/bin/bash
 SECTION=`printf $1`
 WORKDIR=`pwd`
@@ -152,7 +155,7 @@ Trial=0
 export GCC_HOME=/usr/
 export PATH=$GCC_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$GCC_HOME/lib/gcc/x86_64-redhat-linux:$GCC_HOME/lib64:$LD_LIBRARY_PATH
-source /data6/Users/salee/ROOT616/bin/thisroot.sh
+source /data6/Users/salee/ROOT616_TAMSA1/bin/thisroot.sh
 
 while [ "$SumNoAuth" -ne 0 ]; do
   if [ "$Trial" -gt 9999 ]; then

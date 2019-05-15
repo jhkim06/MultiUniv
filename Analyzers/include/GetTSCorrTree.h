@@ -1,15 +1,16 @@
-#ifndef Get_Matched_Jet_Parton_Tree_CHToCB_h
-#define Get_Matched_Jet_Parton_Tree_CHToCB_h
+#ifndef GetTSCorrTree_h
+#define GetTSCorrTree_h
 
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 #include "GenMatching_CHToCB.h"
 
-class Get_Matched_Jet_Parton_Tree_CHToCB : public AnalyzerCore {
+
+class GetTSCorrTree : public AnalyzerCore {
 
 public:
-  Get_Matched_Jet_Parton_Tree_CHToCB();
-  ~Get_Matched_Jet_Parton_Tree_CHToCB();
+  GetTSCorrTree();
+  ~GetTSCorrTree();
 
   void initializeAnalyzer();
   void executeEventFromParameter(AnalyzerParameter param);
@@ -38,6 +39,9 @@ private:
   TLorentzVector *down_type_parton_from_w_ch;
   TLorentzVector *up_type_parton_from_w_ch;
   TLorentzVector *neutrino;
+
+  int down_type_parton_flavour;
+  int up_type_parton_flavour;
 
   std::vector<Muon> muons;
   std::vector<Electron> electrons;
