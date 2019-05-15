@@ -19,6 +19,7 @@ do
   #mkGardener.py --Category SMP -a Skim_Leptons -y 2017 -i $sample  -n 500 --nTotFiles 1  --userflags MetFt,L --skimV 999
   #mkGardener.py --Category SMP -a Skim_Leptons -y 2017 -i $sample  -n 500 --nTotFiles 1  --userflags MetFt,L --skimV 999 --dry_run 
   ./mkGardener.py --Category SMP -a Skim_Leptons -y 2017 -i $sample  -n 300 --nTotFiles 0  --userflags MetFt,L --skimV 1
+  sleep 2h
 done
 
 #for sample in DoubleEG DoubleMuon SingleElectron SingleMuon DYJets10to50_MG DYJets TT_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia

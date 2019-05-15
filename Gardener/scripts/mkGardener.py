@@ -32,6 +32,7 @@ parser.add_argument('--skimV', dest='skimV', default="0")
 parser.add_argument('--nTotFiles', dest='nTotFiles', default=0, type=int)
 parser.add_argument('--MonitJob', dest='MonitJob', default=False, type=bool)
 parser.add_argument('--Category', dest='Category', default="SMP")
+parser.add_argument('--FastSim', action='store_true')
 
 opt = parser.parse_args()
 InSkimString = opt.InSkim
@@ -404,7 +405,10 @@ void {0}(){{
         IncludeLine+='  m.IsDATA = false;\n'
         IncludeLine+='  m.xsec = '+str(this_xsec)+';\n'
         IncludeLine+='  m.sumW = '+str(this_sumw)+';\n'
-
+        if opt.FastSim:
+          IncludeLine+='  m.IsFastSim = true;\n'
+        else:
+          IncludeLine+='  m.IsFastSim = false;\n'
       IncludeLine +='  m.DataYear = '+str(opt.Year)+';\n'
 
       if len(Userflags)>0:
