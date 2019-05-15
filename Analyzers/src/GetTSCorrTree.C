@@ -63,6 +63,7 @@ void GetTSCorrTree::executeEvent(){
   newtree->SetBranchAddress("b_parton_from_anti_top",&b_parton_from_anti_top);
   newtree->SetBranchAddress("down_type_parton_from_w_ch",&down_type_parton_from_w_ch);
   newtree->SetBranchAddress("up_type_parton_from_w_ch",&up_type_parton_from_w_ch);
+  newtree->SetBranchAddress("neutrino",&neutrino);
   newtree->SetBranchAddress("down_type_parton_flavour",&down_type_parton_flavour);
   newtree->SetBranchAddress("up_type_parton_flavour",&up_type_parton_flavour);
 
