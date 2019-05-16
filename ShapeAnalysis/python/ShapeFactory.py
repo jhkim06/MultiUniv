@@ -154,6 +154,9 @@ class ShapeFactory:
     numTree = 0
     bigName = 'histo_' + sampleName + '_' + cutName + '_' + variableName
     hTotal = self._makeshape(bigName, rng)
+    ## decide the histo class
+    hclass, hargs, ndim = self._bins2hclass( rng)
+    print 'number of trees', len(trees)
     for tree in trees :
       #chain = TChain(self._treeName)
       #chain.AddFile(aFile)
@@ -179,8 +182,6 @@ class ShapeFactory:
 
       ## new histogram
       shapeName = 'histo_' + sampleName + str(numTree)
-      ## prepare a dummy to fill
-      hclass, hargs, ndim = self._bins2hclass( rng)
       
       hModel = (shapeName, shapeName,) + hargs
       if ndim == 1 :
@@ -207,9 +208,13 @@ class ShapeFactory:
       if (numTree == 0) :
 	shape.SetTitle(bigName)
 	shape.SetName(bigName)
-	hTotal = shape
+	hTotal = shape.Clone()
       else :
-	hTotal.Add(shape)
+	print 'adding histo', numTree, 'th'
+	cloneH = shape.Clone()
+	print cloneH.Integral()
+	hTotal.Add(cloneH)
+	#hTotal.Add(shape[numTree])
       
       numTree += 1
 
@@ -344,8 +349,10 @@ class ShapeFactory:
           shapeDo.SetName(bigNameDo)
           hTotalDo = shapeDo
         else :
-          hTotalUp.Add(shapeUp)
-          hTotalDo.Add(shapeDo)
+	  cloneUp = shapeUp.Clone()
+	  cloneDo = shapeDo.Clone()
+          hTotalUp.Add(cloneUp)
+          hTotalDo.Add(cloneDo)
 
       #####################################################
       #  PDFWeights_Scale
@@ -479,12 +486,18 @@ class ShapeFactory:
           shapeABDo.SetName(bigNameABDo)
           hTotalABDo = shapeABDo
         else :
-          hTotalAUp.Add(shapeAUp)
-          hTotalADo.Add(shapeADo)
-          hTotalBUp.Add(shapeBUp)
-          hTotalBDo.Add(shapeBDo)
-          hTotalABUp.Add(shapeABUp)
-          hTotalABDo.Add(shapeABDo)
+	  cloneAUp = shapeAUp.Clone()
+	  cloneADo = shapeADo.Clone()
+	  cloneBUp = shapeBUp.Clone()
+	  cloneBDo = shapeBDo.Clone()
+	  cloneABUp = shapeABUp.Clone()
+	  cloneABDo = shapeABDo.Clone()
+          hTotalAUp.Add(cloneAUp)
+          hTotalADo.Add(cloneADo)
+          hTotalBUp.Add(cloneBUp)
+          hTotalBDo.Add(cloneBDo)
+          hTotalABUp.Add(cloneABUp)
+          hTotalABDo.Add(cloneABDo)
 
       #########################################
       # PDFWeights_Error
@@ -494,6 +507,7 @@ class ShapeFactory:
 	totalW_pdfErr = []
 	tree.GetEntry(0)
 	size = len( tree.PDFWeights_Error )
+	print 'PDFWeights_Error size', size
 	if  size > 101:
 	  print 'size of PDFWeights_Error is gt 101, exiting...'
 	  exit()
@@ -502,8 +516,8 @@ class ShapeFactory:
 	  totalW_pdfErr.append("(" + totalWeight + ") * (PDFWeights_Error[" + str(idx) + "])")
 	for idx in xrange(101 - size) :
 	  totalW_pdfErr.append("1")
-	print 'PDFWeights_Error size', size
-	hTotal = [None] * 101
+        if (numTree == 0) :
+	  hTotal = [None] * 101
 	for idx in xrange(101):
 	#  print idx, totalW_pdfErr[idx]
 	  augmented_d = Dtree.Define('totalW_pdfErr'+str(idx), totalW_pdfErr[idx])
@@ -531,7 +545,8 @@ class ShapeFactory:
             shape.SetName(bigName)
             hTotal[idx] = shape
 	  else :
-	    hTotal[idx].Add(shape)
+	    cloneH = shape.Clone()
+	    hTotal[idx].Add(cloneH)
 
 
       numTree += 1
