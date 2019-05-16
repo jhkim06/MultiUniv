@@ -157,8 +157,13 @@ StringForHash = ""
 # Dump MC infor
 
 InputSampleKeys = []
+InputSampleSkims = {}
 for key in samples:
   InputSampleKeys.append(key)
+  tmp_skim_string = samples[key]['skim']
+  if tmp_skim_string is '': # use default skim defined in configuration.py
+    tmp_skim_string= InSkimString
+  InputSampleSkims[key]=tmp_skim_string
 InputSamples,StringForHash = GetInputSamples(InputSampleKeys,opt.DataPeriod,opt.Year,opt.Category,ProductionKey)
 print 'InputSamples', InputSamples  
 
@@ -194,18 +199,19 @@ for InputSample in InputSamples:
     DataPeriod = InputSample.split(":")[1]
     print 'DataPeriod', DataPeriod
 
-
+  # variable 'InputSample' is full name of sample
   sampleName = InputSamples[InputSample]['key']
-  sample     = samples[InputSamples[InputSample]['key']]
+  SampleInSkimString = InputSampleSkims[sampleName]
+  sample     = samples[sampleName]
 
 
 
   ## Prepare RunDir
-  base_rundir = SKFlatRunlogDir+'/'+opt.Analyzer+'_'+'Y'+opt.Year+'_'+InputSamples[InputSample]['key']
+  base_rundir = SKFlatRunlogDir+'/'+opt.Analyzer+'_'+'Y'+opt.Year+'_'+sampleName
   if IsDATA:
     base_rundir = base_rundir + '_'+DataPeriod
-  if InSkimString !="":
-    base_rundir = base_rundir + '_'+InSkimString
+  if SampleInSkimString !="":
+    base_rundir = base_rundir + '_'+SampleInSkimString
   for flag in Userflags:
     base_rundir += '_'+flag
   print "base_rundir: ", base_rundir
@@ -218,7 +224,7 @@ for InputSample in InputSamples:
   os.system('mkdir -p '+base_rundir+'/output/')
 
   ## Prepare OutPutDir
-  OutSampleDir = GetOutDir(OutBase, InputSamples[InputSample]['key'],DataPeriod)
+  OutSampleDir = GetOutDir(OutBase, sampleName,DataPeriod)
   print 'OutSampleDir',OutSampleDir
   if opt.doHadd and opt.doBatch:
     print 'Hadd in Batch is not ready, exiting...'
@@ -229,17 +235,17 @@ for InputSample in InputSamples:
     here = os.getcwd()
     os.chdir(OutSampleDir)
     if IsDATA:
-      haddedSampleName = InputSamples[InputSample]['key']+'_'+DataPeriod+'.root '
-      cmd = 'hadd '+ haddedSampleName + InputSamples[InputSample]['key']+'_'+DataPeriod+'_tmp_*.root'
+      haddedSampleName = sampleName+'_'+DataPeriod+'.root '
+      cmd = 'hadd '+ haddedSampleName + sampleName+'_'+DataPeriod+'_tmp_*.root'
       if opt.overWrite:
-        cmd = 'hadd -f '+ haddedSampleName + InputSamples[InputSample]['key']+'_'+DataPeriod+'_tmp_*.root'
-      rm_cmd = 'rm '+InputSamples[InputSample]['key']+'_'+DataPeriod+'_tmp_*.root'
+        cmd = 'hadd -f '+ haddedSampleName + sampleName+'_'+DataPeriod+'_tmp_*.root'
+      rm_cmd = 'rm '+sampleName+'_'+DataPeriod+'_tmp_*.root'
     else:
-      haddedSampleName = InputSamples[InputSample]['key']+'.root '
-      cmd = 'hadd '+ haddedSampleName + InputSamples[InputSample]['key']+'_tmp_*.root'
+      haddedSampleName = sampleName+'.root '
+      cmd = 'hadd '+ haddedSampleName + sampleName+'_tmp_*.root'
       if opt.overWrite:
-        cmd = 'hadd -f '+ haddedSampleName + InputSamples[InputSample]['key']+'_tmp_*.root'
-      rm_cmd = 'rm '+InputSamples[InputSample]['key']+'_tmp_*.root'
+        cmd = 'hadd -f '+ haddedSampleName + sampleName+'_tmp_*.root'
+      rm_cmd = 'rm '+sampleName+'_tmp_*.root'
 
     haddAllSample_cmd += OutSampleDir+'/'+haddedSampleName
 
@@ -267,24 +273,23 @@ for InputSample in InputSamples:
 
   inputFileList = []
   if IsDATA:
-    sampleBaseName = InputSamples[InputSample]['key']+'/'+'period'+DataPeriod
+    sampleBaseName = sampleName+'/'+'period'+DataPeriod
   else:
     sampleBaseName = InputSample
-
-  if InSkimString == "":
+  if SampleInSkimString == "":
     if IsDATA:
-      tmpfilepath = SAMPLE_INFO_DIR+'/For'+HostNickName+'/'+InputSamples[InputSample]['key']+'_'+DataPeriod+'.txt'
+      tmpfilepath = SAMPLE_INFO_DIR+'/For'+HostNickName+'/'+sampleName+'_'+DataPeriod+'.txt'
     else:
-      tmpfilepath = SAMPLE_INFO_DIR+'/For'+HostNickName+'/'+InputSamples[InputSample]['key']+'.txt'
+      tmpfilepath = SAMPLE_INFO_DIR+'/For'+HostNickName+'/'+sampleName+'.txt'
     inputFileList = open(tmpfilepath).readlines()
     os.system('cp '+tmpfilepath+' '+base_rundir+'/input_filelist.txt')
     print 'Sample ROOT file list', tmpfilepath
   else:
     # Skim data list setup
     if IsDATA:
-      tmpSkimDir=Productions[opt.Category][ProductionKey]['SkimDir']+'/'+InSkimString+'/'+ sampleBaseName + '/'
+      tmpSkimDir=Productions[opt.Category][ProductionKey]['SkimDir']+'/'+SampleInSkimString+'/'+ sampleBaseName + '/'
     else:
-      tmpSkimDir=Productions[opt.Category][ProductionKey]['SkimDir']+'/'+InSkimString+'/'+ sampleBaseName + '/'
+      tmpSkimDir=Productions[opt.Category][ProductionKey]['SkimDir']+'/'+SampleInSkimString+'/'+ sampleBaseName + '/'
     
     print 'Input SkimDir',tmpSkimDir
     input_filelist = open(base_rundir+'/input_filelist.txt','w')
@@ -384,11 +389,11 @@ for InputSample in InputSamples:
     for it_file in FileRanges[it_job]:
       inFileFullNames.append( inputFileList[it_file].strip('\n') )
 
-    
+    ##TODO: edit, key of samples and alias are different   
     if IsDATA:
-      outFileName = InputSamples[InputSample]['key']+'_'+DataPeriod+'_tmp_'+str(it_job)+'.root'
+      outFileName = sampleName+'_'+DataPeriod+'_tmp_'+str(it_job)+'.root'
     else:
-      outFileName = InputSamples[InputSample]['key']+'_tmp_'+str(it_job)+'.root'
+      outFileName = sampleName+'_tmp_'+str(it_job)+'.root'
 
     OutFullPathFile = OutSampleDir + '/' + outFileName
     #OutFullPathFile_List.append(OutFullPathFile)

@@ -75,6 +75,7 @@ elif [[ $HOSTNAME == *"tamsa2"* ]]; then
   export SKFlatOutputDir="/data9/Users/salee/Higgs"
   #export SKFlatOutputDir="/data7/Users/$USER/SKFlatOutput/"
   export DATA_DIR=$SKFlat_WD/data/$SKFlatV
+  export ROC_DIR=$SKFlat_WD/data/roccor_Run2_
 
   #source /share/apps/root_v6-12-06/bin/thisroot.sh
   #export GCC_HOME=/share/apps/gcc491
@@ -125,10 +126,10 @@ elif [[ $HOSTNAME == *"tamsa1"* ]]; then
   export DATA_DIR=$SKFlat_WD/data/$SKFlatV
 
 
-  export GCC_HOME=/usr/
-  export PATH=$GCC_HOME/bin:$PATH
-  export LD_LIBRARY_PATH=$GCC_HOME/lib/gcc/x86_64-redhat-linux:$GCC_HOME/lib64:$LD_LIBRARY_PATH
-  source /data6/Users/salee/ROOT616/bin/thisroot.sh
+  #export GCC_HOME=/usr/
+  #export PATH=$GCC_HOME/bin:$PATH
+  #export LD_LIBRARY_PATH=$GCC_HOME/lib/gcc/x86_64-redhat-linux:$GCC_HOME/lib64:$LD_LIBRARY_PATH
+  source /data6/Users/salee/ROOT616_TAMSA1/bin/thisroot.sh
   #export LD_LIBRARY_PATH=$GCC_HOME/lib64:$GCC_HOME/lib:$LD_LIBRARY_PATH
   #export LD_LIBRARY_PATH=/home/salee/lib/cling/lib/:$LD_LIBRARY_PATH
   ##export PATH=/home/salee/lib/cling/bin:$PATH

@@ -70,6 +70,12 @@ void Muon::SetMiniAODPt(double d){
 void Muon::SetMiniAODTunePPt(double d){
   j_MiniAODTunePPt = d;
 }
+
+void Muon::SetTrackerLayersWithMeasurement(int trackerLayers){
+   j_trackerLayers = trackerLayers;
+}
+
+
 void Muon::SetMomentumScaleAndError(double rc, double rc_err){
   j_rc = rc;
   j_rc_err = rc_err;

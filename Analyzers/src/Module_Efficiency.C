@@ -157,6 +157,8 @@ void Module_Efficiency::executeEvent(){
   	electrons=GetElectrons("passMediumID",9.,2.5);
 
 	if(muons.size() > 1){
+
+
 	   isSaveSFs = true;
            leps=MakeLeptonPointerVector(muons);
            LeptonID_SF =&MCCorrection::MuonID_SF;
