@@ -2,6 +2,11 @@
 
 TS_Correction_Core::TS_Correction_Core(){
 
+  response["Pt"] = NULL;
+  response["Et"] = NULL;
+  response["Eta"] = NULL;
+  response["Phi"] = NULL;
+
   flavour["uds"] = new TFormula("uds","x[0]<4");
   flavour["udsc"] = new TFormula("udsc","x[0]<5");
   flavour["b"] = new TFormula("b","x[0]==5");
@@ -28,16 +33,7 @@ TS_Correction_Core::TS_Correction_Core(){
   etaBin["eta_1.74"] = new TFormula("eta_1.74","abs(x[0])>1.392&&abs(x[0])<1.74");
   etaBin["eta_2.4"] = new TFormula("eta_2.4","abs(x[0])>1.74&&abs(x[0])<2.4");
 
-  /*
-  TString tmp_cut[NUM_CUT] = {"20cut","20_010cut","20_020cut","20_030cut","30cut","30_010cut","30_020cut","30_030cut","1.5_sigma", "two_sigma", "nocut"};
-
-
-  TString tmp_object[NUM_OBJ]={"dijet_ll_","hadronic_top_llb_","dijet_cl_","hadronic_top_clb_","leptonic_top_"};
-  TString tmp_corrections[NUM_CORR]={"corr_20cut_","corr_20_010cut_","corr_20_020cut_","corr_20_030cut_",
-                                     "corr_30cut_","corr_30_010cut_","corr_30_020cut_","corr_30_030cut_",
-                                     "1.5_sigma_", "two_sigma_","nocut_", "optimized_","uncorrected_"};
-  TString tmp_samples[NUM_SAMPLE]={"pythia","herwig"};
-  */
+  this->SetHistNameVector();
 
 } // end of function
 
@@ -45,6 +41,71 @@ TS_Correction_Core::TS_Correction_Core(){
 TS_Correction_Core::~TS_Correction_Core(){
 
 } // end of function
+
+
+void TS_Correction_Core::SetHistNameVector(){
+  histNameVector.clear();
+  for(map<TString,TFormula*>::iterator it_res=response.begin(); it_res!=response.end(); it_res++){
+  for(map<TString,TFormula*>::iterator it_flav=flavour.begin(); it_flav!=flavour.end(); it_flav++){
+  for(map<TString,TFormula*>::iterator it_pt=ptBin.begin(); it_pt!=ptBin.end(); it_pt++){
+  for(map<TString,TFormula*>::iterator it_eta=etaBin.begin(); it_eta!=etaBin.end(); it_eta++){
+    // name of response histogram
+    TString name = Form("%s_%s_%s_%s",it_res->first.Data(),
+                                      it_flav->first.Data(),
+                                      it_pt->first.Data(),
+                                      it_eta->first.Data()
+                       );
+    histNameVector.push_back(name);
+  }
+  }
+  }
+  }
+}
+
+
+double TS_Correction_Core::GetResponse(TString var, TLorentzVector *jet, TLorentzVector *parton){
+  if(var=="Pt"){
+    return this->GetResponse_Pt(jet, parton);
+  }
+  else if(var=="Et"){
+    return this->GetResponse_Et(jet, parton);
+  }
+  else if(var=="Eta"){
+    return this->GetResponse_Eta(jet, parton);
+  }
+  else if(var=="Phi"){
+    return this->GetResponse_Phi(jet, parton);
+  }
+  else{
+    cout <<"    >>  TS_Correction_Core::GetResponse    : " << var  << " is not exist" << endl;
+    exit(1);
+  }
+  return 1.;
+}
+
+
+double TS_Correction_Core::GetResponse_Pt(TLorentzVector *jet, TLorentzVector *parton){
+  double jet_Pt = jet->Pt(), parton_Pt = parton->Pt();
+  return (parton_Pt - jet_Pt)/jet_Pt;
+}
+
+
+double TS_Correction_Core::GetResponse_Et(TLorentzVector *jet, TLorentzVector *parton){
+  double jet_Et = jet->Et(), parton_Et = parton->Et();
+  return (parton_Et - jet_Et)/jet_Et;
+}
+
+
+double TS_Correction_Core::GetResponse_Eta(TLorentzVector *jet, TLorentzVector *parton){
+  double jet_Eta = jet->Eta(), parton_Eta = parton->Eta();
+  return (parton_Eta - jet_Eta)/jet_Eta;
+}
+
+
+double TS_Correction_Core::GetResponse_Phi(TLorentzVector *jet, TLorentzVector *parton){
+  double jet_Phi = jet->Phi(), parton_Phi = parton->Phi();
+  return (parton_Phi - jet_Phi)/jet_Phi;
+}
 
 /*
 void TS_Correction_Core::ReadNTuple(TString type_){

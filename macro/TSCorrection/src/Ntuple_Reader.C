@@ -24,7 +24,7 @@ Ntuple_Reader::~Ntuple_Reader(){
 void Ntuple_Reader::Read_Files(){
 
   TString fname;
-  fname = base_dir + "data/txt/";
+  fname = std::getenv("TSCorrInputTextDir");
   fname += "root_file_list.txt";
 
   TString input_root_dir = std::getenv("TSCorrInputRootDir");

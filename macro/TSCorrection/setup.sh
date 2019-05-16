@@ -14,16 +14,14 @@ make_directory(){
 export TSCorrWD=${PWD}"/"
 export TSCorrInputRootDir=$TSCorrWD"data/root/" # place for input root file in use
 export TSCorrInputTextDir=$TSCorrWD"data/txt/" # place for list
-export TSCorrInputFormulaDir=$TSCorrWD"data/formula/" # place for TS-correction formula in use
 export TSCorrOutTextDir=$TSCorrWD"output/txt/"
-export TSCorrOutFormulaDir=$TSCorrWD"output/formula/" # save TS-correction formula
+export TSCorrOutFormulaDir=$TSCorrWD"output/formula/" # save fitting formula
 export TSCorrOutImgDir=$TSCorrWD"output/img/"
 export TSCorrOutRootDir=$TSCorrWD"output/root/"
 
 make_directory $TSCorrWD
 make_directory $TSCorrInputRootDir
 make_directory $TSCorrInputTextDir
-make_directory $TSCorrInputFormulaDir
 make_directory $TSCorrOutTextDir
 make_directory $TSCorrOutFormulaDir
 make_directory $TSCorrOutImgDir
@@ -32,7 +30,6 @@ make_directory $TSCorrOutRootDir
 echo 'TSCorrWD              :  '$TSCorrWD
 echo 'TSCorrInputRootDir    :  '$TSCorrInputRootDir
 echo 'TSCorrInputTextDir    :  '$TSCorrInputTextDir
-echo 'TSCorrInputFormulaDir :  '$TSCorrInputFormulaDir
 echo 'TSCorrOutTextDir      :  '$TSCorrOutTextDir
 echo 'TSCorrOutFormulaDir   :  '$TSCorrOutFormulaDir
 echo 'TSCorrOutImgDir       :  '$TSCorrOutImgDir
