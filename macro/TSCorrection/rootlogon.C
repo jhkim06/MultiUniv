@@ -12,10 +12,9 @@
   cout << "include path: " << path << endl;
   gROOT->ProcessLine(".L src/Ntuple_Reader.C+");
   gROOT->ProcessLine(".L src/TS_Correction_Core.C+");
-  //gROOT->ProcessLine(".L src/tdrstyle.C+");
-  //gROOT->ProcessLine(".L src/functions.C+");
-  //gROOT->ProcessLine(".L src/TS_Correction.C+");
+  gROOT->ProcessLine(".L src/tdrstyle.C+");
+  gROOT->ProcessLine(".L src/functions.C+");
+  gROOT->ProcessLine(".L src/Fitting_Histogram.C+");
   //gROOT->ProcessLine(".L src/Fitting_Response.C+");
-  //gROOT->ProcessLine(".L src/Fitting_Histogram.C+");
   //gROOT->ProcessLine(".L src/Fitting_Mass.C+");
 }

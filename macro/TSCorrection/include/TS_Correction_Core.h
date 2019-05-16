@@ -24,12 +24,22 @@ class TS_Correction_Core : public Ntuple_Reader {
     ~TS_Correction_Core();
 
     //void ReadNTuple(TString type_);
-
+    //TODO: method to read TS-correction
   protected:
 
+    map<TString,TFormula*> response;
     map<TString,TFormula*> flavour;
     map<TString,TFormula*> ptBin;
     map<TString,TFormula*> etaBin;
+
+    vector<TString> histNameVector;
+
+    void SetHistNameVector();
+    double GetResponse(TString var, TLorentzVector *jet, TLorentzVector *parton);
+    double GetResponse_Pt(TLorentzVector *jet, TLorentzVector *parton);
+    double GetResponse_Et(TLorentzVector *jet, TLorentzVector *parton);
+    double GetResponse_Eta(TLorentzVector *jet, TLorentzVector *parton);
+    double GetResponse_Phi(TLorentzVector *jet, TLorentzVector *parton);
 
     /*
     map<TString, TFormula*> cut;
