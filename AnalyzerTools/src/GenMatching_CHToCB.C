@@ -141,62 +141,34 @@ bool GenMatching_CHToCB::FindMinDeltaRMatching(matchedPartonJet &partonjet){
 
 }
 
-TLorentzVector GenMatching_CHToCB::Get_hadronic_top_b_jet(){
+const GenMatching_CHToCB::matchedPartonJet *GenMatching_CHToCB::Get_hadronic_top_b_jet(){
   if(negative_lepton_charge==1){
-    return b_from_top.matched_jet;
+    return &b_from_top;
   }
   else if(negative_lepton_charge==0){
-    return b_from_anti_top.matched_jet;
+    return &b_from_anti_top;
   }
-  return TLorentzVector();
+  return NULL;
 }
 
-TLorentzVector GenMatching_CHToCB::Get_leptonic_top_b_jet(){
+const GenMatching_CHToCB::matchedPartonJet *GenMatching_CHToCB::Get_leptonic_top_b_jet(){
   if(negative_lepton_charge==1){
-    return b_from_anti_top.matched_jet;
+    return &b_from_anti_top;
   }
   else if(negative_lepton_charge==0){
-    return b_from_top.matched_jet;
+    return &b_from_top;
   }
-  return TLorentzVector();
+  return NULL;
 }
 
-TLorentzVector GenMatching_CHToCB::Get_up_type_jet(){
-  return up_type_quark.matched_jet;
+const GenMatching_CHToCB::matchedPartonJet *GenMatching_CHToCB::Get_up_type_jet(){
+  return &up_type_quark;
 }
 
-TLorentzVector GenMatching_CHToCB::Get_down_type_jet(){
-  return down_type_quark.matched_jet;
+const GenMatching_CHToCB::matchedPartonJet *GenMatching_CHToCB::Get_down_type_jet(){
+  return &down_type_quark;
 }
 
-TLorentzVector GenMatching_CHToCB::Get_hadronic_top_b_parton(){
-  if(negative_lepton_charge==1){
-    return b_from_top.matched_parton;
-  }
-  else if(negative_lepton_charge==0){
-    return b_from_anti_top.matched_parton;
-  }
-  return TLorentzVector();
-}
-
-TLorentzVector GenMatching_CHToCB::Get_leptonic_top_b_parton(){
-  if(negative_lepton_charge==1){
-    return b_from_anti_top.matched_parton;
-  }
-  else if(negative_lepton_charge==0){
-    return b_from_top.matched_parton;
-  }
-  return TLorentzVector();
-}
-
-TLorentzVector GenMatching_CHToCB::Get_up_type_parton(){
-  return up_type_quark.matched_parton;
-}
-
-TLorentzVector GenMatching_CHToCB::Get_down_type_parton(){
-  return down_type_quark.matched_parton;
-}
-
-TLorentzVector GenMatching_CHToCB::Get_neutrino(){
-  return neutrino.matched_parton;
+const GenMatching_CHToCB::matchedPartonJet *GenMatching_CHToCB::Get_neutrino(){
+  return &neutrino;
 }
