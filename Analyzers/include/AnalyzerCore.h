@@ -59,11 +59,11 @@ public:
   Event GetEvent();
 
 
-  std::vector<Electron> GetAllElectrons();
-  std::vector<Electron> GetElectrons(TString id, double ptmin, double fetamax);
+  std::vector<Electron> GetAllElectrons(bool apply_reg_correction = true);
+  std::vector<Electron> GetElectrons(TString id, double ptmin, double fetamax, bool apply_reg_correction = true);
 
-  std::vector<Muon> GetAllMuons(bool update_roc = false);
-  std::vector<Muon> GetMuons(TString id, double ptmin, double fetamax, bool update_roc = false);
+  std::vector<Muon> GetAllMuons(bool update_roc = false, int s = 0, int m = 0);
+  std::vector<Muon> GetMuons(TString id, double ptmin, double fetamax, bool update_roc = false, int s = 0, int m = 0);
 
   std::vector<Photon> GetAllPhotons();
   std::vector<Photon> GetPhotons(TString id, double ptmin, double fetamax);
@@ -188,7 +188,7 @@ public:
   int GetGenPhotonType(Gen genph, std::vector<Gen> gens);
   bool IsSignalPID(int pid);
 
-  void UpdateMumentumScaleAndError(Muon& mu);// set momentum correction on the fly
+  void UpdateMumentumScaleAndError(Muon& mu, int s = 0, int m = 0);// set momentum correction on the fly
 
   //==== Plotting
 
