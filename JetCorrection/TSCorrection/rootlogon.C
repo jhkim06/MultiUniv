@@ -15,6 +15,6 @@
   gROOT->ProcessLine(".L src/tdrstyle.C+");
   gROOT->ProcessLine(".L src/functions.C+");
   gROOT->ProcessLine(".L src/Fitting_Histogram.C+");
-  //gROOT->ProcessLine(".L src/Fitting_Response.C+");
+  gROOT->ProcessLine(".L src/Fitting_Response.C+");
   //gROOT->ProcessLine(".L src/Fitting_Mass.C+");
 }

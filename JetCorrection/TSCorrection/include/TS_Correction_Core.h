@@ -41,6 +41,10 @@ class TS_Correction_Core : public Ntuple_Reader {
     double GetResponse_Eta(TLorentzVector *jet, TLorentzVector *parton);
     double GetResponse_Phi(TLorentzVector *jet, TLorentzVector *parton);
 
+    map<TString,TFormula*> cut; // response cut
+    void SetResponseCuts(TString sample);
+ 
+
     /*
     map<TString, TFormula*> cut;
     map<TString, TLorentzVector*> object;

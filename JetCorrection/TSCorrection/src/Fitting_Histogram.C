@@ -489,8 +489,6 @@ void Fitting_Histogram::FitHistError(TString sample){
   fout.close(); 
 
 
-
-
 } // end of function
 
 /*
