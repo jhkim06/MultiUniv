@@ -55,8 +55,6 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname, IsHadd=False):
     tmpJobNumber = 0
     path_log_e = logfiledir+'/job_'+str(jobnumber)+'/job_'+str(tmpJobNumber)+'.err'
     path_log_o = logfiledir+'/job_'+str(jobnumber)+'/job_'+str(tmpJobNumber)+'.log'
-    print 'log_e', path_log_e
-    print 'log_o', path_log_o
   if hostname=="KNU":
     path_log_e = logfiledir+'/job_'+str(jobnumber)+'/stderr.log'
     path_log_o = logfiledir+'/job_'+str(jobnumber)+'/stdout.log'
@@ -93,7 +91,8 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname, IsHadd=False):
 
   IsCycleRan = False
   for l in log_o:
-    if "Processing run" in l:
+    print 'log_o wrote', l
+    if "Processing" in l:
       IsCycleRan = True
       break
     if IsHadd:

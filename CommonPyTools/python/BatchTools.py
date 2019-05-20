@@ -161,7 +161,7 @@ while [ "$SumNoAuth" -ne 0 ]; do
   if [ "$Trial" -gt 9999 ]; then
     break
   fi
-  echo "#### running ####"
+  echo "#### Processing ####"
   {0} 2> err.log
   NoAuthError_Open=`grep "Error in <TNetXNGFile::Open>" err.log -R | wc -l`
   NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" err.log -R | wc -l`
@@ -192,7 +192,7 @@ while [ "$SumNoAuth" -ne 0 ]; do
   if [ "$Trial" -gt 9999 ]; then
     break
   fi
-  echo "#### running ####"
+  echo "#### Processing ####"
   {0} 2> err.log
   NoAuthError_Open=`grep "Error in <TNetXNGFile::Open>" err.log -R | wc -l`
   NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" err.log -R | wc -l`

@@ -136,34 +136,35 @@ for it_sample in InputSamples:
     outlog = ""
     if "FINISHED" in this_status:
       finished.append("Finished")
-      if IsHadd:
-        continue
+      #if IsHadd:
+      #  continue
 
-      EventInfo = this_status.split()[1].split(':')
+      if 'mkShape' not in opt.Analyzer:
+        EventInfo = this_status.split()[1].split(':')
 
-      # Finished status, this is a trick to make Ntotal = NDone
-      this_EventDone = int(EventInfo[2])
-      this_EventTotal = int(EventInfo[2])
+        # Finished status, this is a trick to make Ntotal = NDone
+        this_EventDone = int(EventInfo[2])
+        this_EventTotal = int(EventInfo[2])
 
-      EventDone += this_EventDone
-      EventTotal += this_EventTotal
+        EventDone += this_EventDone
+        EventTotal += this_EventTotal
 
-      #### start
-      line_EventRunTime = this_status.split()[2]+' '+this_status.split()[3]
-      this_jobstarttime = GetDatetimeFromMyFormat(line_EventRunTime)
-      #### end
-      line_EventEndTime = this_status.split()[4]+' '+this_status.split()[5]
-      this_jobendtime   = GetDatetimeFromMyFormat(line_EventEndTime)
+        #### start
+        line_EventRunTime = this_status.split()[2]+' '+this_status.split()[3]
+        this_jobstarttime = GetDatetimeFromMyFormat(line_EventRunTime)
+        #### end
+        line_EventEndTime = this_status.split()[4]+' '+this_status.split()[5]
+        this_jobendtime   = GetDatetimeFromMyFormat(line_EventEndTime)
 
-      this_diff = this_jobendtime-this_jobstarttime
-      this_EventRunTime = 86400*this_diff.days+this_diff.seconds
+        this_diff = this_jobendtime-this_jobstarttime
+        this_EventRunTime = 86400*this_diff.days+this_diff.seconds
 
-      this_TimePerEvent = float(this_EventRunTime)/float(this_EventDone)
-      this_TimeLeft = (this_EventTotal-this_EventDone)*this_TimePerEvent
+        this_TimePerEvent = float(this_EventRunTime)/float(this_EventDone)
+        this_TimeLeft = (this_EventTotal-this_EventDone)*this_TimePerEvent
 
-      TotalEventRunTime += this_EventRunTime
-      MaxTimeLeft = max(MaxTimeLeft,this_TimeLeft)
-      MaxEventRunTime = max(MaxEventRunTime,this_EventRunTime)
+        TotalEventRunTime += this_EventRunTime
+        MaxTimeLeft = max(MaxTimeLeft,this_TimeLeft)
+        MaxEventRunTime = max(MaxEventRunTime,this_EventRunTime)
 
     elif "RUNNING" in this_status:
       outlog = str(it_job)+'\t| '+this_status.split()[1]+' %'

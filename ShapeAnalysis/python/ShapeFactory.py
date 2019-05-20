@@ -137,6 +137,7 @@ class ShapeFactory:
 		    #outputsHistoDo.Write()
 
     self.outFile.Close()
+    print 'FINISHED'
 
 
   def _draw(self, var, rng, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros) :
