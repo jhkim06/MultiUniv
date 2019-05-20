@@ -31,26 +31,16 @@ private:
   std::vector<Electron> electrons;
   std::vector<Lepton*> leps;
 
+
+  /*
   bool   Is_El0;
   bool   Is_El1;
   bool   Is_Mu0;
   bool   Is_Mu1;
+  */
+  bool   Is_singleLep;
   bool   Is_diLep;
-
-  // lepton kinematics
-  double El0_pt;
-  double El0_eta;
-  double El0_phi;
-  double El1_pt;
-  double El1_eta;
-  double El1_phi;
-  double Mu0_pt;
-  double Mu0_eta;
-  double Mu0_phi;
-  double Mu1_pt;
-  double Mu1_eta;
-  double Mu1_phi;
-
+  
   // diLepton Variables
   DiLepCh diLep_Ch;
   bool diLep_passSelectiveQ;

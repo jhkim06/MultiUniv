@@ -7,9 +7,9 @@ TS_Correction_Core::TS_Correction_Core(){
   response["Eta"] = NULL;
   response["Phi"] = NULL;
 
-  flavour["uds"] = new TFormula("uds","x[0]<4");
-  flavour["udsc"] = new TFormula("udsc","x[0]<5");
-  flavour["b"] = new TFormula("b","x[0]==5");
+  flavour["uds"] = new TFormula("uds","abs(x[0])<4");
+  flavour["udsc"] = new TFormula("udsc","abs(x[0])<5");
+  flavour["b"] = new TFormula("b","abs(x[0])==5");
   flavour["udscb"] = new TFormula("b","1");
 
   ptBin["pt_20to40"] = new TFormula("pt_20to40","x[0]>=20&&x[0]<40");
@@ -39,6 +39,22 @@ TS_Correction_Core::TS_Correction_Core(){
 
 
 TS_Correction_Core::~TS_Correction_Core(){
+
+  for(map<TString,TFormula*>::iterator it=response.begin(); it!=response.end(); it++){
+    delete it->second;
+  }
+  for(map<TString,TFormula*>::iterator it=flavour.begin(); it!=flavour.end(); it++){
+    delete it->second;
+  }
+  for(map<TString,TFormula*>::iterator it=ptBin.begin(); it!=ptBin.end(); it++){
+    delete it->second;
+  }
+  for(map<TString,TFormula*>::iterator it=etaBin.begin(); it!=etaBin.end(); it++){
+    delete it->second;
+  }
+  for(map<TString,TFormula*>::iterator it=cut.begin(); it!=cut.end(); it++){
+    delete it->second;
+  }
 
 } // end of function
 
@@ -106,6 +122,43 @@ double TS_Correction_Core::GetResponse_Phi(TLorentzVector *jet, TLorentzVector *
   double jet_Phi = jet->Phi(), parton_Phi = parton->Phi();
   return (parton_Phi - jet_Phi)/jet_Phi;
 }
+
+
+void TS_Correction_Core::SetResponseCuts(TString sample){
+
+  ifstream reader_mean(TString(std::getenv("TSCorrOutFormulaDir"))+Form("fit_mean_%s.txt",sample.Data()));
+  ifstream reader_error(TString(std::getenv("TSCorrOutFormulaDir"))+Form("fit_error_%s.txt",sample.Data()));
+
+  if(!reader_mean){
+    cout << "  >>  Fitting_Histogram::SetResponseCuts  :  can't read mean" << endl;
+    exit(1);
+  }
+  if(!reader_error){
+    cout << "  >>  Fitting_Histogram::SetResponseCuts  :  can't read error" << endl;
+    exit(1);
+  }
+  TString name, formula;
+  map<TString, TString> mean_formula, error_formula;
+  
+  while(reader_mean >> name >> formula){
+    mean_formula[name] = formula;
+  }
+  while(reader_error >> name >> formula){
+    error_formula[name] = formula;
+  }
+
+  int n_sigma = 2;
+  for(map<TString, TString>::iterator it=mean_formula.begin(); it!=mean_formula.end(); it++){
+    TString key = it->first;
+    TString upper_cut=it->second, lower_cut=it->second; // initialize as mean
+    upper_cut += Form("+%d*(%s)",n_sigma,error_formula[key].Data());
+    lower_cut += Form("-%d*(%s)",n_sigma,error_formula[key].Data());
+    //TODO: check later 
+    cut[key] = new TFormula(key, Form("(%s)>x[0] && (%s)<x[0]",lower_cut.Data(),upper_cut.Data()) );
+  }
+
+} // end of function
+
 
 /*
 void TS_Correction_Core::ReadNTuple(TString type_){
