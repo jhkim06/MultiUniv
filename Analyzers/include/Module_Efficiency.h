@@ -24,24 +24,22 @@ public:
 private:
 
   std::vector<Lepton*> leps;
-  double Aod_pt[2], Aod_eta[2]; //TODO lets use vector later
+  vector<double> Aod_pt, Aod_eta; //TODO lets use vector later
 
-  double trgSF;
-  double trgSF_Up;
-  double trgSF_Dn;
+  //
+  int IsMu, IsEl, IsElMu;
 
-  double ElrecoSF, ElrecoSF_Up, ElrecoSF_Dn;
-  double ElIdSF, ElIdSF_Up, ElIdSF_Dn;
+  //
+  double L_recoSF, L_recoSF_Up, L_recoSF_Do; 
+  double LL_recoSF, LL_recoSF_Up, LL_recoSF_Do; 
 
-  double MuIdSF, MuIdSF_Up, MuIdSF_Dn;
-  double MuIsoSF, MuIsoSF_Up, MuIsoSF_Dn;
+  double L_IdSF, L_IdSF_Up, L_IdSF_Do; 
+  double LL_IdSF, LL_IdSF_Up, LL_IdSF_Do; 
 
-  double DiElrecoSF, DiElrecoSF_Up, DiElrecoSF_Dn;
-  double DiElIdSF, DiElIdSF_Up, DiElIdSF_Dn;
+  double L_IsoSF, L_IsoSF_Up, L_IsoSF_Do; 
+  double LL_IsoSF, LL_IsoSF_Up, LL_IsoSF_Do; 
 
-  double DiMuIdSF, DiMuIdSF_Up, DiMuIdSF_Dn;
-  double DiMuIsoSF, DiMuIsoSF_Up, DiMuIsoSF_Dn;
-
+  //
   double (MCCorrection::*LeptonID_SF)(TString,double,double,int);
   double (MCCorrection::*LeptonISO_SF)(TString,double,double,int);
   double (MCCorrection::*LeptonReco_SF)(double,double,int);
@@ -50,10 +48,8 @@ private:
   std::vector<Electron> electrons;
 
   TString LeptonID_key;
-  TString trgSF_key0, trgSF_key1;
-
   TString LeptonISO_key;
-
+  TString trgSF_key0, trgSF_key1;
 
 };
 
