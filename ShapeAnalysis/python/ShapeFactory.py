@@ -137,6 +137,7 @@ class ShapeFactory:
 		    #outputsHistoDo.Write()
 
     self.outFile.Close()
+    print 'FINISHED'
 
 
   def _draw(self, var, rng, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros) :
@@ -214,7 +215,9 @@ class ShapeFactory:
 	cloneH = shape.Clone()
 	print cloneH.Integral()
 	hTotal.Add(cloneH)
+	cloneH.Delete()
 	#hTotal.Add(shape[numTree])
+      shape.Delete()
       
       numTree += 1
 
@@ -534,7 +537,7 @@ class ShapeFactory:
 	    print 'this dim of hist not ready', ndim, 'exiting'
 	    exit()
           nTries = shape.Integral()
-          print idx, 'integral  ', nTries
+          #print idx, 'integral  ', nTries
           if nTries == 0 :
             print 'Warning : entries is 0 for', hModel
           if math.isnan(nTries) :
@@ -547,6 +550,8 @@ class ShapeFactory:
 	  else :
 	    cloneH = shape.Clone()
 	    hTotal[idx].Add(cloneH)
+	    cloneH.Delete()
+	  shape.Delete()
 
 
       numTree += 1

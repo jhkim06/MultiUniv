@@ -5,6 +5,7 @@ elif [[ $HOSTNAME == *"cms.snu.ac.kr"* ]]; then
 elif [[ $HOSTNAME == *"tamsa"*".snu.ac.kr"* ]]; then
   condor_q
   condor_q -hold
+  #condor_rm $USER
 elif [[ $HOSTNAME == *"ui"*".sdfarm.kr"* ]]; then
   condor_q
   condor_q -hold
