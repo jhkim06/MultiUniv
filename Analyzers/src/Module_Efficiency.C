@@ -66,6 +66,7 @@ void Module_Efficiency::executeEvent(){
     IsMu = 1;
   }
   if(IsEl && IsMu){
+
     // compare pt and decide whether to electron or muon
     IsMu = electrons.at(0).Pt() > muons.at(0).Pt() ? 0:1; 
     IsEl = electrons.at(0).Pt() > muons.at(0).Pt() ? 1:0; 
