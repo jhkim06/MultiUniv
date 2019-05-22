@@ -97,6 +97,7 @@ bool Muon::PassID(TString ID){
   if(ID=="POGLooseWithLooseIso") return Pass_POGLooseWithLooseIso();
   if(ID=="POGHighPtWithLooseTrkIso") return Pass_POGHighPtWithLooseTrkIso();
   //==== Customized
+  if(ID=="POGTightWithLooseIso") return Pass_POGTightWithLooseIso();
   if(ID=="TEST") return Pass_TESTID();
 
   cout << "[Electron::PassID] No id : " << ID << endl;
@@ -129,6 +130,12 @@ bool Muon::isAntiIso(int syst){
 bool Muon::Pass_POGTightWithTightIso(){
   if(!( isPOGTight() )) return false;
   if(!( RelIso()<0.15 ))  return false;
+  return true;
+}
+
+bool Muon::Pass_POGTightWithLooseIso(){
+  if(!( isPOGTight() )) return false;
+  if(!( RelIso()<0.25 ))  return false;
   return true;
 }
 

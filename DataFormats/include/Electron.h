@@ -119,6 +119,7 @@ public:
   bool Pass_TESTID();
 
   bool Pass_CutBasedTightNoIso();
+  bool Pass_CutBasedTightVetoIso();
   bool Pass_CutBasedMediumNoIso();
   bool Pass_CutBasedLooseNoIso();
   bool Pass_CutBasedVetoNoIso();

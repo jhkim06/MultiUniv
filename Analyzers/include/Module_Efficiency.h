@@ -23,33 +23,33 @@ public:
 
 private:
 
-  std::vector<Lepton*> leps;
-  vector<double> Aod_pt, Aod_eta; //TODO lets use vector later
+  std::map<TString, double>  Mu_IdSF;
+  std::map<TString, double>  MuMu_IdSF;
+  std::map<TString, double>  Mu_IsoSF;
+  std::map<TString, double>  MuMu_IsoSF;
+  std::map<TString, double>  Mu_TriggerSF;
+  std::map<TString, double>  MuMu_TriggerSF;
+  std::map<TString, TString> Mu_IdSF_Iso;
+  std::map<TString, TString> Mu_IdSF_Trigger;
+  std::map<TString, TString> MuMu_IdSF_Trigger;
 
-  //
-  int IsMu, IsEl, IsElMu;
 
-  //
-  double L_recoSF, L_recoSF_Up, L_recoSF_Do; 
-  double LL_recoSF, LL_recoSF_Up, LL_recoSF_Do; 
+  std::map<TString, double>  El_IdSF;
+  std::map<TString, TString> El_IdSF_key;
+  std::map<TString, double>  El_TriggerSF;
+  std::map<TString, TString> El_IdSF_Trigger;
+  std::map<TString, double>  El_RecoSF;
 
-  double L_IdSF, L_IdSF_Up, L_IdSF_Do; 
-  double LL_IdSF, LL_IdSF_Up, LL_IdSF_Do; 
-
-  double L_IsoSF, L_IsoSF_Up, L_IsoSF_Do; 
-  double LL_IsoSF, LL_IsoSF_Up, LL_IsoSF_Do; 
-
-  //
-  double (MCCorrection::*LeptonID_SF)(TString,double,double,int);
-  double (MCCorrection::*LeptonISO_SF)(TString,double,double,int);
-  double (MCCorrection::*LeptonReco_SF)(double,double,int);
+  std::map<TString, double>  ElEl_IdSF;
+  std::map<TString, double>  ElEl_TriggerSF;
+  std::map<TString, TString> ElEl_IdSF_Trigger;
+  std::map<TString, double>  ElEl_RecoSF;
 
   std::vector<Muon> muons;
   std::vector<Electron> electrons;
+  std::vector<Lepton*> leps;
 
-  TString LeptonID_key;
-  TString LeptonISO_key;
-  TString trgSF_key0, trgSF_key1;
+  TString ElectronID_key;
 
 };
 

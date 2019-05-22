@@ -61,7 +61,6 @@ public:
 
   //TH2D *hzpt_muon,*hzpt_electron,*hzpt_norm_muon,*hzpt_norm_electron;
 
-
   double DiLeptonTrg_SF(TString IdKey0,TString IdKey1,const vector<Lepton*>& leps,int sys);
 
   TString _EtaPtOrder;

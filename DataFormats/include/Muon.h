@@ -101,6 +101,7 @@ public:
   bool Pass_POGTight();
   bool Pass_POGTightWithTightIso();
   bool Pass_POGLooseWithLooseIso();
+  bool Pass_POGTightWithLooseIso();
   bool Pass_POGHighPtWithLooseTrkIso();
   bool Pass_TESTID();
 
