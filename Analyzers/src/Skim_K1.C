@@ -137,9 +137,9 @@ void Skim_K1::executeEvent(){
   muons=                GetMuons("POGLoose",7.,2.4);
   muons_woROC=          GetMuons("POGLoose",7.,2.4, false);
   muons_updatedROC=     GetMuons("POGLoose",7.,2.4, true, true);
-  muons_updatedROC_zpt= GetMuons("POGLoose",7.,2.4, true, true, 2, 1);
-  muons_updatedROC_ewk= GetMuons("POGLoose",7.,2.4, true, true, 3, 1);
-  muons_updatedROC_dM=  GetMuons("POGLoose",7.,2.4, true, true, 4, 1);
+  muons_updatedROC_zpt= GetMuons("POGLoose",7.,2.4, true, true, 2, 0);
+  muons_updatedROC_ewk= GetMuons("POGLoose",7.,2.4, true, true, 3, 0);
+  muons_updatedROC_dM=  GetMuons("POGLoose",7.,2.4, true, true, 4, 0);
 
   TString ElectronID = HasFlag("L1K1") ? "passVetoID" : "passLooseID";
   electrons=GetElectrons(ElectronID,9.,2.5);
@@ -161,6 +161,7 @@ void Skim_K1::executeEvent(){
     if(muons.size()+electrons.size()==2){
       if(muons.size()==2) leps=MakeLeptonPointerVector(muons);
       else if(electrons.size()==2) leps=MakeLeptonPointerVector(electrons);
+
       diLep_Ch = DiLepCh::NA;
       diLep_m  = DEFAULT;
       diLep_pt  = DEFAULT;
