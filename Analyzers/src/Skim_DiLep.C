@@ -79,6 +79,7 @@ void Skim_DiLep::initializeAnalyzer(){
   newtree->Branch("diLep_m", &diLep_m,"diLep_m/D");
   newtree->Branch("diLep_pt", &diLep_pt,"diLep_pt/D");
   newtree->Branch("diLep_eta", &diLep_eta,"diLep_eta/D");
+  newtree->Branch("num_veto_mu", &num_veto_mu,"num_veto_mu/I");
 
   //b_trgSF = newtree->Branch("trgSF", &trgSF,"trgSF/F");
   //b_trgSF_Up = newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/F");
@@ -185,22 +186,31 @@ void Skim_DiLep::executeEvent(){
   newtree->SetBranchAddress("diLep_m",&diLep_m);
   newtree->SetBranchAddress("diLep_pt",&diLep_pt);
   newtree->SetBranchAddress("diLep_eta",&diLep_eta);
+  newtree->SetBranchAddress("num_veto_mu",&num_veto_mu);
 
   FillHist("CutFlow",5,1,30,0,30);
   // Filters ====================
   //if( HasFlag("MetFilt"))if(!PassMETFilter()) return;
 
-
   muons=GetMuons("POGTight",7.,2.4); //without isolation cut
-  std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
+  std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h, no RC
   electrons=GetElectrons("passMediumID",9.,2.5);
   std::sort(electrons.begin(),electrons.end(),PtComparing);
 
   IsMuMu = 0;
   IsElEl = 0;
-  int number_of_tight_muon=0;
+  num_tight_mu=0;
+  num_veto_mu=0;
+  num_medi_el=0;
+  num_veto_el=0;
+
   for(std::vector<Muon>::iterator it=muons.begin(); it!=muons.end(); it++){
-    if(it->isPOGTightIso()) number_of_tight_muon++;
+    if(it->isPOGTightIso()) num_tight_mu++;
+    if(it->Pass_POGLooseWithLooseIso()) num_veto_mu++;
+  }
+  for(std::vector<Electron>::iterator it = electrons.begin(); it != electrons.end(); it++){
+    if(it->PassID("passMediumID")) num_medi_el++;
+    if(it->Pass_CutBasedVeto()) num_veto_el++;
   }
   //=========================
   // DiLepton condition
@@ -212,7 +222,7 @@ void Skim_DiLep::executeEvent(){
     passAntiIso_Up =  muons.at(0).isAntiIso(1) && muons.at(1).isAntiIso(1);
     passAntiIso_Do =  muons.at(0).isAntiIso(-1) && muons.at(1).isAntiIso(-1);
   }
-  if(number_of_tight_muon == 0 && electrons.size() == 2){
+  if(num_tight_mu == 0 && electrons.size() == 2){
     IsElEl = 1;
   }
   if(IsMuMu != 1 && IsElEl != 1) return;

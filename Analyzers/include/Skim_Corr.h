@@ -1,11 +1,12 @@
-#ifndef Skim_DiLep_h
-#define Skim_DiLep_h
+#ifndef Skim_Corr_h
+#define Skim_Corr_h
 
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 #include "Definitions.h"
+#include "DIY.h"
 
-class Skim_DiLep : public AnalyzerCore {
+class Skim_Corr : public AnalyzerCore {
 
 public:
 
@@ -13,8 +14,8 @@ public:
   void executeEventFromParameter(AnalyzerParameter param);
   void executeEvent();
 
-  Skim_DiLep();
-  ~Skim_DiLep();
+  Skim_Corr();
+  ~Skim_Corr();
 
   TTree *newtree;
 

@@ -7,5 +7,7 @@
 
 #pragma link C++ namespace RootHelper;
 #pragma link C++ defined_in namespace RootHelper;
+#pragma link C++ namespace DIY;
+#pragma link C++ defined_in namespace DIY;
 
 #endif
