@@ -16,18 +16,18 @@ void Module_Efficiency::initializeAnalyzer(){
 
   El_IdSF.insert(std::make_pair("passMediumID", 1.));
   ElEl_IdSF.insert(std::make_pair("passMediumID", 1.));
-  El_IdSF_Trigger.insert(std::make_pair("passMediumID", "HLT_Ele35_WPTight_Gsf_v")); // trigger names
-  ElEl_IdSF_Trigger.insert(std::make_pair("passMediumID", "DoubleElectron")); // trigger name, key to call SFs
+  El_IdSF_Trigger.insert(std::make_pair("passMediumID", "HLT_Ele35_WPTight_Gsf_v"));  
+  ElEl_IdSF_Trigger.insert(std::make_pair("passMediumID", "DoubleElectron")); 
 
   El_IdSF.insert(std::make_pair("passTightID", 1.));
   ElEl_IdSF.insert(std::make_pair("passTightID", 1.));
-  El_IdSF_Trigger.insert(std::make_pair("passTightID", "HLT_Ele35_WPTight_Gsf_v")); // trigger name, key to call SFs
-  ElEl_IdSF_Trigger.insert(std::make_pair("passTightID", "DoubleElectron")); // trigger name, key to call SFs
+  El_IdSF_Trigger.insert(std::make_pair("passTightID", "HLT_Ele35_WPTight_Gsf_v")); 
+  ElEl_IdSF_Trigger.insert(std::make_pair("passTightID", "DoubleElectron")); 
 
   El_IdSF.insert(std::make_pair("passTightID_vetoIso", 1.));
   ElEl_IdSF.insert(std::make_pair("passTightID_vetoIso", 1.));
-  El_IdSF_Trigger.insert(std::make_pair("passTightID_vetoIso", "HLT_Ele35_WPTight_Gsf_v")); // trigger name, key to call SFs
-  ElEl_IdSF_Trigger.insert(std::make_pair("passTightID_vetoIso", "DoubleElectron")); // trigger name, key to call SFs
+  El_IdSF_Trigger.insert(std::make_pair("passTightID_vetoIso", "HLT_Ele35_WPTight_Gsf_v")); 
+  ElEl_IdSF_Trigger.insert(std::make_pair("passTightID_vetoIso", "DoubleElectron")); 
 
   std::map<TString, double>::iterator it = El_IdSF.begin();
   while(it !=El_IdSF.end()){
@@ -48,15 +48,15 @@ void Module_Efficiency::initializeAnalyzer(){
 
   Mu_IdSF.insert(std::make_pair("POGTightWithTightIso", 1.));
   MuMu_IdSF.insert(std::make_pair("POGTightWithTightIso", 1.));
-  Mu_IdSF_Iso.insert(std::make_pair("POGTightWithTightIso", "TightIso")); // trigger name, key to call SFs
-  Mu_IdSF_Trigger.insert(std::make_pair("POGTightWithTightIso", "HLT_IsoMu27_v")); // trigger name, key to call SFs
-  MuMu_IdSF_Trigger.insert(std::make_pair("POGTightWithTightIso", "DoubleMu")); // trigger name, key to call SFs
+  Mu_IdSF_Iso.insert(std::make_pair("POGTightWithTightIso", "TightIso")); 
+  Mu_IdSF_Trigger.insert(std::make_pair("POGTightWithTightIso", "HLT_IsoMu27_v")); 
+  MuMu_IdSF_Trigger.insert(std::make_pair("POGTightWithTightIso", "DoubleMu")); 
 
   it = Mu_IdSF.begin();
   while(it !=Mu_IdSF.end()){
 
-       Mu_IsoSF.insert(std::make_pair(it->first+Mu_IdSF_Iso[it->first], 1.)); // map to save trigger SFs
-       MuMu_IsoSF.insert(std::make_pair(it->first+Mu_IdSF_Iso[it->first], 1.)); // map to save trigger SFs
+       Mu_IsoSF.insert(std::make_pair(it->first+Mu_IdSF_Iso[it->first], 1.)); 
+       MuMu_IsoSF.insert(std::make_pair(it->first+Mu_IdSF_Iso[it->first], 1.)); 
  
        Mu_TriggerSF.insert(std::make_pair(it->first+Mu_IdSF_Trigger[it->first], 1.)); // map to save trigger SFs
        MuMu_TriggerSF.insert(std::make_pair(it->first+MuMu_IdSF_Trigger[it->first], 1.)); // map to save trigger SFs
@@ -148,7 +148,7 @@ void Module_Efficiency::executeEvent(){
   while(it !=Mu_IdSF.end()){
 
         // get muons passing ID
-        muons=GetMuons(it->first,9.,2.5); 
+        muons=GetMuons(it->first,9.,2.4); 
 
         // initialise
         Mu_IdSF[it->first] = 1.; 
@@ -177,7 +177,7 @@ void Module_Efficiency::executeEvent(){
              if(it->first.Contains("LooseIso"))  MuonIso_key = "Default"; 
     
              if(i==0){   
-                Mu_IdSF[it->first]      *= mcCorr->MuonID_SF(MuonID_key, muons.at(i).Eta(), muons.at(i).MiniAODPt(),  0); 
+                Mu_IdSF[it->first]     *= mcCorr->MuonID_SF(MuonID_key, muons.at(i).Eta(), muons.at(i).MiniAODPt(),  0); 
                 Mu_IsoSF[it->first]    *= mcCorr->MuonISO_SF(MuonIso_key, muons.at(i).Eta(), muons.at(i).MiniAODPt(),  0); 
                 Mu_TriggerSF[it->first+Mu_IdSF_Trigger[it->first]] *= 1.;  // TODO make a function to get single electron trigger SF
              }   
@@ -195,7 +195,7 @@ void Module_Efficiency::executeEvent(){
                   trgSF_key1 = "Default";
                 }   
 
-                MuMu_IdSF[it->first]      = Mu_IdSF[it->first]   * mcCorr->MuonID_SF(MuonID_key, muons.at(i).Eta(), muons.at(i).MiniAODPt(),  0); 
+                MuMu_IdSF[it->first]     = Mu_IdSF[it->first]  * mcCorr->MuonID_SF(MuonID_key, muons.at(i).Eta(), muons.at(i).MiniAODPt(),  0); 
                 MuMu_IsoSF[it->first]    = Mu_IsoSF[it->first] * mcCorr->MuonISO_SF(MuonIso_key, muons.at(i).Eta(), muons.at(i).MiniAODPt(),  0); 
                 MuMu_TriggerSF[it->first+MuMu_IdSF_Trigger[it->first]] *= mcCorr->DiLeptonTrg_SF(trgSF_key0, trgSF_key0, leps,  0); 
              }   

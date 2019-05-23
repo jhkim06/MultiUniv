@@ -59,7 +59,7 @@ Event AnalyzerCore::GetEvent(){
 
 }
 
-std::vector<Muon> AnalyzerCore::GetAllMuons(bool update_roc, int s, int m){
+std::vector<Muon> AnalyzerCore::GetAllMuons(bool apply_roc, bool update_roc, int s, int m){
 
   std::vector<Muon> out;
   for(unsigned int i=0; i<muon_pt->size(); i++){
@@ -73,20 +73,20 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(bool update_roc, int s, int m){
 
     double rc = muon_roch_sf->at(i);
     double rc_err = muon_roch_sf_up->at(i)-rc;
-    mu.SetMomentumScaleAndError(rc, rc_err);
-    mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i)); // apply correction factor stored in the ntuple
 
     if(update_roc){
       UpdateMumentumScaleAndError(mu, s, m); // set momentum correction on the fly
       rc = mu.MomentumScale();
       rc_err = mu.MomentumScaleError();
-      mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
     }
+    mu.SetMomentumScaleAndError(rc, rc_err);
+    if(apply_roc) mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i)); // apply correction as stored in the ntuple
+    else mu.SetPtEtaPhiM(muon_pt->at(i), muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
 
     //==== TuneP
     //==== Apply rochester correction for pt<200 GeV
     double this_tuneP_pt = muon_TuneP_pt->at(i);
-    if(this_tuneP_pt < 200.) this_tuneP_pt *= rc;
+    if(this_tuneP_pt < 200. && apply_roc) this_tuneP_pt *= rc;
     mu.SetTuneP4(this_tuneP_pt, muon_TuneP_ptError->at(i), muon_TuneP_eta->at(i), muon_TuneP_phi->at(i), muon_TuneP_charge->at(i));
 
     mu.SetdXY(muon_dxyVTX->at(i), muon_dxyerrVTX->at(i));
@@ -186,9 +186,9 @@ void AnalyzerCore::UpdateMumentumScaleAndError(Muon& mu, int s, int m){
     }
 }
 
-std::vector<Muon> AnalyzerCore::GetMuons(TString id, double ptmin, double fetamax, bool update_roc, int s, int m){
+std::vector<Muon> AnalyzerCore::GetMuons(TString id, double ptmin, double fetamax, bool apply_roc, bool update_roc, int s, int m){
 
-  std::vector<Muon> muons = GetAllMuons(update_roc, s, m);
+  std::vector<Muon> muons = GetAllMuons(apply_roc, update_roc, s, m);
   std::vector<Muon> out;
   for(unsigned int i=0; i<muons.size(); i++){
     Muon this_muon=muons.at(i);

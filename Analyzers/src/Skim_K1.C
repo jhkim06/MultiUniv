@@ -54,6 +54,27 @@ void Skim_K1::initializeAnalyzer(){
     newtree->Branch("diLep_pt", &diLep_pt,"diLep_pt/D");
     newtree->Branch("diLep_eta", &diLep_eta,"diLep_eta/D");
     newtree->Branch("MT2", &MT2,"MT2/D");
+
+    newtree->Branch("diLep_m_woROC", &diLep_m_woROC,"diLep_m_woROC/D");
+    newtree->Branch("diLep_pt_woROC", &diLep_pt_woROC,"diLep_pt_woROC/D");
+    newtree->Branch("diLep_eta_woROC", &diLep_eta_woROC,"diLep_eta_woROC/D");
+
+    newtree->Branch("diLep_m_updatedROC", &diLep_m_updatedROC,"diLep_m_updatedROC/D");
+    newtree->Branch("diLep_pt_updatedROC", &diLep_pt_updatedROC,"diLep_pt_updatedROC/D");
+    newtree->Branch("diLep_eta_updatedROC", &diLep_eta_updatedROC,"diLep_eta_updatedROC/D");
+
+    newtree->Branch("diLep_m_updatedROC_zpt", &diLep_m_updatedROC_zpt,"diLep_m_updatedROC_zpt/D");
+    newtree->Branch("diLep_pt_updatedROC_zpt", &diLep_pt_updatedROC_zpt,"diLep_pt_updatedROC_zpt/D");
+    newtree->Branch("diLep_eta_updatedROC_zpt", &diLep_eta_updatedROC_zpt,"diLep_eta_updatedROC_zpt/D");
+
+    newtree->Branch("diLep_m_updatedROC_ewk", &diLep_m_updatedROC_ewk,"diLep_m_updatedROC_ewk/D");
+    newtree->Branch("diLep_pt_updatedROC_ewk", &diLep_pt_updatedROC_ewk,"diLep_pt_updatedROC_ewk/D");
+    newtree->Branch("diLep_eta_updatedROC_ewk", &diLep_eta_updatedROC_ewk,"diLep_eta_updatedROC_ewk/D");
+
+    newtree->Branch("diLep_m_updatedROC_dM", &diLep_m_updatedROC_dM,"diLep_m_updatedROC_dM/D");
+    newtree->Branch("diLep_pt_updatedROC_dM", &diLep_pt_updatedROC_dM,"diLep_pt_updatedROC_dM/D");
+    newtree->Branch("diLep_eta_updatedROC_dM", &diLep_eta_updatedROC_dM,"diLep_eta_updatedROC_dM/D");
+
   }
 
 }
@@ -61,6 +82,13 @@ void Skim_K1::initializeAnalyzer(){
 void Skim_K1::executeEvent(){
 
   muons.clear();
+  muons_woROC.clear();
+  muons_updatedROC.clear();
+  muons_updatedROC_zpt.clear();
+  muons_updatedROC_ewk.clear();
+  muons_updatedROC_dM.clear();
+  
+
   electrons.clear();
   leps.clear();
 
@@ -87,30 +115,35 @@ void Skim_K1::executeEvent(){
   }
   //------------------------------------------------------------------------
   if(Is_singleLep){
-    newtree->Branch("MT2", &MT2);
-    newtree->Branch("MET", &MET);
-    newtree->Branch("nPV", &nPV);
+    newtree->SetBranchAddress("MT2", &MT2);
+    newtree->SetBranchAddress("MET", &MET);
+    newtree->SetBranchAddress("nPV", &nPV);
     //newtree->Branch("projectedMET", &projectedMET);
     //newtree->Branch("MT", &MT);
   }
   //------------------------------------------------------------------------
   if(Is_diLep){
-    newtree->Branch("diLep_Ch", &diLep_Ch);
-    newtree->Branch("diLep_passSelectiveQ", &diLep_passSelectiveQ);
-    newtree->Branch("diLep_m", &diLep_m);
-    newtree->Branch("diLep_pt", &diLep_pt);
-    newtree->Branch("diLep_eta", &diLep_eta);
-    newtree->Branch("MT2", &MT2);
+    newtree->SetBranchAddress("diLep_Ch", &diLep_Ch);
+    newtree->SetBranchAddress("diLep_passSelectiveQ", &diLep_passSelectiveQ);
+    newtree->SetBranchAddress("diLep_m", &diLep_m);
+    newtree->SetBranchAddress("diLep_pt", &diLep_pt);
+    newtree->SetBranchAddress("diLep_eta", &diLep_eta);
+    newtree->SetBranchAddress("MT2", &MT2);
   }
 
   //=================================
   // Select Object
   //=================================
-  muons=GetMuons("POGLoose",7.,2.4);
-  std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
+  muons=                GetMuons("POGLoose",7.,2.4);
+  muons_woROC=          GetMuons("POGLoose",7.,2.4, false);
+  muons_updatedROC=     GetMuons("POGLoose",7.,2.4, true, true);
+  muons_updatedROC_zpt= GetMuons("POGLoose",7.,2.4, true, true, 2, 1);
+  muons_updatedROC_ewk= GetMuons("POGLoose",7.,2.4, true, true, 3, 1);
+  muons_updatedROC_dM=  GetMuons("POGLoose",7.,2.4, true, true, 4, 1);
+
   TString ElectronID = HasFlag("L1K1") ? "passVetoID" : "passLooseID";
-  electrons=GetElectrons("ElectronID",9.,2.5);
-  std::sort(electrons.begin(),electrons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
+  electrons=GetElectrons(ElectronID,9.,2.5);
+
 
   //=================================
   // variables for single Lepton
@@ -132,6 +165,27 @@ void Skim_K1::executeEvent(){
       diLep_m  = DEFAULT;
       diLep_pt  = DEFAULT;
       diLep_eta  = DEFAULT;
+
+      diLep_m_woROC  = DEFAULT;
+      diLep_pt_woROC  = DEFAULT;
+      diLep_eta_woROC  = DEFAULT;
+
+      diLep_m_updatedROC  = DEFAULT;
+      diLep_pt_updatedROC  = DEFAULT;
+      diLep_eta_updatedROC  = DEFAULT;
+
+      diLep_m_updatedROC_zpt  = DEFAULT;
+      diLep_pt_updatedROC_zpt  = DEFAULT;
+      diLep_eta_updatedROC_zpt  = DEFAULT;
+
+      diLep_m_updatedROC_ewk  = DEFAULT;
+      diLep_pt_updatedROC_ewk  = DEFAULT;
+      diLep_eta_updatedROC_ewk  = DEFAULT;
+
+      diLep_m_updatedROC_dM  = DEFAULT;
+      diLep_pt_updatedROC_dM  = DEFAULT;
+      diLep_eta_updatedROC_dM  = DEFAULT;
+
       if(leps.size() > 1){
         if(leps[0]->LeptonFlavour() == Lepton::MUON)if(leps[1]->LeptonFlavour() == Lepton::MUON){
           if(leps[0]->Charge() == 1) if(leps[1]->Charge() == 1) diLep_Ch = DiLepCh::MuMuPP;
@@ -145,17 +199,65 @@ void Skim_K1::executeEvent(){
           if(leps[0]->Charge() == 1) if(leps[1]->Charge() == -1)diLep_Ch = DiLepCh::ElElOS;
           if(leps[0]->Charge() == -1)if(leps[1]->Charge() ==  1)diLep_Ch = DiLepCh::ElElOS;
         }
+
+        
         diLep    = *leps.at(0) + *leps.at(1);
         diLep_pt = diLep.Pt();
         diLep_eta = diLep.Eta();
         diLep_m  = diLep.M();
-        MT2 = AnalyzerCore::MT2((TLorentzVector)(*leps.at(0)),(TLorentzVector)(*leps.at(1)), MET_vector, 0);
+        //MT2 = AnalyzerCore::MT2((TLorentzVector)(*leps.at(0)),(TLorentzVector)(*leps.at(1)), MET_vector, 0); // temporarily commented out since the last argument set as 0 and fall in infite loop  
+        MT2 = 1.0;
+
+        //
+	if(muons.size()==2){
+           leps.clear(); leps.shrink_to_fit();
+           leps=MakeLeptonPointerVector(muons_woROC.size()==2?muons_woROC:muons);
+
+           diLep    = *leps.at(0) + *leps.at(1);
+           diLep_pt_woROC = diLep.Pt();
+           diLep_eta_woROC = diLep.Eta();
+           diLep_m_woROC  = diLep.M();
+
+           leps.clear(); leps.shrink_to_fit();
+           leps=MakeLeptonPointerVector(muons_updatedROC.size()==2?muons_updatedROC:muons);
+
+           diLep    = *leps.at(0) + *leps.at(1);
+           diLep_pt_updatedROC = diLep.Pt();
+           diLep_eta_updatedROC = diLep.Eta();
+           diLep_m_updatedROC  = diLep.M();
+
+           leps.clear(); leps.shrink_to_fit();
+           leps=MakeLeptonPointerVector(muons_updatedROC_zpt.size()==2?muons_updatedROC_zpt:muons);
+
+           diLep    = *leps.at(0) + *leps.at(1);
+           diLep_pt_updatedROC_zpt = diLep.Pt();
+           diLep_eta_updatedROC_zpt = diLep.Eta();
+           diLep_m_updatedROC_zpt  = diLep.M();
+
+           leps.clear(); leps.shrink_to_fit();
+           leps=MakeLeptonPointerVector(muons_updatedROC_ewk.size()==2?muons_updatedROC_ewk:muons);
+
+           diLep    = *leps.at(0) + *leps.at(1);
+           diLep_pt_updatedROC_ewk = diLep.Pt();
+           diLep_eta_updatedROC_ewk = diLep.Eta();
+           diLep_m_updatedROC_ewk  = diLep.M();
+
+           leps.clear(); leps.shrink_to_fit();
+           leps=MakeLeptonPointerVector(muons_updatedROC_dM.size()==2?muons_updatedROC_dM:muons);
+
+           diLep    = *leps.at(0) + *leps.at(1);
+           diLep_pt_updatedROC_dM = diLep.Pt();
+           diLep_eta_updatedROC_dM = diLep.Eta();
+           diLep_m_updatedROC_dM  = diLep.M();
+ 	}
+
       }
     }
   }
 
 
   newtree->Fill();
+
 
   return;
 
