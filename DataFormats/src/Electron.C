@@ -141,6 +141,7 @@ bool Electron::PassID(TString ID){
   if(ID=="passMVAID_iso_WP90") return passMVAID_iso_WP90();
   //==== Customized
   if(ID=="passTightID_noIso") return Pass_CutBasedTightNoIso();
+  if(ID=="passTightID_vetoIso") return Pass_CutBasedTightVetoIso();
   if(ID=="passMediumID_noIso") return Pass_CutBasedMediumNoIso();
   if(ID=="passLooseID_noIso") return Pass_CutBasedLooseNoIso();
   if(ID=="SUSYTight") return Pass_SUSYTight();
@@ -237,6 +238,24 @@ bool Electron::Pass_CutBasedTightNoIso(){
 
   }
 
+}
+
+bool Electron::Pass_CutBasedTightVetoIso(){
+
+  bool vetoIso = false;
+  if( fabs(scEta()) <= 1.479 ){
+    if( (RelIso() < 0.198+0.506/UncorrPt()) ) //https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2
+      vetoIso = true;
+  }
+  else{
+    if( (RelIso() < 0.203+0.963/UncorrPt()) )
+      vetoIso = true;
+  }
+
+  if( vetoIso && Pass_CutBasedTightNoIso() ) return true;
+
+  return false;
+  
 }
 
 bool Electron::Pass_CutBasedMediumNoIso(){

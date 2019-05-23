@@ -59,12 +59,15 @@ Event AnalyzerCore::GetEvent(){
 
 }
 
-std::vector<Muon> AnalyzerCore::GetAllMuons(bool update_roc, int s, int m){
+std::vector<Muon> AnalyzerCore::GetAllMuons(bool apply_roc, bool update_roc, int s, int m){
 
   std::vector<Muon> out;
   for(unsigned int i=0; i<muon_pt->size(); i++){
 
     Muon mu;
+    Muon mu_temp;
+    mu_temp.SetPtEtaPhiM(muon_pt->at(i), muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
+    mu_temp.SetCharge(muon_charge->at(i));
 
     mu.SetCharge(muon_charge->at(i));
     mu.SetMiniAODPt(muon_pt->at(i));
@@ -73,20 +76,29 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(bool update_roc, int s, int m){
 
     double rc = muon_roch_sf->at(i);
     double rc_err = muon_roch_sf_up->at(i)-rc;
-    mu.SetMomentumScaleAndError(rc, rc_err);
-    mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i)); // apply correction factor stored in the ntuple
+ 
+    if(update_roc && s == 0 && m == 0){
+
+    }
 
     if(update_roc){
-      UpdateMumentumScaleAndError(mu, s, m); // set momentum correction on the fly
-      rc = mu.MomentumScale();
-      rc_err = mu.MomentumScaleError();
-      mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
+      UpdateMumentumScaleAndError(mu_temp, s, m); // set momentum correction on the fly
+      rc = mu_temp.MomentumScale();
+      rc_err = mu_temp.MomentumScaleError();
     }
+
+    if(update_roc && s == 0 && m == 0){
+
+    }
+
+    mu.SetMomentumScaleAndError(rc, rc_err);
+    if(apply_roc) mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i)); // apply correction as stored in the ntuple
+    else mu.SetPtEtaPhiM(muon_pt->at(i), muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
 
     //==== TuneP
     //==== Apply rochester correction for pt<200 GeV
     double this_tuneP_pt = muon_TuneP_pt->at(i);
-    if(this_tuneP_pt < 200.) this_tuneP_pt *= rc;
+    if(this_tuneP_pt < 200. && apply_roc) this_tuneP_pt *= rc;
     mu.SetTuneP4(this_tuneP_pt, muon_TuneP_ptError->at(i), muon_TuneP_eta->at(i), muon_TuneP_phi->at(i), muon_TuneP_charge->at(i));
 
     mu.SetdXY(muon_dxyVTX->at(i), muon_dxyerrVTX->at(i));
@@ -128,7 +140,6 @@ void AnalyzerCore::UpdateMumentumScaleAndError(Muon& mu, int s, int m){
       if(IsDATA){
         this_roccor = rc.kScaleDT(mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), 0, 0); //data
         this_roccor_err = rc.kScaleDTerror(mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi());
-        mu.SetMomentumScaleAndError(this_roccor, this_roccor_err);
       }
       else{
 
@@ -173,6 +184,7 @@ void AnalyzerCore::UpdateMumentumScaleAndError(Muon& mu, int s, int m){
 	 -------------------------------------------------------------------------------------
 	 */
 
+
          if(this_genpt>0){
            this_roccor     = rc.kSpreadMC     (mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), this_genpt, s, m);
            this_roccor_err = rc.kSpreadMCerror(mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), this_genpt);
@@ -181,14 +193,14 @@ void AnalyzerCore::UpdateMumentumScaleAndError(Muon& mu, int s, int m){
            this_roccor     = rc.kSmearMC     (mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), mu.GetTrackerLayersWithMeasurement(), u, s, m);
            this_roccor_err = rc.kSmearMCerror(mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), mu.GetTrackerLayersWithMeasurement(), u);
          }
-         mu.SetMomentumScaleAndError(this_roccor, this_roccor_err);
       }
     }
+    mu.SetMomentumScaleAndError(this_roccor, this_roccor_err);
 }
 
-std::vector<Muon> AnalyzerCore::GetMuons(TString id, double ptmin, double fetamax, bool update_roc, int s, int m){
+std::vector<Muon> AnalyzerCore::GetMuons(TString id, double ptmin, double fetamax, bool apply_roc, bool update_roc, int s, int m){
 
-  std::vector<Muon> muons = GetAllMuons(update_roc, s, m);
+  std::vector<Muon> muons = GetAllMuons(apply_roc, update_roc, s, m);
   std::vector<Muon> out;
   for(unsigned int i=0; i<muons.size(); i++){
     Muon this_muon=muons.at(i);
@@ -870,7 +882,20 @@ void AnalyzerCore::initializeAnalyzerTools(){
   cfEst->ReadHistograms();
 
   TString data_roc = getenv("ROC_DIR");
-  data_roc+="v3";
+  if(DataYear == 2016){
+    data_roc+="v3/RoccoR2016.txt";
+  }
+  else if(DataYear == 2017){
+    data_roc+="v3/RoccoR2017.txt";
+  }
+  else if(DataYear == 2018){
+    data_roc+="v3/RoccoR2018.txt";
+  }
+  else{
+       cout << DataYear << " is not provided by ROC" << endl;
+       exit(EXIT_FAILURE); 
+  }
+
   rc.init(data_roc.Data());
 
 }
