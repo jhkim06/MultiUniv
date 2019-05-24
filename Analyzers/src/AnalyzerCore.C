@@ -2030,6 +2030,44 @@ void AnalyzerCore::JSFillHist(TString suffix, TString histname,
 
 }
 
+TProfile* AnalyzerCore::BHGetProfile(TString suffix, TString profilename){
+
+  TProfile *h = NULL;
+
+  std::map< TString, std::map<TString, TProfile*> >::iterator mapit = BHmapprofile.find(suffix);
+  if(mapit==BHmapprofile.end()){
+    return h;
+  }
+  else{
+
+    std::map<TString, TProfile*> this_mapprofile = mapit->second;
+    std::map<TString, TProfile*>::iterator mapitit = this_mapprofile.find(profilename);
+    if(mapitit != this_mapprofile.end()) return mapitit->second;
+
+  }
+
+  return h;
+
+}
+
+void AnalyzerCore::BHFillProfile(TString suffix, TString profilename,
+                  double value_x, double value_y,
+                  double weight,
+                  int n_binx, double x_min, double x_max,
+                  double y_min, double y_max){
+
+  TProfile *this_profile = BHGetProfile(suffix, profilename);
+  if( !this_profile ){
+
+    this_profile = new TProfile(profilename, "", n_binx, x_min, x_max, y_min, y_max);
+    (BHmapprofile[suffix])[profilename] = this_profile;
+
+  }
+
+  this_profile->Fill(value_x, value_y, weight);
+
+}
+
 void AnalyzerCore::WriteHist(){
 
   outfile->cd();
