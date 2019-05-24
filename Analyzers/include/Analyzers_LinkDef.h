@@ -20,6 +20,6 @@
 #pragma link C++ class Skim_FakeEst+;
 #pragma link C++ class Module_Efficiency+;
 
-#pragma link C++ class GetTSCorrTree+;
+#pragma link C++ class Skim_TSCorrTree+;
 
 #endif
