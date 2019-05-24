@@ -4,6 +4,7 @@
 #include "TLorentzVector.h"
 #include "TString.h"
 #include "TMath.h"
+#include "TProfile.h"
 #include <sstream>      
 
 #include "SKFlatNtuple.h"
@@ -228,6 +229,17 @@ public:
                   double weight,
                   int n_binx, double *xbins,
                   int n_biny, double *ybins);
+
+  //==== BHFillProfile
+  std::map< TString, std::map<TString, TProfile*> > BHmapprofile;
+  TProfile* BHGetProfile(TString suffix, TString profilename);
+  void BHFillProfile(TString suffix, TString histname,
+                  double value_x, double value_y,
+                  double weight,
+                  int n_binx=60, double x_min=0., double x_max=300.,
+                  double y_min=-0.5, double y_max=0.5);
+
+
 
   virtual void WriteHist();
 
