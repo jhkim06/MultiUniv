@@ -23,7 +23,9 @@ public:
     matchedPartonJet(){}
     ~matchedPartonJet(){}
     Int_t truth_index;
+    Int_t jet_index;
     Int_t parton_flavour;
+    Int_t jet_hadron_flavour;
     TLorentzVector matched_parton;
     TLorentzVector matched_jet;
   };
@@ -36,6 +38,8 @@ public:
   //=== if not, return false
   bool FindHardProcessParton();
   bool MatchJets();
+  bool CheckFlavour();
+  bool CheckAmbiguity();
 
   const GenMatching_CHToCB::matchedPartonJet *Get_hadronic_top_b_jet();
   const GenMatching_CHToCB::matchedPartonJet *Get_leptonic_top_b_jet();
@@ -57,7 +61,7 @@ private:
   matchedPartonJet neutrino;
   Int_t negative_lepton_charge;
 
-  //std::vector<matchedPartonJet> extra_jets;
+  std::vector<matchedPartonJet> extra_radiations;
 
 };
 
