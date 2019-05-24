@@ -24,6 +24,8 @@ void GenMatching_CHToCB::SetJets(std::vector<Jet> all_jets_){
 }
 
 bool GenMatching_CHToCB::FindHardProcessParton(){
+  extra_radiations.clear();
+
   //cout <<"GenMatching_CHToCB::FindHardProcessParton : start " << endl;
   for(UInt_t ig=0; ig<AllGens.size(); ig++){
 
@@ -38,6 +40,7 @@ bool GenMatching_CHToCB::FindHardProcessParton(){
          //cout <<"GenMatching_CHToCB::FindHardProcessParton : found top b parton " << endl;
          b_from_top.truth_index = ig;
          b_from_top.matched_parton = AllGens.at(ig);
+         b_from_top.parton_flavour = AllGens.at(ig).PID();
        }
     else if(AllGens.at(mother_idx).PID() == -6 &&
             (AllGens.at(ig).Status() == 23||AllGens.at(ig).Status() == 11) && 
@@ -46,26 +49,29 @@ bool GenMatching_CHToCB::FindHardProcessParton(){
                 //cout <<"GenMatching_CHToCB::FindHardProcessParton : found anti-top b parton " << endl;
                 b_from_anti_top.truth_index = ig;
                 b_from_anti_top.matched_parton = AllGens.at(ig);
+                b_from_anti_top.parton_flavour = AllGens.at(ig).PID();
             }
     else if(abs(AllGens.at(mother_idx).PID()) == 24||abs(AllGens.at(mother_idx).PID()) == 37){
  
              //cout <<"GenMatching_CHToCB::FindHardProcessParton : found W(H+) decay product " << endl;
              if(AllGens.at(ig).Status() == 23||AllGens.at(ig).Status() == 11){
-               if(abs(AllGens.at(ig).PID())%2!=0){
+               if(abs(AllGens.at(ig).PID()) == 1 || 
+                  abs(AllGens.at(ig).PID()) == 3 
+                 ){
                  //cout <<"GenMatching_CHToCB::FindHardProcessParton : found hadronic W down type jet " << endl;
                  down_type_quark.truth_index = ig;
                  down_type_quark.matched_parton = AllGens.at(ig);
+                 down_type_quark.parton_flavour = AllGens.at(ig).PID();
                }
-               else if(abs(AllGens.at(ig).PID()) == 4){
+               else if(abs(AllGens.at(ig).PID()) == 4 ||
+                       abs(AllGens.at(ig).PID()) == 2
+                      ){
                  //cout <<"GenMatching_CHToCB::FindHardProcessParton : found hadronic W c jet " << endl;
                  up_type_quark.truth_index = ig;
                  up_type_quark.matched_parton = AllGens.at(ig);
+                 up_type_quark.parton_flavour = AllGens.at(ig).PID();
                }
-               else if(abs(AllGens.at(ig).PID()) == 2){
-                 //cout <<"GenMatching_CHToCB::FindHardProcessParton : found hadronic W u jet " << endl;
-                 up_type_quark.truth_index = ig;
-                 up_type_quark.matched_parton = AllGens.at(ig);
-               }
+
               if((AllGens.at(ig).Status() == 23||
                   AllGens.at(ig).Status() == 1 ||
                   AllGens.at(ig).Status() == 11) &&
@@ -82,6 +88,15 @@ bool GenMatching_CHToCB::FindHardProcessParton(){
               }
             }
           }
+    else{
+      if(AllGens.at(ig).Status() == 23||AllGens.at(ig).Status() == 11){
+        matchedPartonJet extra_radiation;
+        extra_radiation.truth_index = ig;
+        extra_radiation.matched_parton = AllGens.at(ig);
+        extra_radiation.parton_flavour = AllGens.at(ig).PID();
+        extra_radiations.push_back(extra_radiation);
+      }
+    }
   } //end of for
 
   if(b_from_top.truth_index<0 ||
@@ -109,6 +124,10 @@ bool GenMatching_CHToCB::MatchJets(){
   is_down_type_quark_found =FindMinDeltaRMatching(down_type_quark);
   is_up_type_quark_found = FindMinDeltaRMatching(up_type_quark);
 
+  for(std::vector<matchedPartonJet>::iterator it=extra_radiations.begin(); it!=extra_radiations.end(); it++){
+    FindMinDeltaRMatching(*it);
+  }
+
   if(is_top_found==false ||
      is_anti_top_found==false ||
      is_down_type_quark_found==false ||
@@ -120,6 +139,57 @@ bool GenMatching_CHToCB::MatchJets(){
     return true;
   }
 
+}
+
+bool GenMatching_CHToCB::CheckFlavour(){
+
+  if(abs(b_from_top.parton_flavour)>=4){
+   if( abs(b_from_top.parton_flavour) != abs(b_from_top.jet_hadron_flavour)){
+      return false;
+   }
+  }
+  if(abs(b_from_anti_top.parton_flavour)>=4){
+    if(abs(b_from_anti_top.parton_flavour) != abs(b_from_anti_top.jet_hadron_flavour)){
+      return false;
+    }
+  }
+  if(abs(down_type_quark.parton_flavour)>=4){
+    if(abs(down_type_quark.parton_flavour) != abs(down_type_quark.jet_hadron_flavour)){
+      return false;
+    }
+  }
+  if(abs(up_type_quark.parton_flavour)>=4){
+    if(abs(up_type_quark.parton_flavour) != abs(up_type_quark.jet_hadron_flavour)){
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool GenMatching_CHToCB::CheckAmbiguity(){
+
+  std::vector<int> matched_jet_index;
+
+  matched_jet_index.push_back(b_from_top.jet_index);
+  matched_jet_index.push_back(b_from_anti_top.jet_index);
+  matched_jet_index.push_back(down_type_quark.jet_index);
+  matched_jet_index.push_back(up_type_quark.jet_index);
+  for(std::vector<matchedPartonJet>::iterator it=extra_radiations.begin(); it!=extra_radiations.end(); it++){
+    matched_jet_index.push_back(it->jet_index);
+  }
+  // check unique matching
+  bool noAmbiguity=true;
+  for(std::vector<int>::iterator it=matched_jet_index.begin(); it!=matched_jet_index.end(); it++){
+    int cur = *it; 
+    for(std::vector<int>::iterator it2=std::next(it,1); it2!=matched_jet_index.end(); it2++){
+      if(cur==*it2){
+        noAmbiguity=false;
+        break;
+      }
+    }
+  }
+  return noAmbiguity;
 }
 
 bool GenMatching_CHToCB::FindMinDeltaRMatching(matchedPartonJet &partonjet){
@@ -134,6 +204,8 @@ bool GenMatching_CHToCB::FindMinDeltaRMatching(matchedPartonJet &partonjet){
     if(*min_deltaR>0.4) break;
     if(*min_deltaR != deltaR[i]) continue;
     partonjet.matched_jet = jets[i];
+    partonjet.jet_index = i;
+    partonjet.jet_hadron_flavour= jets[i].hadronFlavour();
     isfound = true;
     break;
   }
