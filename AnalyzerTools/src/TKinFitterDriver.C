@@ -1,6 +1,8 @@
 #include "TKinFitterDriver.h"
 
-TKinFitterDriver::TKinFitterDriver(){
+TKinFitterDriver::TKinFitterDriver(int DataYear_){
+
+  DataYear = DataYear_;
 
   fitter = new TKinFitter("fitter","fitter");
 
@@ -29,6 +31,10 @@ TKinFitterDriver::TKinFitterDriver(){
   constrain_leptonic_top_M = NULL;
   constrain_leptonic_W_M = NULL;
 
+  ts_correction = new TSCorrection(DataYear);
+  ts_correction->ReadFittedError("fit_error_pythia.txt");
+  ts_correction->ReadFittedMean("fit_mean_pythia.txt");
+
   //cout <<"TKinFitterDriver::TKinFitterDriver : initialized" << endl;
 }
 
@@ -47,6 +53,13 @@ TKinFitterDriver::~TKinFitterDriver(){
   delete constrain_leptonic_top_M;
   delete constrain_leptonic_W_M;
 
+  delete ts_correction;
+
+}
+
+
+void TKinFitterDriver::SetDataYear(int i){
+  DataYear = i;
 }
 
 
@@ -89,7 +102,7 @@ void TKinFitterDriver::SetHadronicTopBJets(TLorentzVector jet_){
   hadronic_top_b_jet = jet_;
   double Et = hadronic_top_b_jet.Et();
   double Eta = hadronic_top_b_jet.Eta();
-  this->SetError(&error_hadronic_top_b_jet, Et, Eta);
+  this->SetJetError(&error_hadronic_top_b_jet, Et, Eta, "b");
 
   if(!fit_hadronic_top_b_jet) delete fit_hadronic_top_b_jet;
   fit_hadronic_top_b_jet = new TFitParticleEtEtaPhi("hadronic_top_b_jet",
@@ -106,7 +119,7 @@ void TKinFitterDriver::SetLeptonicTopBJets(TLorentzVector jet_){
   leptonic_top_b_jet=jet_;
   double Et = leptonic_top_b_jet.Et();
   double Eta = leptonic_top_b_jet.Eta();
-  this->SetError(&error_leptonic_top_b_jet, Et, Eta);
+  this->SetJetError(&error_leptonic_top_b_jet, Et, Eta, "b");
 
   if(!fit_leptonic_top_b_jet) delete fit_leptonic_top_b_jet;
   fit_leptonic_top_b_jet = new TFitParticleEtEtaPhi("leptonic_top_b_jet",
@@ -122,7 +135,7 @@ void TKinFitterDriver::SetWCHUpTypeJets(TLorentzVector jet_){
   hadronic_w_ch_jet1=jet_;
   double Et = hadronic_w_ch_jet1.Et();
   double Eta = hadronic_w_ch_jet1.Eta();
-  this->SetError(&error_hadronic_w_ch_jet1, Et, Eta);
+  this->SetJetError(&error_hadronic_w_ch_jet1, Et, Eta, "udsc");
 
   if(!fit_hadronic_w_ch_jet1) delete fit_hadronic_w_ch_jet1;
   fit_hadronic_w_ch_jet1 = new TFitParticleEtEtaPhi("hadronic_w_ch_jet1",
@@ -138,7 +151,7 @@ void TKinFitterDriver::SetWCHDownTypeJets(TLorentzVector jet_){
   hadronic_w_ch_jet2=jet_;
   double Et = hadronic_w_ch_jet2.Et();
   double Eta = hadronic_w_ch_jet2.Eta();
-  this->SetError(&error_hadronic_w_ch_jet2, Et, Eta);
+  this->SetJetError(&error_hadronic_w_ch_jet2, Et, Eta, nbtags>2 ? "b":"udsc" );
   if(!fit_hadronic_w_ch_jet2) delete fit_hadronic_w_ch_jet2;
   fit_hadronic_w_ch_jet2 = new TFitParticleEtEtaPhi("hadronic_w_ch_jet2",
                                                     "hadronic_w_ch_jet2",
@@ -356,61 +369,23 @@ bool TKinFitterDriver::NextPermutation(bool UseLeading4Jets){
 }
 
 
-void TKinFitterDriver::SetError(TMatrixD *matrix,  double Et, double Eta){
-  (*matrix)(0,0) = this->ErrEt(Et, Eta);
-  (*matrix)(1,1) = this->ErrEt(Et, Eta);
-  (*matrix)(2,2) = this->ErrEt(Et, Eta);
-
+void TKinFitterDriver::SetJetError(TMatrixD *matrix,  double Et, double Eta, TString flavour_key){
+  (*matrix)(0,0) = this->JetErrorEt(Et, Eta, flavour_key);
+  (*matrix)(1,1) = this->JetErrorEta(Et, Eta, flavour_key);
+  (*matrix)(2,2) = this->JetErrorPhi(Et, Eta, flavour_key);
 }
 
 
-double TKinFitterDriver::ErrEt(double Et, double Eta){
-  double InvPerr2, a, b, c;
-  if(fabs(Eta) < 1.4){
-    a = 5.6;
-    b = 1.25;
-    c = 0.033;
-  }
-  else{
-    a = 4.8;
-    b = 0.89;
-    c = 0.043;
-  }
-  InvPerr2 = (a * a) + (b * b) * Et + (c * c) * Et * Et;
-  //return InvPerr2;
-  return 20;
+double TKinFitterDriver::JetErrorEt(double Et, double Eta, TString flavour_key){
+  return ts_correction->GetFittedError("Et", flavour_key, Et, Eta);
 }
 
 
-double TKinFitterDriver::ErrEta(double Et, double Eta){
-  double InvPerr2, a, b, c;
-  if(fabs(Eta) < 1.4){
-    a = 1.215;
-    b = 0.037;
-    c = 7.941 * 0.0001;
-  }
-  else{
-    a = 1.773;
-    b = 0.034;
-    c = 3.56 * 0.0001;
-  }
-  InvPerr2 = a/(Et * Et) + b/Et + c;
-  return InvPerr2;
+double TKinFitterDriver::JetErrorEta(double Et, double Eta, TString flavour_key){
+  return ts_correction->GetFittedError("Eta", flavour_key, Et, Eta);
 }
 
 
-double TKinFitterDriver::ErrPhi(double Et, double Eta){
-  double InvPerr2, a, b, c;
-  if(fabs(Eta) < 1.4){
-    a = 6.65;
-    b = 0.04;
-    c = 8.49 * 0.00001;
-  } 
-  else{ 
-    a = 2.908;
-    b = 0.021;
-    c = 2.59 * 0.0001;
-  }
-  InvPerr2 = a/(Et * Et) + b/Et + c;
-  return InvPerr2;
+double TKinFitterDriver::JetErrorPhi(double Et, double Eta, TString flavour_key){
+  return ts_correction->GetFittedError("Phi", flavour_key, Et, Eta);
 }

@@ -8,6 +8,8 @@
 #include "TFitConstraintM.h"
 #include "TFitParticleEtEtaPhi.h"
 #include "TKinFitter.h"
+#include "TSCorrection.h"
+
 #include "Jet.h"
 
 using namespace std;
@@ -16,8 +18,11 @@ class TKinFitterDriver{
 
 public:
 
-  TKinFitterDriver();
+  TKinFitterDriver(int DataYear_);
   ~TKinFitterDriver();
+
+  int DataYear;
+  void SetDataYear(int i);
 
   void SetAllObjects(std::vector<Jet> jet_vector_,
                      std::vector<bool> btag_vector_,
@@ -48,10 +53,10 @@ public:
 
 private:
 
-  void SetError(TMatrixD *matrix,  double Et, double Eta);
-  double ErrEt(double Et, double Eta); // hard coding parameter this time
-  double ErrEta(double Et, double Eta); // hard coding parameter this time
-  double ErrPhi(double Et, double Eta); // hard coding parameter this time
+  void SetJetError(TMatrixD *matrix,  double Et, double Eta, TString flavour_key);
+  double JetErrorEt(double Et, double Eta, TString flavour_key);
+  double JetErrorEta(double Et, double Eta, TString flavour_key);
+  double JetErrorPhi(double Et, double Eta, TString flavour_key);
   void SetConstraint();
   void SetFitter();
   void SetCurrentPermutationJets();
@@ -59,6 +64,7 @@ private:
   bool NextPermutation(bool UseLeading4Jets=false);
 
   TKinFitter *fitter;
+  TSCorrection *ts_correction;
 
   std::vector<TLorentzVector> jet_vector;
   std::vector<bool> btag_vector;
