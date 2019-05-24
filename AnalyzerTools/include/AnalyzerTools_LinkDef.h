@@ -15,5 +15,6 @@
 #pragma link C++ class TKinFitterDriver+;
 #pragma link C++ class GenMatching_CHToCB+;
 #pragma link C++ class ABCDNormalizationEstimator+;
+#pragma link C++ class TSCorrection+;
 
 #endif
