@@ -75,7 +75,7 @@ elif [[ $HOSTNAME == *"tamsa2"* ]]; then
   export SKFlatOutputDir="/data9/Users/salee/Higgs"
   #export SKFlatOutputDir="/data7/Users/$USER/SKFlatOutput/"
   export DATA_DIR=$SKFlat_WD/data/$SKFlatV
-  export ROC_DIR=$SKFlat_WD/data/roccor_Run2_
+  export ROC_DIR=$SKFlat_WD/data/RoccoR_Run2
 
   #source /share/apps/root_v6-12-06/bin/thisroot.sh
   #export GCC_HOME=/share/apps/gcc491

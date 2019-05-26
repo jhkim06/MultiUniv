@@ -2,7 +2,7 @@
 
 void Skim_ISRUnfoldInput::initializeAnalyzer(){
 
-  initializeAnalyzerTools(); //To use SF
+  //initializeAnalyzerTools(); // deined at AnalyzerCore and executed by run macro
 
   //=================================
   // Skim Types

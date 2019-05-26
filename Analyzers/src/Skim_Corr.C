@@ -3,7 +3,7 @@
 
 void Skim_Corr::initializeAnalyzer(){
 
-  //initializeAnalyzerTools(); //To use SF, executed by root macro
+  //initializeAnalyzerTools(); //To use SF, executed by root macro before Loop()
 
   //=================================
   // Skim Types
@@ -22,17 +22,31 @@ void Skim_Corr::initializeAnalyzer(){
     exit(EXIT_FAILURE);
   }
 
+  TString data_roc = getenv("ROC_DIR");
+  if(DataYear == 2016){
+    data_roc+="/V3/RoccoR2016.txt";
+  }
+  else if(DataYear == 2017){
+    data_roc+="/V3/RoccoR2017.txt";
+  }
+  else if(DataYear == 2018){
+    data_roc+="/V3/RoccoR2018.txt";
+  }
+  else{
+       cout << DataYear << " is not provided by ROC" << endl;
+       exit(EXIT_FAILURE); 
+  }
+
+  RocUtil = new RocCorrUtil(data_roc);
+  //RocUtil.init(data_roc.Data());
+
+
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");
-  newtree = fChain->CloneTree(0); // JH : What relation does this outfile have with the fChain(created by SetTreeName)?
+  newtree = fChain->CloneTree(0);
+  //newtree = fChain->CloneTree(0);
 
   // New Branch
-  newtree->Branch("IsMuMu", &IsMuMu,"IsMuMu/I"); // JH : What's the meaning of each arguments?
-  newtree->Branch("IsElEl", &IsElEl,"IsElel/I");
-  newtree->Branch("passIso", &passIso,"passIso/I");
-  newtree->Branch("passAntiIso", &passAntiIso,"passAntiIso/I");
-  newtree->Branch("passAntiIso_Up", &passAntiIso_Up,"passAntiIso_Up/I");
-  newtree->Branch("passAntiIso_Do", &passAntiIso_Do,"passAntiIso_Do/I");
 
   newtree->Branch("PUweight", &PUweight,"PUweight/D");
   newtree->Branch("PUweight_Up", &PUweight_Up,"PUweight_Up/D");
@@ -61,20 +75,14 @@ void Skim_Corr::initializeAnalyzer(){
   newtree->Branch("IsoSF_Up", &IsoSF_Up,"IsoSF_Up/D");
   newtree->Branch("IsoSF_Do", &IsoSF_Do,"IsoSF_Do/D");
 
-  newtree->Branch("pdf_scale_Up", &pdf_scale_Up,"pdf_scale_Up/D");
-  newtree->Branch("pdf_scale_Do", &pdf_scale_Do,"pdf_scale_Do/D");
-
-
   newtree->Branch("ZPtCor", &ZPtCor,"ZPtCor/D");
+
+  newtree->Branch("muon_roch_sf_old",     &muon_roch_sf_old);
+  newtree->Branch("muon_roch_sf_err_old", &muon_roch_sf_err_old);
+  newtree->Branch("muon_roch_sf_err",     &muon_roch_sf_err);
 
   // Kinematic Variables
   //
-  newtree->Branch("diLep_Ch", &diLep_Ch,"diLep_Ch/I");
-  newtree->Branch("diLep_passSelectiveQ", &diLep_passSelectiveQ,"diLep_passSelectiveQ/O");
-  newtree->Branch("diLep_m", &diLep_m,"diLep_m/D");
-  newtree->Branch("diLep_pt", &diLep_pt,"diLep_pt/D");
-  newtree->Branch("diLep_eta", &diLep_eta,"diLep_eta/D");
-  newtree->Branch("num_veto_mu", &num_veto_mu,"num_veto_mu/I");
 
   //b_trgSF = newtree->Branch("trgSF", &trgSF,"trgSF/F");
   //b_trgSF_Up = newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/F");
@@ -133,6 +141,20 @@ void Skim_Corr::executeEvent(){
 
   muons.clear();
   electrons.clear();
+  gens.clear();
+  muon_roch_sf_old.clear();
+  muon_roch_sf_err.clear();
+  muon_roch_sf_err_old.clear();
+
+  // buffer or memory downsizing
+  muons.shrink_to_fit();
+  electrons.shrink_to_fit();
+  gens.shrink_to_fit();
+  muon_roch_sf_old.shrink_to_fit();
+  muon_roch_sf_err.shrink_to_fit();
+  muon_roch_sf_err_old.shrink_to_fit();
+
+  gens = GetGens();
 
   /////////////////PUreweight///////////////////
 
@@ -159,7 +181,27 @@ void Skim_Corr::executeEvent(){
 
 
   // Rochester correction
-  //
+  cout<<"event: "<<event<<endl;
+  for(size_t i(0); i <muon_pt->size(); i++){
+    Muon mu;
+    mu.SetPtEtaPhiM(muon_pt->at(i), muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
+    mu.SetCharge(muon_charge->at(i));
+    mu.SetTrackerLayersWithMeasurement(muon_trackerLayers->at(i));
+    //                set 0 default, nmemeber 1 means 0 for input
+    RocUtil->CalcScaleAndError(mu, 0, 0, event, gens, IsDATA);
+    oldSf = muon_roch_sf->at(i);
+    oldSf_Err = muon_roch_sf_up->at(i) - muon_roch_sf->at(i);
+    newSf = mu.MomentumScale();
+    newSf_Err = mu.MomentumScaleError();
+
+    cout<<"old rc: "<<oldSf<<" + "<<oldSf_Err<<endl;
+    cout<<"new rc: "<<newSf<<" + "<<newSf_Err<<endl;
+    muon_roch_sf->at(i) = newSf;
+    muon_roch_sf_err.push_back(newSf_Err);
+    muon_roch_sf_up->at(i) = newSf + newSf_Err;
+    muon_roch_sf_old.push_back(oldSf);
+    muon_roch_sf_err_old.push_back(oldSf_Err);
+  }
   
 
 
@@ -174,7 +216,6 @@ void Skim_Corr::executeEvent(){
   ZPtCor = 1;
   if(MCSample.Contains("DYJets") || MCSample.Contains("DYJets10to50_MG")){
     Gen genL0, genL1, genFsr, genHardL0, genHardL1;
-    vector<Gen> gens = GetGens();
     // Check tau process
     for( int i(0); i<(int) gens.size(); i++){
       if( !gens.at(i).isPrompt()) continue; // not from hadron, muon, or tau
@@ -199,8 +240,7 @@ void Skim_Corr::executeEvent(){
         }
       }
     }
-
-    if( abs(genHardL0.PID()) != 15 )if( (IsElEl && (genL1.PID() == 11)) || (IsMuMu && (genL1.PID() == 13)) ){
+    if( abs(genHardL0.PID()) != 15 )if( (genL1.PID() == 11) || (genL1.PID() == 13) ){
       genZ = genL0 + genL1 + genFsr;
       ZPtCor = mcCorr->GetZPtWeight(genZ.Pt(),genZ.Rapidity(),abs(genHardL0.PID())==13 ? Lepton::Flavour::MUON : Lepton::Flavour::ELECTRON);
     }
@@ -262,6 +302,15 @@ Skim_Corr::~Skim_Corr(){
 }
 
 void Skim_Corr::WriteHist(){
+
+
+  //Delete unnecessary trees
+  //newtree->SetBranchStatus("muon_roch_sf_up", 0); only works before clone
+  //TBranch *sfUp = newtree->GetBranch("muon_roch_sf_up");
+  //newtree->GetListOfBranches()->Remove(sfUp); // segment violation at saving time to files
+  //TLeaf *LsfUp = newtree->GetLeaf("muon_roch_sf_up");
+  //newtree->GetListOfLeaves()->Remove(LsfUp);// compile error
+  
 
   //outfile->mkdir("recoTree");
   //outfile->cd("recoTree"); Already at Skim_Corr::initializeAnalyzer

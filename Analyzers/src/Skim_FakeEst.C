@@ -2,7 +2,7 @@
 
 void Skim_FakeEst::initializeAnalyzer(){
 
-  initializeAnalyzerTools(); //To use SF
+  //initializeAnalyzerTools(); // defined at AnalyzerCore and executed by run macro
 
   //=================================
   // Skim Types

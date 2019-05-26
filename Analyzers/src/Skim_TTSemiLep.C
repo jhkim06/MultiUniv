@@ -2,7 +2,7 @@
 
 void Skim_TTSemiLep::initializeAnalyzer(){
 
-  initializeAnalyzerTools(); //To use SF
+  //initializeAnalyzerTools(); //defined at AnalyzerCor and executed at the run script 
 
   //=================================
   // Skim Types

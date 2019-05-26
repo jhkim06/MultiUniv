@@ -32,6 +32,11 @@ public :
      fChain->Add(filename);
    }
 
+   virtual void initializeAnalyzer(){
+   };
+   virtual void initializeAnalyzerTools(){
+   };
+
    Long64_t MaxEvent, NSkipEvent;
    int LogEvery;
    bool IsDATA;
