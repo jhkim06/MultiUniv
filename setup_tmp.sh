@@ -180,7 +180,7 @@ export PATH=${SKFlat_WD}/CommonPyTools/scripts/:${PATH}
 export PATH=${SKFlat_WD}/ShapeAnalysis/scripts/:${PATH}
 export PATH=${SKFlat_WD}/Gardener/scripts/:${PATH}
 
-export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKFlat_WD/AnalyzerTools/include/:$SKFlat_WD/Analyzers/include/:$SKFlat_WD/CommonTools/include/
+export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$SKFlat_WD/DataFormats/include/:$SKFlat_WD/AnalyzerTools/include/:$SKFlat_WD/Analyzers/include/:$SKFlat_WD/CommonTools/include/:$SKFlat_WD/KinematicFitter/include
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SKFlat_LIB_PATH
 
 source $SKFlat_WD/bin/BashColorSets.sh
