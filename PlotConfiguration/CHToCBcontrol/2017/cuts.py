@@ -3,9 +3,9 @@ SKFlat_WD = os.getenv('SKFlat_WD')
 sys.path.insert(0,SKFlat_WD+'/CommonTools/include') 
 from Definitions import *
 
-supercut = '1==1'
+supercut = 'passIso==1 && passTightID==1'
 
-cuts['Mu2b'] = 'nbtags==2 && singleLep_Ch =='+str(SingleLepCh.Mu)
-cuts['Mu3b'] = 'nbtags>=3 && singleLep_Ch =='+str(SingleLepCh.Mu)
-cuts['El2b'] = 'nbtags==2 && singleLep_Ch =='+str(SingleLepCh.El)
-cuts['El3b'] = 'nbtags>=3 && singleLep_Ch =='+str(SingleLepCh.El)
+cuts['Mu2b'] = 'n_bjet_deepcsv_m_noSF==2 && IsMu==1'
+cuts['Mu3b'] = 'n_bjet_deepcsv_m_noSF>=3 && IsMu==1'
+cuts['El2b'] = 'n_bjet_deepcsv_m_noSF==2 && IsEl==1'
+cuts['El3b'] = 'n_bjet_deepcsv_m_noSF>=3 && IsEl==1'

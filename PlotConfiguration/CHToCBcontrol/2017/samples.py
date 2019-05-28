@@ -4,10 +4,11 @@ from CommonPyTools.python.CommonTools import *
 # Number of Leptons and WP
 ###########################
 
-Nlep='1'
-eleWP='mediumSelectiveQ'
+#Nlep='1'
+#eleWP='mediumSelectiveQ'
 
-McWeight = 'baseW*PUweight*trgSF_Q*recoSF*IdSF_Q*IsoSF*ZPtCor'
+#XXX: diff. between IdSF and IdSF_Q ?
+McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*recoSF*BTagSF*MisTagSF'
 #McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
 
 #--------------------    
@@ -24,12 +25,47 @@ samples['DYJets10to50_MG'] = {
     'weight' :McWeight,
     }
 
+samples['WJets_MG'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['TTLJ_powheg'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
 samples['TTLL_powheg'] = {
     'skim'   :'',
     'weight' :McWeight,
     }
 
-samples['WJets_MG'] = {
+samples['TTJJ_powheg'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_sch_top'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_tch_top'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_tch_antitop'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_tW_top'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_tW_antitop'] = {
     'skim'   :'',
     'weight' :McWeight,
     }
@@ -48,9 +84,21 @@ samples['ZZ_pythia'] = {
     'skim'   :'',
     'weight' :McWeight,
     }
+
+samples['ttW'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+samples['ttZ'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+
 #--------------------    
 # DATA driven QCD
-#--------------------    
+#--------------------
+'''
 samples['SingleElectron_FakeEl'] = {
     'skim'   :'MetFt_L_v0_TTSemiLepFake_v0', #TODO: this skim is not exist currently
     'weight' :'1',
@@ -60,6 +108,7 @@ samples['SingleMuon_FakeMu'] = {
     'skim'   :'MetFt_L_v0_TTSemiLepFake_v0', #TODO: this skim is not exist currently
     'weight' :'1',
     }
+'''
 #--------------------    
 # DATA
 #--------------------    
