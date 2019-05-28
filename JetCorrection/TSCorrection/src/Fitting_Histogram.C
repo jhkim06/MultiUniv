@@ -1,7 +1,7 @@
 #include "Fitting_Histogram.h"
 #include "TMath.h"
 #define NUM_PAR 4
-#define NUM_PT_BIN 10
+#define NUM_PT_BIN 15
 
 Fitting_Histogram::Fitting_Histogram(){
 
@@ -76,15 +76,15 @@ void Fitting_Histogram::FillHistogram(TString sample){
   }
   */
   //TODO: define variable sample
-  if(MapTNtuple.find(sample) == MapTNtuple.end()){
-    cout << "  >> MapTNtuple is empty" << endl;
+  if(MapTTree.find(sample) == MapTTree.end()){
+    cout << "  >> MapTTree is empty" << endl;
     exit(1);
   }
-  cout << ">> Process  :    " << MapTNtuple[sample]->GetEntries() <<" events" << endl;
+  cout << ">> Process  :    " << MapTTree[sample]->GetEntries() <<" events" << endl;
 
-  Int_t num_entries = MapTNtuple[sample]->GetEntries();
-  for(Int_t i=0; i<num_entries; i++){
-    MapTNtuple[sample]->GetEntry(i);
+  Int_t num_entries = MapTTree[sample]->GetEntries();
+  for(Long64_t i=0; i<num_entries; i++){
+    MapTTree[sample]->GetEntry(i);
     if(i%(num_entries/20) ==0) cout <<">>     " << i/num_entries*100 << " %% processed" << endl;
     //fill response
     for(map<TString,TFormula*>::iterator it_res=response.begin(); it_res!=response.end(); it_res++){
@@ -104,40 +104,40 @@ void Fitting_Histogram::FillHistogram(TString sample){
                            );
         if(!isFilled_top_b &&
            it_flav->second->Eval(5) &&
-           it_eta->second->Eval( b_jet_from_top->Eta() ) &&
-           it_pt->second->Eval( b_jet_from_top->Pt() )){
+           it_eta->second->Eval( b_jet_from_top.Eta() ) &&
+           it_pt->second->Eval( b_jet_from_top.Pt() )){
 
-           double response_top_b = this->GetResponse(it_res->first, b_jet_from_top, b_parton_from_top);
+           double response_top_b = this->GetResponse(it_res->first, &b_jet_from_top, &b_parton_from_top);
            MapHistogram[name]->Fill(response_top_b);
            isFilled_top_b = true;
 
         }
         if(!isFilled_anti_top_b &&
            it_flav->second->Eval(5) &&
-           it_eta->second->Eval( b_jet_from_anti_top->Eta() ) && 
-           it_pt->second->Eval( b_jet_from_anti_top->Pt() )){
+           it_eta->second->Eval( b_jet_from_anti_top.Eta() ) && 
+           it_pt->second->Eval( b_jet_from_anti_top.Pt() )){
 
-           double response_anti_top_b = this->GetResponse(it_res->first, b_jet_from_anti_top, b_parton_from_anti_top);
+           double response_anti_top_b = this->GetResponse(it_res->first, &b_jet_from_anti_top, &b_parton_from_anti_top);
            MapHistogram[name]->Fill(response_anti_top_b);
            isFilled_anti_top_b = true;
 
         }
         if(!isFilled_up_type &&
            it_flav->second->Eval(up_type_parton_flavour) &&
-           it_eta->second->Eval( up_type_jet_from_w_ch->Eta() ) && 
-           it_pt->second->Eval( up_type_jet_from_w_ch->Pt() )){
+           it_eta->second->Eval( up_type_jet_from_w_ch.Eta() ) && 
+           it_pt->second->Eval( up_type_jet_from_w_ch.Pt() )){
 
-           double response_up_type_flav = this->GetResponse(it_res->first, up_type_jet_from_w_ch, up_type_parton_from_w_ch);
+           double response_up_type_flav = this->GetResponse(it_res->first, &up_type_jet_from_w_ch, &up_type_parton_from_w_ch);
            MapHistogram[name]->Fill(response_up_type_flav); 
            isFilled_up_type = true;
 
         }
         if(!isFilled_down_type &&
            it_flav->second->Eval(down_type_parton_flavour) &&
-           it_eta->second->Eval( down_type_jet_from_w_ch->Eta() ) && 
-           it_pt->second->Eval( down_type_jet_from_w_ch->Pt() )){
+           it_eta->second->Eval( down_type_jet_from_w_ch.Eta() ) && 
+           it_pt->second->Eval( down_type_jet_from_w_ch.Pt() )){
 
-           double response_down_type_flav = this->GetResponse(it_res->first, down_type_jet_from_w_ch, down_type_parton_from_w_ch);
+           double response_down_type_flav = this->GetResponse(it_res->first, &down_type_jet_from_w_ch, &down_type_parton_from_w_ch);
            MapHistogram[name]->Fill(response_down_type_flav); 
            isFilled_down_type = true;
 
@@ -156,37 +156,37 @@ void Fitting_Histogram::FillHistogram(TString sample){
         TString name = Form("%s_%s_%s_%s",it_flav->first.Data(),it_pt->first.Data(),it_eta->first.Data(),"jet_pt");
         if(!isFilled_top_b &&
            it_flav->second->Eval(5) &&
-           it_eta->second->Eval( b_jet_from_top->Eta() ) && 
-           it_pt->second->Eval( b_jet_from_top->Pt() )){
+           it_eta->second->Eval( b_jet_from_top.Eta() ) && 
+           it_pt->second->Eval( b_jet_from_top.Pt() )){
 
-           MapHistogram[name]->Fill(b_jet_from_top->Pt());
+           MapHistogram[name]->Fill(b_jet_from_top.Pt());
            isFilled_top_b = true;
 
         }
         if(!isFilled_anti_top_b &&
            it_flav->second->Eval(5) &&
-           it_eta->second->Eval( b_jet_from_anti_top->Eta() ) &&
-           it_pt->second->Eval( b_jet_from_anti_top->Pt() )){
+           it_eta->second->Eval( b_jet_from_anti_top.Eta() ) &&
+           it_pt->second->Eval( b_jet_from_anti_top.Pt() )){
 
-           MapHistogram[name]->Fill(b_jet_from_anti_top->Pt());
+           MapHistogram[name]->Fill(b_jet_from_anti_top.Pt());
            isFilled_anti_top_b = true;
 
         }
         if(!isFilled_up_type &&
            it_flav->second->Eval(up_type_parton_flavour) &&
-           it_eta->second->Eval( up_type_jet_from_w_ch->Eta() ) &&
-           it_pt->second->Eval( up_type_jet_from_w_ch->Pt() )){
+           it_eta->second->Eval( up_type_jet_from_w_ch.Eta() ) &&
+           it_pt->second->Eval( up_type_jet_from_w_ch.Pt() )){
 
-           MapHistogram[name]->Fill(up_type_jet_from_w_ch->Pt());
+           MapHistogram[name]->Fill(up_type_jet_from_w_ch.Pt());
            isFilled_up_type = true;
 
         }
         if(!isFilled_down_type &&
            it_flav->second->Eval(down_type_parton_flavour) &&
-           it_eta->second->Eval( down_type_jet_from_w_ch->Eta() ) &&
-           it_pt->second->Eval( down_type_jet_from_w_ch->Pt() )){
+           it_eta->second->Eval( down_type_jet_from_w_ch.Eta() ) &&
+           it_pt->second->Eval( down_type_jet_from_w_ch.Pt() )){
 
-           MapHistogram[name]->Fill(down_type_jet_from_w_ch->Pt());
+           MapHistogram[name]->Fill(down_type_jet_from_w_ch.Pt());
            isFilled_down_type = true;
 
         }
@@ -262,7 +262,7 @@ void Fitting_Histogram::FitHistogram(TString sample){
                                         it_pt->first.Data(),
                                         it_eta->first.Data()
                          );
-      MapHistogram[name] = (TH1F*)inputFile->Get(name);
+      MapHistogram[name] = (TH1F*)inputFile->Get("response_histogram/" + name);
     }
     }
     }
@@ -272,12 +272,13 @@ void Fitting_Histogram::FitHistogram(TString sample){
     for(map<TString,TFormula*>::iterator it_pt=ptBin.begin(); it_pt!=ptBin.end(); it_pt++){
     for(map<TString,TFormula*>::iterator it_eta=etaBin.begin(); it_eta!=etaBin.end(); it_eta++){
       TString name = Form("%s_%s_%s_%s",it_flav->first.Data(),it_pt->first.Data(),it_eta->first.Data(),"jet_pt");
-      MapHistogram[name] = (TH1F*)inputFile->Get(name);
+      MapHistogram[name] = (TH1F*)inputFile->Get("pt_histogram/" + name);
     }
     }
     }
   }
 
+  cout << "Fitting_Histogram::FitHistogram :  MapHistogram is ready" << endl;
   ofstream fout1(TString(std::getenv("TSCorrOutTextDir"))+Form("%s_%s.txt","gaus_fit_res_hist_parameters_",sample.Data()));
 
   for(map<TString,TFormula*>::iterator it_res=response.begin(); it_res!=response.end(); it_res++){
@@ -290,14 +291,21 @@ void Fitting_Histogram::FitHistogram(TString sample){
                                       it_pt->first.Data(),
                                       it_eta->first.Data()
                        );
-    MapHistogram[name]->GetXaxis()->SetTitle("(True parton pT - Jet pT)/Jet pT");
+    if(!MapHistogram[name]){
+      cout << "Fitting_Histogram::FitHistogram : " << name << " is not exist!!!!" << endl;
+      exit(1);
+    }
+    cout <<"debug1" << endl;
+    TString x_name = it_res->first;
+    x_name.ReplaceAll("Pt","P_{T}");
+    x_name.ReplaceAll("Et","E_{T}");
+    MapHistogram[name]->GetXaxis()->SetTitle(Form("(True parton %s - Jet %s)/Jet %s",x_name.Data(),x_name.Data(),x_name.Data()));
 
     Double_t rawMean = MapHistogram[name]->GetMean();
     Double_t rawRMS = MapHistogram[name]->GetRMS();
     Double_t n_sigma = 1.5;
     Double_t min = rawMean - n_sigma*rawRMS;
     Double_t max = rawMean + n_sigma*rawRMS;
-    
     cout << "  >>FitHistogram  :    " << "fit range    min  :    "  << min << "    max  :    "  << max << endl;
     gausFit->SetRange(min,max);
     MapHistogram[name]->Fit("gausFit","","ep",min,max);
@@ -311,12 +319,16 @@ void Fitting_Histogram::FitHistogram(TString sample){
     gausFit->Draw("same");
    
     TString save_dir = std::getenv("TSCorrOutImgDir");
-    save_dir+=Form("%s_%s.pdf","gaus_fit_res_hist",sample.Data());
+    save_dir+=Form("%s_%s_%s.pdf","response_histogram",name.Data(),sample.Data());
     c->SaveAs(save_dir);
 
     //TODO: find pt bin
     TString name_pt_dist=Form("%s_%s_%s_%s",it_flav->first.Data(),it_pt->first.Data(),it_eta->first.Data(),"jet_pt");
 
+    if(!MapHistogram[name_pt_dist]){
+      cout << "Fitting_Histogram::FitHistogram : " << name_pt_dist << " is not exist!!!!" << endl;
+      exit(1);
+    }
     Double_t meanPt = MapHistogram[name_pt_dist]->GetMean();
     Double_t rmsPt = MapHistogram[name_pt_dist]->GetRMS();
     Double_t mean = gausFit->GetParameter(1);
@@ -372,10 +384,15 @@ void Fitting_Histogram::FitHistMean(TString sample){
   for(map<TString,TFormula*>::iterator it_res=response.begin(); it_res!=response.end(); it_res++){
   for(map<TString,TFormula*>::iterator it_flav=flavour.begin(); it_flav!=flavour.end(); it_flav++){
   for(map<TString,TFormula*>::iterator it_eta=etaBin.begin(); it_eta!=etaBin.end(); it_eta++){
+    /*if(it_res->first == "Eta" || it_res->first == "Phi"){
+      continue;
+    }*/
     TString graph_name = Form("%s_%s_%s", it_res->first.Data(), it_flav->first.Data(), it_eta->first.Data());
     int n_ptBin = ptBin.size();
     Double_t meanPt_array[n_ptBin];
     Double_t mean_array[n_ptBin];
+    Double_t rmsPt_array[n_ptBin];
+    Double_t mean_error_array[n_ptBin];
     
     map<TString,TFormula*>::iterator it_pt_begin=ptBin.begin();
     for(map<TString,TFormula*>::iterator it_pt=ptBin.begin(); it_pt!=ptBin.end(); it_pt++){
@@ -387,25 +404,43 @@ void Fitting_Histogram::FitHistMean(TString sample){
       int i = std::distance(it_pt_begin, it_pt);
       meanPt_array[i] = meanPt[name];
       mean_array[i] = mean[name];
+      rmsPt_array[i] = 0;// rmsPt[name];
+      mean_error_array[i] = mean_error[name];
     }
-    //MapGraphErrors[graph_name] = new TGraphErrors(NUM_PT_BIN, meanPt_array,
-    //                                                          mean_array,
-    //                                                          rmsPt_array,
-    //                                                          mean_error_array);
+    /*
+    MapGraphErrors[graph_name] = new TGraphErrors(NUM_PT_BIN, meanPt_array,
+                                                              mean_array,
+                                                              rmsPt_array,
+                                                              mean_error_array);
+    MapGraphErrors[graph_name]->Fit("fitFcn","","ep",30.,300);
+    MapGraphErrors[graph_name]->GetXaxis()->SetRangeUser(0,300.);
+    MapGraphErrors[graph_name]->GetYaxis()->SetRangeUser(-0.1,0.3);
+    MapGraphErrors[graph_name]->SetMarkerStyle(21);
+    c->cd();
+    MapGraphErrors[graph_name]->Draw("AP");
+    */
+    
     MapGraph[graph_name] = new TGraph(NUM_PT_BIN, meanPt_array, mean_array);
 
     MapGraph[graph_name]->Fit("fitFcn","","ep",30.,300);
-    MapGraph[graph_name]->GetXaxis()->SetRangeUser(0,300);
+    MapGraph[graph_name]->GetXaxis()->SetLimits(0,300);
+    //MapGraph[graph_name]->GetXaxis()->SetRangeUser(0,300); //it's not work!
     MapGraph[graph_name]->GetYaxis()->SetRangeUser(-0.1,0.3);
+    MapGraph[graph_name]->SetMarkerStyle(21);
     c->cd();
-    MapGraph[graph_name]->Draw();
-    fitFcn->Draw("same");
-    //fitFcn->GetParameters(par);
+    MapGraph[graph_name]->Draw("AP");
+    
+    //fitFcn->Draw("same");
+    fitFcn->GetParameters(par);
     
     TString save_dir = std::getenv("TSCorrOutImgDir");
-    save_dir+=Form("fitting_mean_%s_%s_.pdf", graph_name.Data(), sample.Data());
+    save_dir+=Form("fitting_mean_%s_%s.pdf", graph_name.Data(), sample.Data());
     c->SaveAs(save_dir);
-    fout << name << "\t\t" << fitFcn->GetExpFormula() << endl;
+    TString out_formula = SigmaErrorFittingFunction();
+    out_formula = Form(out_formula.Data(),par[0],par[1],par[2],par[3]);
+    out_formula.ReplaceAll("+-","-");
+    fout << graph_name << "\t\t" << out_formula << endl;
+    c->Clear();
   }
   }
   }
@@ -470,19 +505,25 @@ void Fitting_Histogram::FitHistError(TString sample){
     //                                                          rmsPt_array,
     //                                                          sigma_error_array);
     MapGraph[graph_name] = new TGraph(NUM_PT_BIN, meanPt_array, sigma_array);
-
     MapGraph[graph_name]->Fit("fitFcn","","ep",30.,300);
-    MapGraph[graph_name]->GetXaxis()->SetRangeUser(0,300);
-    MapGraph[graph_name]->GetYaxis()->SetRangeUser(-0.1,0.3);
+    MapGraph[graph_name]->GetXaxis()->SetLimits(0,300);
+    //MapGraph[graph_name]->GetXaxis()->SetRangeUser(0,300); //it's not work!
+    MapGraph[graph_name]->GetYaxis()->SetRangeUser(-0.05,0.5);
+    MapGraph[graph_name]->SetMarkerStyle(21);
     c->cd();
-    MapGraph[graph_name]->Draw();
-    fitFcn->Draw("same");
-    //fitFcn->GetParameters(par);
-   
+    MapGraph[graph_name]->Draw("AP");
+    
+    //fitFcn->Draw("same");
+    fitFcn->GetParameters(par);
+    
     TString save_dir = std::getenv("TSCorrOutImgDir");
-    save_dir+=Form("fitting_sigma_%s_%s_.pdf", graph_name.Data(), sample.Data());
+    save_dir+=Form("fitting_error_%s_%s.pdf", graph_name.Data(), sample.Data());
     c->SaveAs(save_dir);
-    fout << name << "\t\t" << fitFcn->GetExpFormula() << endl;
+    TString out_formula = SigmaErrorFittingFunction();
+    out_formula = Form(out_formula.Data(),par[0],par[1],par[2],par[3]);
+    out_formula.ReplaceAll("+-","-");
+    fout << graph_name << "\t\t" << out_formula << endl;
+    c->Clear();
   }
   }
   }

@@ -6,18 +6,25 @@ from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed
 # style 0 : noFillColor
 # no nameHR --> using sample keyname intead
 
-groupPlot['WJet'] = {
-    'nameHR' : "WJet",
-    'isSignal' : 0,
-    'color':  kMagenta,
-    'samples' : ['WJets_MG']
-    }
-
 groupPlot['TT'] = {
     'nameHR' : "TT",
     'isSignal' : 0,
-    'color':  kBlue,
-    'samples' : ['TTLL_powheg']
+    'color':  kRed,
+    'samples' : ['TTLL_powheg','TTLJ_powheg','TTJJ_powheg']
+    }
+
+groupPlot['ST'] = {
+    'nameHR' : "ST",
+    'isSignal' : 0,
+    'color':  kMagenta,
+    'samples' : ['SingleTop_sch_top','SingleTop_tch_top','SingleTop_tch_antitop','SingleTop_tW_top','SingleTop_tW_antitop']
+    }
+
+groupPlot['VJ'] = {
+    'nameHR' : "VJ",
+    'isSignal' : 0,
+    'color':  kOrange,
+    'samples' : ['WJets_MG','DYJets','DYJets10to50_MG']
     }
 
 groupPlot['VV'] = {
@@ -27,17 +34,14 @@ groupPlot['VV'] = {
     'samples' : ['WW_pythia','WZ_pythia','ZZ_pythia']
     }
 
-# kOrange 800
-groupPlot['DY'] = {
-    'nameHR' : "DY",
-    'isSignal' :0,
-    'color': kOrange-2, 
-    'style': 4050,
-    'lineColor':807,
-    'lineWidth':1,
-    'samples' : ['DYJets']
+groupPlot['TTX'] = {
+    'nameHR' : "TTX",
+    'isSignal' : 0,
+    'color':  kYellow,
+    'samples' : ['ttW','ttZ']
     }
 
+'''
 groupPlot['QCD'] = {
     'nameHR' : "QCD",
     'isSignal' :0,
@@ -47,21 +51,83 @@ groupPlot['QCD'] = {
     'lineWidth':1,
     'samples' : ['SingleMuon_QCD','SingleElectron_QCD','TTLL_powheg_QCD','WJets_MG_QCD','DYJets_QCD','WW_pythia_QCD','WZ_pythia_QCD','ZZ_pythia_QCD']
     }
+'''
 
-
-#plot['DYJets10to50_MG'] = {
-#    'color': 418,
-#    'isSignal' :1,
-#    'isData': 0,
-#    'style': 4050,
-#    'scale':1,
-#    }
-#
 plot['DYJets'] = {
     'color': kYellow,
     'isSignal' :0,
     'isData': 0,
     'style': 4050,
+    }
+
+plot['DYJets10to50_MG'] = {
+    'color': 418,
+    'isSignal' :0,
+    'isData': 0,
+    'style': 4050,
+    }
+
+plot['WJets_MG'] = {
+    'color': kYellow,
+    'isSignal' :0,
+    'isData': 0,
+    'style': 4050,
+    }
+
+plot['TTLL_powheg'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['TTLJ_powheg'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['TTJJ_powheg'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_sch_top'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tch_top'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tch_antitop'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tW_top'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tW_antitop'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
     }
 
 plot['WZ_pythia'] = {
@@ -82,14 +148,16 @@ plot['ZZ_pythia'] = {
     'isData': 0,
     'scale':1,
     }
-plot['TTLL_powheg'] = {
-    'color': 550,
+
+plot['ttW'] = {
+    'color': kYellow,
     'isSignal' :0,
     'isData': 0,
     'scale':1,
     }
-plot['WJets_MG'] = {
-    'color': 550, #FIXME: same color with TTLL_powheg
+
+plot['ttZ'] = {
+    'color': kYellow,
     'isSignal' :0,
     'isData': 0,
     'scale':1,
@@ -102,63 +170,12 @@ plot['SingleMuon'] = {
     'isData':1,
     'scale':1,
     }
+
 plot['SingleElectron'] = {
     'nameHR' : "SingleElectron",
     'color':kBlack,
     'isSignal':0,
     'isData':1,
-    'scale':1,
-    }
-
-###### QCD
-plot['DYJets_QCD'] = {
-    'color': kYellow,
-    'isSignal' :0,
-    'isData': 0,
-    'scale':-1,
-    }
-
-plot['WZ_pythia_QCD'] = {
-    'color': 450,
-    'isSignal' :0,
-    'isData': 0,
-    'scale':-1,
-    }
-plot['WW_pythia_QCD'] = {
-    'color': 550,
-    'isSignal' :0,
-    'isData': 0,
-    'scale':-1,
-    }
-plot['ZZ_pythia_QCD'] = {
-    'color': 550,
-    'isSignal' :0,
-    'isData': 0,
-    'scale':-1,
-    }
-plot['TTLL_powheg_QCD'] = {
-    'color': 550,
-    'isSignal' :0,
-    'isData': 0,
-    'scale':-1,
-    }
-plot['WJets_MG_QCD'] = {
-    'color': 550, #FIXME: same color with TTLL_powheg
-    'isSignal' :0,
-    'isData': 0,
-    'scale':-1,
-    }
-
-plot['SingleMuon_QCD'] = {
-    'color':kBlack,
-    'isSignal':0,
-    'isData':0, # 0 for QCD sample
-    'scale':1,
-    }
-plot['SingleElectron_QCD'] = {
-    'color':kBlack,
-    'isSignal':0,
-    'isData':0, # o for QCD sample
     'scale':1,
     }
 
