@@ -43,11 +43,11 @@ void Fitting_Response::SetProfile(){
 
 void Fitting_Response::FillProfile(TString sample){
 
-  cout << ">> Process  :    " << MapTNtuple[sample]->GetEntries() <<" events" << endl;
+  cout << ">> Process  :    " << MapTTree[sample]->GetEntries() <<" events" << endl;
 
-  Int_t num_entries = MapTNtuple[sample]->GetEntries();
+  Int_t num_entries = MapTTree[sample]->GetEntries();
   for(Int_t i=0; i<num_entries; i++){
-    MapTNtuple[sample]->GetEntry(i);
+    MapTTree[sample]->GetEntry(i);
     if(i%(num_entries/20) ==0) cout <<">>     " << i/num_entries*100 << " %% processed" << endl;
     //fill response
     for(map<TString,TFormula*>::iterator it_res=response.begin(); it_res!=response.end(); it_res++){
@@ -65,41 +65,41 @@ void Fitting_Response::FillProfile(TString sample){
                            );
         if(!isFilled_top_b &&
            it_flav->second->Eval(5) &&
-           it_eta->second->Eval( b_jet_from_top->Eta() )
+           it_eta->second->Eval( b_jet_from_top.Eta() )
           ){
 
-           double response_top_b = this->GetResponse(it_res->first, b_jet_from_top, b_parton_from_top);
-           MapProfile[name]->Fill(b_jet_from_top->Pt(),response_top_b);
+           double response_top_b = this->GetResponse(it_res->first, &b_jet_from_top, &b_parton_from_top);
+           MapProfile[name]->Fill(b_jet_from_top.Pt(),response_top_b);
            isFilled_top_b = true;
 
         }
         if(!isFilled_anti_top_b &&
            it_flav->second->Eval(5) &&
-           it_eta->second->Eval( b_jet_from_anti_top->Eta() ) 
+           it_eta->second->Eval( b_jet_from_anti_top.Eta() ) 
           ){
 
-           double response_anti_top_b = this->GetResponse(it_res->first, b_jet_from_anti_top, b_parton_from_anti_top);
-           MapProfile[name]->Fill(b_jet_from_anti_top->Pt(),response_anti_top_b);
+           double response_anti_top_b = this->GetResponse(it_res->first, &b_jet_from_anti_top, &b_parton_from_anti_top);
+           MapProfile[name]->Fill(b_jet_from_anti_top.Pt(),response_anti_top_b);
            isFilled_anti_top_b = true;
 
         }
         if(!isFilled_up_type &&
            it_flav->second->Eval(up_type_parton_flavour) &&
-           it_eta->second->Eval( up_type_jet_from_w_ch->Eta() ) 
+           it_eta->second->Eval( up_type_jet_from_w_ch.Eta() ) 
           ){
 
-           double response_up_type_flav = this->GetResponse(it_res->first, up_type_jet_from_w_ch, up_type_parton_from_w_ch);
-           MapProfile[name]->Fill(up_type_jet_from_w_ch->Pt(),response_up_type_flav); 
+           double response_up_type_flav = this->GetResponse(it_res->first, &up_type_jet_from_w_ch, &up_type_parton_from_w_ch);
+           MapProfile[name]->Fill(up_type_jet_from_w_ch.Pt(),response_up_type_flav); 
            isFilled_up_type = true;
 
         }
         if(!isFilled_down_type &&
            it_flav->second->Eval(down_type_parton_flavour) &&
-           it_eta->second->Eval( down_type_jet_from_w_ch->Eta() )
+           it_eta->second->Eval( down_type_jet_from_w_ch.Eta() )
           ){
 
-           double response_down_type_flav = this->GetResponse(it_res->first, down_type_jet_from_w_ch, down_type_parton_from_w_ch);
-           MapProfile[name]->Fill(down_type_jet_from_w_ch->Pt(),response_down_type_flav); 
+           double response_down_type_flav = this->GetResponse(it_res->first, &down_type_jet_from_w_ch, &down_type_parton_from_w_ch);
+           MapProfile[name]->Fill(down_type_jet_from_w_ch.Pt(),response_down_type_flav); 
            isFilled_down_type = true;
 
         }
@@ -137,7 +137,9 @@ void Fitting_Response::SaveProfile(TString sample){
 void Fitting_Response::FitProfile(TString sample){
  
   TString fileName = std::getenv("TSCorrOutRootDir");
-  fileName += Form("%s_%s.root","jetPt_vs_response",sample.Data());
+  fileName += "response_histograms_";
+  fileName += sample;
+  fileName += ".root";
 
   TFile* inputFile = new TFile(fileName,"READ");
   if(inputFile->IsZombie()){
@@ -153,7 +155,7 @@ void Fitting_Response::FitProfile(TString sample){
   Double_t par[NUM_PAR], best_par[NUM_PAR], chi2, best_chi2, NDF, best_NDF;
   TString fitting_method, best_fitting_method;
 
-  TF1 *fitFcn = new TF1("fitFcn",ResponseFittingFunction,0.,300.,NUM_PAR);
+  TF1 *fitFcn = new TF1("fitFcn",ResponseFittingFunction,20.,300.,NUM_PAR);
 
   if(MapProfile.size()!=0){
     cout << "WARNING  :    MapProfile is not empty!!!" << endl;
@@ -163,8 +165,10 @@ void Fitting_Response::FitProfile(TString sample){
     for(map<TString,TFormula*>::iterator it_flav=flavour.begin(); it_flav!=flavour.end(); it_flav++){
     for(map<TString,TFormula*>::iterator it_eta=etaBin.begin(); it_eta!=etaBin.end(); it_eta++){
       TString name = Form("%s_%s_%s",it_res->first.Data(),it_flav->first.Data(),it_eta->first.Data());
-      MapProfile[name] = (TProfile*)inputFile->Get(name);
+      MapProfile[name] = (TProfile*)inputFile->Get("response_profile/" + name);
       cout << ">> FitProfile  :    " << name << "  is loaded" << endl;
+      MapProfile[name+"_nocut"] = (TProfile*)inputFile->Get("response_profile_nocut/" + name);
+      cout << ">> FitProfile  :    " << name +"_nocut" << "  is loaded" << endl;
     }
     }
     }
@@ -179,19 +183,23 @@ void Fitting_Response::FitProfile(TString sample){
 
     TString name = Form("%s_%s_%s",it_res->first.Data(),it_flav->first.Data(),it_eta->first.Data());
     MapProfile[name]->GetYaxis()->SetRangeUser(-0.5,0.5);
-    MapProfile[name]->GetYaxis()->SetTitle("(True parton pT - Jet pT)/Jet pT");
+    TString x_name = it_res->first;
+    x_name.ReplaceAll("Pt","P_{T}");
+    x_name.ReplaceAll("Et","E_{T}");
+    MapProfile[name]->GetYaxis()->SetTitle(Form("(True parton %s - Jet %s)/Jet %s",x_name.Data(),x_name.Data(),x_name.Data()));
     MapProfile[name]->GetXaxis()->SetRangeUser(18.,300.);
-    MapProfile[name]->GetXaxis()->SetTitle("Jet pT [GeV]");
+    MapProfile[name]->GetXaxis()->SetTitle(Form("Jet %s [GeV]",x_name.Data()));
 
     //TODO: different colors for udscb, udsc, uds, c, b
     if(it_flav->second->Eval(5))
       fitFcn->SetLineColor(6);
     else if(it_flav->second->Eval(4))
       fitFcn->SetLineColor(8);
-    else if(it_flav->second->Eval(3))
+    else 
       fitFcn->SetLineColor(9);
 
     fitFcn->SetLineWidth(3);
+
     best_chi2=-999; // initialize best chi2
     fitting_method="Q0";
     MapProfile[name]->Fit("fitFcn",fitting_method,"ep");
@@ -213,13 +221,15 @@ void Fitting_Response::FitProfile(TString sample){
     MapProfile[name]->Fit("fitFcn",fitting_method,"ep");
     UpdateBestParameter(fitFcn,par,best_par,chi2,best_chi2,NDF,best_NDF, fitting_method, best_fitting_method);
 
-    //fitting_method="QL0";
-    //MapProfile[name]->Fit("fitFcn",fitting_method,"ep");
-    //UpdateBestParameter(fitFcn,par,best_par,chi2,best_chi2,NDF,best_NDF, fitting_method, best_fitting_method);
+    /*
+    fitting_method="QL0";
+    MapProfile[name]->Fit("fitFcn",fitting_method,"ep");
+    UpdateBestParameter(fitFcn,par,best_par,chi2,best_chi2,NDF,best_NDF, fitting_method, best_fitting_method);
 
-    //fitting_method="QWL0";
-    //MapProfile[name]->Fit("fitFcn",fitting_method,"ep");
-    //UpdateBestParameter(fitFcn,par,best_par,chi2,best_chi2,NDF,best_NDF, fitting_method, best_fitting_method);
+    fitting_method="QWL0";
+    MapProfile[name]->Fit("fitFcn",fitting_method,"ep");
+    UpdateBestParameter(fitFcn,par,best_par,chi2,best_chi2,NDF,best_NDF, fitting_method, best_fitting_method);
+    */
 
     fitFcn->SetParameters(best_par);
     fitFcn->SetChisquare(best_chi2); 
@@ -237,10 +247,16 @@ void Fitting_Response::FitProfile(TString sample){
     fitFcn -> Draw("same");
 
     TString save_dir = std::getenv("TSCorrOutImgDir");
-    save_dir+=Form("Response_profile_%s.pdf",sample.Data());
-
+    save_dir+=Form("Response_profile_%s_%s.pdf",name.Data(),sample.Data());
     c->SaveAs(save_dir);
-    fout << name << "\t\t" << fitFcn->GetExpFormula() << endl;
+
+    fitFcn->GetParameters(par);
+    TString out_formula = ResponseFittingFunction();
+    out_formula = Form(out_formula.Data(),par[0],par[1],par[2],par[3]);
+    out_formula.ReplaceAll("+-","-");
+    fout << name << "\t\t" << out_formula << endl;
+ 
+
 
   }
   }
