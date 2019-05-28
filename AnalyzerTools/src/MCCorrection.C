@@ -680,6 +680,9 @@ double MCCorrection::DiLeptonTrg_SF(TString IdKey0,TString IdKey1,const vector<L
     cout<<"[MCCorrection::DiLeptonTrg_SF] only dilepton algorithm"<<endl;
     return 1;
   }
+
+  if(IdKey0 == "Default" && IdKey1 == "Default") return 1.;
+
   //cout<<"DiLeptonTrg: pt0 "<<leps[0]->Pt()<<endl;
   std::map< TString, TH2F* > map_hist_Lepton;
   if(leps[0]->LeptonFlavour()==Lepton::MUON){

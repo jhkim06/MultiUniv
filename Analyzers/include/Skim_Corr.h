@@ -1,11 +1,13 @@
-#ifndef Skim_DiLep_h
-#define Skim_DiLep_h
+#ifndef Skim_Corr_h
+#define Skim_Corr_h
 
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 #include "Definitions.h"
+#include "DIY.h"
+#include "RocCorrUtil.h"
 
-class Skim_DiLep : public AnalyzerCore {
+class Skim_Corr : public AnalyzerCore {
 
 public:
 
@@ -13,8 +15,8 @@ public:
   void executeEventFromParameter(AnalyzerParameter param);
   void executeEvent();
 
-  Skim_DiLep();
-  ~Skim_DiLep();
+  Skim_Corr();
+  ~Skim_Corr();
 
   TTree *newtree;
 
@@ -22,13 +24,9 @@ public:
 
 private:
 
+  vector<Gen> gens;
+  RocCorrUtil *RocUtil;
 
-  int IsMuMu;
-  int IsElEl;
-  int passIso; // for ABCD method, MuMu pass isolation requirement
-  int passAntiIso; // for ABCD method, MuMu pass anti-isolation requirement
-  int passAntiIso_Up; // for ABCD method
-  int passAntiIso_Do; // for ABCD method
 
   //RootHelper rootHelp;
   double DiLepTrg_SF(TString Leg0Key, TString Leg1Key, const vector<Lepton*>& leps, int sys);
@@ -51,6 +49,7 @@ private:
   std::vector<Muon> muons;
   std::vector<Electron> electrons;
   std::vector<Lepton*> leps;
+
 
   double (MCCorrection::*LeptonID_SF)(TString,double,double,int);
   double (MCCorrection::*LeptonISO_SF)(TString,double,double,int);
@@ -93,6 +92,12 @@ private:
   int num_tight_mu;
   int num_veto_el;
   int num_medi_el;
+
+  // New Trees
+  double oldSf, oldSf_Err;
+  double newSf, newSf_Err;
+  std::vector<double> muon_roch_sf_old, muon_roch_sf_err_old;
+  std::vector<double> muon_roch_sf_err;
 };
 
 

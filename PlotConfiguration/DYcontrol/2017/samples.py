@@ -24,37 +24,38 @@ samples['DYJets'] = {
 #    'weight' :McWeight,
 #    }
 #
-#samples['TTLL_powheg'] = {
-#    'skim'   :'', # use default skim defined in configuration.py
-#    'weight' :McWeight,
-#    }
-#
-#samples['WJets_MG'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['WW_pythia'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['WZ_pythia'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['ZZ_pythia'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['DoubleEG'] = {
-#    'skim'   :'',
-#    'weight' :'1',
-#    }
-#
+samples['TTLL_powheg'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'weight' :McWeight,
+    }
+
+samples['WJets_MG'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['WW_pythia'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['WZ_pythia'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['ZZ_pythia'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['DoubleEG'] = {
+    'skim'   :'',
+    'weight' :'1',
+    }
+
 #samples['DoubleMuon'] = {
+#    'skim'   :'',
 #    'weight' :'1',
 #    }
 #--------------------    

@@ -16,5 +16,6 @@
 #pragma link C++ class GenMatching_CHToCB+;
 #pragma link C++ class ABCDNormalizationEstimator+;
 #pragma link C++ class TSCorrection+;
+#pragma link C++ class RocCorrUtil+;
 
 #endif

@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include "RoccoR.h"
 
+
 const double CrystalBall::pi = 3.14159;
 const double CrystalBall::sqrtPiOver2 = sqrt(CrystalBall::pi/2.0);
 const double CrystalBall::sqrt2 = sqrt(2.0);
@@ -126,7 +127,10 @@ void RoccoR::reset(){
 
 void RoccoR::init(std::string filename){
     std::ifstream in(filename.c_str());
-    if(in.fail()) throw std::invalid_argument("RoccoR::init could not open file " + filename);
+    if(in.fail()){
+      throw std::invalid_argument("RoccoR::init could not open file " + filename);
+    }
+
 
     int RMIN(0), RTRK(0), RETA(0);
     std::vector<double> BETA;

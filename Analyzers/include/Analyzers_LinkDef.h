@@ -12,11 +12,12 @@
 #pragma link C++ class SKFlatValidation+;
 #pragma link C++ class SkimTree_LRSMHighPt+;
 #pragma link C++ class Skim_Leptons+;
+#pragma link C++ class Skim_Corr+;
 #pragma link C++ class Skim_DiLep+;
 #pragma link C++ class SMP_Validation+;
 #pragma link C++ class Skim_ISRUnfoldInput+;
 #pragma link C++ class Skim_FakeEst+;
-#pragma link C++ class Module_Efficiency+;
+#pragma link C++ class Skim_Efficiency+;
 
 #pragma link C++ class Skim_TSCorrTree+;
 #pragma link C++ class Skim_TTSemiLep+;

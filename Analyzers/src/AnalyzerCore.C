@@ -59,12 +59,15 @@ Event AnalyzerCore::GetEvent(){
 
 }
 
-std::vector<Muon> AnalyzerCore::GetAllMuons(bool update_roc, int s, int m){
+std::vector<Muon> AnalyzerCore::GetAllMuons(bool apply_roc, bool update_roc, int s, int m){
 
   std::vector<Muon> out;
   for(unsigned int i=0; i<muon_pt->size(); i++){
 
     Muon mu;
+    Muon mu_temp;
+    mu_temp.SetPtEtaPhiM(muon_pt->at(i), muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
+    mu_temp.SetCharge(muon_charge->at(i));
 
     mu.SetCharge(muon_charge->at(i));
     mu.SetMiniAODPt(muon_pt->at(i));
@@ -73,20 +76,24 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(bool update_roc, int s, int m){
 
     double rc = muon_roch_sf->at(i);
     double rc_err = muon_roch_sf_up->at(i)-rc;
-    mu.SetMomentumScaleAndError(rc, rc_err);
-    mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i)); // apply correction factor stored in the ntuple
+ 
 
     if(update_roc){
-      UpdateMumentumScaleAndError(mu, s, m); // set momentum correction on the fly
-      rc = mu.MomentumScale();
-      rc_err = mu.MomentumScaleError();
-      mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
+      std::vector<Gen> gens = GetGens();
+      RocUtil->CalcScaleAndError(mu_temp, s, m, event, gens, IsDATA);
+      rc = mu_temp.MomentumScale();
+      rc_err = mu_temp.MomentumScaleError();
     }
+
+
+    mu.SetMomentumScaleAndError(rc, rc_err);
+    if(apply_roc) mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i)); // apply correction as stored in the ntuple
+    else mu.SetPtEtaPhiM(muon_pt->at(i), muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
 
     //==== TuneP
     //==== Apply rochester correction for pt<200 GeV
     double this_tuneP_pt = muon_TuneP_pt->at(i);
-    if(this_tuneP_pt < 200.) this_tuneP_pt *= rc;
+    if(this_tuneP_pt < 200. && apply_roc) this_tuneP_pt *= rc;
     mu.SetTuneP4(this_tuneP_pt, muon_TuneP_ptError->at(i), muon_TuneP_eta->at(i), muon_TuneP_phi->at(i), muon_TuneP_charge->at(i));
 
     mu.SetdXY(muon_dxyVTX->at(i), muon_dxyerrVTX->at(i));
@@ -111,84 +118,14 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(bool update_roc, int s, int m){
 
   }
 
-  std::sort(out.begin(),out.end(),PtComparing);
+  //std::sort(out.begin(),out.end(),PtComparing); No sorting!!!
   return out;
 
 }
+//                                              Roc set   nmembers
+std::vector<Muon> AnalyzerCore::GetMuons(TString id, double ptmin, double fetamax, bool apply_roc, bool update_roc, int s, int m){
 
-void AnalyzerCore::UpdateMumentumScaleAndError(Muon& mu, int s, int m){
-
-    // copy & pasted from SKFlatMaker: https://github.com/CMSSNU/SKFlatMaker/blob/Run2Legacy_v3/SKFlatMaker/src/SKFlatMaker.cc#L1815
-    double this_roccor = 1.;
-    double this_roccor_err = 0.;
-
-    if(mu.Pt()>10.){
-
-      //==== Data
-      if(IsDATA){
-        this_roccor = rc.kScaleDT(mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), 0, 0); //data
-        this_roccor_err = rc.kScaleDTerror(mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi());
-        mu.SetMomentumScaleAndError(this_roccor, this_roccor_err);
-      }
-      else{
-
-	  gRandom->SetSeed( event );
-          double u = gRandom->Rndm();
-
-          // check there is a matched gen muon then use the gen pt in kSpreadMC() 
-          vector<Gen> gens = GetGens();
-          int counter=0;
-          double this_genpt=-999.;
-          double mindr = 0.2;
-          for(unsigned int i=0; i<gens.size(); i++){
-
-            Gen gen = gens.at(i);
-
-            if( fabs(gen.PID()) != 13 ) continue;
-            if( gen.Status() != 1 ) continue;
-
-            double this_dr = gen.DeltaR( mu );
-            if( this_dr < mindr ){
-              this_genpt = gen.Pt();
-              mindr = this_dr;
-            }
-         }
-
-	 /*
-	 -------------------------------------------------------------------------------------
-	 Following variations are provided to estimate uncertainties.
-	 -------------------------------------------------------------------------------------
-	          set        nmembers    comment
-	 Default  0          1           default, reference based on madgraph sample, with adhoc ewk (sw2eff and Z width) and Z pt (to match data) weights.
-	 Stat     1          100         pre-generated stat. replicas;
-	 Zpt      2          1           derived without reweighting reference pt to data.
-	 Ewk      3          1           derived without applying ad-hoc ewk weights
-	 deltaM   4          1           one representative set for alternative profile deltaM mass window
-	 Ewk2     5          1           weight reference from constant to s-dependent Z width
-	 -------------------------------------------------------------------------------------
-	 For statistical replicas, std. dev. gives uncertainty.
-	 For the rest, difference wrt the cental is assigned as syst. error.
-	 Total uncertainty is calculated as a quadrature sum of all components.
-	 -------------------------------------------------------------------------------------
-	 -------------------------------------------------------------------------------------
-	 */
-
-         if(this_genpt>0){
-           this_roccor     = rc.kSpreadMC     (mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), this_genpt, s, m);
-           this_roccor_err = rc.kSpreadMCerror(mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), this_genpt);
-         }
-         else{
-           this_roccor     = rc.kSmearMC     (mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), mu.GetTrackerLayersWithMeasurement(), u, s, m);
-           this_roccor_err = rc.kSmearMCerror(mu.Charge(), mu.Pt(), mu.Eta(), mu.Phi(), mu.GetTrackerLayersWithMeasurement(), u);
-         }
-         mu.SetMomentumScaleAndError(this_roccor, this_roccor_err);
-      }
-    }
-}
-
-std::vector<Muon> AnalyzerCore::GetMuons(TString id, double ptmin, double fetamax, bool update_roc, int s, int m){
-
-  std::vector<Muon> muons = GetAllMuons(update_roc, s, m);
+  std::vector<Muon> muons = GetAllMuons(apply_roc, update_roc, s, m);
   std::vector<Muon> out;
   for(unsigned int i=0; i<muons.size(); i++){
     Muon this_muon=muons.at(i);
@@ -852,6 +789,7 @@ bool AnalyzerCore::PassMETFilter(){
 
 }
 
+//initializeAnalyzerTools: executed by root macro before Loop()
 void AnalyzerCore::initializeAnalyzerTools(){
 
   //==== MCCorrection
@@ -870,8 +808,22 @@ void AnalyzerCore::initializeAnalyzerTools(){
   cfEst->ReadHistograms();
 
   TString data_roc = getenv("ROC_DIR");
-  data_roc+="v3";
-  rc.init(data_roc.Data());
+  if(DataYear == 2016){
+    data_roc+="/V3/RoccoR2016.txt";
+  }
+  else if(DataYear == 2017){
+    data_roc+="/V3/RoccoR2017.txt";
+  }
+  else if(DataYear == 2018){
+    data_roc+="/V3/RoccoR2018.txt";
+  }
+  else{
+       cout << DataYear << " is not provided by ROC" << endl;
+       exit(EXIT_FAILURE); 
+  }
+
+  RocUtil = new RocCorrUtil(data_roc);
+  //RocUtil.init(data_roc.Data());
 
 }
 

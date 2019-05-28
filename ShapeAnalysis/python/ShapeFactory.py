@@ -261,12 +261,12 @@ class ShapeFactory:
     print 'pdfW treeName', pdfW
 
     numTree = 0
-    bigNameUp = 'histo_' + sampleName + 'Up_' + cutName + '_' + variableName
-    bigNameDo = 'histo_' + sampleName + 'Do_' + cutName + '_' + variableName
-    hTotalUp = self._makeshape(bigNameUp, rng)
-    hTotalDo = self._makeshape(bigNameDo, rng)
-
-    if pdfW is 'PDFWeights_Scale':
+    if pdfW is 'PDFWeights_AlphaS':
+      bigNameUp = 'histo_' + sampleName + 'Up_' + cutName + '_' + variableName
+      bigNameDo = 'histo_' + sampleName + 'Do_' + cutName + '_' + variableName
+      hTotalAlphaUp = self._makeshape(bigNameUp, rng)
+      hTotalAlphaDo = self._makeshape(bigNameDo, rng)
+    elif pdfW is 'PDFWeights_Scale':
       bigNameAUp = 'histo_' + sampleName + 'AUp_' + cutName + '_' + variableName
       bigNameADo = 'histo_' + sampleName + 'ADo_' + cutName + '_' + variableName
       hTotalAUp = self._makeshape(bigNameAUp, rng)
@@ -279,6 +279,14 @@ class ShapeFactory:
       bigNameABDo = 'histo_' + sampleName + 'ABDo_' + cutName + '_' + variableName
       hTotalABUp = self._makeshape(bigNameABUp, rng)
       hTotalABDo = self._makeshape(bigNameABDo, rng)
+    elif pdfW is 'PDFWeights_Error':
+      hTotal_Err = [None] * 101
+      for idx in xrange(101):
+        bigName = 'histo_' + sampleName + str(idx) +'_' + cutName + '_' + variableName
+        hTotal_Err[idx] = self._makeshape(bigName, rng)
+    else:
+      print 'This pdfW', pdfW, 'is not ready, exiting...'
+      exit()
 
     for tree in trees :
       #myBr = tree.GetBranch(pdfW)
@@ -303,6 +311,7 @@ class ShapeFactory:
       ################################################
       if pdfW is 'PDFWeights_AlphaS':
 	print 'checking size of PDFWeights_AlphaS'
+	size = 0
         for event in tree:
   	  size = event.PDFWeights_AlphaS.size()
 	  break
@@ -311,7 +320,7 @@ class ShapeFactory:
           totalWeightDo = "(" + totalWeight + ") * (PDFWeights_AlphaS[0])" 
           totalWeightUp = "(" + totalWeight + ") * (PDFWeights_AlphaS[1])"
 	else :
-	  print 'PDFWeights_AlphaS size is not 2, Up and Down is the same to norminal'
+	  print 'PDFWeights_AlphaS size is not 2, let us make Up and Down is the same to norminal'
           totalWeightDo = totalWeight 
           totalWeightUp = totalWeight
 
@@ -346,16 +355,20 @@ class ShapeFactory:
         if (numTree == 0) :
           shapeUp.SetTitle(bigNameUp)
           shapeUp.SetName(bigNameUp)
-          hTotalUp = shapeUp
+          hTotalAlphaUp = shapeUp
 
           shapeDo.SetTitle(bigNameDo)
           shapeDo.SetName(bigNameDo)
-          hTotalDo = shapeDo
+          hTotalAlphaDo = shapeDo
         else :
 	  cloneUp = shapeUp.Clone()
 	  cloneDo = shapeDo.Clone()
-          hTotalUp.Add(cloneUp)
-          hTotalDo.Add(cloneDo)
+          hTotalAlphaUp.Add(cloneUp)
+          hTotalAlphaDo.Add(cloneDo)
+	  cloneUp.Delete()
+	  cloneDo.Delete()
+	shapeUp.Delete()
+	shapeDo.Delete()
 
       #####################################################
       #  PDFWeights_Scale
@@ -365,11 +378,12 @@ class ShapeFactory:
 	# as recommanded: https://indico.cern.ch/event/494682/contributions/1172505/attachments/1223578/1800218/mcaod-Feb15-2016.pdf
 
 	print 'checking size of PDFWeights_Scale'
-        #for event in tree:
-  	#  size = event.PDFWeights_Scale.size()
-	#  break
-	tree.GetEntry(0)
-	size = len( tree.PDFWeights_Scale )
+	size = 0
+        for event in tree:
+  	  size = event.PDFWeights_Scale.size()
+	  break
+	#tree.GetEntry(0)
+	#size = len( tree.PDFWeights_Scale )
 	#for idx in xrange(size) :
 	#  if idx == 5 or idx == 7:
 	#    continue
@@ -501,6 +515,18 @@ class ShapeFactory:
           hTotalBDo.Add(cloneBDo)
           hTotalABUp.Add(cloneABUp)
           hTotalABDo.Add(cloneABDo)
+	  cloneAUp.Delete()
+	  cloneADo.Delete()
+	  cloneBUp.Delete()
+	  cloneBDo.Delete()
+	  cloneABUp.Delete()
+	  cloneABDo.Delete()
+	shapeAUp.Delete()
+	shapeADo.Delete()
+	shapeBUp.Delete()
+	shapeBDo.Delete()
+	shapeABUp.Delete()
+	shapeABDo.Delete()
 
       #########################################
       # PDFWeights_Error
@@ -508,8 +534,12 @@ class ShapeFactory:
       # 0-100, 0=> nominal?
       if pdfW is 'PDFWeights_Error':
 	totalW_pdfErr = []
-	tree.GetEntry(0)
-	size = len( tree.PDFWeights_Error )
+	size = 0
+	for event in tree:
+	  size = event.PDFWeights_Error.size()
+	  break
+	#tree.GetEntry(0)
+	#size = len( tree.PDFWeights_Error )
 	print 'PDFWeights_Error size', size
 	if  size > 101:
 	  print 'size of PDFWeights_Error is gt 101, exiting...'
@@ -519,8 +549,6 @@ class ShapeFactory:
 	  totalW_pdfErr.append("(" + totalWeight + ") * (PDFWeights_Error[" + str(idx) + "])")
 	for idx in xrange(101 - size) :
 	  totalW_pdfErr.append("1")
-        if (numTree == 0) :
-	  hTotal = [None] * 101
 	for idx in xrange(101):
 	#  print idx, totalW_pdfErr[idx]
 	  augmented_d = Dtree.Define('totalW_pdfErr'+str(idx), totalW_pdfErr[idx])
@@ -546,22 +574,24 @@ class ShapeFactory:
             bigName = 'histo_' + sampleName + str(idx) +'_' + cutName + '_' + variableName
             shape.SetTitle(bigName)
             shape.SetName(bigName)
-            hTotal[idx] = shape
+            hTotal_Err[idx] = shape
 	  else :
 	    cloneH = shape.Clone()
-	    hTotal[idx].Add(cloneH)
+	    hTotal_Err[idx].Add(cloneH)
 	    cloneH.Delete()
 	  shape.Delete()
 
 
       numTree += 1
+      #Dtree.Delete()
+      #RDF.Delete()
 
       
     # fold if needed
     if doFold == 1 or doFold == 3 :
       if pdfW is 'PDFWeights_AlphaS':
-        self._FoldOverflow (hTotalUp)
-        self._FoldOverflow (hTotalDo)
+        self._FoldOverflow (hTotalAlphaUp)
+        self._FoldOverflow (hTotalAlphaDo)
       if pdfW is 'PDFWeights_Scale':
         self._FoldOverflow (hTotalAUp)
         self._FoldOverflow (hTotalADo)
@@ -571,11 +601,11 @@ class ShapeFactory:
         self._FoldOverflow (hTotalABDo)
       if pdfW is 'PDFWeights_Error':
 	for idx in xrange(101):
-          self._FoldOverflow (hTotal[idx])
+          self._FoldOverflow (hTotal_Err[idx])
     if doFold == 2 or doFold == 3 :
       if pdfW is 'PDFWeights_AlphaS':
-        self._FoldUnderflow (hTotalUp)
-        self._FoldUnderflow (hTotalDo)
+        self._FoldUnderflow (hTotalAlphaUp)
+        self._FoldUnderflow (hTotalAlphaDo)
       if pdfW is 'PDFWeights_Scale':
         self._FoldUnderflow (hTotalAUp)
         self._FoldUnderflow (hTotalADo)
@@ -585,16 +615,16 @@ class ShapeFactory:
         self._FoldUnderflow (hTotalABDo)
       if pdfW is 'PDFWeights_Error':
 	for idx in xrange(101):
-          self._FoldUnderflow (hTotal[idx])
+          self._FoldUnderflow (hTotal_Err[idx])
     
     # go 1d
     if pdfW is 'PDFWeights_AlphaS':
-      hTotalFinalUp = self._h2toh1(hTotalUp)
-      hTotalFinalDo = self._h2toh1(hTotalDo)
-      hTotalFinalUp.SetTitle('histo_' + sampleName+ 'Up')
-      hTotalFinalDo.SetTitle('histo_' + sampleName+ 'Do')
-      hTotalFinalUp.SetName('histo_' + sampleName + 'Up')
-      hTotalFinalDo.SetName('histo_' + sampleName + 'Do')
+      hTotalFinalAlphaUp = self._h2toh1(hTotalAlphaUp)
+      hTotalFinalAlphaDo = self._h2toh1(hTotalAlphaDo)
+      hTotalFinalAlphaUp.SetTitle('histo_' + sampleName+ 'Up')
+      hTotalFinalAlphaDo.SetTitle('histo_' + sampleName+ 'Do')
+      hTotalFinalAlphaUp.SetName('histo_' + sampleName + 'Up')
+      hTotalFinalAlphaDo.SetName('histo_' + sampleName + 'Do')
 
     if pdfW is 'PDFWeights_Scale':
       hTotalFinalAUp = self._h2toh1(hTotalAUp)
@@ -620,11 +650,11 @@ class ShapeFactory:
 
 
     if pdfW is 'PDFWeights_Error':
-      hTotalFinal = [None] * 101
+      hTotalFinalErr = [None] * 101
       for idx in xrange(101):
-        hTotalFinal[idx] = self._h2toh1(hTotal[idx])
-        hTotalFinal[idx].SetTitle('histo_' + sampleName+ str(idx).zfill(3))
-        hTotalFinal[idx].SetName('histo_' + sampleName + str(idx).zfill(3))
+        hTotalFinalErr[idx] = self._h2toh1(hTotal_Err[idx])
+        hTotalFinalErr[idx].SetTitle('histo_' + sampleName+ str(idx).zfill(3))
+        hTotalFinalErr[idx].SetName('histo_' + sampleName + str(idx).zfill(3))
 
     #fix negative (almost never happening)
     # don't do it here by default, because you may have interference that is actually negative!
@@ -635,8 +665,8 @@ class ShapeFactory:
     #
     if fixZeros and 'suppressNegative' in sample.keys() and ( cutName in sample['suppressNegative'] or 'all' in sample['suppressNegative']) : 
       if pdfW is 'PDFWeights_AlphaS':
-        self._fixNegativeBinAndError(hTotalFinalUp)
-        self._fixNegativeBinAndError(hTotalFinalDo)
+        self._fixNegativeBinAndError(hTotalFinalAlphaUp)
+        self._fixNegativeBinAndError(hTotalFinalAlphaDo)
       if pdfW is 'PDFWeights_Scale':
         self._fixNegativeBinAndError(hTotalFinalAUp)
         self._fixNegativeBinAndError(hTotalFinalADo)
@@ -646,12 +676,12 @@ class ShapeFactory:
         self._fixNegativeBinAndError(hTotalFinalABDo)
       if pdfW is 'PDFWeights_Error':
         for idx in xrange(101):
-          self._fixNegativeBinAndError(hTotalFinal[idx])
+          self._fixNegativeBinAndError(hTotalFinalErr[idx])
 
     histoList = []
     if pdfW is 'PDFWeights_AlphaS':
-      histoList.append(hTotalFinalUp)
-      histoList.append(hTotalFinalDo)
+      histoList.append(hTotalFinalAlphaUp)
+      histoList.append(hTotalFinalAlphaDo)
     if pdfW is 'PDFWeights_Scale':
       histoList.append(hTotalFinalAUp)
       histoList.append(hTotalFinalADo)
@@ -661,10 +691,10 @@ class ShapeFactory:
       histoList.append(hTotalFinalABDo)
 
     if pdfW is 'PDFWeights_Error':
-      return hTotalFinal
+      return hTotalFinalErr
     else:
       return histoList
-    #return hTotalFinalUp, hTotalFinalDo
+    #return hTotalFinalAlphaUp, hTotalFinalAlphaDo
 
 
   def _FoldUnderflow(self, h) :
@@ -772,10 +802,14 @@ class ShapeFactory:
 
   def _connectInputs(self, samples, inputDir, skipMissingFiles, friendsDir = None, skimListDir = None):
     listTrees = []
+    tree = TChain(self._treeName)
     for aFile in samples :
-      tree = TChain(self._treeName)
       tree.AddFile(aFile)
-      listTrees.append(tree)
+    listTrees.append(tree)
+    #for aFile in samples :
+    #  tree = TChain(self._treeName)
+    #  tree.AddFile(aFile)
+    #  listTrees.append(tree)
 
     return listTrees
 
