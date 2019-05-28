@@ -179,7 +179,7 @@ void Skim_Efficiency::executeEvent(){
              if(i==0){   
                 Mu_IdSF[it->first]     *= mcCorr->MuonID_SF(MuonID_key, muons.at(i).Eta(), muons.at(i).MiniAODPt(),  0); 
                 Mu_IsoSF[it->first]    *= mcCorr->MuonISO_SF(MuonIso_key, muons.at(i).Eta(), muons.at(i).MiniAODPt(),  0); 
-                Mu_TriggerSF[it->first+Mu_IdSF_Trigger[it->first]] *= 1.;  // TODO make a function to get single electron trigger SF
+                Mu_TriggerSF[it->first+Mu_IdSF_Trigger[it->first]] *= mcCorr->MuonTrigger_SF(MuonID_key,Mu_IdSF_Trigger[it->first], muons, 0);  // TODO currently, only for IsoMu24, IsoMu27, Mu50
              }   
 
              if(i==1){   
