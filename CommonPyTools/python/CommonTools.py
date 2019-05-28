@@ -127,4 +127,11 @@ def GetOutDir(OutBase, SampleKey, DataPeriod):
   else:
     OutDir = OutBase + '/' + SampleKey
   return OutDir
-  
+ 
+
+def IsThis( aThis ):
+  if not os.path.exists(aThis):
+    print aThis, 'does not exixt'
+    return False
+  else:
+    return True
