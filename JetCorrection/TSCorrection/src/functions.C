@@ -35,6 +35,14 @@ Double_t SigmaErrorFittingFunction(Double_t *x, Double_t *par) {
   return exp(par[0]+par[1]*x[0]+par[2]/x[0])+par[3];
 } // end of function
 
+TString ResponseFittingFunction(){
+  return "%f+%f*sqrt(x)+%f*x+%f/x";
+} // end of function
+
+TString SigmaErrorFittingFunction(){
+ return "exp(%f+%f*x+%f/x)+%f";
+} // end of function
+
 TString Double_t_to_TString(Double_t num){
   std::stringstream s;
   s << fixed << setprecision(2) << num; // two decimal place precision.

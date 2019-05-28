@@ -9,12 +9,20 @@ TS_Correction_Core::TS_Correction_Core(){
 
   flavour["uds"] = new TFormula("uds","abs(x[0])<4");
   flavour["udsc"] = new TFormula("udsc","abs(x[0])<5");
+  flavour["c"] = new TFormula("b","abs(x[0])==4");
   flavour["b"] = new TFormula("b","abs(x[0])==5");
   flavour["udscb"] = new TFormula("b","1");
 
-  ptBin["pt_20to40"] = new TFormula("pt_20to40","x[0]>=20&&x[0]<40");
-  ptBin["pt_40to50"] = new TFormula("pt_40to50","x[0]>=40&&x[0]<50");
-  ptBin["pt_50to60"] = new TFormula("pt_50to60","x[0]>=50&&x[0]<60");
+  //ptBin["pt_20to25"] = new TFormula("pt_20to25","x[0]>=20&&x[0]<25");
+  //ptBin["pt_25to30"] = new TFormula("pt_25to30","x[0]>=25&&x[0]<30");
+  ptBin["pt_30to32.5"] = new TFormula("pt_30to32.5","x[0]>=30&&x[0]<32.5");
+  ptBin["pt_32.5to35"] = new TFormula("pt_32.5to35","x[0]>=32.5&&x[0]<35");
+  ptBin["pt_35to37.5"] = new TFormula("pt_35to37.5","x[0]>=35&&x[0]<37.5");
+  ptBin["pt_37.5to40"] = new TFormula("pt_37.5to40","x[0]>=37.5&&x[0]<40");
+  ptBin["pt_40to45"] = new TFormula("pt_40to45","x[0]>=40&&x[0]<45");
+  ptBin["pt_45to50"] = new TFormula("pt_45to50","x[0]>=45&&x[0]<50");
+  ptBin["pt_50to55"] = new TFormula("pt_50to55","x[0]>=50&&x[0]<55");
+  ptBin["pt_55to60"] = new TFormula("pt_55to60","x[0]>=55&&x[0]<60");
   ptBin["pt_60to70"] = new TFormula("pt_60to70","x[0]>=60&&x[0]<70");
   ptBin["pt_70to80"] = new TFormula("pt_70to80","x[0]>=70&&x[0]<80");
   ptBin["pt_80to90"] = new TFormula("pt_80to90","x[0]>=80&&x[0]<90");
@@ -32,7 +40,7 @@ TS_Correction_Core::TS_Correction_Core(){
   etaBin["eta_1.392"] = new TFormula("eta_1.392","abs(x[0])>1.131&&abs(x[0])<1.392");
   etaBin["eta_1.74"] = new TFormula("eta_1.74","abs(x[0])>1.392&&abs(x[0])<1.74");
   etaBin["eta_2.4"] = new TFormula("eta_2.4","abs(x[0])>1.74&&abs(x[0])<2.4");
-
+ 
   this->SetHistNameVector();
 
 } // end of function

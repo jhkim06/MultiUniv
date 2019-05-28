@@ -9,12 +9,10 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   //=================================
    
 
-  if( HasFlag("TTSemiLepMu")){
+  if( HasFlag("TTSemiLep")){
     cout<<"[Skim_TTSemiLep::initializeAnalyzer] TTSemiLepMu Selection"<<endl;
   }
-  else if( HasFlag("TTSemiLepEl")){
-    cout<<"[Skim_TTSemiLep::initializeAnalyzer] TTSemiLepEl Selection"<<endl;
-  }
+
   /*
   else if( HasFlag("MuOrEl")){
     cout<<"[Skim_TTSemiLep::initializeAnalyzer] Mu or El Selection"<<endl;
@@ -88,11 +86,18 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   //b_trgSF = newtree->Branch("trgSF", &trgSF,"trgSF/F");
   //b_trgSF_Up = newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/F");
   //b_trgSF_Do = newtree->Branch("trgSF_Do", &trgSF_Do,"trgSF_Do/F");
-
+  /*
   newtree->Branch("initial_dijet_m", &initial_dijet_m,"initial_dijet_m/D");
   newtree->Branch("fitted_dijet_m", &fitted_dijet_m,"fitted_dijet_m/D");
   newtree->Branch("best_chi2", &best_chi2,"best_chi2/D");
+  */
   newtree->Branch("n_bjet_deepcsv_m_noSF", &n_bjet_deepcsv_m_noSF,"n_bjet_deepcsv_m_noSF/I");
+  newtree->Branch("BTagSF", &BTagSF,"BTagSF/D");
+  newtree->Branch("BTagSF_Up", &BTagSF_Up,"BTagSF_Up/D");
+  newtree->Branch("BTagSF_Do", &BTagSF_Do,"BTagSF_Do/D");
+  newtree->Branch("MisTagSF", &MisTagSF,"MisTagSF/D");
+  newtree->Branch("MisTagSF_Up", &MisTagSF_Up,"MisTagSF_Up/D");
+  newtree->Branch("MisTagSF_Do", &MisTagSF_Do,"MisTagSF_Do/D");
 
 
   // clear vector residual
@@ -129,8 +134,13 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   for(unsigned int i=0; i<SingleElTrgs.size(); i++){
     cout << "\t" << SingleElTrgs.at(i) << endl;
   }
+  // setup btagger
+  std::vector<Jet::Tagger> taggers = {Jet::DeepCSV};
+  std::vector<Jet::WP> wps ={Jet::Medium};
 
-  fitter_driver = new TKinFitterDriver(); 
+  SetupBTagger(taggers, wps, true, true);
+
+  //fitter_driver = new TKinFitterDriver(DataYear); 
 }
 
 void Skim_TTSemiLep::executeEvent(){
@@ -190,11 +200,19 @@ void Skim_TTSemiLep::executeEvent(){
   //newtree->SetBranchAddress("diLep_m",&diLep_m);
   //newtree->SetBranchAddress("diLep_pt",&diLep_pt);
   //newtree->SetBranchAddress("diLep_eta",&diLep_eta);
-
+  /*
   newtree->SetBranchAddress("initial_dijet_m",&initial_dijet_m);
   newtree->SetBranchAddress("fitted_dijet_m",&fitted_dijet_m);
   newtree->SetBranchAddress("best_chi2",&best_chi2);
+  */
   newtree->SetBranchAddress("n_bjet_deepcsv_m_noSF",&n_bjet_deepcsv_m_noSF);
+  newtree->SetBranchAddress("BTagSF", &BTagSF);
+  newtree->SetBranchAddress("BTagSF_Up", &BTagSF_Up);
+  newtree->SetBranchAddress("BTagSF_Do", &BTagSF_Do);
+  newtree->SetBranchAddress("MisTagSF", &MisTagSF);
+  newtree->SetBranchAddress("MisTagSF_Up", &MisTagSF_Up);
+  newtree->SetBranchAddress("MisTagSF_Do", &MisTagSF_Do);
+
   FillHist("CutFlow",5,1,30,0,30);
   // Filters ====================
   //if( HasFlag("MetFilt"))if(!PassMETFilter()) return;
@@ -217,8 +235,8 @@ void Skim_TTSemiLep::executeEvent(){
     IsEl = 1;
   }
   if(IsMu != 1 && IsEl != 1) return;
-  if(HasFlag("TTSemiLepMu") )if(IsMu !=1 ) return;
-  if(HasFlag("TTSemiLepEl") )if(IsEl !=1 ) return;
+  //if(HasFlag("TTSemiLepMu") )if(IsMu !=1 ) return;
+  //if(HasFlag("TTSemiLepEl") )if(IsEl !=1 ) return;
   //=========================
   // check ID and isolation condition
   //=========================
@@ -379,6 +397,7 @@ void Skim_TTSemiLep::executeEvent(){
         exit(EXIT_FAILURE);
       }
     }
+    /*
     //FIXME: trgSF for SingleLep
     //cout<<"Skim pt0: "<<leps[0]->Pt()<<endl;
     trgSF      = mcCorr->DiLeptonTrg_SF(trgSF_key0, trgSF_key1, leps,  0);
@@ -420,15 +439,14 @@ void Skim_TTSemiLep::executeEvent(){
       }
       //cout<<"scale up and do: "<<pdf_scaleUp<<" "<<pdf_scaleDo<<endl;
     }
-
+    */
   }
-
   //===============================
   // Gen Info
   // status code: http://home.thep.lu.se/~torbjorn/pythia81html/ParticleProperties.html
   // genParticles status code: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePATMCMatchingExercise 
   //===============================
-
+/*
   //XXX: Do I need this?
   ZPtCor = 1;
   if(MCSample.Contains("DYJets") || MCSample.Contains("DYJets10to50_MG")){
@@ -470,7 +488,7 @@ void Skim_TTSemiLep::executeEvent(){
 
   // b tag test
   //
-
+*/
   //==== Test btagging code
   //==== add taggers and WP that you want to use in analysis
   std::vector<Jet::Tagger> vtaggers;
@@ -483,8 +501,9 @@ void Skim_TTSemiLep::executeEvent(){
   SetupBTagger(vtaggers,v_wps, true, true);
 
   vector<Jet> this_AllJets = GetAllJets();
-  vector<Jet> jets = SelectJets(this_AllJets, "tight", 20., 2.4);
-
+  vector<Jet> jets = SelectJets(this_AllJets, "tight", 30., 2.4);
+  jets = JetsVetoLeptonInside(jets, electrons, muons);
+  std::sort(jets.begin(), jets.end(), PtComparing);
   if(jets.size()<4) return;
   FillHist("CutFlow",10,1,30,0,30);
 
@@ -503,6 +522,17 @@ void Skim_TTSemiLep::executeEvent(){
   //require more than 2b tagged jets
   if(n_bjet_deepcsv_m_noSF < 2) return;
   FillHist("CutFlow",11,1,30,0,30);
+
+  float tmp_btagsf=1., tmp_mistagsf=1.;
+  BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 0, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
+  BTagSF = tmp_btagsf;
+  MisTagSF = tmp_mistagsf;
+  BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 1, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
+  BTagSF_Up = tmp_btagsf;
+  MisTagSF_Up = tmp_mistagsf;
+  BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, -1, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
+  BTagSF_Do = tmp_btagsf;
+  MisTagSF_Do = tmp_mistagsf;
   //
   //for(int i=0;i<(int)PDFWeights_Scale->size();i++){
   //  cout<<"Scale: "<<i<<" "<<PDFWeights_Scale->at(i)<<endl;
@@ -511,10 +541,15 @@ void Skim_TTSemiLep::executeEvent(){
   //b_trgSF->Fill();
   //b_trgSF_Up->Fill();
   //b_trgSF_Do->Fill();
+  if(jets.size()!=btag_vector_noSF.size()){
+    cout <<"[Skim_TTSemiLep::executeEvent] check jet vector size" << endl;
+    exit(EXIT_FAILURE);
+  }
   
     ///////////////////////////////////////////////////////////
    // !!!!!!!!!!!!!!!!!! execute fitter !!!!!!!!!!!!!!!!!!! //
   ///////////////////////////////////////////////////////////
+  /*
   if(IsMu){
     fitter_driver->SetAllObjects(jets, 
                                  btag_vector_noSF,
@@ -529,18 +564,14 @@ void Skim_TTSemiLep::executeEvent(){
                                  (TLorentzVector)evt->GetMETVector()
                                 );
   }
-  fitter_driver->FindBestChi2Fit(true);
-  if(fitter_driver->GetStatus()==0){ //0 means fit converge
+  fitter_driver->FindBestChi2Fit(false);
+  if(fitter_driver->GetStatus()!=0) return; //0 means fit converge
+  FillHist("CutFlow",12,1,30,0,30);
 
-    initial_dijet_m = fitter_driver->GetBestInitialDijetMass();
-    fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
-    best_chi2 = fitter_driver->GetChi2();
-  }
-  else{
-    initial_dijet_m = -1;
-    fitted_dijet_m = -1;
-    best_chi2 = -1;
-  }
+  initial_dijet_m = fitter_driver->GetBestInitialDijetMass();
+  fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
+  best_chi2 = fitter_driver->GetChi2();
+  */
   newtree->Fill();
 
 
@@ -557,7 +588,7 @@ Skim_TTSemiLep::Skim_TTSemiLep(){
 }
 
 Skim_TTSemiLep::~Skim_TTSemiLep(){
- delete fitter_driver;
+ //delete fitter_driver;
 }
 
 void Skim_TTSemiLep::WriteHist(){

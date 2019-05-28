@@ -116,15 +116,14 @@ bool Muon::isAntiIso(int syst){
   double reliso = RelIso();
   double reliso_min=0.17; //TODO: need discussion
   double reliso_max=0.25;
-  
-  if(syst!=0){
-     if(syst==1){ reliso_min = 0.18; }//TODO: need discussion
-     else if(syst==-1){ reliso_min = 0.16; }//TODO: need discussion
-     else{
-       cout << "[Muon::isAntiIso] No syst flag : " << syst << endl;
-       exit(EXIT_FAILURE);
-       return false;
-     }
+
+  if(syst==0){ }
+  else if(syst==1){ reliso_min = 0.18; }//TODO: need discussion
+  else if(syst==-1){ reliso_min = 0.16; }//TODO: need discussion
+  else{
+    cout << "[Muon::isAntiIso] No syst flag : " << syst << endl;
+    exit(EXIT_FAILURE);
+    return false;
   }
 
   if(!(reliso>reliso_min && reliso<reliso_max)) return false;

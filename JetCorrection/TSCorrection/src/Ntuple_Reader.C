@@ -4,8 +4,8 @@ Ntuple_Reader::Ntuple_Reader(){
 
   base_dir = std::getenv("TSCorrWD");
 
-  Read_Files();
-  Read_Variables();
+  //Read_Files();
+  //Read_Variables();
 } // end of function
 
 
@@ -14,7 +14,7 @@ Ntuple_Reader::~Ntuple_Reader(){
   for(map<TString,TFile*>::iterator it=MapTFile.begin(); it!=MapTFile.end(); it++){
     delete it->second;
   }
-  for(map<TString,TNtuple*>::iterator it=MapTNtuple.begin(); it!=MapTNtuple.end(); it++){
+  for(map<TString,TTree*>::iterator it=MapTTree.begin(); it!=MapTTree.end(); it++){
     delete it->second;
   }
 
@@ -38,8 +38,8 @@ void Ntuple_Reader::Read_Files(){
            << dir << "\t\t"
            << able << "\t\t" << endl; */
       if(able=="disable") continue;
-      MapTFile[name] = new TFile(input_root_dir + dir,"READ");
-      MapTNtuple[name] = (TNtuple*)MapTFile[name]->Get("TSCorr_tree");
+      MapTFile[name] = new TFile(dir,"READ");
+      MapTTree[name] = (TTree*)MapTFile[name]->Get("SKFlat");
       if(MapTFile[name]->IsZombie()){
         cout << "  Error  :    Ntuple_Reader::Read_Files ,    " << name << " is not opened!" << endl;
         exit(1);
@@ -56,17 +56,17 @@ void Ntuple_Reader::Read_Files(){
 
 void Ntuple_Reader::Read_Variables(){
 
-  if(MapTNtuple.empty()){
-    cout << " Error  :    Ntuple_Reader::Read_Variables ,    MapTNtuple is empty!" << endl;
+  if(MapTTree.empty()){
+    cout << " Error  :    Ntuple_Reader::Read_Variables ,    MapTTree is empty!" << endl;
     exit(1);
   }
 
-  for(map<TString,TNtuple*>::iterator mapit=MapTNtuple.begin(); mapit!=MapTNtuple.end(); mapit++){
+  for(map<TString,TTree*>::iterator mapit=MapTTree.begin(); mapit!=MapTTree.end(); mapit++){
     if(!mapit->second){
       cout << " Ntuple_Reader::Read_Variables ,    " << mapit->first << "   is an NULL pointer!" << endl;
       exit(1);
     }
-
+    /*
     //obj. reco
     mapit->second->SetBranchAddress("b_jet_from_top",&b_jet_from_top);
     mapit->second->SetBranchAddress("b_jet_from_anti_top",&b_jet_from_anti_top);
@@ -78,11 +78,11 @@ void Ntuple_Reader::Read_Variables(){
     mapit->second->SetBranchAddress("b_parton_from_top",&b_parton_from_top);
     mapit->second->SetBranchAddress("b_parton_from_anti_top",&b_parton_from_anti_top);
     mapit->second->SetBranchAddress("down_type_parton_from_w_ch",&down_type_parton_from_w_ch);
-    mapit->second->SetBranchAddress("up_type_parton_from_w_ch",&up_type_parton_from_w_ch);
+    mapit->second->SetBranchAddress("up_type_parton_from_w_ch",&up_type_parton_from_w_ch);*/
     mapit->second->SetBranchAddress("down_type_parton_flavour",&down_type_parton_flavour);
     mapit->second->SetBranchAddress("up_type_parton_flavour",&up_type_parton_flavour);
 
-
+    mapit->second->Print();
   } // end of for
  
 } // end of function

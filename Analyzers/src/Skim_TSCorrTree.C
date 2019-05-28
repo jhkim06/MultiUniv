@@ -70,8 +70,7 @@ void Skim_TSCorrTree::initializeAnalyzer(){
   
 
   gen_matcher = new GenMatching_CHToCB();
-  ts_correction = new TSCorrection();
-  ts_correction->SetDataYear(2017);
+  ts_correction = new TSCorrection(DataYear);
   ts_correction->ReadFittedError("fit_error_pythia.txt");
   ts_correction->ReadFittedMean("fit_mean_pythia.txt");
 }
