@@ -2,8 +2,8 @@ void run_Fitting_Resopnse();
 void run_Fitting_Histogram();
 
 void run(){
-  //run_Fitting_Resopnse();
-  run_Fitting_Histogram();
+  //run_Fitting_Histogram();
+  run_Fitting_Resopnse();
   //run_Fitting_Mass();
 }
 
@@ -11,13 +11,11 @@ void run_Fitting_Resopnse(){
 
   Fitting_Response *r;
   r = new Fitting_Response();
-  //r->ReadNTuple("pythia");
-  //r->ReadNTuple("herwig");
-  //r->MakeProfile();
-  //r->FitProfile("pythia");
+  //r->MakeProfile("pythia");
+  r->FitProfile("pythia_2017");
   //r->FitProfile("herwig");
   //r->FitProfileCombined();
-  r->FitProfile_8TeV_13TeV();
+  //r->FitProfile_8TeV_13TeV();
 
 }
 
@@ -25,20 +23,19 @@ void run_Fitting_Histogram(){
 
   Fitting_Histogram *r;
   r = new Fitting_Histogram();
-  r->ReadNTuple("pythia");
-  //r->ReadNTuple("herwig");
-  r->MakeHistogram();
-  r->FitHistogram("pythia");
+  //r->MakeHistogram("pythia");
+  r->FitHistogram("pythia_2017");
   //r->FitHistogram("herwig");
-  //r->FitHistMean("pythia");
+  r->FitHistMean("pythia_2017");
   //r->FitHistMean("herwig");
-  //r->FitHistError("pythia");
+  r->FitHistError("pythia_2017");
   //r->FitHistError("herwig");
   //r->DrawCorrectionDifference("pythia");
   //r->SaveHistogram_CorrectionDifference("pythia");
 
 }
 
+/*
 void run_Fitting_Mass(){
 
   Fitting_Mass *m;
@@ -55,3 +52,4 @@ void run_Fitting_Mass(){
   //m->FitHistogram_Combined(mode);
 
 }
+*/
