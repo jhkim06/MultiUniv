@@ -34,14 +34,17 @@ public:
   void SetWCHDownTypeJets(TLorentzVector jet_); // d/s/b jet from W(H+)
   void SetLepton(TLorentzVector lepton_);
   void SetMET(TLorentzVector met_);
+  void SetNeutrino(TLorentzVector met_,int i); // i is related to neu. Pz
   void Fit();
   void FindBestChi2Fit(bool UseLeading4Jets=false);
   int GetStatus();
   double GetChi2();
   double GetFittedDijetMass();
   double GetInitialDijetMass();
+  double GetCorrectedDijetMass();
   double GetBestFittedDijetMass();
   double GetBestInitialDijetMass();
+  double GetBestCorrectedDijetMass();
 
   enum JET_ASSIGNMENT{
     HADRONIC_TOP_B,
@@ -53,7 +56,7 @@ public:
 
 private:
 
-  void SetJetError(TMatrixD *matrix,  double Et, double Eta, TString flavour_key);
+  void SetJetError(TMatrixD *matrix,  double Et, double Eta, double Phi, TString flavour_key);
   double JetErrorEt(double Et, double Eta, TString flavour_key);
   double JetErrorEta(double Et, double Eta, TString flavour_key);
   double JetErrorPhi(double Et, double Eta, TString flavour_key);
@@ -61,13 +64,21 @@ private:
   void SetFitter();
   void SetCurrentPermutationJets();
   bool Check_BJet_Assignment();
+  bool Kinematic_Cut();
   bool NextPermutation(bool UseLeading4Jets=false);
+
+  void Sol_Neutrino_Pz();
+  void Resol_Neutrino_Pt();
+  double neutrino_pz[2];
+  bool IsRealNeuPz;
 
   TKinFitter *fitter;
   TSCorrection *ts_correction;
 
   std::vector<TLorentzVector> jet_vector;
   std::vector<bool> btag_vector;
+  TLorentzVector METv;
+  TLorentzVector recal_METv;
 
   int njets;
   int nbtags;
@@ -78,10 +89,14 @@ private:
   TLorentzVector leptonic_top_b_jet; // b jet comes from leptonic top
   TLorentzVector hadronic_w_ch_jet1; // u/c jet comes from W(H+)
   TLorentzVector hadronic_w_ch_jet2; // d/s/b jet comes from W(H+)
+  TLorentzVector corr_hadronic_top_b_jet; // applied TS Correction
+  TLorentzVector corr_leptonic_top_b_jet; 
+  TLorentzVector corr_hadronic_w_ch_jet1;
+  TLorentzVector corr_hadronic_w_ch_jet2;
   TLorentzVector lepton; // lepton comes from leptonic W
   TLorentzVector neutrino; // neutrino comes from leptonic W
 
-  TFitParticleEtEtaPhi *fit_hadronic_top_b_jet; 
+  TFitParticleEtEtaPhi *fit_hadronic_top_b_jet;
   TFitParticleEtEtaPhi *fit_leptonic_top_b_jet;
   TFitParticleEtEtaPhi *fit_hadronic_w_ch_jet1;
   TFitParticleEtEtaPhi *fit_hadronic_w_ch_jet2;
@@ -103,9 +118,11 @@ private:
   double dijet_M;
   double fitted_dijet_M;
   double initial_dijet_M;
+  double corrected_dijet_M;
   double best_chi2;
   double best_fitted_dijet_M;
   double best_initial_dijet_M;
+  double best_corrected_dijet_M;
 
 };
 

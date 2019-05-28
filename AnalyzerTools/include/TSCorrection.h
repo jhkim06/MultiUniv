@@ -5,7 +5,10 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
+#include "TLorentzVector.h"
+#include "TMath.h"
 #include "TString.h"
 #include "TFormula.h"
 
@@ -31,6 +34,8 @@ public:
 
   bool PassResponseCut(TString key, double x, double response, double n_sigma=2.0);
 
+
+  TLorentzVector GetCorrectedJet(TString flavour_key, TLorentzVector &jet);
 
   class MyFormula{
 

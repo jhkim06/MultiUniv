@@ -67,7 +67,7 @@ double TSCorrection::GetFittedError(TString key, double x){
 
 double TSCorrection::GetFittedError(TString response_key, TString flavour_key, double x, double eta){
 
-  TString key = Form("%s_%s",response_key.Data(),flavour_key.Data());
+  TString key = Form("%s_%s_",response_key.Data(),flavour_key.Data());
   auto mapit = MapFittedErrorMyFormula.find(key);
   if(mapit == MapFittedErrorMyFormula.end()){
     MapFittedErrorMyFormula[key] = new TSCorrection::MyFormula();
@@ -83,7 +83,7 @@ double TSCorrection::GetFittedError(TString response_key, TString flavour_key, d
       exit(EXIT_FAILURE);
     }
   }
-  return mapit->second->EvalMean(x, eta);
+  return std::max(0.01, mapit->second->EvalError(x, eta));
 }
 
 double TSCorrection::GetFittedMean(TString key, double x){
@@ -92,7 +92,7 @@ double TSCorrection::GetFittedMean(TString key, double x){
 
 double TSCorrection::GetFittedMean(TString response_key, TString flavour_key, double x, double eta){
 
-  TString key = Form("%s_%s",response_key.Data(),flavour_key.Data());
+  TString key = Form("%s_%s_",response_key.Data(),flavour_key.Data());
   auto mapit = MapFittedMeanMyFormula.find(key);
   if(mapit == MapFittedMeanMyFormula.end()){
     MapFittedMeanMyFormula[key] = new TSCorrection::MyFormula();
@@ -125,6 +125,19 @@ bool TSCorrection::PassResponseCut(TString key, double x, double response, doubl
   return (response > min && response < max);
 }
 
+ TLorentzVector TSCorrection::GetCorrectedJet(TString flavour_key, TLorentzVector &jet){
+  double Et = jet.Et();
+  double Eta = jet.Eta();
+  double Phi = jet.Phi();
+  double M = jet.M();
+  double corr = this->GetFittedMean("Et", flavour_key, Et, Eta);
+  TLorentzVector out_vector;
+  double corr_Pt = TMath::Sqrt(TMath::Power(Et*(corr+1),2) - TMath::Power(M,2));
+  out_vector.SetPtEtaPhiM(corr_Pt, Eta, Phi, M );
+  return out_vector;
+}
+
+
 TFormula* TSCorrection::MyFormula::GetFormulaError(double eta){
   return formulaError.at(FindEtaBin(eta));
 }
@@ -145,12 +158,14 @@ void TSCorrection::MyFormula::ClearError(){
   for(auto& x : formulaError){
     delete x;
   }
+  formulaError.clear();
 }
 
 void TSCorrection::MyFormula::ClearMean(){
   for(auto& x : formulaMean){
     delete x;
   }
+  formulaMean.clear();
 }
 
 int TSCorrection::MyFormula::FindEtaBin(double eta){
