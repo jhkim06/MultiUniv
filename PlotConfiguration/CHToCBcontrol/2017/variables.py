@@ -1,6 +1,8 @@
 from CommonPyTools.python.CommonTools import *
 
 #columns=['ALL'] # To read all
+
+definitions = {'muon_pt0': 'muon_pt[0]'}
 columns=['passIso','passTightID','n_bjet_deepcsv_m_noSF','IsMu','IsEl','baseW',
          'PUweight','PUweight_Up','PUweight',
 	 'trgSF','trgSF_Up','trgSF_Do',
@@ -29,7 +31,7 @@ variables['fitted_dijet_mass'] = {
     }
 
 variables['leading_muon_pt'] = { #FIXME: this is a test
-    'name': 'muon_pt->at(0)',
+    'name': 'muon_pt0',
     'range':(60,0,300),
     'xaxis': 'muon p_{T} [GeV]',
     'yaxis': 'Events / 5GeV',

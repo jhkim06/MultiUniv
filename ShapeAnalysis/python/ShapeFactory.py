@@ -35,7 +35,7 @@ class ShapeFactory:
 
     return theVariable
 
-  def makeNominals(self, sampleName, sample, inFiles, outFile, variables, columns, cuts, supercut, nuisances):
+  def makeNominals(self, sampleName, sample, inFiles, outFile, variables, columns, definitions, cuts, supercut, nuisances):
     print "===================="
     print "=== makeNominals ==="
     print "===================="
@@ -45,6 +45,7 @@ class ShapeFactory:
     self._inFiles   = inFiles
     self._variables = variables
     self._cuts      = cuts
+    self._definitions = definitions
 
     #print 'ShapeFactory:sample',self._sample
     #print 'ShapeFactory:inFiles',self._inFiles
@@ -149,8 +150,9 @@ class ShapeFactory:
     totCut           :   the selection
     trees        :   the list of input files for this particular sample
     '''
-
+    
     self._logger.info('Yields by process')
+    print self._definitions
 
     numTree = 0
     bigName = 'histo_' + sampleName + '_' + cutName + '_' + variableName
@@ -180,15 +182,19 @@ class ShapeFactory:
           totalWeight = "(" + totalWeight + ") * (" + weights[numTree] + ")" 
           #globalCut = "(" + globalCut + ") * (" + weights[numTree] + ")" 
       augmented_d = Dtree.Define('totW', totalWeight)
+      for key in self._definitions:
+	#print key, 'crspdto', self._definitions[key]
+	augmented_d = augmented_d.Define( key, self._definitions[key] )
+
 
       ## new histogram
       shapeName = 'histo_' + sampleName + str(numTree)
       
       hModel = (shapeName, shapeName,) + hargs
       if ndim == 1 :
-        #print 'hModel', hModel
+        print 'hModel', hModel
         #print 'totCut', totCut
-        #print 'var', var
+        print 'var', var
         shape = augmented_d.Filter(totCut).Histo1D( hModel, var, 'totW')
       elif ndim == 2 :
         shape = augmented_d.Filter(totCut).Histo2D( hModel, var, 'totW')
@@ -300,6 +306,11 @@ class ShapeFactory:
 	for column in columns:
 	  v_columns.push_back(column)
 	Dtree = RDF(tree,v_columns)
+
+      for key in self._definitions:
+	#print key, 'crspdto', self._definitions[key]
+	Dtree = Dtree.Define( key, self._definitions[key] )
+      
       totalWeight = global_weight
       ## if weights vector is not given, do not apply file dependent weights
       if len(weights) != 0 :
@@ -324,7 +335,7 @@ class ShapeFactory:
           totalWeightDo = totalWeight 
           totalWeightUp = totalWeight
 
-        augmented_d = Dtree.Define('totwDo', totalWeightDo) \
+        Dtree = Dtree.Define('totwDo', totalWeightDo) \
                            .Define('totwUp', totalWeightUp)
         # New histogram
         shapeNameUp = 'histo_' + sampleName + 'Up' + str(numTree)
@@ -334,11 +345,11 @@ class ShapeFactory:
         hModelUp = (shapeNameUp, shapeNameUp,) + hargs
         hModelDo = (shapeNameDo, shapeNameDo,) + hargs
         if ndim == 1 :
-          shapeUp = augmented_d.Filter(totCut).Histo1D( hModelUp, var, 'totwUp')
-          shapeDo = augmented_d.Filter(totCut).Histo1D( hModelDo, var, 'totwDo')
+          shapeUp = Dtree.Filter(totCut).Histo1D( hModelUp, var, 'totwUp')
+          shapeDo = Dtree.Filter(totCut).Histo1D( hModelDo, var, 'totwDo')
         elif ndim == 2 :
-          shapeUp = augmented_d.Filter(totCut).Histo2D( hModelUp, var, 'totwUp')
-          shapeDo = augmented_d.Filter(totCut).Histo2D( hModelDo, var, 'totwDo')
+          shapeUp = Dtree.Filter(totCut).Histo2D( hModelUp, var, 'totwUp')
+          shapeDo = Dtree.Filter(totCut).Histo2D( hModelDo, var, 'totwDo')
 
         nTriesUp = shapeUp.Integral()
         nTriesDo = shapeDo.Integral()
@@ -405,7 +416,7 @@ class ShapeFactory:
 	  totalW_muABUp =       totalWeight
 	  totalW_muABDo =       totalWeight
 	
-	augmented_d = Dtree.Define('totalW_muAUp', totalW_muAUp) \
+	Dtree = Dtree.Define('totalW_muAUp', totalW_muAUp) \
 	                   .Define('totalW_muADo', totalW_muADo) \
 			   .Define('totalW_muBUp', totalW_muBUp) \
 			   .Define('totalW_muBDo', totalW_muBDo) \
@@ -427,19 +438,19 @@ class ShapeFactory:
         hModelABUp = (shapeNameABUp, shapeNameABUp,) + hargs
         hModelABDo = (shapeNameABDo, shapeNameABDo,) + hargs
         if ndim == 1 :
-          shapeAUp  = augmented_d.Filter(totCut).Histo1D( hModelAUp,  var, 'totalW_muAUp')
-          shapeADo  = augmented_d.Filter(totCut).Histo1D( hModelADo,  var, 'totalW_muADo')
-          shapeBUp  = augmented_d.Filter(totCut).Histo1D( hModelBUp,  var, 'totalW_muBUp')
-          shapeBDo  = augmented_d.Filter(totCut).Histo1D( hModelBDo,  var, 'totalW_muBDo')
-          shapeABUp = augmented_d.Filter(totCut).Histo1D( hModelABUp, var, 'totalW_muABUp')
-          shapeABDo = augmented_d.Filter(totCut).Histo1D( hModelABDo, var, 'totalW_muABDo')
+          shapeAUp  = Dtree.Filter(totCut).Histo1D( hModelAUp,  var, 'totalW_muAUp')
+          shapeADo  = Dtree.Filter(totCut).Histo1D( hModelADo,  var, 'totalW_muADo')
+          shapeBUp  = Dtree.Filter(totCut).Histo1D( hModelBUp,  var, 'totalW_muBUp')
+          shapeBDo  = Dtree.Filter(totCut).Histo1D( hModelBDo,  var, 'totalW_muBDo')
+          shapeABUp = Dtree.Filter(totCut).Histo1D( hModelABUp, var, 'totalW_muABUp')
+          shapeABDo = Dtree.Filter(totCut).Histo1D( hModelABDo, var, 'totalW_muABDo')
         elif ndim == 2 :
-          shapeAUp  = augmented_d.Filter(totCut).Histo2D( hModelAUp,  var, 'totalW_muAUp')
-          shapeADo  = augmented_d.Filter(totCut).Histo2D( hModelADo,  var, 'totalW_muADo')
-          shapeBUp  = augmented_d.Filter(totCut).Histo2D( hModelBUp,  var, 'totalW_muBUp')
-          shapeBDo  = augmented_d.Filter(totCut).Histo2D( hModelBDo,  var, 'totalW_muBDo')
-          shapeABUp = augmented_d.Filter(totCut).Histo2D( hModelABUp, var, 'totalW_muABUp')
-          shapeABDo = augmented_d.Filter(totCut).Histo2D( hModelABDo, var, 'totalW_muABDo')
+          shapeAUp  = Dtree.Filter(totCut).Histo2D( hModelAUp,  var, 'totalW_muAUp')
+          shapeADo  = Dtree.Filter(totCut).Histo2D( hModelADo,  var, 'totalW_muADo')
+          shapeBUp  = Dtree.Filter(totCut).Histo2D( hModelBUp,  var, 'totalW_muBUp')
+          shapeBDo  = Dtree.Filter(totCut).Histo2D( hModelBDo,  var, 'totalW_muBDo')
+          shapeABUp = Dtree.Filter(totCut).Histo2D( hModelABUp, var, 'totalW_muABUp')
+          shapeABDo = Dtree.Filter(totCut).Histo2D( hModelABDo, var, 'totalW_muABDo')
         
         nTriesAUp = shapeAUp.Integral()
         nTriesADo = shapeADo.Integral()
@@ -551,16 +562,16 @@ class ShapeFactory:
 	  totalW_pdfErr.append("1")
 	for idx in xrange(101):
 	#  print idx, totalW_pdfErr[idx]
-	  augmented_d = Dtree.Define('totalW_pdfErr'+str(idx), totalW_pdfErr[idx])
+	  Dtree = Dtree.Define('totalW_pdfErr'+str(idx), totalW_pdfErr[idx])
 	  # new histogram
 	  shapeName = 'histo_' + sampleName + '_' + str(idx) + '_' + str(numTree)
 	  # prepare a dummy to fill
           hclass, hargs, ndim = self._bins2hclass( rng)
           hModel  = (shapeName,  shapeName,)  + hargs
 	  if ndim == 1 :
-            shape  = augmented_d.Filter(totCut).Histo1D( hModel,  var, 'totalW_pdfErr'+str(idx))
+            shape  = Dtree.Filter(totCut).Histo1D( hModel,  var, 'totalW_pdfErr'+str(idx))
 	  elif ndim == 2 :
-            shape  = augmented_d.Filter(totCut).Histo2D( hModel,  var, 'totalW_pdfErr'+str(idx))
+            shape  = Dtree.Filter(totCut).Histo2D( hModel,  var, 'totalW_pdfErr'+str(idx))
 	  else :
 	    print 'this dim of hist not ready', ndim, 'exiting'
 	    exit()

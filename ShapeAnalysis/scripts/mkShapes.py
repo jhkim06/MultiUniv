@@ -52,6 +52,7 @@ sys.path.append(os.getcwd())
 
 variables = {}
 columns = []
+definitions = {}
 if opt.variableCfg != '':
   if os.path.exists(opt.variableCfg):
     handle = open(opt.variableCfg,'r')
@@ -422,6 +423,7 @@ for InputSample in InputSamples:
       instructions += "		'"+OutFullPathFile +" ', \n"
       instructions += "		"+str(variables) + ", \n"
       instructions += "		"+str(columns) + ", \n"
+      instructions += "		"+str(definitions) + ", \n"
       instructions += "		"+str(cuts) + ", \n"
       instructions += "		'"+supercut + "', \n"
       instructions += "		"+str(nuisances) + ") \n"
