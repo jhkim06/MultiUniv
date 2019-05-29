@@ -164,31 +164,53 @@ class ShapeFactory:
       #chain = TChain(self._treeName)
       #chain.AddFile(aFile)
       print '        {0:<20} : {1:^9}'.format(sampleName,tree.GetEntries())
-      ## new histogram
-      shapeName = 'histo_' + sampleName + str(numTree)
-      # prepare a dummy to fill
-      shape = self._makeshape(shapeName, rng)
-
-      self._logger.debug('---'+sampleName+'---')
-      self._logger.debug('Formula: '+var+'>>'+shapeName)
-      self._logger.debug('Cut:     '+totCut)
-      self._logger.debug('ROOTFiles:'+'\n'.join([f.GetTitle() for f in tree.GetListOfFiles()]))
-
-      globalCut = "(" + totCut + ") * (" + global_weight + ")" 
-      # if weights vector is not given, do not apply file dependent weights
+      RDF = RDataFrame
+      if ('ALL' in columns) or (len(columns) == 0) :
+	Dtree = RDF(tree)
+      else :
+	v_columns = vector('string')()
+	for column in columns:
+	  v_columns.push_back(column)
+	Dtree = RDF(tree,v_columns)
+      #shape = Dtree.Histo1D(('mine','mine',100,0,100),'diLep_pt')
+      #shape = Dtree.Histo1D(('mine','mine',rng[0],rng[1],rng[2]),var)
+      totalWeight = global_weight
+      ## if weights vector is not given, do not apply file dependent weights
       if len(weights) != 0 :
         # if weight is not given for a given root file, '-', do not apply file dependent weight for that root file
         if weights[numTree] != '-' :
-          globalCut = "(" + globalCut + ") * (" + weights[numTree] + ")" 
-      
-      entries = tree.Draw( var+'>>'+shapeName, globalCut, 'goff')
-      nTries = shape.Integral()
-      print '     >> ',entries,':', nTries
+          totalWeight = "(" + totalWeight + ") * (" + weights[numTree] + ")" 
+          #globalCut = "(" + globalCut + ") * (" + weights[numTree] + ")" 
+      Dtree = Dtree.Define('totW', totalWeight)
+      for key in self._definitions:
+	#print key, 'crspdto', self._definitions[key]
+	Dtree = Dtree.Define( key, self._definitions[key] )
 
+
+      ## new histogram
+      shapeName = 'histo_' + sampleName + str(numTree)
+      
+      hModel = (shapeName, shapeName,) + hargs
+      if ndim == 1 :
+        print 'hModel', hModel
+        #print 'totCut', totCut
+        print 'var', var
+        shape = Dtree.Filter(totCut).Histo1D( hModel, var, 'totW')
+      elif ndim == 2 :
+        shape = Dtree.Filter(totCut).Histo2D( hModel, var, 'totW')
+        #shape = Dtree.Filter(totCut).Histo1D((shapeName,shapeName,rng[0],rng[1],rng[2]),var,'totW')
+      #
+      # in principle if we use filter
+      # I may remove the globalCut here
+      # ... but it doesn't hurt leaving it
+      #entries = tree.Draw( var+'>>'+shapeName, globalCut, 'goff')
+      #print '     >> ',entries,':',shape.Integral()
+      nTries = shape.Integral()
+      print 'integral', nTries
       if nTries == 0 :
-	print 'Warning : entries is 0 for', shapeName
+	print 'Warning : entries is 0 for', hModel
       if math.isnan(nTries) :
-	print 'ERROR : entries is nan for', shapeName
+	print 'ERROR : entries is nan for', hModel
 
       if (numTree == 0) :
 	shape.SetTitle(bigName)

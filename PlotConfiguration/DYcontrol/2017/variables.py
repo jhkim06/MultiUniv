@@ -1,7 +1,7 @@
 from CommonPyTools.python.CommonTools import *
 
 #columns=['ALL'] # To read all
-columns=['diLep_Ch','diLep_m','diLep_pt','diLep_passSelectiveQ','IdSF_Q_Up','IdSF_Q_Do','IdSF_Q','baseW','PUweight','trgSF_Q','recoSF','IsoSF','ZPtCor','trgSF_Q_Up','trgSF_Q_Do','PDFWeights_AlphaS']
+#columns=['diLep_Ch','diLep_m','diLep_pt','diLep_passSelectiveQ','IdSF_Q_Up','IdSF_Q_Do','IdSF_Q','baseW','PUweight','trgSF_Q','recoSF','IsoSF','ZPtCor','trgSF_Q_Up','trgSF_Q_Do','PDFWeights_AlphaS']
 
 # xaxis, yaxis to set title
 
@@ -9,6 +9,13 @@ variables['mll'] = {
     'name': 'diLep_m',
     'range':(120,50,120),
     'xaxis': 'm_{ll} [GeV]',
+    'fold' : 3
+    }
+variables['leading_muon_pt'] = { #FIXME: this is a test
+    'name': 'muon_pt[0]',
+    'range':(100,0,100),
+    'xaxis': 'muon p_{T} [GeV]',
+    'yaxis': 'Events / 5GeV',
     'fold' : 3
     }
 #variables['ZpT'] = {
