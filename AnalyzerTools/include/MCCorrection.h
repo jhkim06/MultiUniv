@@ -18,6 +18,7 @@
 #include "Electron.h"
 #include "Photon.h"
 #include "Jet.h"
+#include "Gen.h"
 
 class MCCorrection{
 
@@ -65,6 +66,8 @@ public:
 
   TString _EtaPtOrder;
 
+  double GetTopPtReweight(std::vector<Gen> gens);
+  
 };
 
 #endif

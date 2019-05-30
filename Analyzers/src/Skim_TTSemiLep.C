@@ -99,6 +99,8 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   newtree->Branch("MisTagSF_Up", &MisTagSF_Up,"MisTagSF_Up/D");
   newtree->Branch("MisTagSF_Do", &MisTagSF_Do,"MisTagSF_Do/D");
 
+  newtree->Branch("TopPtReweight_Up", &TopPtReweight_Up,"TopPtReweight_Up/D");
+  newtree->Branch("TopPtReweight_Do", &TopPtReweight_Do,"TopPtReweight_Do/D");
 
   // clear vector residual
   SingleMuTrgs.clear();
@@ -212,6 +214,9 @@ void Skim_TTSemiLep::executeEvent(){
   newtree->SetBranchAddress("MisTagSF", &MisTagSF);
   newtree->SetBranchAddress("MisTagSF_Up", &MisTagSF_Up);
   newtree->SetBranchAddress("MisTagSF_Do", &MisTagSF_Do);
+
+  newtree->Branch("TopPtReweight_Up", &TopPtReweight_Up);
+  newtree->Branch("TopPtReweight_Do", &TopPtReweight_Do);
 
   FillHist("CutFlow",5,1,30,0,30);
   // Filters ====================
@@ -545,7 +550,10 @@ void Skim_TTSemiLep::executeEvent(){
     cout <<"[Skim_TTSemiLep::executeEvent] check jet vector size" << endl;
     exit(EXIT_FAILURE);
   }
-  
+
+  std::vector<Gen> gens = GetGens();
+  TopPtReweight_Up = mcCorr->GetTopPtReweight(gens);
+  TopPtReweight_Do = 1.;
     ///////////////////////////////////////////////////////////
    // !!!!!!!!!!!!!!!!!! execute fitter !!!!!!!!!!!!!!!!!!! //
   ///////////////////////////////////////////////////////////
