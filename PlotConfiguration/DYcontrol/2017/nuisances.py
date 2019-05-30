@@ -55,45 +55,45 @@ nuisances['eff'] = {
 	},
 }
 
-nuisances['alphaS'] = {
-    'name'	: 'alphaS',
-    'kind'	: 'PDF',
-    'type'	: 'alphaS',
-    'samples'	: {
-      	'DYJets'	: alphaS_syst ,
-	'TTLL_powheg'	: alphaS_syst ,
-	'WJets_MG'	: alphaS_syst ,
-	'WW_pythia'	: alphaS_syst ,
-	'WZ_pythia'	: alphaS_syst ,
-	'ZZ_pythia'	: alphaS_syst ,
-	},
-}
-
-nuisances['pdfScale'] = {
-    'name'	: 'pdfScale',
-    'kind'	: 'PDF',
-    'type'	: 'Scale',
-    'samples'	: {
-      	'DYJets'	: pdfScale_syst ,
-	'TTLL_powheg'	: pdfScale_syst ,
-	'WJets_MG'	: pdfScale_syst ,
-	'WW_pythia'	: pdfScale_syst ,
-	'WZ_pythia'	: pdfScale_syst ,
-	'ZZ_pythia'	: pdfScale_syst ,
-	},
-}
-
-nuisances['pdfErr'] = {
-    'name'	: 'pdfErr',
-    'kind'	: 'PDF',
-    'type'	: 'HESSIAN',
-    'samples'	: {
-      	'DYJets'	: pdfErr_syst ,
-	'TTLL_powheg'	: pdfErr_syst ,
-	'WJets_MG'	: pdfErr_syst ,
-	'WW_pythia'	: pdfErr_syst ,
-	'WZ_pythia'	: pdfErr_syst ,
-	'ZZ_pythia'	: pdfErr_syst ,
-	},
-}
+#nuisances['alphaS'] = {
+#    'name'	: 'alphaS',
+#    'kind'	: 'PDF',
+#    'type'	: 'alphaS',
+#    'samples'	: {
+#      	'DYJets'	: alphaS_syst ,
+#	'TTLL_powheg'	: alphaS_syst ,
+#	'WJets_MG'	: alphaS_syst ,
+#	'WW_pythia'	: alphaS_syst ,
+#	'WZ_pythia'	: alphaS_syst ,
+#	'ZZ_pythia'	: alphaS_syst ,
+#	},
+#}
+#
+#nuisances['pdfScale'] = {
+#    'name'	: 'pdfScale',
+#    'kind'	: 'PDF',
+#    'type'	: 'Scale',
+#    'samples'	: {
+#      	'DYJets'	: pdfScale_syst ,
+#	'TTLL_powheg'	: pdfScale_syst ,
+#	'WJets_MG'	: pdfScale_syst ,
+#	'WW_pythia'	: pdfScale_syst ,
+#	'WZ_pythia'	: pdfScale_syst ,
+#	'ZZ_pythia'	: pdfScale_syst ,
+#	},
+#}
+#
+#nuisances['pdfErr'] = {
+#    'name'	: 'pdfErr',
+#    'kind'	: 'PDF',
+#    'type'	: 'HESSIAN',
+#    'samples'	: {
+#      	'DYJets'	: pdfErr_syst ,
+#	'TTLL_powheg'	: pdfErr_syst ,
+#	'WJets_MG'	: pdfErr_syst ,
+#	'WW_pythia'	: pdfErr_syst ,
+#	'WZ_pythia'	: pdfErr_syst ,
+#	'ZZ_pythia'	: pdfErr_syst ,
+#	},
+#}
 
