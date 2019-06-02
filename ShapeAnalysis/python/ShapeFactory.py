@@ -2,7 +2,7 @@
 import os,sys
 import logging
 import math 
-from ROOT import TFile, RDataFrame, TH1D, TH2, gROOT, TChain, vector
+from ROOT import TFile, TH1D, TH2, gROOT, TChain, vector
 SKFlat_WD = os.getenv('SKFlat_WD')
 sys.path.insert(0,SKFlat_WD+'/CommonTools/include')
 from Definitions import *
@@ -69,6 +69,7 @@ class ShapeFactory:
     #chain = TChain(self._treeName)
     #                                                         skipMissingFiles
     inputDir = ''
+    #print 'inFiles', inFiles
     trees = self._connectInputs( inFiles, inputDir, False)
     for cutName, cut in self._cuts.iteritems():
       totCut = cut+"&&"+supercut
@@ -152,18 +153,16 @@ class ShapeFactory:
     '''
     
     self._logger.info('Yields by process')
-    print self._definitions
 
     numTree = 0
     bigName = 'histo_' + sampleName + '_' + cutName + '_' + variableName
+    globalCut = "(" + totCut + ") * (" + global_weight + ")" 
     hTotal = self._makeshape(bigName, rng)
-    ## decide the histo class
-    hclass, hargs, ndim = self._bins2hclass( rng)
-    print 'number of trees', len(trees)
+    #print 'number of trees >>>>>>>>>>>>>>>>>>', len(trees)
     for tree in trees :
       #chain = TChain(self._treeName)
       #chain.AddFile(aFile)
-      print '        {0:<20} : {1:^9}'.format(sampleName,tree.GetEntries())
+      print '   sampleName     {0:<20} : entries {1:^9}'.format(sampleName,tree.GetEntries())
       ## new histogram
       shapeName = 'histo_' + sampleName + str(numTree)
       # prepare a dummy to fill
@@ -174,7 +173,6 @@ class ShapeFactory:
       self._logger.debug('Cut:     '+totCut)
       self._logger.debug('ROOTFiles:'+'\n'.join([f.GetTitle() for f in tree.GetListOfFiles()]))
 
-      globalCut = "(" + totCut + ") * (" + global_weight + ")" 
       # if weights vector is not given, do not apply file dependent weights
       if len(weights) != 0 :
         # if weight is not given for a given root file, '-', do not apply file dependent weight for that root file
@@ -183,24 +181,14 @@ class ShapeFactory:
       
       entries = tree.Draw( var+'>>'+shapeName, globalCut, 'goff')
       nTries = shape.Integral()
-      print '     >> ',entries,':', nTries
+      #print ' entries after cut    >> ',entries,' integral:', nTries
 
       if nTries == 0 :
 	print 'Warning : entries is 0 for', shapeName
       if math.isnan(nTries) :
 	print 'ERROR : entries is nan for', shapeName
 
-      if (numTree == 0) :
-	shape.SetTitle(bigName)
-	shape.SetName(bigName)
-	hTotal = shape.Clone()
-      else :
-	print 'adding histo', numTree, 'th'
-	cloneH = shape.Clone()
-	print cloneH.Integral()
-	hTotal.Add(cloneH)
-	cloneH.Delete()
-	#hTotal.Add(shape[numTree])
+      hTotal.Add( shape )
       shape.Delete()
       
       numTree += 1
@@ -242,27 +230,28 @@ class ShapeFactory:
     '''
 
     self._logger.info('Yields by process')
-    print 'pdfW treeName', pdfW
+    globalCut = "(" + totCut + ") * (" + global_weight + ")" 
+    #print 'pdfW tree Name', pdfW
 
-    numTree = 0
     if pdfW is 'PDFWeights_AlphaS':
       bigNameUp = 'histo_' + sampleName + 'Up_' + cutName + '_' + variableName
       bigNameDo = 'histo_' + sampleName + 'Do_' + cutName + '_' + variableName
       hTotalAlphaUp = self._makeshape(bigNameUp, rng)
       hTotalAlphaDo = self._makeshape(bigNameDo, rng)
     elif pdfW is 'PDFWeights_Scale':
-      bigNameAUp = 'histo_' + sampleName + 'AUp_' + cutName + '_' + variableName
-      bigNameADo = 'histo_' + sampleName + 'ADo_' + cutName + '_' + variableName
-      hTotalAUp = self._makeshape(bigNameAUp, rng)
-      hTotalADo = self._makeshape(bigNameADo, rng)
-      bigNameBUp = 'histo_' + sampleName + 'BUp_' + cutName + '_' + variableName
-      bigNameBDo = 'histo_' + sampleName + 'BDo_' + cutName + '_' + variableName
-      hTotalBUp = self._makeshape(bigNameBUp, rng)
-      hTotalBDo = self._makeshape(bigNameBDo, rng)
+      bigNameAUp  = 'histo_' + sampleName + 'AUp_' + cutName + '_' + variableName
+      bigNameADo  = 'histo_' + sampleName + 'ADo_' + cutName + '_' + variableName
+      bigNameBUp  = 'histo_' + sampleName + 'BUp_' + cutName + '_' + variableName
+      bigNameBDo  = 'histo_' + sampleName + 'BDo_' + cutName + '_' + variableName
       bigNameABUp = 'histo_' + sampleName + 'ABUp_' + cutName + '_' + variableName
       bigNameABDo = 'histo_' + sampleName + 'ABDo_' + cutName + '_' + variableName
+      hTotalAUp  = self._makeshape(bigNameAUp, rng)
+      hTotalADo  = self._makeshape(bigNameADo, rng)
+      hTotalBUp  = self._makeshape(bigNameBUp, rng)
+      hTotalBDo  = self._makeshape(bigNameBDo, rng)
       hTotalABUp = self._makeshape(bigNameABUp, rng)
       hTotalABDo = self._makeshape(bigNameABDo, rng)
+
     elif pdfW is 'PDFWeights_Error':
       hTotal_Err = [None] * 101
       for idx in xrange(101):
@@ -272,29 +261,17 @@ class ShapeFactory:
       print 'This pdfW', pdfW, 'is not ready, exiting...'
       exit()
 
+    numTree = 0
     for tree in trees :
       #myBr = tree.GetBranch(pdfW)
       #myBr = tree.GetBranch(pdfW).GetListOfLeaves()
       print '        {0:<20} : {1:^9}'.format(sampleName,tree.GetEntries())
-      RDF = RDataFrame
-      if ('ALL' in columns) or (len(columns) == 0) :
-	Dtree = RDF(tree)
-      else :
-	v_columns = vector('string')()
-	for column in columns:
-	  v_columns.push_back(column)
-	Dtree = RDF(tree,v_columns)
 
-      for key in self._definitions:
-	#print key, 'crspdto', self._definitions[key]
-	Dtree = Dtree.Define( key, self._definitions[key] )
-      
-      totalWeight = global_weight
       ## if weights vector is not given, do not apply file dependent weights
       if len(weights) != 0 :
         # if weight is not given for a given root file, '-', do not apply file dependent weight for that root file
         if weights[numTree] != '-' :
-          totalWeight = "(" + totalWeight + ") * (" + weights[numTree] + ")" 
+          globalCut = "(" + globalCut + ") * (" + weights[numTree] + ")" 
       ################################################
       # PDFWeights_AlphaS
       ################################################
@@ -306,56 +283,38 @@ class ShapeFactory:
 	  break
 	if size == 2:
 	  print 'PDFWeights_AlphaS size is 2, let evaluate'
-          totalWeightDo = "(" + totalWeight + ") * (PDFWeights_AlphaS[0])" 
-          totalWeightUp = "(" + totalWeight + ") * (PDFWeights_AlphaS[1])"
+          globalCutDo = "(" + globalCut + ") * (PDFWeights_AlphaS[0])" 
+          globalCutUp = "(" + globalCut + ") * (PDFWeights_AlphaS[1])" 
 	else :
 	  print 'PDFWeights_AlphaS size is not 2, let us make Up and Down is the same to norminal'
-          totalWeightDo = totalWeight 
-          totalWeightUp = totalWeight
+          globalCutDo =  globalCut 
+          globalCutUp =  globalCut 
 
-        Dtree = Dtree.Define('totwDo', totalWeightDo) \
-                           .Define('totwUp', totalWeightUp)
         # New histogram
-        shapeNameUp = 'histo_' + sampleName + 'Up' + str(numTree)
         shapeNameDo = 'histo_' + sampleName + 'Do' + str(numTree)
-	# prepare a dummy to fill
-        hclass, hargs, ndim = self._bins2hclass( rng)
-        hModelUp = (shapeNameUp, shapeNameUp,) + hargs
-        hModelDo = (shapeNameDo, shapeNameDo,) + hargs
-        if ndim == 1 :
-          shapeUp = Dtree.Filter(totCut).Histo1D( hModelUp, var, 'totwUp')
-          shapeDo = Dtree.Filter(totCut).Histo1D( hModelDo, var, 'totwDo')
-        elif ndim == 2 :
-          shapeUp = Dtree.Filter(totCut).Histo2D( hModelUp, var, 'totwUp')
-          shapeDo = Dtree.Filter(totCut).Histo2D( hModelDo, var, 'totwDo')
+        shapeNameUp = 'histo_' + sampleName + 'Up' + str(numTree)
+	shapeDo = self._makeshape(shapeNameDo, rng)
+	shapeUp = self._makeshape(shapeNameUp, rng)
+
+	# fill
+        entriesDo = tree.Draw( var+'>>'+shapeNameDo, globalCutDo, 'goff')
+        entriesUp = tree.Draw( var+'>>'+shapeNameUp, globalCutUp, 'goff')
 
         nTriesUp = shapeUp.Integral()
         nTriesDo = shapeDo.Integral()
-        print 'integral  Up and Do', nTriesUp, nTriesDo
-        if nTriesUp == 0 :
-          print 'Warning : entries is 0 for', hModelUp
+        #print 'entries, integral  Up and Do',entriesDo, entriesUp, nTriesDo, nTriesUp
         if nTriesDo == 0 :
-          print 'Warning : entries is 0 for', hModelDo
-        if math.isnan(nTriesUp) :
-          print 'ERROR : entries is nan for', hModelUp
+          print 'Warning : entries is 0 for', shapeNameDo
+        if nTriesUp == 0 :
+          print 'Warning : entries is 0 for', shapeNameUp
         if math.isnan(nTriesDo) :
-          print 'ERROR : entries is nan for', hModelDo
+          print 'ERROR : entries is nan for', shapeNameDo
+        if math.isnan(nTriesUp) :
+          print 'ERROR : entries is nan for', shapeNameUp
 
-        if (numTree == 0) :
-          shapeUp.SetTitle(bigNameUp)
-          shapeUp.SetName(bigNameUp)
-          hTotalAlphaUp = shapeUp
-
-          shapeDo.SetTitle(bigNameDo)
-          shapeDo.SetName(bigNameDo)
-          hTotalAlphaDo = shapeDo
-        else :
-	  cloneUp = shapeUp.Clone()
-	  cloneDo = shapeDo.Clone()
-          hTotalAlphaUp.Add(cloneUp)
-          hTotalAlphaDo.Add(cloneDo)
-	  cloneUp.Delete()
-	  cloneDo.Delete()
+        hTotalAlphaUp.Add(shapeUp)
+        hTotalAlphaDo.Add(shapeDo)
+	#print 'numTree =', numTree,' integral of hTotalAlphaUp', hTotalAlphaUp.Integral()
 	shapeUp.Delete()
 	shapeDo.Delete()
 
@@ -366,7 +325,6 @@ class ShapeFactory:
 	# Using Three nuisances for muR up/do, muF up/do, correlated up/do
 	# as recommanded: https://indico.cern.ch/event/494682/contributions/1172505/attachments/1223578/1800218/mcaod-Feb15-2016.pdf
 
-	print 'checking size of PDFWeights_Scale'
 	size = 0
         for event in tree:
   	  size = event.PDFWeights_Scale.size()
@@ -379,27 +337,21 @@ class ShapeFactory:
 	#  print idx, tree.PDFWeights_Scale[idx]
 	#print 'scale size', size
 	if size == 9:
-	  print 'saving scale nuisance variation: Renormalization and Factorization order changing'
-	  totalW_muAUp  = "(" + totalWeight + ") * (PDFWeights_Scale[1])"
-	  totalW_muADo  = "(" + totalWeight + ") * (PDFWeights_Scale[2])"
-	  totalW_muBUp  = "(" + totalWeight + ") * (PDFWeights_Scale[3])"
-	  totalW_muBDo  = "(" + totalWeight + ") * (PDFWeights_Scale[6])"
-	  totalW_muABUp = "(" + totalWeight + ") * (PDFWeights_Scale[4])"
-	  totalW_muABDo = "(" + totalWeight + ") * (PDFWeights_Scale[8])"
+	  #print 'saving scale nuisance variation: Renormalization and Factorization order changing'
+	  globalCut_muAUp  = "(" + globalCut + ") * (PDFWeights_Scale[1])"
+	  globalCut_muADo  = "(" + globalCut + ") * (PDFWeights_Scale[2])"
+	  globalCut_muBUp  = "(" + globalCut + ") * (PDFWeights_Scale[3])"
+	  globalCut_muBDo  = "(" + globalCut + ") * (PDFWeights_Scale[6])"
+	  globalCut_muABUp = "(" + globalCut + ") * (PDFWeights_Scale[4])"
+	  globalCut_muABDo = "(" + globalCut + ") * (PDFWeights_Scale[8])"
 	else :
-	  totalW_muAUp  =       totalWeight
-	  totalW_muADo  =       totalWeight
-	  totalW_muBUp  =       totalWeight
-	  totalW_muBDo  =       totalWeight
-	  totalW_muABUp =       totalWeight
-	  totalW_muABDo =       totalWeight
+	  globalCut_muAUp  =       globalCut
+	  globalCut_muADo  =       globalCut
+	  globalCut_muBUp  =       globalCut
+	  globalCut_muBDo  =       globalCut
+	  globalCut_muABUp =       globalCut
+	  globalCut_muABDo =       globalCut
 	
-	Dtree = Dtree.Define('totalW_muAUp', totalW_muAUp) \
-	                   .Define('totalW_muADo', totalW_muADo) \
-			   .Define('totalW_muBUp', totalW_muBUp) \
-			   .Define('totalW_muBDo', totalW_muBDo) \
-			   .Define('totalW_muABUp', totalW_muABUp) \
-			   .Define('totalW_muABDo', totalW_muABDo)
         # New histogram
         shapeNameAUp  = 'histo_' + sampleName + 'AUp' + str(numTree)
         shapeNameADo  = 'histo_' + sampleName + 'ADo' + str(numTree)
@@ -407,28 +359,19 @@ class ShapeFactory:
         shapeNameBDo  = 'histo_' + sampleName + 'BDo' + str(numTree)
         shapeNameABUp = 'histo_' + sampleName + 'ABUp' + str(numTree)
         shapeNameABDo = 'histo_' + sampleName + 'ABDo' + str(numTree)
-	# prepare a dummy to fill
-        hclass, hargs, ndim = self._bins2hclass( rng)
-        hModelAUp  = (shapeNameAUp,  shapeNameAUp,)  + hargs
-        hModelADo  = (shapeNameADo,  shapeNameADo,)  + hargs
-        hModelBUp  = (shapeNameBUp,  shapeNameBUp,)  + hargs
-        hModelBDo  = (shapeNameBDo,  shapeNameBDo,)  + hargs
-        hModelABUp = (shapeNameABUp, shapeNameABUp,) + hargs
-        hModelABDo = (shapeNameABDo, shapeNameABDo,) + hargs
-        if ndim == 1 :
-          shapeAUp  = Dtree.Filter(totCut).Histo1D( hModelAUp,  var, 'totalW_muAUp')
-          shapeADo  = Dtree.Filter(totCut).Histo1D( hModelADo,  var, 'totalW_muADo')
-          shapeBUp  = Dtree.Filter(totCut).Histo1D( hModelBUp,  var, 'totalW_muBUp')
-          shapeBDo  = Dtree.Filter(totCut).Histo1D( hModelBDo,  var, 'totalW_muBDo')
-          shapeABUp = Dtree.Filter(totCut).Histo1D( hModelABUp, var, 'totalW_muABUp')
-          shapeABDo = Dtree.Filter(totCut).Histo1D( hModelABDo, var, 'totalW_muABDo')
-        elif ndim == 2 :
-          shapeAUp  = Dtree.Filter(totCut).Histo2D( hModelAUp,  var, 'totalW_muAUp')
-          shapeADo  = Dtree.Filter(totCut).Histo2D( hModelADo,  var, 'totalW_muADo')
-          shapeBUp  = Dtree.Filter(totCut).Histo2D( hModelBUp,  var, 'totalW_muBUp')
-          shapeBDo  = Dtree.Filter(totCut).Histo2D( hModelBDo,  var, 'totalW_muBDo')
-          shapeABUp = Dtree.Filter(totCut).Histo2D( hModelABUp, var, 'totalW_muABUp')
-          shapeABDo = Dtree.Filter(totCut).Histo2D( hModelABDo, var, 'totalW_muABDo')
+        shapeAUp  = self._makeshape( shapeNameAUp, rng)
+        shapeADo  = self._makeshape( shapeNameADo, rng)
+        shapeBUp  = self._makeshape( shapeNameBUp, rng)
+        shapeBDo  = self._makeshape( shapeNameBDo, rng)
+        shapeABUp = self._makeshape( shapeNameABUp, rng)
+        shapeABDo = self._makeshape( shapeNameABDo, rng)
+	# fill
+        entriesAUp=  tree.Draw( var+'>>'+shapeNameAUp,  globalCut_muAUp,  'goff' )
+        entriesADo=  tree.Draw( var+'>>'+shapeNameADo,  globalCut_muADo,  'goff' )
+        entriesBUp=  tree.Draw( var+'>>'+shapeNameBUp,  globalCut_muBUp,  'goff' )
+        entriesBDo=  tree.Draw( var+'>>'+shapeNameBDo,  globalCut_muBDo,  'goff' )
+        entriesABUp= tree.Draw( var+'>>'+shapeNameABUp, globalCut_muABUp, 'goff' )
+        entriesABDo= tree.Draw( var+'>>'+shapeNameABDo, globalCut_muABDo, 'goff' )
         
         nTriesAUp = shapeAUp.Integral()
         nTriesADo = shapeADo.Integral()
@@ -436,80 +379,45 @@ class ShapeFactory:
         nTriesBDo = shapeBDo.Integral()
         nTriesABUp = shapeABUp.Integral()
         nTriesABDo = shapeABDo.Integral()
-        print 'integral  AUp and ADo', nTriesAUp, nTriesADo
-        print 'integral  AUp and ADo', nTriesAUp, nTriesADo
-        print 'integral  BUp and BDo', nTriesBUp, nTriesBDo
-        print 'integral  BUp and BDo', nTriesBUp, nTriesBDo
-        print 'integral  ABUp and ABDo', nTriesABUp, nTriesABDo
-        print 'integral  ABUp and ABDo', nTriesABUp, nTriesABDo
+        #print 'integral  AUp and ADo', nTriesAUp, nTriesADo
+        #print 'integral  AUp and ADo', nTriesAUp, nTriesADo
+        #print 'integral  BUp and BDo', nTriesBUp, nTriesBDo
+        #print 'integral  BUp and BDo', nTriesBUp, nTriesBDo
+        #print 'integral  ABUp and ABDo', nTriesABUp, nTriesABDo
+        #print 'integral  ABUp and ABDo', nTriesABUp, nTriesABDo
         if nTriesAUp == 0 :
-          print 'Warning : entries is 0 for', hModelAUp
+          print 'Warning : entries is 0 for', shapeNameAUp
         if nTriesADo == 0 :
-          print 'Warning : entries is 0 for', hModelADo
+          print 'Warning : entries is 0 for', shapeNameADo
         if nTriesBUp == 0 :
-          print 'Warning : entries is 0 for', hModelBUp
+          print 'Warning : entries is 0 for', shapeNameBUp
         if nTriesBDo == 0 :
-          print 'Warning : entries is 0 for', hModelBDo
+          print 'Warning : entries is 0 for', shapeNameBDo
         if nTriesABUp == 0 :
-          print 'Warning : entries is 0 for', hModelABUp
+          print 'Warning : entries is 0 for', shapeNameABUp
         if nTriesABDo == 0 :
-          print 'Warning : entries is 0 for', hModelABDo
+          print 'Warning : entries is 0 for', shapeNameABDo
 
         if math.isnan(nTriesAUp) :
-          print 'ERROR : entries is nan for', hModelAUp
+          print 'ERROR : entries is nan for', shapeNameAUp
         if math.isnan(nTriesADo) :
-          print 'ERROR : entries is nan for', hModelADo
+          print 'ERROR : entries is nan for', shapeNameADo
         if math.isnan(nTriesBUp) :
-          print 'ERROR : entries is nan for', hModelBUp
+          print 'ERROR : entries is nan for', shapeNameBUp
         if math.isnan(nTriesBDo) :
-          print 'ERROR : entries is nan for', hModelBDo
+          print 'ERROR : entries is nan for', shapeNameBDo
         if math.isnan(nTriesABUp) :
-          print 'ERROR : entries is nan for', hModelABUp
+          print 'ERROR : entries is nan for', shapeNameABUp
         if math.isnan(nTriesABDo) :
-          print 'ERROR : entries is nan for', hModelABDo
+          print 'ERROR : entries is nan for', shapeNameABDo
 
-        if (numTree == 0) :
-          shapeAUp.SetTitle(bigNameAUp)
-          shapeAUp.SetName(bigNameAUp)
-          hTotalAUp = shapeAUp
+        hTotalAUp.Add( shapeAUp )
+        hTotalADo.Add( shapeADo )
+        hTotalBUp.Add( shapeBUp )
+        hTotalBDo.Add( shapeBDo )
+        hTotalABUp.Add( shapeABUp )
+        hTotalABDo.Add( shapeABDo )
 
-          shapeADo.SetTitle(bigNameADo)
-          shapeADo.SetName(bigNameADo)
-          hTotalADo = shapeADo
-
-          shapeBUp.SetTitle(bigNameBUp)
-          shapeBUp.SetName(bigNameBUp)
-          hTotalBUp = shapeBUp
-          shapeBDo.SetTitle(bigNameBDo)
-          shapeBDo.SetName(bigNameBDo)
-          hTotalBDo = shapeBDo
-
-          shapeABUp.SetTitle(bigNameABUp)
-          shapeABUp.SetName(bigNameABUp)
-          hTotalABUp = shapeABUp
-
-          shapeABDo.SetTitle(bigNameABDo)
-          shapeABDo.SetName(bigNameABDo)
-          hTotalABDo = shapeABDo
-        else :
-	  cloneAUp = shapeAUp.Clone()
-	  cloneADo = shapeADo.Clone()
-	  cloneBUp = shapeBUp.Clone()
-	  cloneBDo = shapeBDo.Clone()
-	  cloneABUp = shapeABUp.Clone()
-	  cloneABDo = shapeABDo.Clone()
-          hTotalAUp.Add(cloneAUp)
-          hTotalADo.Add(cloneADo)
-          hTotalBUp.Add(cloneBUp)
-          hTotalBDo.Add(cloneBDo)
-          hTotalABUp.Add(cloneABUp)
-          hTotalABDo.Add(cloneABDo)
-	  cloneAUp.Delete()
-	  cloneADo.Delete()
-	  cloneBUp.Delete()
-	  cloneBDo.Delete()
-	  cloneABUp.Delete()
-	  cloneABDo.Delete()
 	shapeAUp.Delete()
 	shapeADo.Delete()
 	shapeBUp.Delete()
@@ -522,52 +430,32 @@ class ShapeFactory:
       #########################################
       # 0-100, 0=> nominal?
       if pdfW is 'PDFWeights_Error':
-	totalW_pdfErr = []
+	globalCut_pdfErr = []
 	size = 0
 	for event in tree:
 	  size = event.PDFWeights_Error.size()
 	  break
-	#tree.GetEntry(0)
-	#size = len( tree.PDFWeights_Error )
 	print 'PDFWeights_Error size', size
 	if  size > 101:
 	  print 'size of PDFWeights_Error is gt 101, exiting...'
 	  exit()
 	for idx in xrange(size) :
-	  #print idx, tree.PDFWeights_Error[idx]
-	  totalW_pdfErr.append("(" + totalWeight + ") * (PDFWeights_Error[" + str(idx) + "])")
+	  globalCut_pdfErr.append("(" + globalCut + ") * (PDFWeights_Error[" + str(idx) + "])")
 	for idx in xrange(101 - size) :
-	  totalW_pdfErr.append("1")
+	  globalCut_pdfErr.append("(" + globalCut + ") ")
 	for idx in xrange(101):
-	#  print idx, totalW_pdfErr[idx]
-	  Dtree = Dtree.Define('totalW_pdfErr'+str(idx), totalW_pdfErr[idx])
 	  # new histogram
 	  shapeName = 'histo_' + sampleName + '_' + str(idx) + '_' + str(numTree)
-	  # prepare a dummy to fill
-          hclass, hargs, ndim = self._bins2hclass( rng)
-          hModel  = (shapeName,  shapeName,)  + hargs
-	  if ndim == 1 :
-            shape  = Dtree.Filter(totCut).Histo1D( hModel,  var, 'totalW_pdfErr'+str(idx))
-	  elif ndim == 2 :
-            shape  = Dtree.Filter(totCut).Histo2D( hModel,  var, 'totalW_pdfErr'+str(idx))
-	  else :
-	    print 'this dim of hist not ready', ndim, 'exiting'
-	    exit()
+	  shape     = self._makeshape( shapeName, rng )
+	  #  fill
+          entries = tree.Draw( var+'>>'+shapeName, globalCut_pdfErr[idx], 'goff')
+
           nTries = shape.Integral()
-          #print idx, 'integral  ', nTries
           if nTries == 0 :
-            print 'Warning : entries is 0 for', hModel
+            print 'Warning : entries is 0 for', shapeName
           if math.isnan(nTries) :
-            print 'ERROR : entries is nan for', hModel
-          if (numTree == 0) :
-            bigName = 'histo_' + sampleName + str(idx) +'_' + cutName + '_' + variableName
-            shape.SetTitle(bigName)
-            shape.SetName(bigName)
-            hTotal_Err[idx] = shape
-	  else :
-	    cloneH = shape.Clone()
-	    hTotal_Err[idx].Add(cloneH)
-	    cloneH.Delete()
+            print 'ERROR : entries is nan for', shapeName
+          hTotal_Err[idx].Add( shape )
 	  shape.Delete()
 
 
@@ -579,6 +467,7 @@ class ShapeFactory:
     # fold if needed
     if doFold == 1 or doFold == 3 :
       if pdfW is 'PDFWeights_AlphaS':
+	#print 'befor foldOverflow integral of hTotalAlphaUp', hTotalAlphaUp.Integral()
         self._FoldOverflow (hTotalAlphaUp)
         self._FoldOverflow (hTotalAlphaDo)
       if pdfW is 'PDFWeights_Scale':
@@ -791,14 +680,14 @@ class ShapeFactory:
 
   def _connectInputs(self, samples, inputDir, skipMissingFiles, friendsDir = None, skimListDir = None):
     listTrees = []
-    tree = TChain(self._treeName)
-    for aFile in samples :
-      tree.AddFile(aFile)
-    listTrees.append(tree)
+    #tree = TChain(self._treeName)
     #for aFile in samples :
-    #  tree = TChain(self._treeName)
     #  tree.AddFile(aFile)
-    #  listTrees.append(tree)
+    #listTrees.append(tree)
+    for aFile in samples :
+      tree = TChain(self._treeName)
+      tree.AddFile(aFile)
+      listTrees.append(tree)
 
     return listTrees
 

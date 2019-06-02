@@ -11,13 +11,20 @@ variables['mll'] = {
     'xaxis': 'm_{ll} [GeV]',
     'fold' : 3
     }
-variables['leading_muon_pt'] = { #FIXME: this is a test
+variables['leading_muon_pt'] = {
     'name': 'muon_pt[0]',
     'range':(100,0,100),
-    'xaxis': 'muon p_{T} [GeV]',
+    'xaxis': '#mu p_{T} [GeV]',
     'yaxis': 'Events / 5GeV',
     'fold' : 3
     }
+#variables['leading_ele_pt'] = {
+#    'name': 'electron_pt[0]',
+#    'range':(100,0,100),
+#    'xaxis': 'e p_{T} [GeV]',
+#    'yaxis': 'Events / 5GeV',
+#    'fold' : 3
+#    }
 #variables['ZpT'] = {
 #    'name': 'diLep_pt',
 #    'range':(120,0,120),
