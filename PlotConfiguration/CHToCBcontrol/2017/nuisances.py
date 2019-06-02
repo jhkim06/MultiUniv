@@ -32,6 +32,17 @@ nuisances['ttxsec'] = {
     }
 }
 
+#nuisances['ttMass'] = {
+#    'name' : 'ttMass',
+#    'kind' : 'tree',
+#    'type' : 'shape',
+#    'samples' : {
+#      'TTLJ_powheg'	: [1.,1.],
+#    }
+#    'folderUp' : '',
+#    'folderDown' : '',
+#}
+
 nuisances['PUweight'] = {
     'name' :'PUweight',
     'kind' : 'weight',
