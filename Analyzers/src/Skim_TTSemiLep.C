@@ -91,6 +91,7 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   newtree->Branch("fitted_dijet_m", &fitted_dijet_m,"fitted_dijet_m/D");
   newtree->Branch("best_chi2", &best_chi2,"best_chi2/D");
   */
+  newtree->Branch("btag_vector_noSF","vector<bool>",&btag_vector_noSF);
   newtree->Branch("n_bjet_deepcsv_m_noSF", &n_bjet_deepcsv_m_noSF,"n_bjet_deepcsv_m_noSF/I");
   newtree->Branch("BTagSF", &BTagSF,"BTagSF/D");
   newtree->Branch("BTagSF_Up", &BTagSF_Up,"BTagSF_Up/D");
@@ -507,7 +508,7 @@ void Skim_TTSemiLep::executeEvent(){
   if(jets.size()<4) return;
   FillHist("CutFlow",10,1,30,0,30);
 
-  std::vector<bool> btag_vector_noSF;
+  btag_vector_noSF.clear();
   n_bjet_deepcsv_m_noSF=0;
 
   for(unsigned int ij = 0 ; ij < jets.size(); ij++){
