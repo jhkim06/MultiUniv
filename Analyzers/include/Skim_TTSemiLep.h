@@ -98,6 +98,7 @@ private:
   double fitted_dijet_m;
   double best_chi2;
   */
+  std::vector<bool> btag_vector_noSF;
   int n_bjet_deepcsv_m_noSF;
   double BTagSF, BTagSF_Up, BTagSF_Do;
   double MisTagSF, MisTagSF_Up, MisTagSF_Do;
