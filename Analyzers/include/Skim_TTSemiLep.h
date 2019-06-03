@@ -98,12 +98,20 @@ private:
   double fitted_dijet_m;
   double best_chi2;
   */
+  std::vector<bool> btag_vector_noSF;
   int n_bjet_deepcsv_m_noSF;
   double BTagSF, BTagSF_Up, BTagSF_Do;
   double MisTagSF, MisTagSF_Up, MisTagSF_Do;
 
   //double TopPtReweight_Up, TopPtReweight_Do;
 
+  std::vector<Jet::Tagger> vtaggers;
+  std::vector<Jet::WP> v_wps;
+  vector<Jet> this_AllJets ;
+  vector<Jet> jets;
+  vector<Jet> jetsLveto;
+  float tmp_btagsf, tmp_mistagsf;
+  
 };
 
 

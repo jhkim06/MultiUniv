@@ -6,6 +6,6 @@ from Definitions import *
 supercut = 'passIso==1 && passTightID==1'
 
 cuts['Mu2b'] = 'n_bjet_deepcsv_m_noSF==2 && IsMu==1'
-cuts['Mu3b'] = 'n_bjet_deepcsv_m_noSF>=3 && IsMu==1'
-cuts['El2b'] = 'n_bjet_deepcsv_m_noSF==2 && IsEl==1'
-cuts['El3b'] = 'n_bjet_deepcsv_m_noSF>=3 && IsEl==1'
+#cuts['Mu3b'] = 'n_bjet_deepcsv_m_noSF>=3 && IsMu==1'
+#cuts['El2b'] = 'n_bjet_deepcsv_m_noSF==2 && IsEl==1'
+#cuts['El3b'] = 'n_bjet_deepcsv_m_noSF>=3 && IsEl==1'

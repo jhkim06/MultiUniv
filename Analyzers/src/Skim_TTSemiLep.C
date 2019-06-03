@@ -91,6 +91,7 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   newtree->Branch("fitted_dijet_m", &fitted_dijet_m,"fitted_dijet_m/D");
   newtree->Branch("best_chi2", &best_chi2,"best_chi2/D");
   */
+  newtree->Branch("btag_vector_noSF","vector<bool>",&btag_vector_noSF);
   newtree->Branch("n_bjet_deepcsv_m_noSF", &n_bjet_deepcsv_m_noSF,"n_bjet_deepcsv_m_noSF/I");
   newtree->Branch("BTagSF", &BTagSF,"BTagSF/D");
   newtree->Branch("BTagSF_Up", &BTagSF_Up,"BTagSF_Up/D");
@@ -150,6 +151,39 @@ void Skim_TTSemiLep::executeEvent(){
   muons.clear();
   electrons.clear();
   leps.clear();
+  btag_vector_noSF.clear();
+  vtaggers.clear();
+  v_wps.clear();
+  this_AllJets.clear();
+  jets.clear();
+  jetsLveto.clear();
+
+  muons.shrink_to_fit();
+  electrons.shrink_to_fit();
+  leps.shrink_to_fit();
+  btag_vector_noSF.shrink_to_fit();
+  vtaggers.shrink_to_fit();
+  v_wps.shrink_to_fit();
+  this_AllJets.shrink_to_fit();
+  jets.shrink_to_fit();
+  jetsLveto.shrink_to_fit();
+
+  tmp_btagsf=1., tmp_mistagsf=1.;
+  n_bjet_deepcsv_m_noSF=0;
+  IsMu = 0; IsEl = 0;
+  PUweight=1.,PUweight_Up=1.,PUweight_Do=1.;
+  trgSF    = 1; trgSF_Up   = 1; trgSF_Do   = 1;
+  trgSF_Q  = 1; trgSF_Q_Up = 1; trgSF_Q_Do = 1;
+
+  recoSF   = 1; recoSF_Up  = 1; recoSF_Do = 1;
+
+  IdSF    = 1; IdSF_Up   = 1; IdSF_Do   = 1;
+  IdSF_Q  = 1; IdSF_Q_Up = 1; IdSF_Q_Do = 1;
+
+  IsoSF =1; IsoSF_Up =1; IsoSF_Do =1;
+  
+  pdf_scale_Up = 1; pdf_scale_Do = 1;
+  
 
   //diLep_passSelectiveQ = false;
 
@@ -228,8 +262,6 @@ void Skim_TTSemiLep::executeEvent(){
   electrons=GetElectrons("passVetoID",15.,2.5);
   std::sort(electrons.begin(),electrons.end(),PtComparing);
 
-  IsMu = 0;
-  IsEl = 0;
   //=========================
   // SingleLepton condition
   //=========================
@@ -347,8 +379,6 @@ void Skim_TTSemiLep::executeEvent(){
   /////////////////PUreweight///////////////////
   PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
 
-  PUweight=1.,PUweight_Up=1.,PUweight_Do=1.;
-
   if(!IsDATA){
     PUweight=(mcCorr->*PileUpWeight)(nPileUp,0);
     PUweight_Up=(mcCorr->*PileUpWeight)(nPileUp,1);
@@ -357,20 +387,6 @@ void Skim_TTSemiLep::executeEvent(){
   //==============================
   // SF 
   //==============================
-
-
-  trgSF    = 1; trgSF_Up   = 1; trgSF_Do   = 1;
-  trgSF_Q  = 1; trgSF_Q_Up = 1; trgSF_Q_Do = 1;
-
-  recoSF   = 1; recoSF_Up  = 1; recoSF_Do = 1;
-
-  IdSF    = 1; IdSF_Up   = 1; IdSF_Do   = 1;
-  IdSF_Q  = 1; IdSF_Q_Up = 1; IdSF_Q_Do = 1;
-
-  IsoSF =1; IsoSF_Up =1; IsoSF_Do =1;
-  
-  pdf_scale_Up = 1; pdf_scale_Do = 1;
-  
 
 
   if(!IsDATA){
@@ -496,27 +512,22 @@ void Skim_TTSemiLep::executeEvent(){
 */
   //==== Test btagging code
   //==== add taggers and WP that you want to use in analysis
-  std::vector<Jet::Tagger> vtaggers;
   vtaggers.push_back(Jet::DeepCSV);
-
-  std::vector<Jet::WP> v_wps;
   v_wps.push_back(Jet::Medium); 
 
   //=== list of taggers, WP, setup systematics, use period SFs
   SetupBTagger(vtaggers,v_wps, true, true);
 
-  vector<Jet> this_AllJets = GetAllJets();
-  vector<Jet> jets = SelectJets(this_AllJets, "tight", 30., 2.4);
-  jets = JetsVetoLeptonInside(jets, electrons, muons);
-  std::sort(jets.begin(), jets.end(), PtComparing);
-  if(jets.size()<4) return;
+  this_AllJets = GetAllJets();
+  jets = SelectJets(this_AllJets, "tight", 30., 2.4);
+  jetsLveto = JetsVetoLeptonInside(jets, electrons, muons);
+  std::sort(jetsLveto.begin(), jetsLveto.end(), PtComparing);
+  if(jetsLveto.size()<4) return;
   FillHist("CutFlow",10,1,30,0,30);
 
-  std::vector<bool> btag_vector_noSF;
-  n_bjet_deepcsv_m_noSF=0;
 
-  for(unsigned int ij = 0 ; ij < jets.size(); ij++){
-    if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)){
+  for(unsigned int ij = 0 ; ij < jetsLveto.size(); ij++){
+    if(IsBTagged(jetsLveto.at(ij), Jet::DeepCSV, Jet::Medium,false,0)){
       n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
       btag_vector_noSF.push_back(true);
     }
@@ -524,18 +535,17 @@ void Skim_TTSemiLep::executeEvent(){
       btag_vector_noSF.push_back(false);
     }
   }
-  //require more than 2b tagged jets
+  //require more than 2b tagged jetLvetos
   if(n_bjet_deepcsv_m_noSF < 2) return;
   FillHist("CutFlow",11,1,30,0,30);
 
-  float tmp_btagsf=1., tmp_mistagsf=1.;
-  BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 0, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
+  BtaggingSFEvtbyEvt(jetsLveto, Jet::DeepCSV, Jet::Medium, 0, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
   BTagSF = tmp_btagsf;
   MisTagSF = tmp_mistagsf;
-  BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 1, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
+  BtaggingSFEvtbyEvt(jetsLveto, Jet::DeepCSV, Jet::Medium, 1, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
   BTagSF_Up = tmp_btagsf;
   MisTagSF_Up = tmp_mistagsf;
-  BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, -1, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
+  BtaggingSFEvtbyEvt(jetsLveto, Jet::DeepCSV, Jet::Medium, -1, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
   BTagSF_Do = tmp_btagsf;
   MisTagSF_Do = tmp_mistagsf;
   //
@@ -546,7 +556,7 @@ void Skim_TTSemiLep::executeEvent(){
   //b_trgSF->Fill();
   //b_trgSF_Up->Fill();
   //b_trgSF_Do->Fill();
-  if(jets.size()!=btag_vector_noSF.size()){
+  if(jetsLveto.size()!=btag_vector_noSF.size()){
     cout <<"[Skim_TTSemiLep::executeEvent] check jet vector size" << endl;
     exit(EXIT_FAILURE);
   }
@@ -559,14 +569,14 @@ void Skim_TTSemiLep::executeEvent(){
   ///////////////////////////////////////////////////////////
   /*
   if(IsMu){
-    fitter_driver->SetAllObjects(jets, 
+    fitter_driver->SetAllObjects(jetsLveto, 
                                  btag_vector_noSF,
                                  (TLorentzVector)muons.at(0),
                                  (TLorentzVector)evt->GetMETVector()
                                 );
   }
   else if(IsEl){
-    fitter_driver->SetAllObjects(jets,
+    fitter_driver->SetAllObjects(jetsLveto,
                                  btag_vector_noSF,
                                  (TLorentzVector)electrons.at(0),
                                  (TLorentzVector)evt->GetMETVector()

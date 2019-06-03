@@ -143,26 +143,36 @@ cp ../x509up_u{1} /tmp/
 echo "[mkGardener.py] Okay, let's run the analysis"
 {2} 1>stdout.log 2>stderr.log
 '''.format(thisjob_dir, UID, self.exCmd)
-    elif IsTAMSA1:
+    elif IsKISTI or IsTAMSA:
+      print 'making script for KISTI or TAMSA <<<<<<<<<<<<<<<<<<<<<'
       #export GCC_HOME=/usr/
       #export PATH=$GCC_HOME/bin:$PATH
       #export LD_LIBRARY_PATH=$GCC_HOME/lib/gcc/x86_64-redhat-linux:$GCC_HOME/lib64:$LD_LIBRARY_PATH
       print>>sFile,'''#!/bin/bash
 SECTION=`printf $1`
 WORKDIR=`pwd`
+
 SumNoAuth=999
 Trial=0
-export GCC_HOME=/usr/
-export PATH=$GCC_HOME/bin:$PATH
-export LD_LIBRARY_PATH=$GCC_HOME/lib/gcc/x86_64-redhat-linux:$GCC_HOME/lib64:$LD_LIBRARY_PATH
-source /data6/Users/salee/ROOT616_TAMSA1/bin/thisroot.sh
+
+export LC_ALL=C
+
+export CMS_PATH=/cvmfs/cms.cern.ch
+source $CMS_PATH/cmsset_default.sh
+export SCRAM_ARCH={1}
+export cmsswrel={2}
+cd /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/$cmsswrel/src
+eval `scramv1 runtime -sh`
+cd -
+source /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/$cmsswrel/external/$SCRAM_ARCH/bin/thisroot.sh
+
 
 while [ "$SumNoAuth" -ne 0 ]; do
   if [ "$Trial" -gt 9999 ]; then
     break
   fi
   echo "#### Processing ####"
-  {0} 2> err.log
+  {0} 2> err.log || echo "EXIT_FAILURE" >> err.log
   NoAuthError_Open=`grep "Error in <TNetXNGFile::Open>" err.log -R | wc -l`
   NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" err.log -R | wc -l`
 
@@ -177,7 +187,7 @@ while [ "$SumNoAuth" -ne 0 ]; do
 
 done
 cat err.log >&2
-'''.format(self.exCmd)
+'''.format(self.exCmd, SCRAM_ARCH, cmsswrel)
       sFile.close()
     else:
       print>>sFile,'''#!/bin/bash

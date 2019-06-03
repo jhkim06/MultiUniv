@@ -1,36 +1,47 @@
 
-nuisances['lumi'] = {
-    'name' : 'lumi_13TeV',
-    'type' : 'lnN',
-    'samples' : {
-      'DYJets'	              : '1.023',
-      'DYJets10to50_MG'       : '1.023',
-      'WJets_MG'              : '1.023',
-      'TTLJ_powheg'	      : '1.023',
-      'TTLL_powheg'	      : '1.023',
-      'TTJJ_powheg'	      : '1.023',
-      'SingleTop_sch_top'         : '1.023',
-      'SingleTop_tch_top'     : '1.023',
-      'SingleTop_tch_antitop' : '1.023',
-      'SingleTop_tW_top'      : '1.023',
-      'SingleTop_tW_antitop'  : '1.023',
-      'WW_pythia'             : '1.023',
-      'WZ_pythia'             : '1.023',
-      'ZZ_pythia'             : '1.023',
-      'ttW'                   : '1.023',
-      'ttZ'                   : '1.023',
-    }
-}
-
-nuisances['ttxsec'] = {
-    'name' : 'ttxsec',
-    'type' : 'lnN',
-    'samples' : {
-      'TTLJ_powheg'	: '1.06114',
-      'TTLL_powheg'	: '1.06114',
-      'TTJJ_powheg'	: '1.06114',
-    }
-}
+#nuisances['lumi'] = {
+#    'name' : 'lumi_13TeV',
+#    'type' : 'lnN',
+#    'samples' : {
+#      'DYJets'	              : '1.023',
+#      'DYJets10to50_MG'       : '1.023',
+#      'WJets_MG'              : '1.023',
+#      'TTLJ_powheg'	      : '1.023',
+#      'TTLL_powheg'	      : '1.023',
+#      'TTJJ_powheg'	      : '1.023',
+#      'SingleTop_sch_top'         : '1.023',
+#      'SingleTop_tch_top'     : '1.023',
+#      'SingleTop_tch_antitop' : '1.023',
+#      'SingleTop_tW_top'      : '1.023',
+#      'SingleTop_tW_antitop'  : '1.023',
+#      'WW_pythia'             : '1.023',
+#      'WZ_pythia'             : '1.023',
+#      'ZZ_pythia'             : '1.023',
+#      'ttW'                   : '1.023',
+#      'ttZ'                   : '1.023',
+#    }
+#}
+#
+#nuisances['ttxsec'] = {
+#    'name' : 'ttxsec',
+#    'type' : 'lnN',
+#    'samples' : {
+#      'TTLJ_powheg'	: '1.06114',
+#      'TTLL_powheg'	: '1.06114',
+#      'TTJJ_powheg'	: '1.06114',
+#    }
+#}
+#
+#nuisances['ttMass'] = {
+#    'name' : 'ttMass',
+#    'kind' : 'tree',
+#    'type' : 'shape',
+#    'samples' : {
+#      'TTLJ_powheg'	: [1.,1.],
+#    }
+#    'folderUp' : '',
+#    'folderDown' : '',
+#}
 
 nuisances['PUweight'] = {
     'name' :'PUweight',
@@ -81,53 +92,53 @@ nuisances['IdSF'] = {
     }
 }
 
-nuisances['IsoSF'] = {
-    'name' : 'IsoSF',
-    'kind'	: 'weight',
-    'type'	: 'shape',
-    'samples' : {
-      'DYJets'	              : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'DYJets10to50_MG'       : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'WJets_MG'              : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'TTLJ_powheg'	      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'TTLL_powheg'	      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'TTJJ_powheg'	      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'SingleTop_sch_top'         : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'SingleTop_tch_top'     : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'SingleTop_tch_antitop' : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'SingleTop_tW_top'      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'SingleTop_tW_antitop'  : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'WW_pythia'             : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'WZ_pythia'             : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'ZZ_pythia'             : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'ttW'                   : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-      'ttZ'                   : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-    }
-}
-
-nuisances['recoSF'] = {
-    'name' : 'recoSF',
-    'kind'	: 'weight',
-    'type'	: 'shape',
-    'samples' : {
-      'DYJets'	              : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'DYJets10to50_MG'       : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'WJets_MG'              : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'TTLJ_powheg'	      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'TTLL_powheg'	      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'TTJJ_powheg'	      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'SingleTop_sch_top'         : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'SingleTop_tch_top'     : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'SingleTop_tch_antitop' : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'SingleTop_tW_top'      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'SingleTop_tW_antitop'  : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'WW_pythia'             : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'WZ_pythia'             : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'ZZ_pythia'             : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'ttW'                   : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-      'ttZ'                   : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-    }
-}
+#nuisances['IsoSF'] = {
+#    'name' : 'IsoSF',
+#    'kind'	: 'weight',
+#    'type'	: 'shape',
+#    'samples' : {
+#      'DYJets'	              : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'DYJets10to50_MG'       : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'WJets_MG'              : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'TTLJ_powheg'	      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'TTLL_powheg'	      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'TTJJ_powheg'	      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'SingleTop_sch_top'         : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'SingleTop_tch_top'     : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'SingleTop_tch_antitop' : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'SingleTop_tW_top'      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'SingleTop_tW_antitop'  : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'WW_pythia'             : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'WZ_pythia'             : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'ZZ_pythia'             : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'ttW'                   : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#      'ttZ'                   : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+#    }
+#}
+#
+#nuisances['recoSF'] = {
+#    'name' : 'recoSF',
+#    'kind'	: 'weight',
+#    'type'	: 'shape',
+#    'samples' : {
+#      'DYJets'	              : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'DYJets10to50_MG'       : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'WJets_MG'              : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'TTLJ_powheg'	      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'TTLL_powheg'	      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'TTJJ_powheg'	      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'SingleTop_sch_top'         : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'SingleTop_tch_top'     : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'SingleTop_tch_antitop' : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'SingleTop_tW_top'      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'SingleTop_tW_antitop'  : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'WW_pythia'             : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'WZ_pythia'             : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'ZZ_pythia'             : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'ttW'                   : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#      'ttZ'                   : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+#    }
+#}
 
 nuisances['trgSF'] = {
     'name' : 'trgSF',
@@ -177,29 +188,29 @@ nuisances['BTagSF'] = {
     }
 }
 
-nuisances['MisTagSF'] = {
-    'name' : 'MisTagSF',
-    'kind'	: 'weight',
-    'type'	: 'shape',
-    'samples' : {
-      'DYJets'	              : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'DYJets10to50_MG'       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'WJets_MG'              : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'TTLJ_powheg'	      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'TTLL_powheg'	      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'TTJJ_powheg'	      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'SingleTop_sch_top'         : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'SingleTop_tch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'SingleTop_tch_antitop' : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'SingleTop_tW_top'      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'SingleTop_tW_antitop'  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'WW_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'WZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'ZZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'ttW'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'ttZ'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-    }
-}
+#nuisances['MisTagSF'] = {
+#    'name' : 'MisTagSF',
+#    'kind'	: 'weight',
+#    'type'	: 'shape',
+#    'samples' : {
+#      'DYJets'	              : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'DYJets10to50_MG'       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'WJets_MG'              : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'TTLJ_powheg'	      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'TTLL_powheg'	      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'TTJJ_powheg'	      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'SingleTop_sch_top'         : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'SingleTop_tch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'SingleTop_tch_antitop' : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'SingleTop_tW_top'      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'SingleTop_tW_antitop'  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'WW_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'WZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'ZZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'ttW'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'ttZ'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#    }
+#}
 
 #nuisances['leptonSF'] = {
 #    'name' : 'leptonSF',
