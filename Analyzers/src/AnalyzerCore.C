@@ -903,7 +903,7 @@ void AnalyzerCore::BtaggingSFEvtbyEvt(std::vector<Jet> &jets, Jet::Tagger tagger
 
     if(!IsDATA){
       if(systematic > 0) map_key += "_systup";
-      else if (systematic < 0) map_key +=  "systdown";
+      else if (systematic < 0) map_key +=  "_systdown";
     }
   
     //=== use key to access correct BTagSFUtil object
