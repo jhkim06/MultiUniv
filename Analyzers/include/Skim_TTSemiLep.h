@@ -102,7 +102,7 @@ private:
   double BTagSF, BTagSF_Up, BTagSF_Do;
   double MisTagSF, MisTagSF_Up, MisTagSF_Do;
 
-  double TopPtReweight_Up, TopPtReweight_Do;
+  //double TopPtReweight_Up, TopPtReweight_Do;
 
 };
 
