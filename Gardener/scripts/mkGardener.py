@@ -33,6 +33,7 @@ parser.add_argument('--nTotFiles', dest='nTotFiles', default=0, type=int)
 parser.add_argument('--MonitJob', dest='MonitJob', default=False, type=bool)
 parser.add_argument('--Category', dest='Category', default="SMP")
 parser.add_argument('--FastSim', action='store_true')
+parser.add_argument('--resubmit', action='store_true')
 
 opt = parser.parse_args()
 InSkimString = opt.InSkim
@@ -152,7 +153,6 @@ webdirpathbase = SKFlatRunlogDir+'/www/SKFlatAnalyzerJobLogs/'+webdirname
 # Copy Libraries
 #
 ####################################
-
 MasterJobDir = SKFlatRunlogDir+'/'+opt.Analyzer+'_'+'Y'+opt.Year
 if InSkimString !="":
   MasterJobDir = MasterJobDir + '_'+InSkimString
@@ -162,8 +162,12 @@ MasterJobDir = (MasterJobDir+'_v'+opt.skimV+"/").replace('///','/').replace('//'
 
 libDir = MasterJobDir+'lib/'
 print 'libDir:', libDir
-os.system('mkdir -p ' + libDir)
-os.system('cp '+SKFlat_LIB_PATH+'/* '+libDir)
+if opt.resubmit:
+  if not os.path.isdir(libDir):
+    print '%s is not exist!!'%libDir
+else:
+  os.system('mkdir -p ' + libDir)
+  os.system('cp '+SKFlat_LIB_PATH+'/* '+libDir)
 
 ############################
 ## Loop over samples
@@ -194,11 +198,14 @@ for InputSample in InputSamples:
   base_rundir = base_rundir+"/"
   print "base_rundir: ", base_rundir
   if os.path.isdir(base_rundir):
-    print 'base_rundir already exists exiting... remove or mv this directory to run again'
-    exit()
-
-  os.system('mkdir -p '+base_rundir)
-  os.system('mkdir -p '+base_rundir+'/output/')
+    if not opt.resubmit:
+      print 'base_rundir already exists exiting... remove or mv this directory to run again'
+      exit()
+  if opt.resubmit:
+    print 'resubmit job in base dir : %s'%base_rundir
+  else:
+    os.system('mkdir -p '+base_rundir)
+    os.system('mkdir -p '+base_rundir+'/output/')
 
   ## Set Output directory
   ### if opt.Outputdir is not set, go to default setting
@@ -219,7 +226,8 @@ for InputSample in InputSamples:
       else:
         FinalOutputPath += '_'+flag
     FinalOutputPath +='_v'+opt.skimV+'/'
-  os.system('mkdir -p '+FinalOutputPath)
+  if not opt.resubmit:
+    os.system('mkdir -p '+FinalOutputPath)
   print 'FinalOutputPath', FinalOutputPath
 
   ## Copy shared library file
@@ -260,7 +268,8 @@ for InputSample in InputSamples:
     else:
       tmpfilepath = SAMPLE_INFO_DIR+'/For'+HostNickName+'/'+InputSamples[InputSample]['key']+'.txt'
     inputFileList = open(tmpfilepath).readlines()
-    os.system('cp '+tmpfilepath+' '+base_rundir+'/input_filelist.txt')
+    if not opt.resubmit:
+      os.system('cp '+tmpfilepath+' '+base_rundir+'/input_filelist.txt')
     print 'Sample ROOT file list', tmpfilepath
   else:
     # Skim data list setup
@@ -372,7 +381,12 @@ for InputSample in InputSamples:
     CheckTotalNFile = CheckTotalNFile+len(FileRanges[it_job])
 
     thisjob_dir = base_rundir+'/job_'+str(it_job)+'/'
-    os.system('mkdir -p '+thisjob_dir)
+    if opt.resubmit:
+      if not os.path.isdir(thisjob_dir):
+	print '%s is not exist!!!!!'%thisjob_dir
+        exit()		    
+    else:
+      os.system('mkdir -p '+thisjob_dir)
 
     jobName = opt.Analyzer+'_'+InputSamples[InputSample]['key']
     if IsDATA:
@@ -471,6 +485,13 @@ void {0}(){{
       jobs.mkJds()
 
     jobs.mkShCommand()
+    if opt.resubmit:
+      #print CheckJobStatus(base_rundir,"",it_job,"SNU",IsHadd)
+      if "FINISHED" in CheckJobStatus(base_rundir,"",it_job,"SNU",IsHadd):
+        print 'job finished    %s/job_%s '%(base_rundir,str(it_job))
+	continue
+      else:
+        print 'lets resubmit!!      %s/job_%s '%(base_rundir,str(it_job))
     jobs.Sub()
 
 
