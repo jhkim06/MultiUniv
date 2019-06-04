@@ -67,6 +67,8 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname, IsHadd=False):
   log_e = open(path_log_e).readlines()
   length_log_e = 0
   is_not_mounting_err = False
+  #FIXME: possible to FINISH job even if length_log_e > 0
+  '''
   for e_l in log_e:
     if "WARNING: Not mounting" in e_l:
       length_log_e -= 1
@@ -82,7 +84,7 @@ def CheckJobStatus(logfiledir, cycle, jobnumber, hostname, IsHadd=False):
     for l in log_e:
       out = out+l
     return out
-
+  '''
   log_o = open(path_log_o).readlines()
 
   ## XX.oXX not created
