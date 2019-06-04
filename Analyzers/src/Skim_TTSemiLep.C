@@ -304,7 +304,7 @@ void Skim_TTSemiLep::executeEvent(){
   if(IsMu == 1){ // Muon-----------------------------
     if(! evt->PassTrigger(SingleMuTrgs) )return;
     leps=MakeLeptonPointerVector(muons);
-    Lep0PtCut=15.; //FIXME: set by year
+    Lep0PtCut=29.; //FIXME: set by year
     LepEtaCut = 2.4;
     LeptonID_SF =&MCCorrection::MuonID_SF;
     LeptonISO_SF=&MCCorrection::MuonISO_SF;
@@ -328,7 +328,7 @@ void Skim_TTSemiLep::executeEvent(){
     if(! evt->PassTrigger(SingleElTrgs) )return;
     //if(electrons[0].SelectiveQ() )if(electrons[1].SelectiveQ())  diLep_passSelectiveQ = true;
     leps=MakeLeptonPointerVector(electrons);
-    Lep0PtCut=15.; //FIXME: set by year
+    Lep0PtCut=38.; //FIXME: set by year
     LepEtaCut = 2.5;
     LeptonID_SF  = &MCCorrection::ElectronID_SF;
     LeptonReco_SF= &MCCorrection::ElectronReco_SF;

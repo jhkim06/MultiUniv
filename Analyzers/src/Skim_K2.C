@@ -29,11 +29,25 @@ void Skim_K2::initializeAnalyzer(){
   fChain->SetBranchAddress("IsMu",&IsMu, &b_IsMu);
   fChain->SetBranchAddress("IsEl",&IsEl, &b_IsEl);
 
+  // disable branch
+  newtree->SetBranchStatus("fatjet*",0);
+  newtree->SetBranchStatus("photon*",0);
+
   // New Branch
   newtree->Branch("initial_dijet_m", &initial_dijet_m,"initial_dijet_m/D");
   newtree->Branch("corrected_dijet_m", &corrected_dijet_m,"corrected_dijet_m/D");
   newtree->Branch("fitted_dijet_m", &fitted_dijet_m,"fitted_dijet_m/D");
   newtree->Branch("best_chi2", &best_chi2,"best_chi2/D");
+
+  newtree->Branch("selected_lepton_pt", &selected_lepton_pt, "selected_lepton_pt/D");
+  newtree->Branch("selected_lepton_eta", &selected_lepton_eta, "selected_lepton_eta/D");
+  newtree->Branch("selected_lepton_phi", &selected_lepton_phi, "selected_lepton_phi/D");
+
+  newtree->Branch("njets", &njets,"njets/I");
+  newtree->Branch("selected_jet_pt", "vector<double>" ,&selected_jet_pt);
+
+  newtree->Branch("selected_jet_eta", "vector<double>" ,&selected_jet_eta);
+  newtree->Branch("selected_jet_phi", "vector<double>" ,&selected_jet_phi);
 
   // setup btagger
   std::vector<Jet::Tagger> taggers = {Jet::DeepCSV};
@@ -49,6 +63,9 @@ void Skim_K2::executeEvent(){
   muons.clear();
   electrons.clear();
 
+  selected_jet_pt.clear();
+  selected_jet_eta.clear();
+  selected_jet_phi.clear();
   //diLep_passSelectiveQ = false;
 
   evt = new Event;
@@ -109,8 +126,30 @@ void Skim_K2::executeEvent(){
   corrected_dijet_m = fitter_driver->GetBestCorrectedDijetMass();
   fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
   best_chi2 = fitter_driver->GetChi2();
-  newtree->Fill();
 
+
+  ///////////////////////////////////////////////
+  // add Kinematic Variables
+  ///////////////////////////////////////////////
+
+  if(IsMu){
+    selected_lepton_pt = muons.at(0).Pt();
+    selected_lepton_eta = muons.at(0).Eta();
+    selected_lepton_phi = muons.at(0).Phi();
+  }
+  else if(IsEl){
+    selected_lepton_pt = electrons.at(0).Pt();
+    selected_lepton_eta = electrons.at(0).Eta();
+    selected_lepton_phi = electrons.at(0).Phi();
+  }
+  njets= jets.size();
+  for(auto& x : jets){
+    selected_jet_pt.push_back(x.Pt());
+    selected_jet_eta.push_back(x.Eta());
+    selected_jet_phi.push_back(x.Phi());
+  }
+
+  newtree->Fill();
 
 }
 

@@ -20,4 +20,19 @@ sampleInfo = {
 'ttW'			: {'name': 'ttWJets_TuneCP5_13TeV_madgraphMLM_pythia8',			'xsec': 0.61,		'nMC':9425384,		'Nsum': 9384328 },
 'ttZ'			: {'name': 'ttZJets_TuneCP5_13TeV_madgraphMLM_pythia8',			'xsec': 0.780,		'nMC':9698473,		'Nsum': 9678691 },
 
+
+'CHToCB_M020'		:{'name' :'ChargedHiggsToCB_M020_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':300000,	'Nsum': 300000 },
+'CHToCB_M030'		:{'name' :'ChargedHiggsToCB_M030_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':300000,	'Nsum': 300000 },
+'CHToCB_M040'		:{'name' :'ChargedHiggsToCB_M040_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':264000,	'Nsum': 264000 },
+'CHToCB_M060'		:{'name' :'ChargedHiggsToCB_M060_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':300000,	'Nsum': 300000 },
+'CHToCB_M070'		:{'name' :'ChargedHiggsToCB_M070_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':300000,	'Nsum': 300000 },
+'CHToCB_M075'		:{'name' :'ChargedHiggsToCB_M075_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':53000,	'Nsum': 53000 },
+'CHToCB_M085'		:{'name' :'ChargedHiggsToCB_M085_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':300000,	'Nsum': 300000 },
+'CHToCB_M090'		:{'name' :'ChargedHiggsToCB_M090_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':300000,	'Nsum': 300000 },
+'CHToCB_M100'		:{'name' :'ChargedHiggsToCB_M100_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':292000,	'Nsum': 292000 },
+'CHToCB_M120'		:{'name' :'ChargedHiggsToCB_M120_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':292000,	'Nsum': 292000 },
+'CHToCB_M130'		:{'name' :'ChargedHiggsToCB_M130_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':300000,	'Nsum': 300000 },
+'CHToCB_M140'		:{'name' :'ChargedHiggsToCB_M140_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':292000,	'Nsum': 292000 },
+'CHToCB_M160'		:{'name' :'ChargedHiggsToCB_M160_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':300000,	'Nsum': 300000 },
+
 }

@@ -27,8 +27,10 @@ private:
 
   int IsMu;
   int IsEl;
+  std::vector<bool>* btag_vector_noSF;
   TBranch *b_IsMu;
   TBranch *b_IsEl;
+  TBranch *b_btag_vector_noSF;
 
   std::vector<Muon> muons;
   std::vector<Electron> electrons;
@@ -39,6 +41,15 @@ private:
   double corrected_dijet_m;
   double fitted_dijet_m;
   double best_chi2;
+
+  double selected_lepton_pt;
+  double selected_lepton_eta;
+  double selected_lepton_phi;
+
+  int njets; //number of jets
+  std::vector<double> selected_jet_pt;
+  std::vector<double> selected_jet_eta;
+  std::vector<double> selected_jet_phi;
  
 };
 

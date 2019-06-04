@@ -112,7 +112,7 @@ void Skim_TSCorrTree::executeEvent(){
 
   vector<Jet> this_AllJets = GetAllJets();
   vector<Gen> this_AllGens = GetGens();
-  vector<Jet> jets = SelectJets(this_AllJets, "tight", 20., 2.4);
+  vector<Jet> jets = SelectJets(this_AllJets, "tight", 5., 2.4);
   jets = JetsVetoLeptonInside(jets, electrons, muons);
   std::sort(jets.begin(), jets.end(), PtComparing);
   if(jets.size()<4) return;
