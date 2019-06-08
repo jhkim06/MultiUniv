@@ -1,0 +1,9 @@
+# alias PD xsec nmc sumw
+TT_MG  TTJets_TuneCP5_13TeV-madgraphMLM-pythia8  831.59  8026103  8026103
+ttbb  ttbb_4FS_ckm_NNPDF31_TuneCP5_amcatnlo_madspin_pythia  0.6  5993190  5993190
+TTLJ_powheg_Do  TTToSemiLeptonic_TuneCP5down_PSweights_13TeV-powheg-pythia8  365.34  27104055  27104055
+TTLJ_powheg_Up  TTToSemiLeptonic_TuneCP5up_PSweights_13TeV-powheg-pythia8  365.34  26166070  26166070
+TTLJ_powheg_hdamp_Do  TTToSemiLeptonic_hdampDOWN_TuneCP5_PSweights_13TeV-powheg-pythia8  365.34  26367765  26367765
+TTLJ_powheg_hdamp_Up  TTToSemiLeptonic_hdampUP_TuneCP5_PSweights_13TeV-powheg-pythia8  365.34  27191508  27191508
+TTLJ_powheg_mass_Do  TTToSemiLeptonic_mtop171p5_TuneCP5_PSweights_13TeV-powheg-pythia8  365.34  24357098  24357098
+TTLJ_powheg_mass_Up  TTToSemiLeptonic_mtop173p5_TuneCP5_PSweights_13TeV-powheg-pythia8  365.34  22528538  22528538

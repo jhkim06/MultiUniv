@@ -30,8 +30,10 @@ void Skim_K2::initializeAnalyzer(){
   fChain->SetBranchAddress("IsEl",&IsEl, &b_IsEl);
 
   // disable branch
-  newtree->SetBranchStatus("fatjet*",0);
-  newtree->SetBranchStatus("photon*",0);
+  if(fChain->GetEntries()>0){
+    newtree->SetBranchStatus("fatjet*",0);
+    newtree->SetBranchStatus("photon*",0);
+  }
 
   // New Branch
   newtree->Branch("initial_dijet_m", &initial_dijet_m,"initial_dijet_m/D");
