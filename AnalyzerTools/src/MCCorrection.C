@@ -598,6 +598,9 @@ double MCCorrection::GetPileUpWeightBySampleName(int N_vtx, int syst){
   if(N_vtx >= 100) this_bin=100;
 
   TString this_histname = MCSample;
+  if(MCSample.Contains("CHToCB_M")) 
+    this_histname="TTLJ_powheg"; //TODO: make pileup hist for signal
+
   if(syst == 0){
     this_histname += "_central_pileup";
   }
