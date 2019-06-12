@@ -2,7 +2,6 @@
 #define Skim_ISRUnfoldInput_h
 
 #include "AnalyzerCore.h"
-#include "RoccoR.h"
 #include "RootHelper.h"
 
 class Skim_ISRUnfoldInput : public AnalyzerCore {
@@ -42,8 +41,21 @@ private:
   Event* evt;
 
   std::vector<Muon> muons;
+  std::vector<Muon> muons_momentumUp;
+  std::vector<Muon> muons_momentumDown;
+
   std::vector<Electron> electrons;
+  std::vector<Electron> electrons_momentumUp;
+  std::vector<Electron> electrons_momentumDown;
+  std::vector<Electron> electrons_momentumResUp;
+  std::vector<Electron> electrons_momentumResDown;
+
   std::vector<Lepton*> leps;
+  std::vector<Lepton*> leps_momentumUp;
+  std::vector<Lepton*> leps_momentumDown;
+
+  std::vector<Lepton*> leps_momentumResUp;
+  std::vector<Lepton*> leps_momentumResDown;
 
   double (MCCorrection::*LeptonID_SF)(TString,double,double,int);
   double (MCCorrection::*LeptonISO_SF)(TString,double,double,int);
@@ -75,11 +87,19 @@ private:
   // tree variables used in CatAnalyzer as a first trial
   std::vector<Double_t> AlphaS;
   std::vector<Double_t> Scale;
+  std::vector<Double_t> PDFerror;
   std::vector<Double_t> ptRec,mRec;
+  std::vector<Double_t> ptRec_momentumUp,mRec_momentumUp;
+  std::vector<Double_t> ptRec_momentumDown,mRec_momentumDown;
+  std::vector<Double_t> ptRec_momentumResUp,mRec_momentumResUp;
+  std::vector<Double_t> ptRec_momentumResDown,mRec_momentumResDown;
   std::vector<Double_t> ptPreFSR,mPreFSR;
   std::vector<Double_t> ptPostFSR,mPostFSR;
   std::vector<TLorentzVector> particleFSR, anparticleFSR;
+
+  TLorentzVector particlePostFSR, anparticlePostFSR;
   Double_t weightGen, weightRec, bTagReweight;
+  Double_t L1Prefire, L1Prefire_Up, L1Prefire_Dn;
   Int_t ispassRec,isfiducialPostFSR,isfiducialPreFSR,DYtautau,isBveto;
   Int_t isdielectron, isdimuon;
 

@@ -29,6 +29,11 @@ void Skim_Efficiency::initializeAnalyzer(){
   El_IdSF_Trigger.insert(std::make_pair("passTightID_vetoIso", "HLT_Ele35_WPTight_Gsf_v")); 
   ElEl_IdSF_Trigger.insert(std::make_pair("passTightID_vetoIso", "DoubleElectron")); 
 
+  // LepIDSF_2_ele_POGTightID_mu_POGTightID
+  // LepTightIsoSF_2_ele_POGTightID_mu_POGTightID
+  // LepRecoSF_2_ele_POGTightID_mu_POGTightID
+  // LepTrgSF_2_ele_POGTightID_mu_POGTightID
+
   std::map<TString, double>::iterator it = El_IdSF.begin();
   while(it !=El_IdSF.end()){
        El_RecoSF.insert(std::make_pair(it->first, 1.));
