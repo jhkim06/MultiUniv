@@ -176,9 +176,9 @@ void TKinFitterDriver::SetLepton(TLorentzVector lepton_){
   double Et = lepton.Et();
   double Eta = lepton.Eta();
   //this->SetError(&error_lepton, Et, Eta);
-  error_lepton(0,0)=0.03*Et;
-  error_lepton(1,1)=0.03*Eta;
-  error_lepton(2,2)=0.03*lepton.Phi();
+  error_lepton(0,0)=TMath::Power(0.03*Et,2);
+  error_lepton(1,1)=TMath::Power(0.03*Eta,2);
+  error_lepton(2,2)=TMath::Power(0.03*lepton.Phi(),2);
   if(!fit_lepton) delete fit_lepton;
   fit_lepton = new TFitParticleEtEtaPhi("lepton",
                                         "lepton",
@@ -416,9 +416,9 @@ bool TKinFitterDriver::NextPermutation(bool UseLeading4Jets){
 
 
 void TKinFitterDriver::SetJetError(TMatrixD *matrix,  double Et, double Eta, double Phi, TString flavour_key){
-  (*matrix)(0,0) = Et*this->JetErrorEt(Et, Eta, flavour_key);
-  (*matrix)(1,1) = Eta*this->JetErrorEta(Et, Eta, flavour_key);
-  (*matrix)(2,2) = Phi*this->JetErrorPhi(Et, Eta, flavour_key);
+  (*matrix)(0,0) = TMath::Power(Et*this->JetErrorEt(Et, Eta, flavour_key), 2);
+  (*matrix)(1,1) = TMath::Power(Eta*this->JetErrorEta(Et, Eta, flavour_key), 2);
+  (*matrix)(2,2) = TMath::Power(Phi*this->JetErrorPhi(Et, Eta, flavour_key), 2);
 }
 
 
