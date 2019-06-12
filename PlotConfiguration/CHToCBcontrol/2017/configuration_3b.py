@@ -3,17 +3,17 @@ Analyzer    = 'mkShape'
 Outputdir   = 'Output'
 Category    = 'SMP'
 Year        = '2017'
-#lumi        = 41.527540
+lumi        = 41.527540
 InSkim      = 'MetFt_L_v1_TTSemiLep_v2_K2_v1'
 # Userflags: separate by ','
-Userflags   = 'CHToCB' # flag appends to ouput directory name
+Userflags   = 'CHToCB_3b' # flag appends to ouput directory name
 #Userflags   = 'AlPhaS'
 #Userflags   = 'DY'
 treeName    = 'recoTree/SKFlat'
 
 
-sampleCfg   = 'samples.py'
-plotCfg     = 'plot.py'
+sampleCfg   = 'samples_3b.py'
+plotCfg     = 'plot_3b.py'
 variableCfg = 'variables.py'
-cutCfg      = 'cuts.py'
-nuisancesCfg= 'nuisances.py'
+cutCfg      = 'cuts_3b.py'
+nuisancesCfg= 'nuisances_3b.py'

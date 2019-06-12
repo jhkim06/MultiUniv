@@ -217,11 +217,11 @@ samples['SingleMuon_FakeMu'] = {
 # DATA
 #--------------------    
 samples['SingleElectron'] = {
-    'skim'   :'',
+    'skim'   :'MetFt_L_v1_TTSemiLep_v1_K2_v3',
     'weight' :'1',
     }
 
 samples['SingleMuon'] = {
-    'skim'   :'',
+    'skim'   :'MetFt_L_v1_TTSemiLep_v1_K2_v3',
     'weight' :'1',
     }

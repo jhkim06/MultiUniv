@@ -8,8 +8,11 @@ from CommonPyTools.python.CommonTools import *
 #eleWP='mediumSelectiveQ'
 
 #XXX: diff. between IdSF and IdSF_Q ?
-McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*recoSF*BTagSF'
-#McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
+is2b = '(n_bjet_deepcsv_m_noSF==2)'
+is3b = '(n_bjet_deepcsv_m_noSF>=3)'
+McWeight_2b = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*recoSF*MisTagSF'
+McWeight_3b = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*recoSF*BTagSF'
+McWeight = '%s*%s+%s*%s'%(is2b, McWeight_2b, is3b, McWeight_3b)
 
 #--------------------    
 # MC
@@ -217,11 +220,11 @@ samples['SingleMuon_FakeMu'] = {
 # DATA
 #--------------------    
 samples['SingleElectron'] = {
-    'skim'   :'',
-    'weight' :'1',
+    'skim'   :'MetFt_L_v1_TTSemiLep_v1_K2_v3',
+    'weight' :'n_bjet_deepcsv_m_noSF>=3',
     }
 
 samples['SingleMuon'] = {
-    'skim'   :'',
-    'weight' :'1',
+    'skim'   :'MetFt_L_v1_TTSemiLep_v1_K2_v3',
+    'weight' :'n_bjet_deepcsv_m_noSF>=3',
     }

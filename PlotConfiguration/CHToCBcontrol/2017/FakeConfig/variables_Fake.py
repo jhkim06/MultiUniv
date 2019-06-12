@@ -1,5 +1,12 @@
 from CommonPyTools.python.CommonTools import *
 
+variables['electron_scEta'] = { 
+    'name': 'electron_scEta',
+    'range':(60,-2.5,2.5),
+    'xaxis': 'scEta [GeV]',
+    'yaxis': 'Events',
+    'fold' : 3
+    }
 
 
 variables['fitted_dijet_mass'] = {

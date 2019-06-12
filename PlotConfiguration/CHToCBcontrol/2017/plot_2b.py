@@ -203,7 +203,7 @@ plot['SingleElectron'] = {
 legend['lumi'] = 'L = 41.5/fb'
 legend['sqrt'] = '#sqrt{s} = 13 TeV'
 # extraText default is Preliminary
-legend['extraText'] = ''
+legend['extraText'] = 'in progress'
 # iPeriod = 1*(0/1 7 TeV) + 2*(0/1 8 TeV)  + 4*(0/1 13 TeV)
 # For instance: 
 #               iPeriod = 3 means: 7 TeV + 8 TeV

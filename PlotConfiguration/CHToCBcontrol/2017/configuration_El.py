@@ -13,7 +13,7 @@ treeName    = 'recoTree/SKFlat'
 
 
 sampleCfg   = 'samples.py'
-plotCfg     = 'plot.py'
+plotCfg     = 'plot_El.py'
 variableCfg = 'variables.py'
-cutCfg      = 'cuts.py'
+cutCfg      = 'cuts_El.py'
 nuisancesCfg= 'nuisances.py'
