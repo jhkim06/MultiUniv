@@ -42,7 +42,7 @@
 #    'folderUp' : '',
 #    'folderDown' : '',
 #}
-
+'''
 nuisances['PUweight'] = {
     'name' :'PUweight',
     'kind' : 'weight',
@@ -91,7 +91,7 @@ nuisances['IdSF'] = {
       'ttZ'                   : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
     }
 }
-
+'''
 #nuisances['IsoSF'] = {
 #    'name' : 'IsoSF',
 #    'kind'	: 'weight',
@@ -139,7 +139,7 @@ nuisances['IdSF'] = {
 #      'ttZ'                   : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
 #    }
 #}
-
+'''
 nuisances['trgSF'] = {
     'name' : 'trgSF',
     'kind'	: 'weight',
@@ -187,7 +187,7 @@ nuisances['BTagSF'] = {
       'ttZ'                   : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
     }
 }
-
+'''
 #nuisances['MisTagSF'] = {
 #    'name' : 'MisTagSF',
 #    'kind'	: 'weight',

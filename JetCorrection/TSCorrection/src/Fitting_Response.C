@@ -155,7 +155,7 @@ void Fitting_Response::FitProfile(TString sample){
   Double_t par[NUM_PAR], best_par[NUM_PAR], chi2, best_chi2, NDF, best_NDF;
   TString fitting_method, best_fitting_method;
 
-  TF1 *fitFcn = new TF1("fitFcn",ResponseFittingFunction,20.,300.,NUM_PAR);
+  TF1 *fitFcn = new TF1("fitFcn",ResponseFittingFunction,0.,300.,NUM_PAR);
 
   if(MapProfile.size()!=0){
     cout << "WARNING  :    MapProfile is not empty!!!" << endl;
@@ -185,9 +185,11 @@ void Fitting_Response::FitProfile(TString sample){
     MapProfile[name]->GetYaxis()->SetRangeUser(-0.5,0.5);
     TString x_name = it_res->first;
     x_name.ReplaceAll("Pt","P_{T}");
-    x_name.ReplaceAll("Et","E_{T}");
+    if(x_name !="Eta"){
+      x_name.ReplaceAll("Et","E_{T}");
+    }
     MapProfile[name]->GetYaxis()->SetTitle(Form("(True parton %s - Jet %s)/Jet %s",x_name.Data(),x_name.Data(),x_name.Data()));
-    MapProfile[name]->GetXaxis()->SetRangeUser(18.,300.);
+    MapProfile[name]->GetXaxis()->SetRangeUser(0.,300.);
     MapProfile[name]->GetXaxis()->SetTitle(Form("Jet %s [GeV]",x_name.Data()));
 
     //TODO: different colors for udscb, udsc, uds, c, b
@@ -199,6 +201,10 @@ void Fitting_Response::FitProfile(TString sample){
       fitFcn->SetLineColor(9);
 
     fitFcn->SetLineWidth(3);
+    fitFcn->SetParameter(0,0);
+    fitFcn->SetParameter(1,0);
+    fitFcn->SetParameter(2,0);
+    fitFcn->SetParameter(3,0);
 
     best_chi2=-999; // initialize best chi2
     fitting_method="Q0";

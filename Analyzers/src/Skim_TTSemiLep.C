@@ -168,7 +168,10 @@ void Skim_TTSemiLep::executeEvent(){
   jets.shrink_to_fit();
   jetsLveto.shrink_to_fit();
 
-  tmp_btagsf=1., tmp_mistagsf=1.;
+  tmp_btagsf=1.;
+  tmp_mistagsf.clear();
+  tmp_mistagsf.shrink_to_fit();
+
   n_bjet_deepcsv_m_noSF=0;
   IsMu = 0; IsEl = 0;
   PUweight=1.,PUweight_Up=1.,PUweight_Do=1.;
@@ -541,13 +544,22 @@ void Skim_TTSemiLep::executeEvent(){
 
   BtaggingSFEvtbyEvt(jetsLveto, Jet::DeepCSV, Jet::Medium, 0, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
   BTagSF = tmp_btagsf;
-  MisTagSF = tmp_mistagsf;
+  MisTagSF =0;
+  for(auto &x : tmp_mistagsf){
+    MisTagSF += x;
+  }
   BtaggingSFEvtbyEvt(jetsLveto, Jet::DeepCSV, Jet::Medium, 1, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
   BTagSF_Up = tmp_btagsf;
-  MisTagSF_Up = tmp_mistagsf;
+  MisTagSF_Up = 0;
+  for(auto &x : tmp_mistagsf){
+    MisTagSF_Up += x;
+  }
   BtaggingSFEvtbyEvt(jetsLveto, Jet::DeepCSV, Jet::Medium, -1, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
   BTagSF_Do = tmp_btagsf;
-  MisTagSF_Do = tmp_mistagsf;
+  MisTagSF_Do = 0;
+  for(auto &x : tmp_mistagsf){
+    MisTagSF_Do += x;
+  }
   //
   //for(int i=0;i<(int)PDFWeights_Scale->size();i++){
   //  cout<<"Scale: "<<i<<" "<<PDFWeights_Scale->at(i)<<endl;

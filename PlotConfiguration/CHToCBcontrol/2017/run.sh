@@ -50,7 +50,32 @@
 
 
 
-mkShapes.py --pycfg  configuration.py -n 50 --nTotFiles 0  --overWrite --doBatch --dry_run
+#mkShapes.py --pycfg  configuration.py -n 50 --nTotFiles 0  --overWrite --doBatch
 #mkShapes.py --pycfg  configuration.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp
-#mkPlot.py --pycfg configuration.py --inputFile=Output_MetFt_L_v0_LL_v0_MuMuOrElEl_v1_DY/DY.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+#mkPlot.py --pycfg configuration_Mu.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v1_K2_v3_CHToCB/CHToCB.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+#mkPlot.py --pycfg configuration_El.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v1_K2_v3_CHToCB/CHToCB.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
 #scp -r Plot_DY lxplus.cern.ch:www/
+
+#mkShapes.py --pycfg  FakeConfig/configuration_Fake.py -n 50 --nTotFiles 0  --overWrite --doBatch
+#mkShapes.py --pycfg  FakeConfig/configuration_Fake.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp
+
+
+#------------------------------------
+#### ver. 2 (19. 06. 10)
+mkShapes.py --pycfg  configuration_2b.py -n 50 --nTotFiles 0  --overWrite --doBatch
+sleep 5m
+mkShapes.py --pycfg  configuration_2b.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp
+sleep 1m
+mkPlot.py --pycfg configuration_Mu2b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v2_K2_v1_CHToCB_2b/CHToCB_2b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+sleep 1m
+mkPlot.py --pycfg configuration_El2b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v2_K2_v1_CHToCB_2b/CHToCB_2b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+sleep 1m
+
+
+mkShapes.py --pycfg  configuration_3b.py -n 50 --nTotFiles 0  --overWrite --doBatch
+sleep 5m
+mkShapes.py --pycfg  configuration_3b.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp
+sleep 1m
+mkPlot.py --pycfg configuration_Mu3b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v2_K2_v1_CHToCB_3b/CHToCB_3b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+sleep 1m
+mkPlot.py --pycfg configuration_El3b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v2_K2_v1_CHToCB_3b/CHToCB_3b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
