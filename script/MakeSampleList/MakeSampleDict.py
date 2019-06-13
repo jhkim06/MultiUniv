@@ -16,15 +16,14 @@ with open(args.out, 'w') as f_out:
   f_out.write('sampleInfo = {\n')
   with open(args.infile, 'r') as f_in:
     for line_ in f_in:
-      if '#' in line_:
+      if '#' in line_[0]:
         continue
       line = line_.rstrip('\n')
       elements = line.split()
       if len(elements)!=5:
-	print('skip this line:')
-	pirnt(line)
-        continue
+	print('WARNING this line has more than 5 element!:')
+	print(line)
       print(elements)
       print(tuple(elements))
-      f_out.write("'%s'		:{'name' :'%s',	'xsec': %s,	'nMC':%s,	'Nsum': %s },\n"%tuple(elements))
+      f_out.write("'%s'		:{'name' :'%s',	'xsec': %s,	'nMC':%s,	'Nsum': %s },\n"%tuple(elements[:5]))
   f_out.write("}\n")
