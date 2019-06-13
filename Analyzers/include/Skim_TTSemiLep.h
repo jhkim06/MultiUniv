@@ -110,7 +110,8 @@ private:
   vector<Jet> this_AllJets ;
   vector<Jet> jets;
   vector<Jet> jetsLveto;
-  float tmp_btagsf, tmp_mistagsf;
+  float tmp_btagsf;
+  std::vector<float> tmp_mistagsf;
   
 };
 

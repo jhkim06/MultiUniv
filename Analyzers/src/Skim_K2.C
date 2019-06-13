@@ -40,6 +40,7 @@ void Skim_K2::initializeAnalyzer(){
   newtree->Branch("corrected_dijet_m", &corrected_dijet_m,"corrected_dijet_m/D");
   newtree->Branch("fitted_dijet_m", &fitted_dijet_m,"fitted_dijet_m/D");
   newtree->Branch("best_chi2", &best_chi2,"best_chi2/D");
+  newtree->Branch("fitter_status", &fitter_status,"fitter_status/I");
 
   newtree->Branch("selected_lepton_pt", &selected_lepton_pt, "selected_lepton_pt/D");
   newtree->Branch("selected_lepton_eta", &selected_lepton_eta, "selected_lepton_eta/D");
@@ -72,11 +73,6 @@ void Skim_K2::executeEvent(){
 
   evt = new Event;
   *evt = GetEvent();
-
-  newtree->SetBranchAddress("initial_dijet_m",&initial_dijet_m);
-  newtree->SetBranchAddress("corrected_dijet_m",&corrected_dijet_m);
-  newtree->SetBranchAddress("fitted_dijet_m",&fitted_dijet_m);
-  newtree->SetBranchAddress("best_chi2",&best_chi2);
 
   muons=GetMuons("POGLooseWithLooseIso",15.,2.4);
   std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
@@ -121,14 +117,19 @@ void Skim_K2::executeEvent(){
                                 );
   }
   fitter_driver->FindBestChi2Fit(false); // true means use only leading four jets
-  if(fitter_driver->GetStatus()!=0) return; //0 means fit converge
-  FillHist("CutFlow",12,1,30,0,30);
-
-  initial_dijet_m = fitter_driver->GetBestInitialDijetMass();
-  corrected_dijet_m = fitter_driver->GetBestCorrectedDijetMass();
-  fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
-  best_chi2 = fitter_driver->GetChi2();
-
+  fitter_status = fitter_driver->GetStatus();
+  if(fitter_status==0){ //0 means fit converge
+    initial_dijet_m = fitter_driver->GetBestInitialDijetMass();
+    corrected_dijet_m = fitter_driver->GetBestCorrectedDijetMass();
+    fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
+    best_chi2 = fitter_driver->GetChi2();
+  }
+  else{
+    initial_dijet_m = -1;
+    corrected_dijet_m = -1;
+    fitted_dijet_m = -1;
+    best_chi2 = -1;
+  }
 
   ///////////////////////////////////////////////
   // add Kinematic Variables

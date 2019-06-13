@@ -41,6 +41,7 @@ private:
   double corrected_dijet_m;
   double fitted_dijet_m;
   double best_chi2;
+  int fitter_status;
 
   double selected_lepton_pt;
   double selected_lepton_eta;

@@ -7,3 +7,14 @@ TTLJ_powheg_hdamp_Do  TTToSemiLeptonic_hdampDOWN_TuneCP5_PSweights_13TeV-powheg-
 TTLJ_powheg_hdamp_Up  TTToSemiLeptonic_hdampUP_TuneCP5_PSweights_13TeV-powheg-pythia8  365.34  27191508  27191508
 TTLJ_powheg_mass_Do  TTToSemiLeptonic_mtop171p5_TuneCP5_PSweights_13TeV-powheg-pythia8  365.34  24357098  24357098
 TTLJ_powheg_mass_Up  TTToSemiLeptonic_mtop173p5_TuneCP5_PSweights_13TeV-powheg-pythia8  365.34  22528538  22528538
+TTJJ_powheg_Do  TTToHadronic_TuneCP5down_PSweights_13TeV-powheg-pythia8  377.96  26155064  26155064
+TTJJ_powheg_Up  TTToHadronic_TuneCP5up_PSweights_13TeV-powheg-pythia8  377.96  27206470  27206470
+TTJJ_powheg_hdamp_Do  TTToHadronic_hdampDOWN_TuneCP5_PSweights_13TeV-powheg-pythia8  377.96  26444636  26444636
+TTJJ_powheg_hdamp_Up  TTToHadronic_hdampUP_TuneCP5_PSweights_13TeV-powheg-pythia8  377.96  25821240  25821240
+TTJJ_powheg_mass_Do  TTToHadronic_mtop171p5_TuneCP5_PSweights_13TeV-powheg-pythia8  377.96  24804016  24804016
+TTLL_powheg_Do  TTTo2L2Nu_TuneCP5down_PSweights_13TeV-powheg-pythia8  88.29  5475200  5475200
+TTLL_powheg_Up  TTTo2L2Nu_TuneCP5up_PSweights_13TeV-powheg-pythia8  88.29  5500000  5500000
+TTLL_powheg_hdamp_Do  TTTo2L2Nu_hdampDOWN_TuneCP5_PSweights_13TeV-powheg-pythia8  88.29  5336672  5336672
+TTLL_powheg_hdamp_Up  TTTo2L2Nu_hdampUP_TuneCP5_PSweights_13TeV-powheg-pythia8  88.29  5413576  5413576
+TTLL_powheg_mass_Do  TTTo2L2Nu_mtop171p5_TuneCP5_PSweights_13TeV-powheg-pythia8  88.29  5435101  5435101
+TTLL_powheg_mass_Up  TTTo2L2Nu_mtop173p5_TuneCP5_PSweights_13TeV-powheg-pythia8  88.29  5807430  5807430

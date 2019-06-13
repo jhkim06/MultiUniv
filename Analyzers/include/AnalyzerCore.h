@@ -145,6 +145,7 @@ public:
 
   //==== EvtByEvt Btagging
   void BtaggingSFEvtbyEvt(std::vector<Jet> &jets, Jet::Tagger tagger, Jet::WP WP, int systematic, float &btag_sf, float &mistag_sf);
+  void BtaggingSFEvtbyEvt(std::vector<Jet> &jets, Jet::Tagger tagger, Jet::WP WP, int systematic, float &btag_sf, std::vector<float> &mistag_sf);
  
   //==== Using new PDF set
   PDFReweight *pdfReweight;

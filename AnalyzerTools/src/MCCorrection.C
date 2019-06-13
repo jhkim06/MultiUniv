@@ -602,9 +602,15 @@ double MCCorrection::GetPileUpWeightBySampleName(int N_vtx, int syst){
     this_histname="TTLJ_powheg"; //TODO: make pileup hist for signal
   else if(MCSample.Contains("TTLJ_powheg")) 
     this_histname="TTLJ_powheg";
+  else if(MCSample.Contains("TTLL_powheg")) 
+    this_histname="TTLL_powheg";
+  else if(MCSample.Contains("TTJJ_powheg")) 
+    this_histname="TTJJ_powheg";
   else if(MCSample.Contains("TT_MG")) 
     this_histname="TTLJ_powheg";
   else if(MCSample.Contains("ttbb")) 
+    this_histname="TTLJ_powheg";
+  else if(MCSample.Contains("ttH")) //TODO: make pilup hist for ttH
     this_histname="TTLJ_powheg";
 
   if(syst == 0){

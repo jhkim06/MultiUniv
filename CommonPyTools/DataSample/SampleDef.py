@@ -27,7 +27,8 @@ Productions = {
     'SMP' : {
       'Run2Legacy_v1_2017' : {
         'MC' : 'CommonPyTools.DataSample.Samples_SMP_Fall17_miniaodv2',
-	    'DATA' : ['DoubleEG', 'DoubleMuon', 'SingleElectron', 'SingleMuon' ],
+	'DATA' : ['DoubleEG', 'DoubleMuon', 'SingleElectron', 'SingleMuon' ],
+	#'SIGNAL': 'CommonPyTools.DataSample.Samples_CHToCB_Fall17_miniaodv2',
         'SkimDir': '/data8/DATA/SMP/Run2Legacy_v1/2017/',
         },
       'Run2Legacy_v1_2016' : {
