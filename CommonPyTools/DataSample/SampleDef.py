@@ -25,6 +25,22 @@ def SampleInfoDir(Year):
 
 Productions = {
     'SMP' : {
+      #TODO: will modify MC definition by 'SKFlatV'
+      'Run2Legacy_v3_2018' : {
+        'MC' : 'CommonPyTools.DataSample.Samples_SMP_Fall18_miniaodv2',
+	'DATA' : ['DoubleEG', 'DoubleMuon', 'SingleElectron', 'SingleMuon' ],
+        'SkimDir': '/data8/DATA/SMP/Run2Legacy_v3/2018/',
+        },
+      'Run2Legacy_v3_2017' : {
+        'MC' : 'CommonPyTools.DataSample.Samples_SMP_Fall17_miniaodv2',
+	'DATA' : ['DoubleEG', 'DoubleMuon', 'SingleElectron', 'SingleMuon' ],
+        'SkimDir': '/data8/DATA/SMP/Run2Legacy_v3/2017/',
+        },
+      'Run2Legacy_v3_2016' : {
+        'MC' : 'CommonPyTools.DataSample.Samples_SMP_Fall16_miniaodv2',
+	'DATA' : ['DoubleEG', 'DoubleMuon', 'SingleElectron', 'SingleMuon' ],
+        'SkimDir': '/data8/DATA/SMP/Run2Legacy_v3/2016/',
+        },
       'Run2Legacy_v1_2017' : {
         'MC' : 'CommonPyTools.DataSample.Samples_SMP_Fall17_miniaodv2',
 	'DATA' : ['DoubleEG', 'DoubleMuon', 'SingleElectron', 'SingleMuon' ],
