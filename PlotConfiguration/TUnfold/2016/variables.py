@@ -25,10 +25,11 @@ variables['sub-leading pt'] = {
     'yaxis': 'Events / 5GeV',
     'fold' : 3
     }
-variables['ptll'] = { 
-    'name': 'ptRec[2]',
-    'range':([0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 35., 45., 55., 65., 75., 85., 100.]),
-    'xaxis': 'p_{T} [GeV]',
-    'yaxis': 'Events / 1GeV',
+variables['ptll-mll'] = { 
+    'name': 'ptRec[2]:mRec[2]',
+    #'range':(100,0,100),
+    'range':([50., 65., 80., 100., 200., 350.],[0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 35., 45., 55., 65., 75., 85., 100.]),
+    'xaxis': ' Mass p_{T} [GeV]',
+    'yaxis': 'Events',
     'fold' : 3
     }

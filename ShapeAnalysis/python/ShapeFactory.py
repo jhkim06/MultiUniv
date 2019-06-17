@@ -2,7 +2,7 @@
 import os,sys
 import logging
 import math 
-from ROOT import TFile, TH1D, TH2, gROOT, TChain, vector
+from ROOT import TFile, TH1D, TH2, TH2D, gROOT, TChain, vector
 SKFlat_WD = os.getenv('SKFlat_WD')
 sys.path.insert(0,SKFlat_WD+'/CommonTools/include')
 from Definitions import *
@@ -80,7 +80,7 @@ class ShapeFactory:
 	self.outFile.cd(cutName+"/"+variableName)
         print variableName
         print 'variable[name]', variable['name']
-	print 'variable[range]', variable['range'][0],':', variable['range'][1],':', variable['range'][2]
+	#print 'variable[range]', variable['range'][0],':', variable['range'][1],':', variable['range'][2] # commented out since it gives out of range error with variable bins
 
 	doFold = 0
 	if 'fold' in variable.keys() :
@@ -628,7 +628,8 @@ class ShapeFactory:
     nx = h.GetNbinsX()
     ny = h.GetNbinsY()
 
-    h_flat = TH1D(h.GetName(),h.GetTitle(),nx*ny,0,nx*ny)
+
+    h_flat = TH1D(h.GetName()+"_flat",h.GetTitle() + "_flat",nx*ny,0,nx*ny) # add _flat to avoid warning message
     sumw2 = h.GetSumw2()
     sumw2_flat = h_flat.GetSumw2()
 
@@ -716,7 +717,7 @@ class ShapeFactory:
       hclass = TH1D
       xbins = bins[0]
       hargs = (len(xbins)-1, array('d', xbins) )
-    elif l == 1 and isinstance( bins[0], list) and isinstance( bins[1], list) :
+    elif l == 2 and isinstance( bins[0], list) and isinstance( bins[1], list) :
       ndim = 2
       hclass = TH2D
       xbins = bins[0]
