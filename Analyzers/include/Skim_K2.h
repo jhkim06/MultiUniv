@@ -43,6 +43,17 @@ private:
   double best_chi2;
   int fitter_status;
 
+  std::vector<double> hadronic_top_M_vector_success;
+  std::vector<double> hadronic_top_M_vector_fail;
+  std::vector<double> hadronic_top_b_pt_vector_success;
+  std::vector<double> hadronic_top_b_pt_vector_fail;
+  std::vector<double> leptonic_top_b_pt_vector_success;
+  std::vector<double> leptonic_top_b_pt_vector_fail;
+  std::vector<double> wch_up_type_pt_vector_success;
+  std::vector<double> wch_up_type_pt_vector_fail;
+  std::vector<double> wch_down_type_pt_vector_success;
+  std::vector<double> wch_down_type_pt_vector_fail;
+
   double selected_lepton_pt;
   double selected_lepton_eta;
   double selected_lepton_phi;

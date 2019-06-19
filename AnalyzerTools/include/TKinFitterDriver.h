@@ -35,16 +35,27 @@ public:
   void SetLepton(TLorentzVector lepton_);
   void SetMET(TLorentzVector met_);
   void SetNeutrino(TLorentzVector met_,int i); // i is related to neu. Pz
+
   void Fit();
   void FindBestChi2Fit(bool UseLeading4Jets=false);
+
   int GetStatus();
   double GetChi2();
   double GetFittedDijetMass();
   double GetInitialDijetMass();
   double GetCorrectedDijetMass();
+
+  int GetBestStatus();
+  double GetBestChi2();
   double GetBestFittedDijetMass();
   double GetBestInitialDijetMass();
   double GetBestCorrectedDijetMass();
+
+  std::vector<double> GetHadronicTopMassVector(bool IsConverge=true);
+  std::vector<double> GetHadronicTopBPtVector(bool IsConverge=true);
+  std::vector<double> GetLeptonicTopBPtVector(bool IsConverge=true);
+  std::vector<double> GetWCHDownTypePtVector(bool IsConverge=true);
+  std::vector<double> GetWCHUpTypePtVector(bool IsConverge=true);
 
   enum JET_ASSIGNMENT{
     HADRONIC_TOP_B,
@@ -52,6 +63,22 @@ public:
     W_CH_UP_TYPE,
     W_CH_DOWN_TYPE,
     NONE
+  };
+
+  struct ResultContatiner{
+    ResultContatiner(){}
+    ~ResultContatiner(){}
+    int status; //fitter status
+    double chi2;
+    double fitted_dijet_M;
+    double initial_dijet_M;
+    double corrected_dijet_M;
+    double hadronic_top_M;
+
+    double hadronic_top_b_pt;
+    double leptonic_top_b_pt;
+    double w_ch_up_type_pt;
+    double w_ch_down_type_pt;
   };
 
 private:
@@ -82,7 +109,6 @@ private:
 
   int njets;
   int nbtags;
-  int status; //fitter status
   std::vector<TKinFitterDriver::JET_ASSIGNMENT> permutation_vector;
 
   TLorentzVector hadronic_top_b_jet; // b jet comes from hadronic top 
@@ -114,16 +140,11 @@ private:
   TFitConstraintM *constrain_leptonic_top_M;
   TFitConstraintM *constrain_leptonic_W_M;
 
-  double chi2;
-  double dijet_M;
-  double fitted_dijet_M;
-  double initial_dijet_M;
-  double corrected_dijet_M;
-  double best_chi2;
-  double best_fitted_dijet_M;
-  double best_initial_dijet_M;
-  double best_corrected_dijet_M;
+  TKinFitterDriver::ResultContatiner fit_result;
 
+  std::vector<TKinFitterDriver::ResultContatiner> fit_result_vector;
+  std::vector<TKinFitterDriver::ResultContatiner> GetResults();
+  static bool Chi2Comparing(const TKinFitterDriver::ResultContatiner& rc1, const TKinFitterDriver::ResultContatiner& rc2){ return (rc1.chi2 < rc2.chi2); }
 };
 
 #endif
