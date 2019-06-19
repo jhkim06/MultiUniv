@@ -316,35 +316,45 @@ void TKinFitterDriver::SetFitter(){
 
 
 void TKinFitterDriver::Fit(){
-  status=-1; // -1 means fit not performed
+  fit_result.status=-1; // -1 means fit not performed
   this->SetConstraint();
   this->SetFitter();
-  status = fitter->fit();
-  if(status==0){ // 0 means converge
-    chi2 = fitter->getS(); // save chi2
+  fit_result.status = fitter->fit();
+  // save kinematic variable TODO: will make a method
+  TLorentzVector hadronic_top = hadronic_top_b_jet + hadronic_w_ch_jet1 + hadronic_w_ch_jet2;
+  fit_result.hadronic_top_M = hadronic_top.M();
+  fit_result.hadronic_top_b_pt = hadronic_top_b_jet.Pt();
+  fit_result.leptonic_top_b_pt = leptonic_top_b_jet.Pt();
+  fit_result.w_ch_up_type_pt = hadronic_w_ch_jet1.Pt();
+  fit_result.w_ch_down_type_pt = hadronic_w_ch_jet2.Pt();
+
+  fit_result.chi2 = 9999999;
+  if(fit_result.status==0){ // 0 means converge
+    fit_result.chi2 = fitter->getS(); // save chi2
     const TLorentzVector *fitted_jet1 = fit_hadronic_w_ch_jet1->getCurr4Vec(); // get address of fitted object
     const TLorentzVector *fitted_jet2 = fit_hadronic_w_ch_jet2->getCurr4Vec(); // get address of fitted object
     const TLorentzVector fitted_dijet = (*fitted_jet1) + (*fitted_jet2);
-    fitted_dijet_M = fitted_dijet.M(); // save dijet mass
+    fit_result.fitted_dijet_M = fitted_dijet.M(); // save dijet mass
     const TLorentzVector *initial_jet1 = fit_hadronic_w_ch_jet1->getIni4Vec(); // get address of fitted object
     const TLorentzVector *initial_jet2 = fit_hadronic_w_ch_jet2->getIni4Vec(); // get address of fitted object
     const TLorentzVector initial_dijet = (*initial_jet1) + (*initial_jet2);
-    initial_dijet_M = initial_dijet.M(); // save dijet mass
+    fit_result.initial_dijet_M = initial_dijet.M(); // save dijet mass
     TLorentzVector corrected_dijet = corr_hadronic_w_ch_jet1 + corr_hadronic_w_ch_jet2;
-    corrected_dijet_M = corrected_dijet.M(); // save dijet mass
+    fit_result.corrected_dijet_M = corrected_dijet.M(); // save dijet mass
   }
   //cout << "TKinFitterDriver::Fit : " << endl;
 }
 
 
 void TKinFitterDriver::FindBestChi2Fit(bool UseLeading4Jets){
-  best_chi2 = 99999999999; // init. with large number
-  bool isUpdated = false;
-  status=-1;
+  fit_result_vector.clear();
+  fit_result_vector.shrink_to_fit();
+  // status -1 : fit not performed
+  fit_result.status=-1;
   do{
     if(this->Check_BJet_Assignment() == false) continue;
     this->SetCurrentPermutationJets();
-    if(this->Kinematic_Cut() == false) continue;
+    //if(this->Kinematic_Cut() == false) continue;
       this->Sol_Neutrino_Pz();
       for(int i(0); i<2; i++){
 	//if(!IsRealNeuPz && i==1) break;
@@ -355,51 +365,143 @@ void TKinFitterDriver::FindBestChi2Fit(bool UseLeading4Jets){
 	  this->SetNeutrino(recal_METv, i);
 	}
         this->Fit();
-        if(status==0 && chi2 < best_chi2){
-          best_chi2 = chi2;
-          best_fitted_dijet_M = fitted_dijet_M;
-          best_initial_dijet_M = initial_dijet_M;
-          best_corrected_dijet_M = corrected_dijet_M;
-          isUpdated=true;
-        }
+	fit_result_vector.push_back(fit_result);
       }
-  }while(this->NextPermutation(UseLeading4Jets));
-  status = isUpdated ? 0 : status; //0 means converge
+    }while(this->NextPermutation(UseLeading4Jets));
+  std::sort(fit_result_vector.begin(), fit_result_vector.end(), Chi2Comparing);
 }
 
 
 int TKinFitterDriver::GetStatus(){
-  return status;
+  return fit_result.status;
 }
 
 double TKinFitterDriver::GetChi2(){
-  return chi2;
+  return fit_result.chi2;
 }
 
 double TKinFitterDriver::GetFittedDijetMass(){
-  return fitted_dijet_M;
+  return fit_result.fitted_dijet_M;
 }
 
 double TKinFitterDriver::GetInitialDijetMass(){
-  return initial_dijet_M;
+  return fit_result.initial_dijet_M;
 }
 
 double TKinFitterDriver::GetCorrectedDijetMass(){
-  return corrected_dijet_M;
+  return fit_result.corrected_dijet_M;
 }
 
+int TKinFitterDriver::GetBestStatus(){
+  int out=-1;
+  if(fit_result_vector.size()>0){
+    out =fit_result_vector.at(0).status;
+  }
+  return out;
+}
+
+
+double TKinFitterDriver::GetBestChi2(){
+  double out=-1;
+  if(fit_result_vector.size()>0){
+    out =fit_result_vector.at(0).chi2;
+  }
+  return out==9999999 ? -1. : out;
+}
+
+
 double TKinFitterDriver::GetBestFittedDijetMass(){
-  return best_fitted_dijet_M;
+  double out=-1;
+  if(fit_result_vector.size()>0){
+    out =fit_result_vector.at(0).fitted_dijet_M;
+  }
+  return out;
 }
 
 
 double TKinFitterDriver::GetBestInitialDijetMass(){
-  return best_initial_dijet_M;
+  double out=-1;
+  if(fit_result_vector.size()>0){
+    out =fit_result_vector.at(0).initial_dijet_M;
+  }
+  return out;
 }
 
+
 double TKinFitterDriver::GetBestCorrectedDijetMass(){
-  return best_corrected_dijet_M;
+  double out=-1;
+  if(fit_result_vector.size()>0){
+    out =fit_result_vector.at(0).corrected_dijet_M;
+  }
+  return out;
 }
+
+
+std::vector<double> TKinFitterDriver::GetHadronicTopMassVector(bool IsConverge){
+  std::vector<double> out_vector;
+  for(auto &x : fit_result_vector){
+    if(IsConverge==true && x.status==0){
+      out_vector.push_back(x.hadronic_top_M);
+    }
+    else if(IsConverge==false && x.status!=0){
+      out_vector.push_back(x.hadronic_top_M);
+    }
+  }
+  return out_vector;
+}
+
+std::vector<double> TKinFitterDriver::GetHadronicTopBPtVector(bool IsConverge){
+  std::vector<double> out_vector;
+  for(auto &x : fit_result_vector){
+    if(IsConverge==true && x.status==0){
+      out_vector.push_back(x.hadronic_top_b_pt);
+    }
+    else if(IsConverge==false && x.status!=0){
+      out_vector.push_back(x.hadronic_top_b_pt);
+    }
+  }
+  return out_vector;
+}
+std::vector<double> TKinFitterDriver::GetLeptonicTopBPtVector(bool IsConverge){
+  std::vector<double> out_vector;
+  for(auto &x : fit_result_vector){
+    if(IsConverge==true && x.status==0){
+      out_vector.push_back(x.leptonic_top_b_pt);
+    }
+    else if(IsConverge==false && x.status!=0){
+      out_vector.push_back(x.leptonic_top_b_pt);
+    }
+  }
+  return out_vector;
+}
+std::vector<double> TKinFitterDriver::GetWCHDownTypePtVector(bool IsConverge){
+  std::vector<double> out_vector;
+  for(auto &x : fit_result_vector){
+    if(IsConverge==true && x.status==0){
+      out_vector.push_back(x.w_ch_up_type_pt);
+    }
+    else if(IsConverge==false && x.status!=0){
+      out_vector.push_back(x.w_ch_up_type_pt);
+    }
+  }
+  return out_vector;
+}
+std::vector<double> TKinFitterDriver::GetWCHUpTypePtVector(bool IsConverge){
+  std::vector<double> out_vector;
+  for(auto &x : fit_result_vector){
+    if(IsConverge==true && x.status==0){
+      out_vector.push_back(x.w_ch_down_type_pt);
+    }
+    else if(IsConverge==false && x.status!=0){
+      out_vector.push_back(x.w_ch_down_type_pt);
+    }
+  }
+  return out_vector;
+}
+std::vector<TKinFitterDriver::ResultContatiner> TKinFitterDriver::GetResults(){
+  return fit_result_vector;
+}
+
 
 bool TKinFitterDriver::NextPermutation(bool UseLeading4Jets){
 
