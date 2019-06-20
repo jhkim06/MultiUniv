@@ -1,5 +1,10 @@
 #include "TKinFitterDriver.h"
 
+TKinFitterDriver::TKinFitterDriver(){
+
+}
+
+
 TKinFitterDriver::TKinFitterDriver(int DataYear_){
 
   DataYear = DataYear_;
@@ -20,29 +25,28 @@ TKinFitterDriver::TKinFitterDriver(int DataYear_){
   error_lepton.Zero();
   error_neutrino.Zero();
 
-  fit_hadronic_top_b_jet = NULL; 
-  fit_leptonic_top_b_jet = NULL;
-  fit_hadronic_w_ch_jet1 = NULL;
-  fit_hadronic_w_ch_jet2 = NULL;
-  fit_lepton = NULL;
-  fit_neutrino = NULL;
-
-  constrain_hadronic_top_M = NULL;
-  constrain_leptonic_top_M = NULL;
-  constrain_leptonic_W_M = NULL;
-
   ts_correction = new TSCorrection(DataYear);
   ts_correction->ReadFittedError("fit_error_pythia.txt");
   ts_correction->ReadFittedMean("fit_mean_pythia.txt");
 
+  fit_hadronic_top_b_jet = new TFitParticleEtEtaPhi();
+  fit_leptonic_top_b_jet = new TFitParticleEtEtaPhi();
+  fit_hadronic_w_ch_jet1 = new TFitParticleEtEtaPhi();
+  fit_hadronic_w_ch_jet2 = new TFitParticleEtEtaPhi();
+  fit_lepton = new TFitParticleEtEtaPhi();
+  fit_neutrino =  new TFitParticleEtEtaPhi();
+
+  constrain_hadronic_top_M = new TFitConstraintM("hadronic_top_mass_constraint", "hadronic_top_mass_constraint", 0, 0, 172.5);
+  constrain_leptonic_top_M = new TFitConstraintM("leptonic_top_mass_constraint", "leptonic_top_mass_constraint", 0, 0, 172.5);
+  constrain_leptonic_W_M = new TFitConstraintM("leptonic_w_mass_constraint", "leptonic_w_mass_constraint", 0, 0, 80.4);
   //cout <<"TKinFitterDriver::TKinFitterDriver : initialized" << endl;
 }
 
 
 TKinFitterDriver::~TKinFitterDriver(){
-
   delete fitter;
-  delete fit_hadronic_top_b_jet; 
+
+  delete fit_hadronic_top_b_jet;
   delete fit_leptonic_top_b_jet;
   delete fit_hadronic_w_ch_jet1;
   delete fit_hadronic_w_ch_jet2;
@@ -52,9 +56,7 @@ TKinFitterDriver::~TKinFitterDriver(){
   delete constrain_hadronic_top_M;
   delete constrain_leptonic_top_M;
   delete constrain_leptonic_W_M;
-
   delete ts_correction;
-
 }
 
 
@@ -104,9 +106,8 @@ void TKinFitterDriver::SetHadronicTopBJets(TLorentzVector jet_){
   double Phi = hadronic_top_b_jet.Phi();
   this->SetJetError(&error_hadronic_top_b_jet, Et, Eta, Phi, "b");
   corr_hadronic_top_b_jet = ts_correction->GetCorrectedJet("b",hadronic_top_b_jet);
-
-  if(!fit_hadronic_top_b_jet) delete fit_hadronic_top_b_jet;
-  fit_hadronic_top_b_jet = new TFitParticleEtEtaPhi("hadronic_top_b_jet",
+  fit_hadronic_top_b_jet->~TFitParticleEtEtaPhi();
+  new(fit_hadronic_top_b_jet) TFitParticleEtEtaPhi("hadronic_top_b_jet",
                                                     "hadronic_top_b_jet",
                                                     &corr_hadronic_top_b_jet,
                                                     &error_hadronic_top_b_jet
@@ -123,9 +124,8 @@ void TKinFitterDriver::SetLeptonicTopBJets(TLorentzVector jet_){
   double Phi = leptonic_top_b_jet.Phi();
   this->SetJetError(&error_leptonic_top_b_jet, Et, Eta, Phi, "b");
   corr_leptonic_top_b_jet = ts_correction->GetCorrectedJet("b",leptonic_top_b_jet);
-
-  if(!fit_leptonic_top_b_jet) delete fit_leptonic_top_b_jet;
-  fit_leptonic_top_b_jet = new TFitParticleEtEtaPhi("leptonic_top_b_jet",
+  fit_leptonic_top_b_jet->~TFitParticleEtEtaPhi();
+  new(fit_leptonic_top_b_jet) TFitParticleEtEtaPhi("leptonic_top_b_jet",
                                                     "leptonic_top_b_jet",
                                                     &corr_leptonic_top_b_jet,
                                                     &error_leptonic_top_b_jet
@@ -141,9 +141,8 @@ void TKinFitterDriver::SetWCHUpTypeJets(TLorentzVector jet_){
   double Phi = hadronic_w_ch_jet1.Phi();
   this->SetJetError(&error_hadronic_w_ch_jet1, Et, Eta, Phi, "udsc");
   corr_hadronic_w_ch_jet1 = ts_correction->GetCorrectedJet("udsc",hadronic_w_ch_jet1);
-
-  if(!fit_hadronic_w_ch_jet1) delete fit_hadronic_w_ch_jet1;
-  fit_hadronic_w_ch_jet1 = new TFitParticleEtEtaPhi("hadronic_w_ch_jet1",
+  fit_hadronic_w_ch_jet1->~TFitParticleEtEtaPhi();
+  new(fit_hadronic_w_ch_jet1) TFitParticleEtEtaPhi("hadronic_w_ch_jet1",
                                                     "hadronic_w_ch_jet1",
                                                     &corr_hadronic_w_ch_jet1,
                                                     &error_hadronic_w_ch_jet1
@@ -160,9 +159,8 @@ void TKinFitterDriver::SetWCHDownTypeJets(TLorentzVector jet_){
   TString flav =  nbtags>2 ? "b":"udsc";
   this->SetJetError(&error_hadronic_w_ch_jet2, Et, Eta, Phi, flav);
   corr_hadronic_w_ch_jet2 = ts_correction->GetCorrectedJet(flav, hadronic_w_ch_jet2);
-
-  if(!fit_hadronic_w_ch_jet2) delete fit_hadronic_w_ch_jet2;
-  fit_hadronic_w_ch_jet2 = new TFitParticleEtEtaPhi("hadronic_w_ch_jet2",
+  fit_hadronic_w_ch_jet2->~TFitParticleEtEtaPhi();
+  new(fit_hadronic_w_ch_jet2) TFitParticleEtEtaPhi("hadronic_w_ch_jet2",
                                                     "hadronic_w_ch_jet2",
                                                     &corr_hadronic_w_ch_jet2,
                                                     &error_hadronic_w_ch_jet2
@@ -179,8 +177,8 @@ void TKinFitterDriver::SetLepton(TLorentzVector lepton_){
   error_lepton(0,0)=TMath::Power(0.03*Et,2);
   error_lepton(1,1)=TMath::Power(0.03*Eta,2);
   error_lepton(2,2)=TMath::Power(0.03*lepton.Phi(),2);
-  if(!fit_lepton) delete fit_lepton;
-  fit_lepton = new TFitParticleEtEtaPhi("lepton",
+  fit_lepton->~TFitParticleEtEtaPhi();
+  new(fit_lepton) TFitParticleEtEtaPhi("lepton",
                                         "lepton",
                                         &lepton,
                                         &error_lepton
@@ -210,9 +208,8 @@ void TKinFitterDriver::SetNeutrino(TLorentzVector met_, int i){
   */
   this->SetJetError(&error_neutrino,
 		    met_.Et(), 0.001, 0.001, "udscb");
-
-  if(!fit_neutrino) delete fit_neutrino;
-  fit_neutrino = new TFitParticleEtEtaPhi("neutrino",
+  fit_neutrino->~TFitParticleEtEtaPhi();
+  new(fit_neutrino) TFitParticleEtEtaPhi("neutrino",
                                           "neutrino",
                                           &neutrino,
                                           &error_neutrino
@@ -274,15 +271,12 @@ bool TKinFitterDriver::Kinematic_Cut(){
 
 void TKinFitterDriver::SetConstraint(){
   //TODO: will update to be able to set top-mass
-  if(!constrain_hadronic_top_M) delete constrain_hadronic_top_M;
-  if(!constrain_leptonic_top_M) delete constrain_leptonic_top_M;
-  if(!constrain_leptonic_W_M) delete constrain_leptonic_W_M;
-  constrain_hadronic_top_M = new TFitConstraintM("hadronic_top_mass_constraint", "hadronic_top_mass_constraint", 0, 0, 172.5);
-  constrain_leptonic_top_M = new TFitConstraintM("leptonic_top_mass_constraint", "leptonic_top_mass_constraint", 0, 0, 172.5);
-  constrain_leptonic_W_M = new TFitConstraintM("leptonic_w_mass_constraint", "leptonic_w_mass_constraint", 0, 0, 80.4);
   // reset constrain
+  constrain_hadronic_top_M->Clear();
   constrain_hadronic_top_M->addParticles1(fit_hadronic_top_b_jet, fit_hadronic_w_ch_jet1, fit_hadronic_w_ch_jet2);
+  constrain_leptonic_top_M->Clear();
   constrain_leptonic_top_M->addParticles1(fit_leptonic_top_b_jet, fit_lepton, fit_neutrino);
+  constrain_leptonic_W_M->Clear();
   constrain_leptonic_W_M->addParticles1(fit_lepton, fit_neutrino);
 }
 
