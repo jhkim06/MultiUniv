@@ -141,7 +141,7 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param){
 				lepSFs[param.Muon_ID+param.Muon_ISO_ID+it->first]["TrgSF"].push_back( 1.); 
 			}
 			//MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, double eta, double pt, int sys)
-		}
+		}// single triger
 		it++;
 	}
 
