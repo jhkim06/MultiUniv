@@ -1,4 +1,4 @@
-
+'''
 nuisances['lumi'] = {
     'name' : 'lumi_13TeV',
     'type' : 'lnN',
@@ -33,10 +33,11 @@ nuisances['ttxsec'] = {
       'TTJJ_powheg'	: '1.06114',
     }
 }
+'''
 
 #nuisances['top_mass'] = {
 #    'name' : 'top_mass',
-#    'kind' : 'tree',
+#    'kind' : 'sampleChange',
 #    'type' : 'shape',
 #    'samples' : {
 #      'TTLJ_powheg'	: ['1.','1.'],
@@ -54,49 +55,50 @@ nuisances['ttxsec'] = {
 #      'TTJJ_powheg'	: 'TTJJ_powheg_mass_Do',
 #    },
 #}
-#nuisances['TuneCP5'] = {
-#    'name' : 'TuneCP5',
-#    'kind' : 'tree',
-#    'type' : 'shape',
-#    'samples' : {
-#      'TTLJ_powheg'	: ['1.','1.'],
-#      'TTLL_powheg'	: ['1.','1.'],
-#      'TTJJ_powheg'	: ['1.','1.'],
-#    },
-#    'samplesUp' : {
-#      'TTLJ_powheg'	: 'TTLJ_powheg_Up',
-#      'TTLL_powheg'	: 'TTLL_powheg_Up',
-#      'TTJJ_powheg'	: 'TTJJ_powheg_Up',
-#    },
-#    'samplesDo' : {
-#      'TTLJ_powheg'	: 'TTLJ_powheg_Do',
-#      'TTLL_powheg'	: 'TTLL_powheg_Do',
-#      'TTJJ_powheg'	: 'TTJJ_powheg_Do',
-#    },
-#}
-#nuisances['hdamp'] = {
-#    'name' : 'hdamp',
-#    'kind' : 'tree',
-#    'type' : 'shape',
-#    'samples' : {
-#      'TTLJ_powheg'	: ['1.','1.'],
-#      'TTLL_powheg'	: ['1.','1.'],
-#      'TTJJ_powheg'	: ['1.','1.'],
-#    },
-#    'samplesUp'   : { 
-#      'TTLJ_powheg'	: 'TTLJ_powheg_hdamp_Up',
-#      'TTLL_powheg'	: 'TTLL_powheg_hdamp_Up',
-#      'TTJJ_powheg'	: 'TTJJ_powheg_hdamp_Up',
-#    },
-#    'samplesDo'   : {
-#      'TTLJ_powheg'	: 'TTLJ_powheg_hdamp_Do',
-#      'TTLL_powheg'	: 'TTLL_powheg_hdamp_Do',
-#      'TTJJ_powheg'	: 'TTJJ_powheg_hdamp_Do',
-#    },
-#}
+nuisances['TuneCP5'] = {
+    'name' : 'TuneCP5',
+    'kind' : 'sampleChange',
+    'type' : 'shape',
+    'samples' : {
+      'TTLJ_powheg'	: ['1.','1.'],
+      'TTLL_powheg'	: ['1.','1.'],
+      'TTJJ_powheg'	: ['1.','1.'],
+    },
+    'samplesUp' : {
+      'TTLJ_powheg'	: 'TTLJ_powheg_Up',
+      'TTLL_powheg'	: 'TTLL_powheg_Up',
+      'TTJJ_powheg'	: 'TTJJ_powheg_Up',
+    },
+    'samplesDo' : {
+      'TTLJ_powheg'	: 'TTLJ_powheg_Do',
+      'TTLL_powheg'	: 'TTLL_powheg_Do',
+      'TTJJ_powheg'	: 'TTJJ_powheg_Do',
+    },
+}
+
+nuisances['hdamp'] = {
+    'name' : 'hdamp',
+    'kind' : 'sampleChange',
+    'type' : 'shape',
+    'samples' : {
+      'TTLJ_powheg'	: ['1.','1.'],
+      'TTLL_powheg'	: ['1.','1.'],
+      'TTJJ_powheg'	: ['1.','1.'],
+    },
+    'samplesUp'   : { 
+      'TTLJ_powheg'	: 'TTLJ_powheg_hdamp_Up',
+      'TTLL_powheg'	: 'TTLL_powheg_hdamp_Up',
+      'TTJJ_powheg'	: 'TTJJ_powheg_hdamp_Up',
+    },
+    'samplesDo'   : {
+      'TTLJ_powheg'	: 'TTLJ_powheg_hdamp_Do',
+      'TTLL_powheg'	: 'TTLL_powheg_hdamp_Do',
+      'TTJJ_powheg'	: 'TTJJ_powheg_hdamp_Do',
+    },
+}
 #nuisances['generator'] = {
 #    'name' : 'generator',
-#    'kind' : 'tree',
+#    'kind' : 'sampleChange',
 #    'type' : 'shape',
 #    'samples' : {
 #      'TTLJ_powheg'	: ['1.','1.'],
@@ -115,7 +117,7 @@ nuisances['ttxsec'] = {
 #    },
 #    #TODO will add signal samples
 #}
-
+'''
 nuisances['PUweight'] = {
     'name' :'PUweight',
     'kind' : 'weight',
@@ -220,7 +222,7 @@ nuisances['recoSF'] = {
       'ttbb'                  : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
     }
 }
-
+'''
 '''
 nuisances['trgSF'] = {
     'name' : 'trgSF',
@@ -248,7 +250,7 @@ nuisances['trgSF'] = {
     }
 }
 '''
-
+'''
 nuisances['BTagSF'] = {
     'name' : 'BTagSF',
     'kind'	: 'weight',
@@ -274,7 +276,7 @@ nuisances['BTagSF'] = {
       'ttbb'                  : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
     }
 }
-
+'''
 #nuisances['MisTagSF'] = {
 #    'name' : 'MisTagSF',
 #    'kind'	: 'weight',
@@ -311,7 +313,7 @@ nuisances['BTagSF'] = {
 #      'TTJJ_powheg'	: ['leptonSF_Up/leptonSF','leptonSF_Do/leptonSF'],
 #      }
 #}
-
+'''
 nuisances['ttbbxsec'] = {
     'name' : 'ttbbxsec',
     'kind'	: 'weight', 
@@ -320,7 +322,7 @@ nuisances['ttbbxsec'] = {
       'ttbb'	: ['2.05', '-0.05'],
       }
 }
-
+'''
 #nuisances['generator'] = {
 #    'name' : 'generator',
 #    'kind'	: 'weight', # Down is the same as nominal, nuisance for Signal sample

@@ -1,4 +1,4 @@
-
+'''
 nuisances['lumi'] = {
     'name' : 'lumi_13TeV',
     'type' : 'lnN',
@@ -33,10 +33,11 @@ nuisances['ttxsec'] = {
       'TTJJ_powheg'	: '1.06114',
     }
 }
+'''
 
 #nuisances['top_mass'] = {
 #    'name' : 'top_mass',
-#    'kind' : 'tree',
+#    'kind' : 'sampleChange',
 #    'type' : 'shape',
 #    'samples' : {
 #      'TTLJ_powheg'	: ['1.','1.'],
@@ -54,49 +55,50 @@ nuisances['ttxsec'] = {
 #      'TTJJ_powheg'	: 'TTJJ_powheg_mass_Do',
 #    },
 #}
-#nuisances['TuneCP5'] = {
-#    'name' : 'TuneCP5',
-#    'kind' : 'tree',
-#    'type' : 'shape',
-#    'samples' : {
-#      'TTLJ_powheg'	: ['1.','1.'],
-#      'TTLL_powheg'	: ['1.','1.'],
-#      'TTJJ_powheg'	: ['1.','1.'],
-#    },
-#    'samplesUp' : {
-#      'TTLJ_powheg'	: 'TTLJ_powheg_Up',
-#      'TTLL_powheg'	: 'TTLL_powheg_Up',
-#      'TTJJ_powheg'	: 'TTJJ_powheg_Up',
-#    },
-#    'samplesDo' : {
-#      'TTLJ_powheg'	: 'TTLJ_powheg_Do',
-#      'TTLL_powheg'	: 'TTLL_powheg_Do',
-#      'TTJJ_powheg'	: 'TTJJ_powheg_Do',
-#    },
-#}
-#nuisances['hdamp'] = {
-#    'name' : 'hdamp',
-#    'kind' : 'tree',
-#    'type' : 'shape',
-#    'samples' : {
-#      'TTLJ_powheg'	: ['1.','1.'],
-#      'TTLL_powheg'	: ['1.','1.'],
-#      'TTJJ_powheg'	: ['1.','1.'],
-#    },
-#    'samplesUp'   : { 
-#      'TTLJ_powheg'	: 'TTLJ_powheg_hdamp_Up',
-#      'TTLL_powheg'	: 'TTLL_powheg_hdamp_Up',
-#      'TTJJ_powheg'	: 'TTJJ_powheg_hdamp_Up',
-#    },
-#    'samplesDo'   : {
-#      'TTLJ_powheg'	: 'TTLJ_powheg_hdamp_Do',
-#      'TTLL_powheg'	: 'TTLL_powheg_hdamp_Do',
-#      'TTJJ_powheg'	: 'TTJJ_powheg_hdamp_Do',
-#    },
-#}
+nuisances['TuneCP5'] = {
+    'name' : 'TuneCP5',
+    'kind' : 'sampleChange',
+    'type' : 'shape',
+    'samples' : {
+      'TTLJ_powheg'	: ['1.','1.'],
+      'TTLL_powheg'	: ['1.','1.'],
+      'TTJJ_powheg'	: ['1.','1.'],
+    },
+    'samplesUp' : {
+      'TTLJ_powheg'	: 'TTLJ_powheg_Up',
+      'TTLL_powheg'	: 'TTLL_powheg_Up',
+      'TTJJ_powheg'	: 'TTJJ_powheg_Up',
+    },
+    'samplesDo' : {
+      'TTLJ_powheg'	: 'TTLJ_powheg_Do',
+      'TTLL_powheg'	: 'TTLL_powheg_Do',
+      'TTJJ_powheg'	: 'TTJJ_powheg_Do',
+    },
+}
+
+nuisances['hdamp'] = {
+    'name' : 'hdamp',
+    'kind' : 'sampleChange',
+    'type' : 'shape',
+    'samples' : {
+      'TTLJ_powheg'	: ['1.','1.'],
+      'TTLL_powheg'	: ['1.','1.'],
+      'TTJJ_powheg'	: ['1.','1.'],
+    },
+    'samplesUp'   : { 
+      'TTLJ_powheg'	: 'TTLJ_powheg_hdamp_Up',
+      'TTLL_powheg'	: 'TTLL_powheg_hdamp_Up',
+      'TTJJ_powheg'	: 'TTJJ_powheg_hdamp_Up',
+    },
+    'samplesDo'   : {
+      'TTLJ_powheg'	: 'TTLJ_powheg_hdamp_Do',
+      'TTLL_powheg'	: 'TTLL_powheg_hdamp_Do',
+      'TTJJ_powheg'	: 'TTJJ_powheg_hdamp_Do',
+    },
+}
 #nuisances['generator'] = {
 #    'name' : 'generator',
-#    'kind' : 'tree',
+#    'kind' : 'sampleChange',
 #    'type' : 'shape',
 #    'samples' : {
 #      'TTLJ_powheg'	: ['1.','1.'],
@@ -115,9 +117,7 @@ nuisances['ttxsec'] = {
 #    },
 #    #TODO will add signal samples
 #}
-
-
-
+'''
 nuisances['PUweight'] = {
     'name' :'PUweight',
     'kind' : 'weight',
@@ -222,7 +222,7 @@ nuisances['recoSF'] = {
       'ttbb'                  : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
     }
 }
-
+'''
 '''
 nuisances['trgSF'] = {
     'name' : 'trgSF',
@@ -250,64 +250,58 @@ nuisances['trgSF'] = {
     }
 }
 '''
-
-BTagSF_Up='(n_bjet_deepcsv_m_noSF==2)+(n_bjet_deepcsv_m_noSF>=3)*BTagSF_Up/BTagSF'
-BTagSF_Do='(n_bjet_deepcsv_m_noSF==2)+(n_bjet_deepcsv_m_noSF>=3)*BTagSF_Do/BTagSF'
-
+'''
 nuisances['BTagSF'] = {
     'name' : 'BTagSF',
     'kind'	: 'weight',
     'type'	: 'shape',
     'samples' : {
-      'DYJets'	              : [BTagSF_Up, BTagSF_Do],
-      'DYJets10to50_MG'       : [BTagSF_Up, BTagSF_Do],
-      'WJets_MG'              : [BTagSF_Up, BTagSF_Do],
-      'TTLJ_powheg'	      : [BTagSF_Up, BTagSF_Do],
-      'TTLL_powheg'	      : [BTagSF_Up, BTagSF_Do],
-      'TTJJ_powheg'	      : [BTagSF_Up, BTagSF_Do],
-      'SingleTop_sch_top'     : [BTagSF_Up, BTagSF_Do],
-      'SingleTop_tch_top'     : [BTagSF_Up, BTagSF_Do],
-      'SingleTop_tch_antitop' : [BTagSF_Up, BTagSF_Do],
-      'SingleTop_tW_top'      : [BTagSF_Up, BTagSF_Do],
-      'SingleTop_tW_antitop'  : [BTagSF_Up, BTagSF_Do],
-      'WW_pythia'             : [BTagSF_Up, BTagSF_Do],
-      'WZ_pythia'             : [BTagSF_Up, BTagSF_Do],
-      'ZZ_pythia'             : [BTagSF_Up, BTagSF_Do],
-      'ttW'                   : [BTagSF_Up, BTagSF_Do],
-      'ttZ'                   : [BTagSF_Up, BTagSF_Do],
-      'ttH_bb'                : [BTagSF_Up, BTagSF_Do],
-      'ttbb'                  : [BTagSF_Up, BTagSF_Do],
+      'DYJets'	              : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'DYJets10to50_MG'       : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'WJets_MG'              : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'TTLJ_powheg'	      : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'TTLL_powheg'	      : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'TTJJ_powheg'	      : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'SingleTop_sch_top'     : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'SingleTop_tch_top'     : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'SingleTop_tch_antitop' : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'SingleTop_tW_top'      : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'SingleTop_tW_antitop'  : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'WW_pythia'             : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'WZ_pythia'             : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'ZZ_pythia'             : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'ttW'                   : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'ttZ'                   : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'ttH_bb'                : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'ttbb'                  : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
     }
 }
-
-MisTagSF_Up='(n_bjet_deepcsv_m_noSF==2)*MisTagSF_Up/MisTagSF+(n_bjet_deepcsv_m_noSF>=3)'
-MisTagSF_Do='(n_bjet_deepcsv_m_noSF==2)*MisTagSF_Do/MisTagSF+(n_bjet_deepcsv_m_noSF>=3)'
-
-nuisances['MisTagSF'] = {
-    'name' : 'MisTagSF',
-    'kind'	: 'weight',
-    'type'	: 'shape',
-    'samples' : {
-      'DYJets'	              : [MisTagSF_Up, MisTagSF_Do],
-      'DYJets10to50_MG'       : [MisTagSF_Up, MisTagSF_Do],
-      'WJets_MG'              : [MisTagSF_Up, MisTagSF_Do],
-      'TTLJ_powheg'	      : [MisTagSF_Up, MisTagSF_Do],
-      'TTLL_powheg'	      : [MisTagSF_Up, MisTagSF_Do],
-      'TTJJ_powheg'	      : [MisTagSF_Up, MisTagSF_Do],
-      'SingleTop_sch_top'     : [MisTagSF_Up, MisTagSF_Do],
-      'SingleTop_tch_top'     : [MisTagSF_Up, MisTagSF_Do],
-      'SingleTop_tch_antitop' : [MisTagSF_Up, MisTagSF_Do],
-      'SingleTop_tW_top'      : [MisTagSF_Up, MisTagSF_Do],
-      'SingleTop_tW_antitop'  : [MisTagSF_Up, MisTagSF_Do],
-      'WW_pythia'             : [MisTagSF_Up, MisTagSF_Do],
-      'WZ_pythia'             : [MisTagSF_Up, MisTagSF_Do],
-      'ZZ_pythia'             : [MisTagSF_Up, MisTagSF_Do],
-      'ttW'                   : [MisTagSF_Up, MisTagSF_Do],
-      'ttZ'                   : [MisTagSF_Up, MisTagSF_Do],
-      'ttH_bb'                : [MisTagSF_Up, MisTagSF_Do],
-      'ttbb'                  : [MisTagSF_Up, MisTagSF_Do],
-    }
-}
+'''
+#nuisances['MisTagSF'] = {
+#    'name' : 'MisTagSF',
+#    'kind'	: 'weight',
+#    'type'	: 'shape',
+#    'samples' : {
+#      'DYJets'	               : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'DYJets10to50_MG'       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'WJets_MG'              : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'TTLJ_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'TTLL_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'TTJJ_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'SingleTop_sch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'SingleTop_tch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'SingleTop_tch_antitop' : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'SingleTop_tW_top'      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'SingleTop_tW_antitop'  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'WW_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'WZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'ZZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'ttW'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'ttZ'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'ttH_bb'                : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#      'ttbb'                  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+#    }
+#}
 
 #nuisances['leptonSF'] = {
 #    'name' : 'leptonSF',
@@ -319,7 +313,7 @@ nuisances['MisTagSF'] = {
 #      'TTJJ_powheg'	: ['leptonSF_Up/leptonSF','leptonSF_Do/leptonSF'],
 #      }
 #}
-
+'''
 nuisances['ttbbxsec'] = {
     'name' : 'ttbbxsec',
     'kind'	: 'weight', 
@@ -328,7 +322,7 @@ nuisances['ttbbxsec'] = {
       'ttbb'	: ['2.05', '-0.05'],
       }
 }
-
+'''
 #nuisances['generator'] = {
 #    'name' : 'generator',
 #    'kind'	: 'weight', # Down is the same as nominal, nuisance for Signal sample
