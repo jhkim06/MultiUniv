@@ -42,6 +42,16 @@ void Skim_K2::initializeAnalyzer(){
   newtree->Branch("best_chi2", &best_chi2,"best_chi2/D");
   newtree->Branch("fitter_status", &fitter_status,"fitter_status/I");
 
+  newtree->Branch("hadronic_top_M_vector_success", "vector<double>" ,&hadronic_top_M_vector_success);
+  newtree->Branch("hadronic_top_M_vector_fail", "vector<double>" ,&hadronic_top_M_vector_fail);
+  newtree->Branch("hadronic_top_b_pt_vector_success", "vector<double>" ,&hadronic_top_b_pt_vector_success);
+  newtree->Branch("hadronic_top_b_pt_vector_fail", "vector<double>" ,&hadronic_top_b_pt_vector_fail);
+  newtree->Branch("leptonic_top_b_pt_vector_success", "vector<double>" ,&leptonic_top_b_pt_vector_success);
+  newtree->Branch("leptonic_top_b_pt_vector_fail", "vector<double>" ,&leptonic_top_b_pt_vector_fail);
+  newtree->Branch("wch_up_type_pt_vector_success", "vector<double>" ,&wch_up_type_pt_vector_success);
+  newtree->Branch("wch_up_type_pt_vector_fail", "vector<double>" ,&wch_up_type_pt_vector_fail);
+  newtree->Branch("wch_down_type_pt_vector_success", "vector<double>" ,&wch_down_type_pt_vector_success);
+  newtree->Branch("wch_down_type_pt_vector_fail", "vector<double>" ,&wch_down_type_pt_vector_fail);
   newtree->Branch("selected_lepton_pt", &selected_lepton_pt, "selected_lepton_pt/D");
   newtree->Branch("selected_lepton_eta", &selected_lepton_eta, "selected_lepton_eta/D");
   newtree->Branch("selected_lepton_phi", &selected_lepton_phi, "selected_lepton_phi/D");
@@ -65,7 +75,26 @@ void Skim_K2::executeEvent(){
 
   muons.clear();
   electrons.clear();
-
+  hadronic_top_M_vector_success.clear();
+  hadronic_top_M_vector_success.shrink_to_fit();
+  hadronic_top_M_vector_fail.clear();
+  hadronic_top_M_vector_fail.shrink_to_fit();
+  hadronic_top_b_pt_vector_success.clear();
+  hadronic_top_b_pt_vector_success.shrink_to_fit();
+  hadronic_top_b_pt_vector_fail.clear();
+  hadronic_top_b_pt_vector_fail.shrink_to_fit();
+  leptonic_top_b_pt_vector_success.clear();
+  leptonic_top_b_pt_vector_success.shrink_to_fit();
+  leptonic_top_b_pt_vector_fail.clear();
+  leptonic_top_b_pt_vector_fail.shrink_to_fit();
+  wch_up_type_pt_vector_success.clear();
+  wch_up_type_pt_vector_success.shrink_to_fit();
+  wch_up_type_pt_vector_fail.clear();
+  wch_up_type_pt_vector_fail.shrink_to_fit();
+  wch_down_type_pt_vector_success.clear();
+  wch_down_type_pt_vector_success.shrink_to_fit();
+  wch_down_type_pt_vector_fail.clear();
+  wch_down_type_pt_vector_fail.shrink_to_fit();
   selected_jet_pt.clear();
   selected_jet_eta.clear();
   selected_jet_phi.clear();
@@ -79,8 +108,7 @@ void Skim_K2::executeEvent(){
   electrons=GetElectrons("passVetoID",15.,2.5);
   std::sort(electrons.begin(),electrons.end(),PtComparing);
 
-  vector<Jet> this_AllJets = GetAllJets();
-  vector<Jet> jets = SelectJets(this_AllJets, "tight", 30., 2.4);
+  vector<Jet> jets = GetJets("tight", 30., 2.4);
   jets = JetsVetoLeptonInside(jets, electrons, muons);
   std::sort(jets.begin(), jets.end(), PtComparing);
   if(jets.size()<4) return;
@@ -117,12 +145,27 @@ void Skim_K2::executeEvent(){
                                 );
   }
   fitter_driver->FindBestChi2Fit(false); // true means use only leading four jets
-  fitter_status = fitter_driver->GetStatus();
+
+  //std::vector<TKinFitterDriver::ResultContatiner> fit_result_vector = fitter_driver->GetResults();
+
+
+  fitter_status = fitter_driver->GetBestStatus();
   if(fitter_status==0){ //0 means fit converge
     initial_dijet_m = fitter_driver->GetBestInitialDijetMass();
     corrected_dijet_m = fitter_driver->GetBestCorrectedDijetMass();
     fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
     best_chi2 = fitter_driver->GetChi2();
+    hadronic_top_M_vector_success = fitter_driver->GetHadronicTopMassVector(true);
+    hadronic_top_M_vector_fail = fitter_driver->GetHadronicTopMassVector(false);
+    hadronic_top_b_pt_vector_success = fitter_driver->GetHadronicTopBPtVector(true);
+    hadronic_top_b_pt_vector_fail = fitter_driver->GetHadronicTopBPtVector(false);
+    leptonic_top_b_pt_vector_success = fitter_driver->GetLeptonicTopBPtVector(true);
+    leptonic_top_b_pt_vector_fail = fitter_driver->GetLeptonicTopBPtVector(false);
+    wch_up_type_pt_vector_success = fitter_driver->GetWCHUpTypePtVector(true);
+    wch_up_type_pt_vector_fail = fitter_driver->GetWCHUpTypePtVector(false);
+    wch_down_type_pt_vector_success = fitter_driver->GetWCHDownTypePtVector(true);
+    wch_down_type_pt_vector_fail = fitter_driver->GetWCHDownTypePtVector(false);
+
   }
   else{
     initial_dijet_m = -1;
@@ -153,7 +196,10 @@ void Skim_K2::executeEvent(){
   }
 
   newtree->Fill();
-
+  if(njets>=8){
+    newtree->AutoSave();
+  }
+  delete evt;
 }
 
 
@@ -167,7 +213,7 @@ Skim_K2::Skim_K2(){
 }
 
 Skim_K2::~Skim_K2(){
- //delete fitter_driver;
+ delete fitter_driver;
 }
 
 void Skim_K2::WriteHist(){
