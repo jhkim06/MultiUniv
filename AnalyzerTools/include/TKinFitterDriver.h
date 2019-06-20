@@ -18,6 +18,7 @@ class TKinFitterDriver{
 
 public:
 
+  TKinFitterDriver();
   TKinFitterDriver(int DataYear_);
   ~TKinFitterDriver();
 
