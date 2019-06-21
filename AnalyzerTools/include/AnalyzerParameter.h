@@ -16,6 +16,12 @@ public:
   bool MCCorrrectionIgnoreNoHist;
   int nLepton;
 
+  TString Lepton_ID;
+  TString Lepton_ISO_ID;
+  TString Lepton_ID_SF_Key;
+  TString Lepton_ISO_SF_Key;
+  std::map<TString, std::vector<TString>> Lepton_Trigger_map;
+
   TString Electron_Tight_ID, Electron_Loose_ID, Electron_Veto_ID;
   TString Electron_ID;
   TString Electron_ISO_ID;

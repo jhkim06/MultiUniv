@@ -6,6 +6,12 @@ void AnalyzerParameter::Clear(){
 
   MCCorrrectionIgnoreNoHist = false;
 
+  Lepton_ID="";
+  Lepton_ISO_ID="";
+  Lepton_ID_SF_Key="";
+  Lepton_ISO_SF_Key="";
+  Lepton_Trigger_map.clear();
+
   Electron_Tight_ID = "";
   Electron_Loose_ID = "";
   Electron_Veto_ID = "";

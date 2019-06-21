@@ -14,7 +14,7 @@ public:
   ~Skim_Efficiency();
 
   void initializeAnalyzer();
-  void executeEventFromParameter(AnalyzerParameter param);
+  void executeEventFromParameter(AnalyzerParameter param, bool isMu = true);
   void executeEvent();
 
   Event* evt;
