@@ -310,18 +310,45 @@ class PlotFactory:
 		is_this_nuisance_to_be_considered = False
 
 	      if is_this_nuisance_to_be_considered :
-		if 'name' in nuisance:
+		if nuisance['kind']=='sampleChange':
+		  for sampleNuisName, sampleToChange in nuisance['samplesUp'].iteritems():
+		    if sampleNuisName == sampleName:
+		      shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleToChange
+		  for sampleNuisName, sampleToChange in nuisance['samplesDo'].iteritems():
+		    if sampleNuisName == sampleName:
+		      shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleToChange
+		elif nuisance['kind']=='variableChange':
+		  for variableNuisName, variableToChange in nuisance['variablesUp'].iteritems():
+		    if variableNuisName == variableName:
+		      shapeNameUp = cutName+"/"+variableToChange+'/histo_' + sampleName
+		  for variableNuisName, variableToChange in nuisance['variablesDo'].iteritems():
+		    if variableNuisName == variableName:
+		      shapeNameDown = cutName+"/"+variableToChange+'/histo_' + sampleName
+		elif 'name' in nuisance:
 		  shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisance['name']+"Up"
 		  shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisance['name']+"Down"
 		else:
 		  shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisanceName+"Up"
 		  shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisanceName+"Down"
 		if type(fileIn) is dict:
-		  histoUp = fileIn[sampleName].Get(shapeNameUp)
-		  histoDown = fileIn[sampleName].Get(shapeNameDown)
+		  if 'histo_zeros' in shapeNameUp:
+		    histoUp = self.ZeroHisto(fileIn[sampleName].Get(shapeName),shapeName+'_Up_zeros')
+		  else:
+		    histoUp = fileIn[sampleName].Get(shapeNameUp)
+		  if 'histo_zeros' in shapeNameDown:
+		    histoDown = self.ZeroHisto(fileIn[sampleName].Get(shapeName),shapeName+'_Down_zeros')
+		  else:
+		    histoDown = fileIn[sampleName].Get(shapeNameDown)
 		else :
-		  histoUp = fileIn.Get(shapeNameUp)
-		  histoDown = fileIn.Get(shapeNameDown)
+		  if 'histo_zeros' in shapeNameUp:
+		    histoUp = self.ZeroHisto(fileIn.Get(shapeName),shapeName+'_Up_zeros')
+		  else:
+		    histoUp = fileIn.Get(shapeNameUp)
+		  if 'histo_zeros' in shapeNameDown:
+		    histoDown = self.ZeroHisto(fileIn.Get(shapeName),shapeName+'_Down_zeros')
+		  else:
+		    histoDown = fileIn.Get(shapeNameDown)
+
 
                 # No stored histogram case
 		if histoUp == None:
@@ -961,7 +988,8 @@ class PlotFactory:
 	CMS_lumi.lumi_8TeV = "18.3 fb^{-1}"
 	CMS_lumi.lumi_13TeV = "100 fb^{-1}"
 	CMS_lumi.writeExtraText = 1
-	CMS_lumi.extraText = "Preliminary"
+	#CMS_lumi.extraText = "Preliminary"
+	CMS_lumi.extraText = "work in progress"
 	CMS_lumi.relPosX = 0.12
 	CMS_lumi.lumi_sqrtS = "13 TeV"
 	if 'sqrt' in legend.keys() :
@@ -1294,8 +1322,12 @@ class PlotFactory:
   def Difference(self, A, B):
     return A - B
 
-
-
+  def ZeroHisto(self,histo, name):
+    out_histo = histo.Clone(name)
+    for i in range(out_histo.GetNbinsX()):
+      out_histo.SetBinContent(i,0)
+      out_histo.SetBinError(i,0)
+    return out_histo
 
 
 
