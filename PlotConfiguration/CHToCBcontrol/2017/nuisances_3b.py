@@ -96,27 +96,29 @@ nuisances['hdamp'] = {
       'TTJJ_powheg'	: 'TTJJ_powheg_hdamp_Do',
     },
 }
-#nuisances['generator'] = {
-#    'name' : 'generator',
-#    'kind' : 'sampleChange',
-#    'type' : 'shape',
-#    'samples' : {
-#      'TTLJ_powheg'	: ['1.','1.'],
-#      'TTLL_powheg'	: ['0.','1.'],
-#      'TTJJ_powheg'	: ['0.','1.'],
-#    },
-#    'samplesUp'   : {
-#      'TTLJ_powheg'	: 'TT_MG',
-#      'TTLL_powheg'	: 'TT_MG',
-#      'TTJJ_powheg'	: 'TT_MG',
-#    },
-#    'samplesDown' : {
-#      'TTLJ_powheg'	: 'TTLJ_powheg',
-#      'TTLL_powheg'	: 'TTLL_powheg',
-#      'TTJJ_powheg'	: 'TTJJ_powheg',
-#    },
-#    #TODO will add signal samples
-#}
+
+nuisances['generator'] = {
+    'name' : 'generator',
+    'kind' : 'sampleChange',
+    'type' : 'shape',
+    'samples' : {
+      'TTLJ_powheg'	: ['1.','1.'],
+      'TTLL_powheg'	: ['0.','1.'],
+      'TTJJ_powheg'	: ['0.','1.'],
+    },
+    'samplesUp'   : {
+      'TTLJ_powheg'	: 'TT_MG',
+      'TTLL_powheg'	: 'zeros',
+      'TTJJ_powheg'	: 'zeros',
+    },
+    'samplesDo' : {
+      'TTLJ_powheg'	: 'TTLJ_powheg',
+      'TTLL_powheg'	: 'TTLL_powheg',
+      'TTJJ_powheg'	: 'TTJJ_powheg',
+    },
+    #TODO will add signal samples
+}
+
 '''
 nuisances['PUweight'] = {
     'name' :'PUweight',
