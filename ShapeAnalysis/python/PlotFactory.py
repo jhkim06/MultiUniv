@@ -331,11 +331,24 @@ class PlotFactory:
 		  shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisanceName+"Up"
 		  shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisanceName+"Down"
 		if type(fileIn) is dict:
-		  histoUp = fileIn[sampleName].Get(shapeNameUp)
-		  histoDown = fileIn[sampleName].Get(shapeNameDown)
+		  if 'histo_zeros' in shapeNameUp:
+		    histoUp = self.ZeroHisto(fileIn[sampleName].Get(shapeName),shapeName+'_Up_zeros')
+		  else:
+		    histoUp = fileIn[sampleName].Get(shapeNameUp)
+		  if 'histo_zeros' in shapeNameDown:
+		    histoDown = self.ZeroHisto(fileIn[sampleName].Get(shapeName),shapeName+'_Down_zeros')
+		  else:
+		    histoDown = fileIn[sampleName].Get(shapeNameDown)
 		else :
-		  histoUp = fileIn.Get(shapeNameUp)
-		  histoDown = fileIn.Get(shapeNameDown)
+		  if 'histo_zeros' in shapeNameUp:
+		    histoUp = self.ZeroHisto(fileIn.Get(shapeName),shapeName+'_Up_zeros')
+		  else:
+		    histoUp = fileIn.Get(shapeNameUp)
+		  if 'histo_zeros' in shapeNameDown:
+		    histoDown = self.ZeroHisto(fileIn.Get(shapeName),shapeName+'_Down_zeros')
+		  else:
+		    histoDown = fileIn.Get(shapeNameDown)
+
 
                 # No stored histogram case
 		if histoUp == None:
@@ -1309,8 +1322,12 @@ class PlotFactory:
   def Difference(self, A, B):
     return A - B
 
-
-
+  def ZeroHisto(self,histo, name):
+    out_histo = histo.Clone(name)
+    for i in range(out_histo.GetNbinsX()):
+      out_histo.SetBinContent(i,0)
+      out_histo.SetBinError(i,0)
+    return out_histo
 
 
 
