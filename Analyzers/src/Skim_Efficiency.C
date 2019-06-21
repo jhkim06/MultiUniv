@@ -25,8 +25,7 @@ void Skim_Efficiency::initializeAnalyzer(){
   muWPs["POGTight"]["Trigger"].push_back("IsoMu27");
 
   eleWPs["POGTight"]["Id"].push_back("passTightID");
-  eleWPs["POGTight"]["Iso"].push_back("");
-  eleWPs["POGTight"]["Iso"].push_back("vetoIso");
+  eleWPs["POGTight"]["Id"].push_back("passTightID_vetoIso");
   eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf_v");
 
   muKEYs["POGTight"]["Id"].push_back("NUM_TightID_DEN_genTracks"); // TODO is there function to find keys for selection already? if not let's make it
@@ -35,8 +34,7 @@ void Skim_Efficiency::initializeAnalyzer(){
   muKEYs["POGTight"]["IsoMu27"].push_back("IsoMu27_POGTight");
 
   eleKEYs["POGTight"]["Id"].push_back("passTightID");
-  eleKEYs["POGTight"]["Iso"].push_back("NA");
-  eleKEYs["POGTight"]["Iso"].push_back("NA");
+  eleKEYs["POGTight"]["Id"].push_back("NA");
   eleKEYs["POGTight"]["HLT_Ele27_WPTight_Gsf_v"].push_back("NA");
 
   std::map<TString, std::map<TString, std::vector<TString>>>::iterator it = muWPs.begin();
@@ -57,10 +55,10 @@ void Skim_Efficiency::initializeAnalyzer(){
 
   	     			}
   	     			else if(i == 3){ // for trigger SF
-  	     				for(int k = 0; k < nTrg; k++){
+  	     				for(int l = 0; l < nTrg; l++){
 
-  	     					newtree->Branch(SFs[i] + "_" + (it->second)["Trigger"].at(k) + "_" + "mu_" + (it->second)["Id"].at(k) + (it->second)["Iso"].at(j), 
-  	     						        &lepSFs["mu"+(it->second)["Id"].at(k) + (it->second)["Iso"].at(j) + (it->second)["Trigger"].at(k)][SFs[i]]);
+  	     					newtree->Branch(SFs[i] + "_" + (it->second)["Trigger"].at(l) + "_" + "mu_" + (it->second)["Id"].at(k) + (it->second)["Iso"].at(j), 
+  	     						        &lepSFs["mu"+(it->second)["Id"].at(k) + (it->second)["Iso"].at(j) + (it->second)["Trigger"].at(l)][SFs[i]]);
   	      		 		}
   	    			}// for trigger 
   			}// nIso
@@ -73,28 +71,25 @@ void Skim_Efficiency::initializeAnalyzer(){
   it = eleWPs.begin();
   while(it != eleWPs.end()){
 
-        int nIso = (it->second)["Iso"].size();
         int nTrg = (it->second)["Trigger"].size();
         int nId = (it->second)["Id"].size();
 
         for(int i = 0; i < 4; i++){
 
                 for(int k = 0; k < nId;  k++){
-                        for(int j = 0; j < nIso; j++){
                                 if( i != 3){
 
-                                        newtree->Branch(SFs[i] + "_ele_" + (it->second)["Id"].at(k) + (it->second)["Iso"].at(j),
-                                                        &lepSFs["ele"+(it->second)["Id"].at(k) + (it->second)["Iso"].at(j)][SFs[i]]);
+                                        newtree->Branch(SFs[i] + "_ele_" + (it->second)["Id"].at(k),
+                                                        &lepSFs["ele"+(it->second)["Id"].at(k)][SFs[i]]);
 
                                 }
                                 else if(i == 3){ // for trigger SF
-                                        for(int k = 0; k < nTrg; k++){
+                                        for(int j = 0; j < nTrg; j++){
 
-                                                newtree->Branch(SFs[i] + "_" + (it->second)["Trigger"].at(k) + "_" + "ele_" + (it->second)["Id"].at(k) + (it->second)["Iso"].at(j),
-                                                                &lepSFs["ele"+(it->second)["Id"].at(k) + (it->second)["Iso"].at(j) + (it->second)["Trigger"].at(k)][SFs[i]]);
+                                                newtree->Branch(SFs[i] + "_" + (it->second)["Trigger"].at(j) + "_" + "ele_" + (it->second)["Id"].at(k),
+                                                                &lepSFs["ele"+(it->second)["Id"].at(k) + (it->second)["Trigger"].at(j)][SFs[i]]);
                                         }
                                 }// for trigger 
-                        }// nIso
                 }// nId
         }
         it++;
@@ -143,18 +138,14 @@ void Skim_Efficiency::executeEvent(){
 
   it = eleWPs.begin();
   while(it != eleWPs.end()){
-        int nIso = (it->second)["Iso"].size();
         int nId = (it->second)["Id"].size();
 
         for(int k = 0; k < nId;  k++){
-                for(int i = 0; i < nIso; i++){
 
                       param.Lepton_ID     = (it->second)["Id"].at(k);
-                      param.Lepton_ISO_ID =     (it->second)["Iso"].at(i);
 
                       // set keys
                       param.Lepton_ID_SF_Key = eleKEYs[it->first]["Id"].at(k);
-                      param.Lepton_ISO_SF_Key = eleKEYs[it->first]["Iso"].at(i);
 
                       int nTrg = (it->second)["Trigger"].size();
                       for(int j = 0; j < nTrg; j++){
@@ -165,7 +156,6 @@ void Skim_Efficiency::executeEvent(){
                       executeEventFromParameter(param, false);
                       param.Clear();
 
-                }
         }
         it++;
   }
@@ -211,10 +201,7 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, bool is
   }
   else{
 
-	TString temp_ID;
-        if((param.Lepton_ISO_ID).CompareTo("") != 0) temp_ID = param.Lepton_ID+"_"+param.Lepton_ISO_ID;
-	else temp_ID = param.Lepton_ID;
-        electrons = SelectElectrons(this_AllElectrons, temp_ID, 7., 2.5);
+        electrons = SelectElectrons(this_AllElectrons, param.Lepton_ID, 7., 2.5);
         std::sort(electrons.begin(), electrons.end(),PtComparing);
         leps=MakeLeptonPointerVector(electrons);
 
@@ -266,7 +253,7 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, bool is
     		for( int i(0); i<leps.size() ; i++){
 
 			if(isMu){
-    				lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["RecoSF"].push_back( LeptonReco_SF?(mcCorr->*LeptonReco_SF)(leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.);
+    				lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["RecoSF"].push_back( 1.);
     		  		if((param.Lepton_ID_SF_Key).CompareTo("NA") !=0) lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IdSF"].push_back(LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.);
 				else lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IdSF"].push_back(1.);
     		  		if((param.Lepton_ISO_SF_Key).CompareTo("NA") !=0) lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IsoSF"].push_back(LeptonISO_SF?(mcCorr->*LeptonISO_SF)(param.Lepton_ISO_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.);
@@ -274,10 +261,11 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, bool is
 			}
 			else{
     				lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["RecoSF"].push_back( LeptonReco_SF?(mcCorr->*LeptonReco_SF)(((Electron*)leps.at(i))->scEta(), leps.at(i)->Pt(),  0) : 1.);
+
     		  		if((param.Lepton_ID_SF_Key).CompareTo("NA") !=0) lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IdSF"].push_back(LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, ((Electron*)leps.at(i))->scEta(), leps.at(i)->Pt(),  0) : 1.);
 				else lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IdSF"].push_back(1.);
-    		  		if((param.Lepton_ISO_SF_Key).CompareTo("NA") !=0) lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IsoSF"].push_back(LeptonISO_SF?(mcCorr->*LeptonISO_SF)(param.Lepton_ISO_SF_Key, ((Electron*)leps.at(i))->scEta(), leps.at(i)->Pt(),  0) : 1.);
-				else lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IsoSF"].push_back(1.);
+
+				lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IsoSF"].push_back(1.);
 			}
     		}
 
