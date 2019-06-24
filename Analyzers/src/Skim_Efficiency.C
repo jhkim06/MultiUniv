@@ -20,19 +20,19 @@ void Skim_Efficiency::initializeAnalyzer(){
         muWPs["POGTight"]["Iso"].push_back("TightIso");
         muWPs["POGTight"]["Iso"].push_back("LooseIso");
         muWPs["POGTight"]["Trigger"].push_back("IsoMu24");
-        muWPs["POGTight"]["Trigger"].push_back("IsoMu24_LooseIso");
+        muWPs["POGTight"]["Trigger"].push_back("IsoMu24");
 
         muKEYs["POGTight"]["Id"].push_back("NUM_TightID_DEN_genTracks"); // TODO is there function to find keys for selection already? if not let's make it
         muKEYs["POGTight"]["Iso"].push_back("NUM_TightRelIso_DEN_TightIDandIPCut");
         muKEYs["POGTight"]["Iso"].push_back("NUM_LooseRelTkIso_DEN_HighPtIDandIPCut");
-        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(0)].push_back("IsoMu24_POGTight");
-        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(1)].push_back("NA");
+        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(0)+muWPs["POGTight"]["Iso"].at(0)].push_back("IsoMu24_POGTight");
+        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(1)+muWPs["POGTight"]["Iso"].at(1)].push_back("NA");
 
         // electron
         eleWPs["POGTight"]["Id"].push_back("passTightID");
         eleWPs["POGTight"]["Id"].push_back("passTightID_vetoIso");
         eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
-        eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf_vetoIso");
+        eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
 
 
         eleKEYs["POGTight"]["Id"].push_back("passTightID");
@@ -48,19 +48,19 @@ void Skim_Efficiency::initializeAnalyzer(){
   	muWPs["POGTight"]["Iso"].push_back("TightIso");
   	muWPs["POGTight"]["Iso"].push_back("LooseIso");
   	muWPs["POGTight"]["Trigger"].push_back("IsoMu27");
-  	muWPs["POGTight"]["Trigger"].push_back("IsoMu27_LooseIso");
+  	muWPs["POGTight"]["Trigger"].push_back("IsoMu27");
 
   	muKEYs["POGTight"]["Id"].push_back("NUM_TightID_DEN_genTracks"); // TODO is there function to find keys for selection already? if not let's make it
   	muKEYs["POGTight"]["Iso"].push_back("NUM_TightRelIso_DEN_TightIDandIPCut");
   	muKEYs["POGTight"]["Iso"].push_back("NUM_LooseRelTkIso_DEN_HighPtIDandIPCut");
-  	muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(0)].push_back("IsoMu27_POGTight");
-  	muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(1)].push_back("NA");
+  	muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(0)+muWPs["POGTight"]["Iso"].at(0)].push_back("IsoMu27_POGTight");
+  	muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(1)+muWPs["POGTight"]["Iso"].at(1)].push_back("NA");
 
 	// electron
   	eleWPs["POGTight"]["Id"].push_back("passTightID");
   	eleWPs["POGTight"]["Id"].push_back("passTightID_vetoIso");
   	eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
-  	eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf_vetoIso");
+  	eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
 
 
   	eleKEYs["POGTight"]["Id"].push_back("passTightID");
@@ -75,19 +75,19 @@ void Skim_Efficiency::initializeAnalyzer(){
         muWPs["POGTight"]["Iso"].push_back("TightIso");
         muWPs["POGTight"]["Iso"].push_back("LooseIso");
         muWPs["POGTight"]["Trigger"].push_back("IsoMu24");
-        muWPs["POGTight"]["Trigger"].push_back("IsoMu24_LooseIso");
+        muWPs["POGTight"]["Trigger"].push_back("IsoMu24");
 
         muKEYs["POGTight"]["Id"].push_back("NUM_TightID_DEN_genTracks"); // TODO is there function to find keys for selection already? if not let's make it
         muKEYs["POGTight"]["Iso"].push_back("NUM_TightRelIso_DEN_TightIDandIPCut");
         muKEYs["POGTight"]["Iso"].push_back("NUM_LooseRelTkIso_DEN_HighPtIDandIPCut");
-        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(0)].push_back("IsoMu24_POGTight");
-        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(1)].push_back("NA");
+        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(0)+muWPs["POGTight"]["Iso"].at(0)].push_back("IsoMu24_POGTight");
+        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(1)+muWPs["POGTight"]["Iso"].at(1)].push_back("NA");
 
         // electron
         eleWPs["POGTight"]["Id"].push_back("passTightID");
         eleWPs["POGTight"]["Id"].push_back("passTightID_vetoIso");
         eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
-        eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf_vetoIso");
+        eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
 
 
         eleKEYs["POGTight"]["Id"].push_back("passTightID");
@@ -119,6 +119,7 @@ void Skim_Efficiency::initializeAnalyzer(){
 
   	     					newtree->Branch(SFs[i] + "_" + (it->second)["Trigger"].at(j) + "_" + "mu_" + (it->second)["Id"].at(k) + (it->second)["Iso"].at(j), 
   	     						        &lepSFs["mu"+(it->second)["Id"].at(k) + (it->second)["Iso"].at(j) + (it->second)["Trigger"].at(j)][SFs[i]]);
+
   	    			}// for trigger 
   			}// nIso
 		}// nId
@@ -179,8 +180,8 @@ void Skim_Efficiency::executeEvent(){
   		      param.Lepton_ISO_SF_Key = muKEYs[it->first]["Iso"].at(i);
 
   		      int nTrg = (it->second)["Trigger"].size();
-  		      for(int l = 0; l < muKEYs[it->first][(it->second)["Trigger"].at(i)].size(); l++){
-  		      	        (param.Lepton_Trigger_map)[it->second["Trigger"].at(i)].push_back(muKEYs[it->first][(it->second)["Trigger"].at(i)].at(l));
+  		      for(int l = 0; l < muKEYs[it->first][(it->second)["Trigger"].at(i)+(it->second)["Iso"].at(i)].size(); l++){
+  		      	        (param.Lepton_Trigger_map)[it->second["Trigger"].at(i)].push_back(muKEYs[it->first][(it->second)["Trigger"].at(i)+(it->second)["Iso"].at(i)].at(l));
   		      }
   		      executeEventFromParameter(param);
   		      param.Clear();
@@ -204,7 +205,6 @@ void Skim_Efficiency::executeEvent(){
                       int nTrg = (it->second)["Trigger"].size();
                       for(int i = 0; i < eleKEYs[it->first][(it->second)["Trigger"].at(k)].size(); i++){
                                 (param.Lepton_Trigger_map)[it->second["Trigger"].at(k)].push_back(eleKEYs[it->first][(it->second)["Trigger"].at(k)].at(i));
-                        }
                       }
                       executeEventFromParameter(param, false);
                       param.Clear();
@@ -285,7 +285,9 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, bool is
 					if(isMu){
 						std::vector<Muon> temp_muon;
 						temp_muon.push_back((*(Muon*)leps.at(0))); // the first lepton, the largest pt?
-						if((it->first).CompareTo("NA") !=0)lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID+it->first]["TrgSF"].push_back( LeptonTrg_SF?(mcCorr->*LeptonTrg_SF)(param.Lepton_ID, it->first, temp_muon,  0) : 1. ); 
+						if((it->second).at(0).CompareTo("NA") !=0)
+							// MuonTrigger_SF use ID and ISO name and make key for SF
+							lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID+it->first]["TrgSF"].push_back( LeptonTrg_SF?(mcCorr->*LeptonTrg_SF)(param.Lepton_ID, it->first, temp_muon,  0) : 1. ); 
 						else lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID+it->first]["TrgSF"].push_back( 1.); 
 					}
 					else{
