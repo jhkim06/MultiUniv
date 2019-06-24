@@ -13,23 +13,89 @@ void Skim_Efficiency::initializeAnalyzer(){
 
   cout << "initializeAnalyzer" << endl;
 
-  muWPs["POGTight"]["Id"].push_back("POGTight");
-  muWPs["POGTight"]["Iso"].push_back("TightIso");
-  muWPs["POGTight"]["Iso"].push_back("LooseIso");
-  muWPs["POGTight"]["Trigger"].push_back("IsoMu27");
+  if(DataYear==2016){
 
-  eleWPs["POGTight"]["Id"].push_back("passTightID");
-  eleWPs["POGTight"]["Id"].push_back("passTightID_vetoIso");
-  eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf_v");
+        // muon
+        muWPs["POGTight"]["Id"].push_back("POGTight"); // set name to be used to select muons
+        muWPs["POGTight"]["Iso"].push_back("TightIso");
+        muWPs["POGTight"]["Iso"].push_back("LooseIso");
+        muWPs["POGTight"]["Trigger"].push_back("IsoMu24");
+        muWPs["POGTight"]["Trigger"].push_back("IsoMu24_LooseIso");
 
-  muKEYs["POGTight"]["Id"].push_back("NUM_TightID_DEN_genTracks"); // TODO is there function to find keys for selection already? if not let's make it
-  muKEYs["POGTight"]["Iso"].push_back("NUM_TightRelIso_DEN_TightIDandIPCut");
-  muKEYs["POGTight"]["Iso"].push_back("NUM_LooseRelTkIso_DEN_HighPtIDandIPCut");
-  muKEYs["POGTight"]["IsoMu27"].push_back("IsoMu27_POGTight");
+        muKEYs["POGTight"]["Id"].push_back("NUM_TightID_DEN_genTracks"); // TODO is there function to find keys for selection already? if not let's make it
+        muKEYs["POGTight"]["Iso"].push_back("NUM_TightRelIso_DEN_TightIDandIPCut");
+        muKEYs["POGTight"]["Iso"].push_back("NUM_LooseRelTkIso_DEN_HighPtIDandIPCut");
+        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(0)].push_back("IsoMu24_POGTight");
+        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(1)].push_back("NA");
 
-  eleKEYs["POGTight"]["Id"].push_back("passTightID");
-  eleKEYs["POGTight"]["Id"].push_back("NA");
-  eleKEYs["POGTight"]["HLT_Ele27_WPTight_Gsf_v"].push_back("NA");
+        // electron
+        eleWPs["POGTight"]["Id"].push_back("passTightID");
+        eleWPs["POGTight"]["Id"].push_back("passTightID_vetoIso");
+        eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
+        eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf_vetoIso");
+
+
+        eleKEYs["POGTight"]["Id"].push_back("passTightID");
+        eleKEYs["POGTight"]["Id"].push_back("NA");
+        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(0)].push_back("NA");
+        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(1)].push_back("NA");
+
+  }
+  else if(DataYear==2017){
+
+	// muon
+  	muWPs["POGTight"]["Id"].push_back("POGTight"); // set name to be used to select muons
+  	muWPs["POGTight"]["Iso"].push_back("TightIso");
+  	muWPs["POGTight"]["Iso"].push_back("LooseIso");
+  	muWPs["POGTight"]["Trigger"].push_back("IsoMu27");
+  	muWPs["POGTight"]["Trigger"].push_back("IsoMu27_LooseIso");
+
+  	muKEYs["POGTight"]["Id"].push_back("NUM_TightID_DEN_genTracks"); // TODO is there function to find keys for selection already? if not let's make it
+  	muKEYs["POGTight"]["Iso"].push_back("NUM_TightRelIso_DEN_TightIDandIPCut");
+  	muKEYs["POGTight"]["Iso"].push_back("NUM_LooseRelTkIso_DEN_HighPtIDandIPCut");
+  	muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(0)].push_back("IsoMu27_POGTight");
+  	muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(1)].push_back("NA");
+
+	// electron
+  	eleWPs["POGTight"]["Id"].push_back("passTightID");
+  	eleWPs["POGTight"]["Id"].push_back("passTightID_vetoIso");
+  	eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
+  	eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf_vetoIso");
+
+
+  	eleKEYs["POGTight"]["Id"].push_back("passTightID");
+  	eleKEYs["POGTight"]["Id"].push_back("NA");
+  	eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(0)].push_back("NA");
+  	eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(1)].push_back("NA");
+  }
+  else if(DataYear==2018){
+
+        // muon
+        muWPs["POGTight"]["Id"].push_back("POGTight"); // set name to be used to select muons
+        muWPs["POGTight"]["Iso"].push_back("TightIso");
+        muWPs["POGTight"]["Iso"].push_back("LooseIso");
+        muWPs["POGTight"]["Trigger"].push_back("IsoMu24");
+        muWPs["POGTight"]["Trigger"].push_back("IsoMu24_LooseIso");
+
+        muKEYs["POGTight"]["Id"].push_back("NUM_TightID_DEN_genTracks"); // TODO is there function to find keys for selection already? if not let's make it
+        muKEYs["POGTight"]["Iso"].push_back("NUM_TightRelIso_DEN_TightIDandIPCut");
+        muKEYs["POGTight"]["Iso"].push_back("NUM_LooseRelTkIso_DEN_HighPtIDandIPCut");
+        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(0)].push_back("IsoMu24_POGTight");
+        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(1)].push_back("NA");
+
+        // electron
+        eleWPs["POGTight"]["Id"].push_back("passTightID");
+        eleWPs["POGTight"]["Id"].push_back("passTightID_vetoIso");
+        eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
+        eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf_vetoIso");
+
+
+        eleKEYs["POGTight"]["Id"].push_back("passTightID");
+        eleKEYs["POGTight"]["Id"].push_back("NA");
+        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(0)].push_back("NA");
+        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(1)].push_back("NA");
+
+  }
 
   // set muon SF branches
   std::map<TString, std::map<TString, std::vector<TString>>>::iterator it = muWPs.begin();
@@ -50,11 +116,9 @@ void Skim_Efficiency::initializeAnalyzer(){
 
   	     			}
   	     			else if(i == 3){ // for trigger SF
-  	     				for(int l = 0; l < nTrg; l++){
 
-  	     					newtree->Branch(SFs[i] + "_" + (it->second)["Trigger"].at(l) + "_" + "mu_" + (it->second)["Id"].at(k) + (it->second)["Iso"].at(j), 
-  	     						        &lepSFs["mu"+(it->second)["Id"].at(k) + (it->second)["Iso"].at(j) + (it->second)["Trigger"].at(l)][SFs[i]]);
-  	      		 		}
+  	     					newtree->Branch(SFs[i] + "_" + (it->second)["Trigger"].at(j) + "_" + "mu_" + (it->second)["Id"].at(k) + (it->second)["Iso"].at(j), 
+  	     						        &lepSFs["mu"+(it->second)["Id"].at(k) + (it->second)["Iso"].at(j) + (it->second)["Trigger"].at(j)][SFs[i]]);
   	    			}// for trigger 
   			}// nIso
 		}// nId
@@ -79,11 +143,9 @@ void Skim_Efficiency::initializeAnalyzer(){
 
                                 }
                                 else if(i == 3){ // for trigger SF
-                                        for(int j = 0; j < nTrg; j++){
 
-                                                newtree->Branch(SFs[i] + "_" + (it->second)["Trigger"].at(j) + "_" + "ele_" + (it->second)["Id"].at(k),
-                                                                &lepSFs["ele"+(it->second)["Id"].at(k) + (it->second)["Trigger"].at(j)][SFs[i]]);
-                                        }
+                                                newtree->Branch(SFs[i] + "_" + (it->second)["Trigger"].at(k) + "_" + "ele_" + (it->second)["Id"].at(k),
+                                                                &lepSFs["ele"+(it->second)["Id"].at(k) + (it->second)["Trigger"].at(k)][SFs[i]]);
                                 }// for trigger 
                 }// nId
         }
@@ -117,10 +179,8 @@ void Skim_Efficiency::executeEvent(){
   		      param.Lepton_ISO_SF_Key = muKEYs[it->first]["Iso"].at(i);
 
   		      int nTrg = (it->second)["Trigger"].size();
-  		      for(int j = 0; j < nTrg; j++){
-  		      	for(int l = 0; l < muKEYs[it->first][(it->second)["Trigger"].at(j)].size(); l++){
-  		      	        (param.Lepton_Trigger_map)[it->second["Trigger"].at(j)].push_back(muKEYs[it->first][(it->second)["Trigger"].at(j)].at(l));
-  		      	}
+  		      for(int l = 0; l < muKEYs[it->first][(it->second)["Trigger"].at(i)].size(); l++){
+  		      	        (param.Lepton_Trigger_map)[it->second["Trigger"].at(i)].push_back(muKEYs[it->first][(it->second)["Trigger"].at(i)].at(l));
   		      }
   		      executeEventFromParameter(param);
   		      param.Clear();
@@ -142,9 +202,8 @@ void Skim_Efficiency::executeEvent(){
                       param.Lepton_ID_SF_Key = eleKEYs[it->first]["Id"].at(k);
 
                       int nTrg = (it->second)["Trigger"].size();
-                      for(int j = 0; j < nTrg; j++){
-                        for(int i = 0; i < eleKEYs[it->first][(it->second)["Trigger"].at(j)].size(); i++){
-                                (param.Lepton_Trigger_map)[it->second["Trigger"].at(j)].push_back(eleKEYs[it->first][(it->second)["Trigger"].at(j)].at(i));
+                      for(int i = 0; i < eleKEYs[it->first][(it->second)["Trigger"].at(k)].size(); i++){
+                                (param.Lepton_Trigger_map)[it->second["Trigger"].at(k)].push_back(eleKEYs[it->first][(it->second)["Trigger"].at(k)].at(i));
                         }
                       }
                       executeEventFromParameter(param, false);
