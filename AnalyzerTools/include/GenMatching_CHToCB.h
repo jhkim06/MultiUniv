@@ -32,8 +32,8 @@ public:
 
   //TString MCSample;
   //void SetMCSample(TString s);
-  void SetGens(std::vector<Gen> all_gen_);
-  void SetJets(std::vector<Jet> all_jets_);
+  void SetGens(std::vector<Gen> &all_gen_);
+  void SetJets(std::vector<Jet> &all_jets_);
   //=== 4 parton matched : return true
   //=== if not, return false
   bool FindHardProcessParton();
@@ -50,8 +50,8 @@ private:
 
   bool FindMinDeltaRMatching(matchedPartonJet &partonjet);
 
-  std::vector<Gen> AllGens;
-  std::vector<Jet> jets;
+  std::vector<Gen> *AllGens;
+  std::vector<Jet> *jets;
   Int_t njets;
 
   matchedPartonJet b_from_top;

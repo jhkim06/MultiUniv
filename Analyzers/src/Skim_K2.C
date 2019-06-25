@@ -37,10 +37,30 @@ void Skim_K2::initializeAnalyzer(){
 
   // New Branch
   newtree->Branch("initial_dijet_m", &initial_dijet_m,"initial_dijet_m/D");
+  newtree->Branch("initial_dijet_m_JES_Up", &initial_dijet_m_JES_Up,"initial_dijet_m_JES_Up/D");
+  newtree->Branch("initial_dijet_m_JES_Do", &initial_dijet_m_JES_Do,"initial_dijet_m_JES_Do/D");
+  newtree->Branch("initial_dijet_m_JER_Up", &initial_dijet_m_JER_Up,"initial_dijet_m_JER_Up/D");
+  newtree->Branch("initial_dijet_m_JER_Do", &initial_dijet_m_JER_Do,"initial_dijet_m_JER_Do/D");
   newtree->Branch("corrected_dijet_m", &corrected_dijet_m,"corrected_dijet_m/D");
+  newtree->Branch("corrected_dijet_m_JES_Up", &corrected_dijet_m_JES_Up,"corrected_dijet_m_JES_Up/D");
+  newtree->Branch("corrected_dijet_m_JES_Do", &corrected_dijet_m_JES_Do,"corrected_dijet_m_JES_Do/D");
+  newtree->Branch("corrected_dijet_m_JER_Up", &corrected_dijet_m_JER_Up,"corrected_dijet_m_JER_Up/D");
+  newtree->Branch("corrected_dijet_m_JER_Do", &corrected_dijet_m_JER_Do,"corrected_dijet_m_JER_Do/D");
   newtree->Branch("fitted_dijet_m", &fitted_dijet_m,"fitted_dijet_m/D");
+  newtree->Branch("fitted_dijet_m_JES_Up", &fitted_dijet_m_JES_Up,"fitted_dijet_m_JES_Up/D");
+  newtree->Branch("fitted_dijet_m_JES_Do", &fitted_dijet_m_JES_Do,"fitted_dijet_m_JES_Do/D");
+  newtree->Branch("fitted_dijet_m_JER_Up", &fitted_dijet_m_JER_Up,"fitted_dijet_m_JER_Up/D");
+  newtree->Branch("fitted_dijet_m_JER_Do", &fitted_dijet_m_JER_Do,"fitted_dijet_m_JER_Do/D");
   newtree->Branch("best_chi2", &best_chi2,"best_chi2/D");
+  newtree->Branch("best_chi2_JES_Up", &best_chi2_JES_Up,"best_chi2_JES_Up/D");
+  newtree->Branch("best_chi2_JES_Do", &best_chi2_JES_Do,"best_chi2_JES_Do/D");
+  newtree->Branch("best_chi2_JER_Up", &best_chi2_JER_Up,"best_chi2_JER_Up/D");
+  newtree->Branch("best_chi2_JER_Do", &best_chi2_JER_Do,"best_chi2_JER_Do/D");
   newtree->Branch("fitter_status", &fitter_status,"fitter_status/I");
+  newtree->Branch("fitter_status_JES_Up", &fitter_status_JES_Up,"fitter_status_JES_Up/I");
+  newtree->Branch("fitter_status_JES_Do", &fitter_status_JES_Do,"fitter_status_JES_Do/I");
+  newtree->Branch("fitter_status_JER_Up", &fitter_status_JER_Up,"fitter_status_JER_Up/I");
+  newtree->Branch("fitter_status_JER_Do", &fitter_status_JER_Do,"fitter_status_JER_Do/I");
 
   newtree->Branch("hadronic_top_M_vector_success", "vector<double>" ,&hadronic_top_M_vector_success);
   newtree->Branch("hadronic_top_M_vector_fail", "vector<double>" ,&hadronic_top_M_vector_fail);
@@ -57,11 +77,24 @@ void Skim_K2::initializeAnalyzer(){
   newtree->Branch("selected_lepton_phi", &selected_lepton_phi, "selected_lepton_phi/D");
 
   newtree->Branch("njets", &njets,"njets/I");
+  newtree->Branch("njets_JES_Up", &njets_JES_Up,"njets_JES_Up/I");
+  newtree->Branch("njets_JES_Do", &njets_JES_Do,"njets_JES_Do/I");
+  newtree->Branch("njets_JER_Up", &njets_JER_Up,"njets_JER_Up/I");
+  newtree->Branch("njets_JER_Do", &njets_JER_Do,"njets_JER_Do/I");
   newtree->Branch("selected_jet_pt", "vector<double>" ,&selected_jet_pt);
+  newtree->Branch("selected_jet_pt_JES_Up", "vector<double>" ,&selected_jet_pt_JES_Up);
+  newtree->Branch("selected_jet_pt_JES_Do", "vector<double>" ,&selected_jet_pt_JES_Do);
+  newtree->Branch("selected_jet_pt_JER_Up", "vector<double>" ,&selected_jet_pt_JER_Up);
+  newtree->Branch("selected_jet_pt_JER_Do", "vector<double>" ,&selected_jet_pt_JER_Do);
 
   newtree->Branch("selected_jet_eta", "vector<double>" ,&selected_jet_eta);
   newtree->Branch("selected_jet_phi", "vector<double>" ,&selected_jet_phi);
 
+  newtree->Branch("MET", &MET, "MET/D");
+  newtree->Branch("MET_JES_Up", &MET_JES_Up, "MET_JES_Up/D");
+  newtree->Branch("MET_JES_Do", &MET_JES_Do, "MET_JES_Do/D");
+  newtree->Branch("MET_JER_Up", &MET_JER_Up, "MET_JER_Up/D");
+  newtree->Branch("MET_JER_Do", &MET_JER_Do, "MET_JER_Do/D");
   // setup btagger
   std::vector<Jet::Tagger> taggers = {Jet::DeepCSV};
   std::vector<Jet::WP> wps ={Jet::Medium};
@@ -71,48 +104,106 @@ void Skim_K2::initializeAnalyzer(){
   fitter_driver = new TKinFitterDriver(DataYear); 
 }
 
+
 void Skim_K2::executeEvent(){
 
-  muons.clear();
-  electrons.clear();
-  hadronic_top_M_vector_success.clear();
-  hadronic_top_M_vector_success.shrink_to_fit();
-  hadronic_top_M_vector_fail.clear();
-  hadronic_top_M_vector_fail.shrink_to_fit();
-  hadronic_top_b_pt_vector_success.clear();
-  hadronic_top_b_pt_vector_success.shrink_to_fit();
-  hadronic_top_b_pt_vector_fail.clear();
-  hadronic_top_b_pt_vector_fail.shrink_to_fit();
-  leptonic_top_b_pt_vector_success.clear();
-  leptonic_top_b_pt_vector_success.shrink_to_fit();
-  leptonic_top_b_pt_vector_fail.clear();
-  leptonic_top_b_pt_vector_fail.shrink_to_fit();
-  wch_up_type_pt_vector_success.clear();
-  wch_up_type_pt_vector_success.shrink_to_fit();
-  wch_up_type_pt_vector_fail.clear();
-  wch_up_type_pt_vector_fail.shrink_to_fit();
-  wch_down_type_pt_vector_success.clear();
-  wch_down_type_pt_vector_success.shrink_to_fit();
-  wch_down_type_pt_vector_fail.clear();
-  wch_down_type_pt_vector_fail.shrink_to_fit();
-  selected_jet_pt.clear();
-  selected_jet_eta.clear();
-  selected_jet_phi.clear();
+  this->Clear();
+
   //diLep_passSelectiveQ = false;
 
   evt = new Event;
   *evt = GetEvent();
 
+  //get muons
   muons=GetMuons("POGLooseWithLooseIso",15.,2.4);
   std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
+  //get electrons
   electrons=GetElectrons("passVetoID",15.,2.5);
   std::sort(electrons.begin(),electrons.end(),PtComparing);
 
-  vector<Jet> jets = GetJets("tight", 30., 2.4);
+  this->executeEventByJESJER(0,0);
+  this->executeEventByJESJER(1,0);
+  this->executeEventByJESJER(-1,0);
+  if(!IsData){
+    this->executeEventByJESJER(0,1);
+    this->executeEventByJESJER(0,-1);
+  }
+  newtree->Fill();
+  delete evt;
+}
+
+
+void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
+
+  //set pointers
+  double *p_initial_dijet_m, *p_corrected_dijet_m, *p_fitted_dijet_m, *p_best_chi2, *p_MET;
+  int *p_fitter_status, *p_njets;
+  std::vector<double> *p_selected_jet_pt;
+
+  if(em_shift_up_down==0 && res_shift_up_down==0){
+    p_initial_dijet_m = &initial_dijet_m;
+    p_corrected_dijet_m = &corrected_dijet_m;
+    p_fitted_dijet_m = &fitted_dijet_m;
+    p_best_chi2 = &best_chi2;
+    p_fitter_status = &fitter_status;
+    p_selected_jet_pt = &selected_jet_pt;
+    p_njets = &njets;
+    p_MET = &MET;
+  }
+  else if(em_shift_up_down==1 && res_shift_up_down==0){
+    p_initial_dijet_m = &initial_dijet_m_JES_Up;
+    p_corrected_dijet_m = &corrected_dijet_m_JES_Up;
+    p_fitted_dijet_m = &fitted_dijet_m_JES_Up;
+    p_best_chi2 = &best_chi2_JES_Up;
+    p_fitter_status = &fitter_status_JES_Up;
+    p_selected_jet_pt = &selected_jet_pt_JES_Up;
+    p_njets = &njets_JES_Up;
+    p_MET = &MET_JES_Up;
+  }
+  else if(em_shift_up_down==-1 && res_shift_up_down==0){
+    p_initial_dijet_m = &initial_dijet_m_JES_Do;
+    p_corrected_dijet_m = &corrected_dijet_m_JES_Do;
+    p_fitted_dijet_m = &fitted_dijet_m_JES_Do;
+    p_best_chi2 = &best_chi2_JES_Do;
+    p_fitter_status = &fitter_status_JES_Do;
+    p_selected_jet_pt = &selected_jet_pt_JES_Do;
+    p_njets = &njets_JES_Do;
+    p_MET = &MET_JES_Do;
+  }
+  else if(em_shift_up_down==0 && res_shift_up_down==1){
+    p_initial_dijet_m = &initial_dijet_m_JER_Up;
+    p_corrected_dijet_m = &corrected_dijet_m_JER_Up;
+    p_fitted_dijet_m = &fitted_dijet_m_JER_Up;
+    p_best_chi2 = &best_chi2_JER_Up;
+    p_fitter_status = &fitter_status_JER_Up;
+    p_selected_jet_pt = &selected_jet_pt_JER_Up;
+    p_njets = &njets_JER_Up;
+    p_MET = &MET_JER_Up;
+  }
+  else if(em_shift_up_down==0 && res_shift_up_down==-1){
+    p_initial_dijet_m = &initial_dijet_m_JER_Do;
+    p_corrected_dijet_m = &corrected_dijet_m_JER_Do;
+    p_fitted_dijet_m = &fitted_dijet_m_JER_Do;
+    p_best_chi2 = &best_chi2_JER_Do;
+    p_fitter_status = &fitter_status_JER_Do;
+    p_selected_jet_pt = &selected_jet_pt_JER_Do;
+    p_njets = &njets_JER_Do;
+    p_MET = &MET_JER_Do;
+  }
+  else{
+    cout <<"[Skim_K2::executeEventByJESJER] not supported option" << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  // get jets
+  vector<Jet> jets = GetJets("tight", 30., 2.4, em_shift_up_down, res_shift_up_down); 
   jets = JetsVetoLeptonInside(jets, electrons, muons);
   std::sort(jets.begin(), jets.end(), PtComparing);
-  if(jets.size()<4) return;
+  if(jets.size()<4){
+    return;
+  }
 
+  // set btag vector
   std::vector<bool> btag_vector_noSF;
   for(unsigned int ij = 0 ; ij < jets.size(); ij++){
     if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)){
@@ -123,98 +214,95 @@ void Skim_K2::executeEvent(){
     }
   }
   if(jets.size()!=btag_vector_noSF.size()){
-    cout <<"[Skim_K2::executeEvent] check jet vector size" << endl;
+    cout <<"[Skim_K2::executeEventByJETJER] check jet vector size" << endl;
     exit(EXIT_FAILURE);
   }
-  
+
     ///////////////////////////////////////////////////////////
    // !!!!!!!!!!!!!!!!!! execute fitter !!!!!!!!!!!!!!!!!!! //
   ///////////////////////////////////////////////////////////
+  TLorentzVector lepton(0.,0.,0.,0.);
+  Particle METv = evt->GetMETVector();
+  //correct MET by JES/JER 
+  if(em_shift_up_down!=0 || res_shift_up_down!=0){
+    vector<Jet> jets_nominal = GetJets("tight", 30., 2.4); 
+    jets_nominal = JetsVetoLeptonInside(jets_nominal, electrons, muons);
+    METv = UpdateMET(METv, jets_nominal, jets);
+  }
+  // set lepton
   if(IsMu){
-    fitter_driver->SetAllObjects(jets, 
-                                 btag_vector_noSF,
-                                 (TLorentzVector)muons.at(0),
-                                 (TLorentzVector)evt->GetMETVector()
-                                );
+    lepton = muons.at(0);
+    METv = UpdateMET(METv, muons);
   }
   else if(IsEl){
-    fitter_driver->SetAllObjects(jets,
-                                 btag_vector_noSF,
-                                 (TLorentzVector)electrons.at(0),
-                                 (TLorentzVector)evt->GetMETVector()
-                                );
+    lepton = electrons.at(0);
   }
+
+  // set fitter
+  fitter_driver->SetAllObjects(jets, 
+                               btag_vector_noSF,
+                               lepton,
+                               (TLorentzVector)METv
+                              );
+  // find best chi2
   fitter_driver->FindBestChi2Fit(false); // true means use only leading four jets
 
   //std::vector<TKinFitterDriver::ResultContatiner> fit_result_vector = fitter_driver->GetResults();
 
-
-  fitter_status = fitter_driver->GetBestStatus();
-  if(fitter_status==0){ //0 means fit converge
-    initial_dijet_m = fitter_driver->GetBestInitialDijetMass();
-    corrected_dijet_m = fitter_driver->GetBestCorrectedDijetMass();
-    fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
-    best_chi2 = fitter_driver->GetChi2();
-    hadronic_top_M_vector_success = fitter_driver->GetHadronicTopMassVector(true);
-    hadronic_top_M_vector_fail = fitter_driver->GetHadronicTopMassVector(false);
-    hadronic_top_b_pt_vector_success = fitter_driver->GetHadronicTopBPtVector(true);
-    hadronic_top_b_pt_vector_fail = fitter_driver->GetHadronicTopBPtVector(false);
-    leptonic_top_b_pt_vector_success = fitter_driver->GetLeptonicTopBPtVector(true);
-    leptonic_top_b_pt_vector_fail = fitter_driver->GetLeptonicTopBPtVector(false);
-    wch_up_type_pt_vector_success = fitter_driver->GetWCHUpTypePtVector(true);
-    wch_up_type_pt_vector_fail = fitter_driver->GetWCHUpTypePtVector(false);
-    wch_down_type_pt_vector_success = fitter_driver->GetWCHDownTypePtVector(true);
-    wch_down_type_pt_vector_fail = fitter_driver->GetWCHDownTypePtVector(false);
-
+  *p_fitter_status = fitter_driver->GetBestStatus();
+  if(*p_fitter_status==0){ //0 means fit converge
+    *p_initial_dijet_m = fitter_driver->GetBestInitialDijetMass();
+    *p_corrected_dijet_m = fitter_driver->GetBestCorrectedDijetMass();
+    *p_fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
+    *p_best_chi2 = fitter_driver->GetChi2();
+    // nominal only
+    if(em_shift_up_down==0 && res_shift_up_down==0){
+      hadronic_top_M_vector_success = fitter_driver->GetHadronicTopMassVector(true);
+      hadronic_top_M_vector_fail = fitter_driver->GetHadronicTopMassVector(false);
+      hadronic_top_b_pt_vector_success = fitter_driver->GetHadronicTopBPtVector(true);
+      hadronic_top_b_pt_vector_fail = fitter_driver->GetHadronicTopBPtVector(false);
+      leptonic_top_b_pt_vector_success = fitter_driver->GetLeptonicTopBPtVector(true);
+      leptonic_top_b_pt_vector_fail = fitter_driver->GetLeptonicTopBPtVector(false);
+      wch_up_type_pt_vector_success = fitter_driver->GetWCHUpTypePtVector(true);
+      wch_up_type_pt_vector_fail = fitter_driver->GetWCHUpTypePtVector(false);
+      wch_down_type_pt_vector_success = fitter_driver->GetWCHDownTypePtVector(true);
+      wch_down_type_pt_vector_fail = fitter_driver->GetWCHDownTypePtVector(false);
+    }
   }
   else{
-    initial_dijet_m = -1;
-    corrected_dijet_m = -1;
-    fitted_dijet_m = -1;
-    best_chi2 = -1;
+    *p_initial_dijet_m = -1;
+    *p_corrected_dijet_m = -1;
+    *p_fitted_dijet_m = -1;
+    *p_best_chi2 = -1;
   }
-
+ 
   ///////////////////////////////////////////////
   // add Kinematic Variables
   ///////////////////////////////////////////////
 
-  if(IsMu){
-    selected_lepton_pt = muons.at(0).Pt();
-    selected_lepton_eta = muons.at(0).Eta();
-    selected_lepton_phi = muons.at(0).Phi();
-  }
-  else if(IsEl){
-    selected_lepton_pt = electrons.at(0).Pt();
-    selected_lepton_eta = electrons.at(0).Eta();
-    selected_lepton_phi = electrons.at(0).Phi();
-  }
-  njets= jets.size();
+  selected_lepton_pt  = lepton.Pt();
+  selected_lepton_eta = lepton.Eta();
+  selected_lepton_phi = lepton.Phi();
+  *p_njets= jets.size();
+  *p_MET = METv.E();
   for(auto& x : jets){
-    selected_jet_pt.push_back(x.Pt());
+    p_selected_jet_pt->push_back(x.Pt());
     selected_jet_eta.push_back(x.Eta());
     selected_jet_phi.push_back(x.Phi());
   }
 
-  newtree->Fill();
-  if(njets>=8){
-    newtree->AutoSave();
-  }
-  delete evt;
 }
 
-
-
-void Skim_K2::executeEventFromParameter(AnalyzerParameter param){
-
-}
 
 Skim_K2::Skim_K2(){
 
 }
 
+
 Skim_K2::~Skim_K2(){
- delete fitter_driver;
+  delete fitter_driver;
 }
+
 
 void Skim_K2::WriteHist(){
 
@@ -288,3 +376,78 @@ void Skim_K2::WriteHist(){
 
 }
 
+void Skim_K2::Clear(){
+
+  muons.clear();
+  electrons.clear();
+  hadronic_top_M_vector_success.clear();
+  hadronic_top_M_vector_success.shrink_to_fit();
+  hadronic_top_M_vector_fail.clear();
+  hadronic_top_M_vector_fail.shrink_to_fit();
+  hadronic_top_b_pt_vector_success.clear();
+  hadronic_top_b_pt_vector_success.shrink_to_fit();
+  hadronic_top_b_pt_vector_fail.clear();
+  hadronic_top_b_pt_vector_fail.shrink_to_fit();
+  leptonic_top_b_pt_vector_success.clear();
+  leptonic_top_b_pt_vector_success.shrink_to_fit();
+  leptonic_top_b_pt_vector_fail.clear();
+  leptonic_top_b_pt_vector_fail.shrink_to_fit();
+  wch_up_type_pt_vector_success.clear();
+  wch_up_type_pt_vector_success.shrink_to_fit();
+  wch_up_type_pt_vector_fail.clear();
+  wch_up_type_pt_vector_fail.shrink_to_fit();
+  wch_down_type_pt_vector_success.clear();
+  wch_down_type_pt_vector_success.shrink_to_fit();
+  wch_down_type_pt_vector_fail.clear();
+  wch_down_type_pt_vector_fail.shrink_to_fit();
+  selected_jet_pt.clear();
+  selected_jet_pt_JES_Up.clear();
+  selected_jet_pt_JES_Do.clear();
+  selected_jet_pt_JER_Up.clear();
+  selected_jet_pt_JER_Do.clear();
+  selected_jet_eta.clear();
+  selected_jet_phi.clear();
+
+  initial_dijet_m=-1;
+  initial_dijet_m_JES_Up=-1;
+  initial_dijet_m_JES_Do=-1;
+  initial_dijet_m_JER_Up=-1;
+  initial_dijet_m_JER_Do=-1;
+  corrected_dijet_m=-1;
+  corrected_dijet_m_JES_Up=-1;
+  corrected_dijet_m_JES_Do=-1;
+  corrected_dijet_m_JER_Up=-1;
+  corrected_dijet_m_JER_Do=-1;
+  fitted_dijet_m=-1;
+  fitted_dijet_m_JES_Up=-1;
+  fitted_dijet_m_JES_Do=-1;
+  fitted_dijet_m_JER_Up=-1;
+  fitted_dijet_m_JER_Do=-1;
+  best_chi2=-10;
+  best_chi2_JES_Up=-10;
+  best_chi2_JES_Do=-10;
+  best_chi2_JER_Up=-10;
+  best_chi2_JER_Do=-10;
+  fitter_status=-2;
+  fitter_status_JES_Up=-2;
+  fitter_status_JES_Do=-2;
+  fitter_status_JER_Up=-2;
+  fitter_status_JER_Do=-2;
+
+  selected_lepton_pt=-1;
+  selected_lepton_eta=-1;
+  selected_lepton_phi=-1;
+
+  njets=-1; //number of jets
+  njets_JES_Up=-1;
+  njets_JES_Do=-1;
+  njets_JER_Up=-1;
+  njets_JER_Do=-1;
+
+  MET=-1;
+  MET_JES_Up=-1;
+  MET_JES_Do=-1;
+  MET_JER_Up=-1;
+  MET_JER_Do=-1;
+
+}
