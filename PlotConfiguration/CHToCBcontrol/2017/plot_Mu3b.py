@@ -192,6 +192,15 @@ plot['SingleMuon'] = {
     'scale':1,
     }
 
+plot['CHToCB_M120'] = {
+    'nameHR' : "CH M120",
+    'color':kBlack,
+    'isSignal':1,
+    'isData':0,
+    'scale':1,
+    }
+
+
 legend['lumi'] = 'L = 41.5/fb'
 legend['sqrt'] = '#sqrt{s} = 13 TeV'
 # extraText default is Preliminary

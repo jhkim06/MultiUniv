@@ -120,6 +120,47 @@ class ShapeFactory:
 		    outputsHistoUp.Write()
 		    outputsHistoDo.Write()
 
+	      elif nuisance['kind'] == 'variableChange' :
+                if variableName not in nuisance['variablesUp'] and variableName not in nuisance['variablesDo'] :
+	          continue 
+		if variableName in nuisance['variablesUp']:
+		  newVariableNameUp = nuisance['variablesUp'][variableName]
+		else:
+		  newVariableNameUp = None
+		if variableName in nuisance['variablesDo']:
+		  newVariableNameDo = nuisance['variablesDo'][variableName]
+		else:
+		  newVariableNameDo = None
+
+		for sampleNuisName, configurationNuis in nuisance['samples'].iteritems() :
+		  if sampleNuisName ==  sampleName :
+		    #                                 the first weight is "up", the second is "down"
+		    newSampleWeightUp = sample['weight'] + '* (' + configurationNuis[0]  + ")"
+		    newSampleWeightDo = sample['weight'] + '* (' + configurationNuis[1]  + ")"
+
+		    if 'weights' in sample.keys() :
+		      if not newVariableNameUp==None:
+		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False)
+		      if not newVariableNameDo==None:
+		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False)
+		    else :
+		      #print 'newSampleWeightUp', newSampleWeightUp
+		      if not newVariableNameUp==None:
+		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False)
+		      if not newVariableNameDo==None:
+		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False)
+
+		    if not newVariableNameUp==None:
+	              self.outFile.mkdir(cutName+"/"+newVariableNameUp[0])
+	              self.outFile.cd(cutName+"/"+newVariableNameUp[0])
+		      outputsHistoUp.Write()
+	              self.outFile.cd(cutName+"/"+variableName)
+		    if not newVariableNameDo==None:
+	              self.outFile.mkdir(cutName+"/"+newVariableNameDo[0])
+	              self.outFile.cd(cutName+"/"+newVariableNameDo[0])
+		      outputsHistoDo.Write()
+	              self.outFile.cd(cutName+"/"+variableName)
+
 	      elif nuisance['kind' ] == 'PDF' :
 		for sampleNuisName, configurationNuis in nuisance['samples'].iteritems() :
 		  if sampleNuisName ==  sampleName :
