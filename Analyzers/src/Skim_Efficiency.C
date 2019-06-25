@@ -5,7 +5,7 @@ void Skim_Efficiency::initializeAnalyzer(){
   // initializeAnalyzerTools();
   // Skim_Efficiency just adds SFs for ID Iso Trigger (i.e., without skimming)
   // If there are leptons passing some lepton ID  condition, it just calculate ID Iso Reco SFs for each leptons 
-  // TODO add option to select 2016, 2017, and 2018, currently checked only for 2017
+  // TODO need to check 2018, currently checked for 2016 and 2017
 
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");
@@ -35,11 +35,10 @@ void Skim_Efficiency::initializeAnalyzer(){
         eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
 
 
-        eleKEYs["POGTight"]["Id"].push_back("passTightID");
         eleKEYs["POGTight"]["Id"].push_back("NA");
-        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(0)].push_back("NA");
-        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(1)].push_back("NA");
-
+        eleKEYs["POGTight"]["Id"].push_back("NA");
+        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(0)+eleWPs["POGTight"]["Id"].at(0)].push_back("NA");
+        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(1)+eleWPs["POGTight"]["Id"].at(1)].push_back("NA");
   }
   else if(DataYear==2017){
 
@@ -65,8 +64,8 @@ void Skim_Efficiency::initializeAnalyzer(){
 
   	eleKEYs["POGTight"]["Id"].push_back("passTightID");
   	eleKEYs["POGTight"]["Id"].push_back("NA");
-  	eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(0)].push_back("NA");
-  	eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(1)].push_back("NA");
+  	eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(0)+eleWPs["POGTight"]["Id"].at(0)].push_back("NA");
+  	eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(1)+eleWPs["POGTight"]["Id"].at(1)].push_back("NA");
   }
   else if(DataYear==2018){
 
@@ -92,8 +91,8 @@ void Skim_Efficiency::initializeAnalyzer(){
 
         eleKEYs["POGTight"]["Id"].push_back("passTightID");
         eleKEYs["POGTight"]["Id"].push_back("NA");
-        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(0)].push_back("NA");
-        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(1)].push_back("NA");
+        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(0)+eleWPs["POGTight"]["Id"].at(0)].push_back("NA");
+        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(1)+eleWPs["POGTight"]["Id"].at(1)].push_back("NA");
 
   }
 
@@ -203,8 +202,8 @@ void Skim_Efficiency::executeEvent(){
                       param.Lepton_ID_SF_Key = eleKEYs[it->first]["Id"].at(k);
 
                       int nTrg = (it->second)["Trigger"].size();
-                      for(int i = 0; i < eleKEYs[it->first][(it->second)["Trigger"].at(k)].size(); i++){
-                                (param.Lepton_Trigger_map)[it->second["Trigger"].at(k)].push_back(eleKEYs[it->first][(it->second)["Trigger"].at(k)].at(i));
+                      for(int i = 0; i < eleKEYs[it->first][(it->second)["Trigger"].at(k)+(it->second)["Id"].at(k)].size(); i++){
+                                (param.Lepton_Trigger_map)[it->second["Trigger"].at(k)].push_back(eleKEYs[it->first][(it->second)["Trigger"].at(k)+(it->second)["Id"].at(k)].at(i));
                       }
                       executeEventFromParameter(param, false);
                       param.Clear();
@@ -313,7 +312,9 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, bool is
     				lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["RecoSF"].push_back( 1.);
 
 				// ID SF
-    		  		if((param.Lepton_ID_SF_Key).CompareTo("NA") !=0) lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IdSF"].push_back(LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.);
+    		  		if((param.Lepton_ID_SF_Key).CompareTo("NA") !=0){
+					lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IdSF"].push_back(LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.);
+				}
 				else lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IdSF"].push_back(1.);
 
 				// Iso SF
