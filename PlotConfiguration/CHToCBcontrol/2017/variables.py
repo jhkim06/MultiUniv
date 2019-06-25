@@ -10,6 +10,14 @@ variables['fitted_dijet_mass'] = {
     'fold' : 3
     }
 
+variables['fitter_status'] = {
+    'name': 'fitter_status',
+    'range':(3,-1,2),
+    'xaxis': 'fitter status',
+    'yaxis': 'Events',
+    'fold' : 3
+    }
+
 variables['lepton_pt'] = { 
     'name': 'selected_lepton_pt',
     'range':(60,0,300),

@@ -34,27 +34,188 @@ nuisances['ttxsec'] = {
     }
 }
 '''
+nuisances['JES'] = {
+    'name' : 'JES',
+    'kind' : 'variableChange',
+    'type' : 'shape',
+    'samples' : { #TODO: will add all MC samples
+      'TTLJ_powheg'	: ['1.','1.'],
+      #'TTLL_powheg'	: ['1.','1.'],
+      #'TTJJ_powheg'	: ['1.','1.'],
+    },
+    'variablesUp' : {
+	'fitted_dijet_mass' : [
+          'fitted_dijet_mass_JES_Up',
+	  'fitted_dijet_m_JES_Up'
+	],
+	'fitter_status' : [
+	  'fitter_status_JES_Up',
+	  'fitter_status_JES_Up'
+	],
+	'1st_leading_jet_pt' : [
+	  '1st_leading_jet_pt_JES_Up',
+	  'selected_jet_pt_JES_Up[0]'
+	],
+	'2nd_leading_jet_pt' : [
+	  '2nd_leading_jet_pt_JES_Up',
+	  'selected_jet_pt_JES_Up[1]'
+        ],
+	'3rd_leading_jet_pt' : [
+	  '3rd_leading_jet_pt_JES_Up',
+	  'selected_jet_pt_JES_Up[2]'
+        ],
+	'4th_leading_jet_pt' : [
+	  '4th_leading_jet_pt_JES_Up',
+	  'selected_jet_pt_JES_Up[3]',
+        ],
+	'njets' : [
+	  'njets_JES_Up',
+	  'njets_JES_Up'
+	],
+	'pfMET_Type1_pt' : [
+	  'pfMET_Type1_pt_JES_Up',
+	  'pfMET_Type1_pt_JES_Up'
+	],
+    },
+    'variablesDo' : {
+	'fitted_dijet_mass' : [
+          'fitted_dijet_mass_JES_Do',
+	  'fitted_dijet_m_JES_Do'
+	],
+	'fitter_status' : [
+	  'fitter_status_JES_Do',
+	  'fitter_status_JES_Do'
+	],
+	'1st_leading_jet_pt' : [
+	  '1st_leading_jet_pt_JES_Do',
+	  'selected_jet_pt_JES_Do[0]'
+	],
+	'2nd_leading_jet_pt' : [
+	  '2nd_leading_jet_pt_JES_Do',
+	  'selected_jet_pt_JES_Do[1]'
+        ],
+	'3rd_leading_jet_pt' : [
+	  '3rd_leading_jet_pt_JES_Do',
+	  'selected_jet_pt_JES_Do[2]'
+        ],
+	'4th_leading_jet_pt' : [
+	  '4th_leading_jet_pt_JES_Do',
+	  'selected_jet_pt_JES_Do[3]',
+        ],
+	'njets' : [
+	  'njets_JES_Do',
+	  'njets_JES_Do'
+	],
+	'pfMET_Type1_pt' : [
+	  'pfMET_Type1_pt_JES_Do',
+	  'pfMET_Type1_pt_JES_Do'
+	],
+    },
+}
 
-#nuisances['top_mass'] = {
-#    'name' : 'top_mass',
-#    'kind' : 'sampleChange',
-#    'type' : 'shape',
-#    'samples' : {
-#      'TTLJ_powheg'	: ['1.','1.'],
-#      'TTLL_powheg'	: ['1.','1.'],
-#      'TTJJ_powheg'	: ['1.','1.'],
-#    },
-#    'samplesUp' : {
-#      'TTLJ_powheg'	: 'TTLJ_powheg_mass_Up',
-#      'TTLL_powheg'	: 'TTLL_powheg_mass_Up',
-#      'TTJJ_powheg'    : 'TTJJ_powheg' #TODO add TTJJ_powheg_mass_Up sample later
-#    },
-#    'samplesDo' : {
-#      'TTLJ_powheg'	: 'TTLJ_powheg_mass_Do',
-#      'TTLL_powheg'	: 'TTLL_powheg_mass_Do',
-#      'TTJJ_powheg'	: 'TTJJ_powheg_mass_Do',
-#    },
-#}
+nuisances['JER'] = {
+    'name' : 'JER',
+    'kind' : 'variableChange',
+    'type' : 'shape',
+    'samples' : { #TODO: will add all MC samples
+      'TTLJ_powheg'	: ['1.','1.'],
+      #'TTLL_powheg'	: ['1.','1.'],
+      #'TTJJ_powheg'	: ['1.','1.'],
+    },
+    'variablesUp' : {
+	'fitted_dijet_mass' : [
+          'fitted_dijet_mass_JER_Up',
+	  'fitted_dijet_m_JER_Up'
+	],
+	'fitter_status' : [
+	  'fitter_status_JER_Up',
+	  'fitter_status_JER_Up'
+	],
+	'1st_leading_jet_pt' : [
+	  '1st_leading_jet_pt_JER_Up',
+	  'selected_jet_pt_JER_Up[0]'
+	],
+	'2nd_leading_jet_pt' : [
+	  '2nd_leading_jet_pt_JER_Up',
+	  'selected_jet_pt_JER_Up[1]'
+        ],
+	'3rd_leading_jet_pt' : [
+	  '3rd_leading_jet_pt_JER_Up',
+	  'selected_jet_pt_JER_Up[2]'
+        ],
+	'4th_leading_jet_pt' : [
+	  '4th_leading_jet_pt_JER_Up',
+	  'selected_jet_pt_JER_Up[3]',
+        ],
+	'njets' : [
+	  'njets_JER_Up',
+	  'njets_JER_Up'
+	],
+	'pfMET_Type1_pt' : [
+	  'pfMET_Type1_pt_JER_Up',
+	  'pfMET_Type1_pt_JER_Up'
+	],
+    },
+    'variablesDo' : {
+	'fitted_dijet_mass' : [
+          'fitted_dijet_mass_JER_Do',
+	  'fitted_dijet_m_JER_Do'
+	],
+	'fitter_status' : [
+	  'fitter_status_JER_Do',
+	  'fitter_status_JER_Do'
+	],
+	'1st_leading_jet_pt' : [
+	  '1st_leading_jet_pt_JER_Do',
+	  'selected_jet_pt_JER_Do[0]'
+	],
+	'2nd_leading_jet_pt' : [
+	  '2nd_leading_jet_pt_JER_Do',
+	  'selected_jet_pt_JER_Do[1]'
+        ],
+	'3rd_leading_jet_pt' : [
+	  '3rd_leading_jet_pt_JER_Do',
+	  'selected_jet_pt_JER_Do[2]'
+        ],
+	'4th_leading_jet_pt' : [
+	  '4th_leading_jet_pt_JER_Do',
+	  'selected_jet_pt_JER_Do[3]',
+        ],
+	'njets' : [
+	  'njets_JER_Do',
+	  'njets_JER_Do'
+	],
+	'pfMET_Type1_pt' : [
+	  'pfMET_Type1_pt_JER_Do',
+	  'pfMET_Type1_pt_JER_Do'
+	],
+    },
+}
+
+
+'''
+nuisances['top_mass'] = {
+    'name' : 'top_mass',
+    'kind' : 'sampleChange',
+    'type' : 'shape',
+    'samples' : {
+      'TTLJ_powheg'	: ['1.','1.'],
+      'TTLL_powheg'	: ['1.','1.'],
+      'TTJJ_powheg'	: ['1.','1.'],
+    },
+    'samplesUp' : {
+      'TTLJ_powheg'	: 'TTLJ_powheg_mass_Up',
+      'TTLL_powheg'	: 'TTLL_powheg_mass_Up',
+      'TTJJ_powheg'    : 'TTJJ_powheg' #TODO add TTJJ_powheg_mass_Up sample later
+    },
+    'samplesDo' : {
+      'TTLJ_powheg'	: 'TTLJ_powheg', #TODO will add this sample
+      'TTLL_powheg'	: 'TTLL_powheg_mass_Do',
+      'TTJJ_powheg'	: 'TTJJ_powheg_mass_Do',
+    },
+}
+'''
+'''
 nuisances['TuneCP5'] = {
     'name' : 'TuneCP5',
     'kind' : 'sampleChange',
@@ -118,7 +279,7 @@ nuisances['generator'] = {
     },
     #TODO will add signal samples
 }
-
+'''
 '''
 nuisances['PUweight'] = {
     'name' :'PUweight',

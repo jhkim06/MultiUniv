@@ -35,26 +35,27 @@ nuisances['ttxsec'] = {
 }
 '''
 
-#nuisances['top_mass'] = {
-#    'name' : 'top_mass',
-#    'kind' : 'sampleChange',
-#    'type' : 'shape',
-#    'samples' : {
-#      'TTLJ_powheg'	: ['1.','1.'],
-#      'TTLL_powheg'	: ['1.','1.'],
-#      'TTJJ_powheg'	: ['1.','1.'],
-#    },
-#    'samplesUp' : {
-#      'TTLJ_powheg'	: 'TTLJ_powheg_mass_Up',
-#      'TTLL_powheg'	: 'TTLL_powheg_mass_Up',
-#      'TTJJ_powheg'    : 'TTJJ_powheg' #TODO add TTJJ_powheg_mass_Up sample later
-#    },
-#    'samplesDo' : {
-#      'TTLJ_powheg'	: 'TTLJ_powheg_mass_Do',
-#      'TTLL_powheg'	: 'TTLL_powheg_mass_Do',
-#      'TTJJ_powheg'	: 'TTJJ_powheg_mass_Do',
-#    },
-#}
+nuisances['top_mass'] = {
+    'name' : 'top_mass',
+    'kind' : 'sampleChange',
+    'type' : 'shape',
+    'samples' : {
+      'TTLJ_powheg'	: ['1.','1.'],
+      'TTLL_powheg'	: ['1.','1.'],
+      'TTJJ_powheg'	: ['1.','1.'],
+    },
+    'samplesUp' : {
+      'TTLJ_powheg'	: 'TTLJ_powheg_mass_Up',
+      'TTLL_powheg'	: 'TTLL_powheg_mass_Up',
+      'TTJJ_powheg'    : 'TTJJ_powheg' #TODO add TTJJ_powheg_mass_Up sample later
+    },
+    'samplesDo' : {
+      'TTLJ_powheg'	: 'TTLJ_powheg', #TODO will add this sample
+      'TTLL_powheg'	: 'TTLL_powheg_mass_Do',
+      'TTJJ_powheg'	: 'TTJJ_powheg_mass_Do',
+    },
+}
+
 nuisances['TuneCP5'] = {
     'name' : 'TuneCP5',
     'kind' : 'sampleChange',

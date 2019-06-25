@@ -140,7 +140,7 @@ samples['TTJJ_powheg_mass_Do'] = {
 
 samples['TT_MG'] = {
     'skim'   :'',
-    'weight' :McWeight,
+    'weight' :McWeight+'/PUweight', #XXX no PUweight
     }
 
 samples['ttbb'] = {
@@ -227,4 +227,11 @@ samples['SingleElectron'] = {
 samples['SingleMuon'] = {
     'skim'   :'MetFt_L_v1_TTSemiLep_v1_K2_v3',
     'weight' :'n_bjet_deepcsv_m_noSF>=3',
+    }
+#--------------------    
+# Signal
+#--------------------    
+samples['CHToCB_M120'] = {
+    'skim'   :'',
+    'weight' :'1',
     }

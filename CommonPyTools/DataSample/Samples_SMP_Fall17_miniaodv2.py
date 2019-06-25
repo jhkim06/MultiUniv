@@ -43,7 +43,7 @@ sampleInfo = {
 'TTLJ_powheg_Up'		:{'name' :'TTToSemiLeptonic_TuneCP5up_PSweights_13TeV-powheg-pythia8',	'xsec': 365.34,	'nMC':26166070,	'Nsum': 26166070 },
 'TTLJ_powheg_hdamp_Do'		:{'name' :'TTToSemiLeptonic_hdampDOWN_TuneCP5_PSweights_13TeV-powheg-pythia8',	'xsec': 365.34,	'nMC':26367765,	'Nsum': 26367765 },
 'TTLJ_powheg_hdamp_Up'		:{'name' :'TTToSemiLeptonic_hdampUP_TuneCP5_PSweights_13TeV-powheg-pythia8',	'xsec': 365.34,	'nMC':27191508,	'Nsum': 27191508 },
-'TTLJ_powheg_mass_Do'		:{'name' :'TTToSemiLeptonic_mtop171p5_TuneCP5_PSweights_13TeV-powheg-pythia8',	'xsec': 365.34,	'nMC':24357098,	'Nsum': 24357098 },
+'TTLJ_powheg_mass_Do'		:{'name' :'TTToSemiLeptonic_mtop171p5_TuneCP5_PSweights_13TeV-powheg-pythia8',	'xsec': 365.34,	'nMC':24351698,	'Nsum': 24351698},
 'TTLJ_powheg_mass_Up'		:{'name' :'TTToSemiLeptonic_mtop173p5_TuneCP5_PSweights_13TeV-powheg-pythia8',	'xsec': 365.34,	'nMC':22528538,	'Nsum': 22528538 },
 'TTJJ_powheg_Do'		:{'name' :'TTToHadronic_TuneCP5down_PSweights_13TeV-powheg-pythia8',	'xsec': 377.96,	'nMC':26155064,	'Nsum': 26155064 },
 'TTJJ_powheg_Up'		:{'name' :'TTToHadronic_TuneCP5up_PSweights_13TeV-powheg-pythia8',	'xsec': 377.96,	'nMC':27206470,	'Nsum': 27206470 },
