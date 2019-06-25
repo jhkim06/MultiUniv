@@ -6,6 +6,12 @@ void AnalyzerParameter::Clear(){
 
   MCCorrrectionIgnoreNoHist = false;
 
+  Lepton_ID="";
+  Lepton_ISO_ID="";
+  Lepton_ID_SF_Key="";
+  Lepton_ISO_SF_Key="";
+  Lepton_Trigger_map.clear();
+
   Electron_Tight_ID = "";
   Electron_Loose_ID = "";
   Electron_Veto_ID = "";
@@ -20,6 +26,7 @@ void AnalyzerParameter::Clear(){
   Electron_UseMini = false;
   Electron_UsePtCone = false;
   Electron_MinPt = 10.;
+  Electron_Trigger_SF_Key.clear();
 
   Muon_Tight_ID = "";
 
@@ -27,6 +34,8 @@ void AnalyzerParameter::Clear(){
   Muon_Veto_ID = "";
   Muon_ID_SF_Key = "";
   Muon_ISO_SF_Key = "";
+  Muon_Trigger_map.clear();
+  Muon_Trigger_SF_Keys.clear();
   Muon_Trigger_SF_Key = "";
   Muon_FR_ID = "";
   Muon_FR_Key = "";
@@ -63,7 +72,6 @@ AnalyzerParameter::AnalyzerParameter(){
   Muon_Veto_ID = "POGLoose";
   Muon_ID_SF_Key = "NUM_TightID_DEN_genTracks";
   Muon_ISO_SF_Key = "NUM_TightRelIso_DEN_TightIDandIPCut";
-  Muon_Trigger_SF_Key = "POGTight";
 
   Jet_ID = "HN";
   FatJet_ID = "HN";

@@ -1,6 +1,7 @@
 #!/usr/bin/python 
 import os,sys,time
 
+HOSTNAME = os.environ['HOSTNAME']
 
 ## User Environment Variables
 
@@ -12,7 +13,7 @@ SKFlat_WD       = os.environ['SKFlat_WD']
 SKFlatV         = os.environ['SKFlatV']
 SKFlatRunlogDir = os.environ['SKFlatRunlogDir']
 SKFlatOutputDir = os.environ['SKFlatOutputDir']
-SKFlatSEDir     = os.environ['SKFlatSEDir']
+if ("tamsa1"  not in HOSTNAME) : SKFlatSEDir     = os.environ['SKFlatSEDir'] # FIXME need to comment out in tamsa1
 SKFlat_LIB_PATH = os.environ['SKFlat_LIB_PATH']
 SCRAM_ARCH      = os.environ['SCRAM_ARCH']
 cmsswrel        = os.environ['cmsswrel']
@@ -20,7 +21,6 @@ UID             = str(os.getuid())
 
 # Machine Environment
 
-HOSTNAME = os.environ['HOSTNAME']
 IsKISTI = ("sdfarm.kr" in HOSTNAME)
 IsUI10 = ("ui10.sdfarm.kr" in HOSTNAME)
 IsUI20 = ("ui20.sdfarm.kr" in HOSTNAME)

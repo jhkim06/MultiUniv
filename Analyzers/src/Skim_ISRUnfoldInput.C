@@ -8,7 +8,7 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
   // Skim Types
   //=================================
    
-  debug_ = true;
+  debug_ = false;
 
   if( HasFlag("MuMu")){
     cout<<"[Skim_ISRUnfoldInput::initializeAnalyzer] MuMu Selection"<<endl;
@@ -58,18 +58,33 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
   newtree->Branch("IsoSF_Up", &IsoSF_Up,"IsoSF_Up/D");
   newtree->Branch("IsoSF_Dn", &IsoSF_Dn,"IsoSF_Dn/D");
 
+  newtree->Branch("L1Prefire",    &L1Prefire,   "L1Prefire/D");
+  newtree->Branch("L1Prefire_Up", &L1Prefire_Up,"L1Prefire_Up/D");
+  newtree->Branch("L1Prefire_Dn", &L1Prefire_Dn,"L1Prefire_Dn/D");
+
   newtree->Branch("ZPtCor", &ZPtCor,"ZPtCor/D");
 
   newtree->Branch("isdielectron",&isdielectron);
   newtree->Branch("isdimuon",&isdimuon);
   newtree->Branch("ptRec",&ptRec);
   newtree->Branch("mRec",&mRec);
+  newtree->Branch("ptRec_momentumUp",&ptRec_momentumUp);
+  newtree->Branch("mRec_momentumUp",&mRec_momentumUp);
+  newtree->Branch("ptRec_momentumDown",&ptRec_momentumDown);
+  newtree->Branch("mRec_momentumDown",&mRec_momentumDown);
+
+  newtree->Branch("ptRec_momentumResUp",&ptRec_momentumResUp);
+  newtree->Branch("mRec_momentumResUp",&mRec_momentumResUp);
+  newtree->Branch("ptRec_momentumResDown",&ptRec_momentumResDown);
+  newtree->Branch("mRec_momentumResDown",&mRec_momentumResDown);
   newtree->Branch("ptPreFSR",&ptPreFSR);
   newtree->Branch("mPreFSR",&mPreFSR);
   newtree->Branch("ptPostFSR",&ptPostFSR);
   newtree->Branch("mPostFSR",&mPostFSR);
   newtree->Branch("particleFSR",&particleFSR);
   newtree->Branch("anparticleFSR",&anparticleFSR);
+  newtree->Branch("particlePostFSR",&particlePostFSR);
+  newtree->Branch("anparticlePostFSR",&anparticlePostFSR);
   newtree->Branch("weightGen",&weightGen);
   newtree->Branch("weightRec",&weightRec);
   newtree->Branch("bTagReweight",&bTagReweight);
@@ -81,6 +96,7 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
 
   newtree->Branch("AlphaS",&AlphaS);
   newtree->Branch("Scale",&Scale);
+  newtree->Branch("PDFerror",&PDFerror);
 
   //b_trgSF = newtree->Branch("trgSF", &trgSF,"trgSF/F");
   //b_trgSF_Up = newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/F");
@@ -130,11 +146,30 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
 void Skim_ISRUnfoldInput::executeEvent(){
 
   muons.clear();
+  muons_momentumUp.clear();
+  muons_momentumDown.clear();
   electrons.clear();
+  electrons_momentumUp.clear();
+  electrons_momentumDown.clear();
+  electrons_momentumResUp.clear();
+  electrons_momentumResDown.clear();
   leps.clear();
+  leps_momentumUp.clear();
+  leps_momentumDown.clear();
+  leps_momentumResUp.clear();
+  leps_momentumResDown.clear();
+
 
   ptRec.clear();
   mRec.clear();
+  ptRec_momentumUp.clear();
+  mRec_momentumUp.clear();
+  ptRec_momentumDown.clear();
+  mRec_momentumDown.clear();
+  ptRec_momentumResUp.clear();
+  mRec_momentumResUp.clear();
+  ptRec_momentumResDown.clear();
+  mRec_momentumResDown.clear();
   ptPreFSR.clear();
   mPreFSR.clear();
   ptPostFSR.clear();
@@ -142,6 +177,7 @@ void Skim_ISRUnfoldInput::executeEvent(){
 
   AlphaS.clear();
   Scale.clear();
+  PDFerror.clear();
 
   particleFSR.clear();
   anparticleFSR.clear();
@@ -206,6 +242,11 @@ void Skim_ISRUnfoldInput::executeEvent(){
     for(int i=0;i<(int)PDFWeights_Scale->size();i++){
       Scale.push_back(PDFWeights_Scale->at(i));
     }
+
+    for(int i=0;i<(int)PDFWeights_Error->size();i++){
+      PDFerror.push_back(PDFWeights_Error->at(i));
+    }
+
   }
 
   //===============================
@@ -356,6 +397,8 @@ void Skim_ISRUnfoldInput::executeEvent(){
       //
       genL0postFSR = gens.at(partindex.at(1));
       genL1postFSR = gens.at(anpartindex.at(1));
+      particlePostFSR = genL0postFSR;
+      anparticlePostFSR = genL1postFSR;
       if(debug_){
         if(debug_) std::cout << "post fsr lep0 pt: " << genL0postFSR.Pt() << " index: " << partindex.at(1) << " lep1 pt: " << genL1postFSR.Pt() << " index: " << anpartindex.at(1) << std::endl;
       }
@@ -417,10 +460,57 @@ void Skim_ISRUnfoldInput::executeEvent(){
      FillHist("CutFlow",6,1,30,0,30);
 
      // Lepton ID
-     muons=GetMuons("POGTightWithTightIso",7.,2.4);
+     muons=            GetMuons("POGTightWithTightIso",7.,2.4);
+	
+     for(unsigned int i = 0; i < muons.size(); i++){
+
+	double scale = muons.at(i).MomentumScale();
+	double scale_err = muons.at(i).MomentumScaleError();
+
+        Muon mu_tempUp;
+	mu_tempUp. SetPtEtaPhiM(muons.at(i).MiniAODPt()*  (scale+scale_err), muons.at(i).Eta(), muons.at(i).Phi(), muons.at(i).M());
+
+        Muon mu_tempDown;
+        mu_tempDown.SetPtEtaPhiM(muons.at(i).MiniAODPt()*  (scale-scale_err), muons.at(i).Eta(), muons.at(i).Phi(), muons.at(i).M());
+
+	muons_momentumUp.push_back(mu_tempUp);
+	muons_momentumDown.push_back(mu_tempDown);
+
+	if(debug_) cout << "rc: " << scale << " err: " << scale_err << endl;
+     }
+     
+
      std::sort(muons.begin(),muons.end(),PtComparing); //PtComaring @ AnalyzerCore.h
+     std::sort(muons_momentumUp.begin(),muons_momentumUp.end(),PtComparing); //PtComaring @ AnalyzerCore.h
+     std::sort(muons_momentumDown.begin(),muons_momentumDown.end(),PtComparing); //PtComaring @ AnalyzerCore.h
+
      electrons=GetElectrons("passMediumID",9.,2.5);
+
+     for(unsigned int i = 0; i < electrons.size(); i++){
+
+	Electron el_tempUp;
+	el_tempUp. SetPtEtaPhiE(electrons.at(i).Pt()*electrons.at(i).EnShift(1), electrons.at(i).Eta(), electrons.at(i).Phi(), electrons.at(i).E()*electrons.at(i).EnShift(1));
+
+	Electron el_tempDown;
+	el_tempDown. SetPtEtaPhiE(electrons.at(i).Pt()*electrons.at(i).EnShift(-1), electrons.at(i).Eta(), electrons.at(i).Phi(), electrons.at(i).E()*electrons.at(i).EnShift(-1));
+
+	Electron el_tempResUp;
+	el_tempResUp. SetPtEtaPhiE(electrons.at(i).Pt()*electrons.at(i).ResShift(1), electrons.at(i).Eta(), electrons.at(i).Phi(), electrons.at(i).E()*electrons.at(i).ResShift(1));
+
+	Electron el_tempResDown;
+	el_tempResDown. SetPtEtaPhiE(electrons.at(i).Pt()*electrons.at(i).ResShift(-1), electrons.at(i).Eta(), electrons.at(i).Phi(), electrons.at(i).E()*electrons.at(i).ResShift(-1));
+
+	electrons_momentumUp.push_back(el_tempUp);
+	electrons_momentumDown.push_back(el_tempDown);
+
+	electrons_momentumResUp.push_back(el_tempResUp);
+	electrons_momentumResDown.push_back(el_tempResDown);
+     }
      std::sort(electrons.begin(),electrons.end(),PtComparing);
+     std::sort(electrons_momentumUp.begin(),electrons_momentumUp.end(),PtComparing);
+     std::sort(electrons_momentumDown.begin(),electrons_momentumDown.end(),PtComparing);
+     std::sort(electrons_momentumResUp.begin(),electrons_momentumResUp.end(),PtComparing);
+     std::sort(electrons_momentumResDown.begin(),electrons_momentumResDown.end(),PtComparing);
 
      IsMuMu = 0;
      IsElEl = 0;
@@ -444,6 +534,10 @@ void Skim_ISRUnfoldInput::executeEvent(){
         if(IsMuMu == 1){ // Muon-----------------------------
           if(evt->PassTrigger(DiMuTrgs) ){
              leps=MakeLeptonPointerVector(muons);
+	     leps_momentumUp = MakeLeptonPointerVector(muons_momentumUp);
+	     leps_momentumDown = MakeLeptonPointerVector(muons_momentumDown);
+	     leps_momentumResUp = MakeLeptonPointerVector(muons);
+	     leps_momentumResDown = MakeLeptonPointerVector(muons);
              Lep0PtCut=20.;
              Lep1PtCut=10.;
              LepEtaCut = 2.4;
@@ -459,6 +553,10 @@ void Skim_ISRUnfoldInput::executeEvent(){
         if(IsElEl == 1){ // Electron =======================
           if(evt->PassTrigger(DiElTrgs) ){
              leps=MakeLeptonPointerVector(electrons);
+	     leps_momentumUp = MakeLeptonPointerVector(electrons_momentumUp);
+	     leps_momentumDown = MakeLeptonPointerVector(electrons_momentumDown);
+	     leps_momentumResUp = MakeLeptonPointerVector(electrons_momentumResUp);
+	     leps_momentumResDown = MakeLeptonPointerVector(electrons_momentumResDown);
              Lep0PtCut = 25.;
              Lep1PtCut = 15.;
              LepEtaCut = 2.5;
@@ -474,6 +572,7 @@ void Skim_ISRUnfoldInput::executeEvent(){
 
 
         if( leps.size() == 2 ){ // leps have leptons passing ID and trigger matching
+
           // ================================
           // Kinematic cuts 
           // ================================
@@ -489,7 +588,8 @@ void Skim_ISRUnfoldInput::executeEvent(){
             }
           }
 
-	  if( Aod_pt[0] > Lep0PtCut && Aod_pt[1] > Lep1PtCut && fabs(Aod_eta[0]) < LepEtaCut && fabs(Aod_eta[1]) < LepEtaCut && (leps.at(0)->Charge() + leps.at(1)->Charge()) == 0 ){
+	  //if( Aod_pt[0] > Lep0PtCut && Aod_pt[1] > Lep1PtCut && fabs(Aod_eta[0]) < LepEtaCut && fabs(Aod_eta[1]) < LepEtaCut && (leps.at(0)->Charge() + leps.at(1)->Charge()) == 0 ){
+	  if( fabs(Aod_eta[0]) < LepEtaCut && fabs(Aod_eta[1]) < LepEtaCut && (leps.at(0)->Charge() + leps.at(1)->Charge()) == 0 ){
              // 
              ispassRec=1;
 
@@ -500,6 +600,42 @@ void Skim_ISRUnfoldInput::executeEvent(){
              mRec.push_back(leps.at(0)->M());
              mRec.push_back(leps.at(1)->M());
              mRec.push_back( (*(leps.at(0))+*(leps.at(1))).M() );
+
+	     // momentum up
+             ptRec_momentumUp.push_back(leps_momentumUp.at(0)->Pt());
+             ptRec_momentumUp.push_back(leps_momentumUp.at(1)->Pt());
+             ptRec_momentumUp.push_back( (*(leps_momentumUp.at(0))+*(leps_momentumUp.at(1))).Pt() );
+
+             mRec_momentumUp.push_back(leps_momentumUp.at(0)->M());
+             mRec_momentumUp.push_back(leps_momentumUp.at(1)->M());
+             mRec_momentumUp.push_back( (*(leps_momentumUp.at(0))+*(leps_momentumUp.at(1))).M() );
+
+	     // momentum down
+             ptRec_momentumDown.push_back(leps_momentumDown.at(0)->Pt());
+             ptRec_momentumDown.push_back(leps_momentumDown.at(1)->Pt());
+             ptRec_momentumDown.push_back( (*(leps_momentumDown.at(0))+*(leps_momentumDown.at(1))).Pt() );
+
+             mRec_momentumDown.push_back(leps_momentumDown.at(0)->M());
+             mRec_momentumDown.push_back(leps_momentumDown.at(1)->M());
+             mRec_momentumDown.push_back( (*(leps_momentumDown.at(0))+*(leps_momentumDown.at(1))).M() );
+
+             // momentum up
+             ptRec_momentumResUp.push_back(leps_momentumResUp.at(0)->Pt());
+             ptRec_momentumResUp.push_back(leps_momentumResUp.at(1)->Pt());
+             ptRec_momentumResUp.push_back( (*(leps_momentumResUp.at(0))+*(leps_momentumResUp.at(1))).Pt() );
+
+             mRec_momentumResUp.push_back(leps_momentumResUp.at(0)->M());
+             mRec_momentumResUp.push_back(leps_momentumResUp.at(1)->M());
+             mRec_momentumResUp.push_back( (*(leps_momentumResUp.at(0))+*(leps_momentumResUp.at(1))).M() );
+
+             // momentumRes down
+             ptRec_momentumResDown.push_back(leps_momentumResDown.at(0)->Pt());
+             ptRec_momentumResDown.push_back(leps_momentumResDown.at(1)->Pt());
+             ptRec_momentumResDown.push_back( (*(leps_momentumResDown.at(0))+*(leps_momentumResDown.at(1))).Pt() );
+
+             mRec_momentumResDown.push_back(leps_momentumResDown.at(0)->M());
+             mRec_momentumResDown.push_back(leps_momentumResDown.at(1)->M());
+             mRec_momentumResDown.push_back( (*(leps_momentumResDown.at(0))+*(leps_momentumResDown.at(1))).M() );
  
              /////////////////PUreweight///////////////////
              PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
@@ -533,6 +669,10 @@ void Skim_ISRUnfoldInput::executeEvent(){
              IsoSF_Up =1;
              IsoSF_Dn =1;
 
+             L1Prefire =1;
+             L1Prefire_Up =1;
+             L1Prefire_Dn =1;
+
              if(!IsDATA){
                for( int i(0); i<2 ; i++){
                  recoSF    *= LeptonReco_SF?(mcCorr->*LeptonReco_SF)(Aod_eta[i],Aod_pt[i],0):1.;
@@ -557,6 +697,13 @@ void Skim_ISRUnfoldInput::executeEvent(){
                weightRec *= IdSF;
                weightRec *= IsoSF;
                weightRec *= trgSF;
+               if(DataYear<=2017){
+                 weightRec *= L1PrefireReweight_Central;
+                 L1Prefire = L1PrefireReweight_Central;
+                 L1Prefire_Up = L1PrefireReweight_Up;
+                 L1Prefire_Dn = L1PrefireReweight_Down;
+		 cout << L1Prefire  << L1Prefire_Up << L1Prefire_Dn  << endl;
+               }
              }
 
              // b tag test
@@ -592,6 +739,7 @@ void Skim_ISRUnfoldInput::executeEvent(){
 
           } // kinematic cuts on leptons and opposite charge
         } // passing dilepton trigger, how about trigger matching?
+
      } // two leptons passing ID
   } // pass METfilter 
 

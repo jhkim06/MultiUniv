@@ -3,6 +3,7 @@
 
 #include "TString.h"
 #include <iostream>
+#include <map>
 
 using namespace std;
 
@@ -13,8 +14,18 @@ public:
   TString Name;
 
   bool MCCorrrectionIgnoreNoHist;
+  int nLepton;
+
+  TString Lepton_ID;
+  TString Lepton_ISO_ID;
+  TString Lepton_ID_SF_Key;
+  TString Lepton_ISO_SF_Key;
+  std::map<TString, std::vector<TString>> Lepton_Trigger_map;
 
   TString Electron_Tight_ID, Electron_Loose_ID, Electron_Veto_ID;
+  TString Electron_ID;
+  TString Electron_ISO_ID;
+  std::vector<TString> Electron_Trigger_SF_Key;
   TString Electron_ID_SF_Key;
   TString Electron_FR_ID, Electron_FR_Key;
   TString Electron_CF_ID, Electron_CF_Key;
@@ -22,8 +33,13 @@ public:
   bool Electron_UseMini, Electron_UsePtCone;
   double Electron_MinPt;
 
-  TString Muon_Tight_ID, Muon_Loose_ID, Muon_Veto_ID;
-  TString Muon_ID_SF_Key, Muon_ISO_SF_Key, Muon_Trigger_SF_Key;
+  TString Muon_Tight_ID, Muon_Loose_ID, Muon_Veto_ID; 
+  TString Muon_ID;
+  TString Muon_ISO_ID;
+  std::map<TString, std::vector<TString>> Muon_Trigger_map;
+  std::vector<TString> Muon_Trigger_SF_Keys;
+  TString Muon_Trigger_SF_Key;
+  TString Muon_ID_SF_Key, Muon_ISO_SF_Key;
   TString Muon_FR_ID, Muon_FR_Key;
   TString Muon_CF_ID, Muon_CF_Key;
   double Muon_Tight_RelIso, Muon_Loose_RelIso, Muon_Veto_RelIso;

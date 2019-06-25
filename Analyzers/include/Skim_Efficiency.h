@@ -5,6 +5,8 @@
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 
+const TString SFs[4] = {"IdSF", "IsoSF", "RecoSF", "TrgSF"};
+
 class Skim_Efficiency : public AnalyzerCore {
 
 public:
@@ -12,7 +14,7 @@ public:
   ~Skim_Efficiency();
 
   void initializeAnalyzer();
-  void executeEventFromParameter(AnalyzerParameter param);
+  void executeEventFromParameter(AnalyzerParameter param, bool isMu = true);
   void executeEvent();
 
   Event* evt;
@@ -23,33 +25,25 @@ public:
 
 private:
 
-  std::map<TString, double>  Mu_IdSF;
-  std::map<TString, double>  MuMu_IdSF;
-  std::map<TString, double>  Mu_IsoSF;
-  std::map<TString, double>  MuMu_IsoSF;
-  std::map<TString, double>  Mu_TriggerSF;
-  std::map<TString, double>  MuMu_TriggerSF;
-  std::map<TString, TString> Mu_IdSF_Iso;
-  std::map<TString, TString> Mu_IdSF_Trigger;
-  std::map<TString, TString> MuMu_IdSF_Trigger;
+  vector<TString> trgSF_key;
+  TString LeptonISO_key;
+  TString LeptonID_key;
 
+  double (MCCorrection::*LeptonID_SF)(TString,double,double,int);
+  double (MCCorrection::*LeptonISO_SF)(TString,double,double,int);
+  double (MCCorrection::*LeptonReco_SF)(double,double,int);
+  double (MCCorrection::*LeptonTrg_SF)(TString,TString,std::vector<Muon>,int);
 
-  std::map<TString, double>  El_IdSF;
-  std::map<TString, TString> El_IdSF_key;
-  std::map<TString, double>  El_TriggerSF;
-  std::map<TString, TString> El_IdSF_Trigger;
-  std::map<TString, double>  El_RecoSF;
+  std::map<TString, std::map<TString,std::vector<double>>>  lepSFs;
 
-  std::map<TString, double>  ElEl_IdSF;
-  std::map<TString, double>  ElEl_TriggerSF;
-  std::map<TString, TString> ElEl_IdSF_Trigger;
-  std::map<TString, double>  ElEl_RecoSF;
+  std::map<TString, std::map<TString,std::vector<TString>>>  muWPs;
+  std::map<TString, std::map<TString,std::vector<TString>>>  eleWPs;
 
-  std::vector<Muon> muons;
-  std::vector<Electron> electrons;
-  std::vector<Lepton*> leps;
+  std::map<TString, std::map<TString,std::vector<TString>>>  muKEYs; // double lepton trigger uses two keys for each leg
+  std::map<TString, std::map<TString,std::vector<TString>>>  eleKEYs;
 
-  TString ElectronID_key;
+  std::vector<Muon> AllMuons;
+  std::vector<Electron> AllElectrons;
 
 };
 

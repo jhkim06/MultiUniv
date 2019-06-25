@@ -159,8 +159,9 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(bool apply_reg_correction){
 
     el.SetPtEtaPhiE(1., electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
     double el_theta = el.Theta();
-    double el_pt = apply_reg_correction? electron_Energy->at(i) * TMath::Sin( el_theta ) : electron_EnergyUnCorr->at(i) * TMath::Sin( el_theta );
-    el.SetPtEtaPhiE( el_pt, electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
+    double el_pt  = apply_reg_correction? electron_Energy->at(i) * TMath::Sin( el_theta ) : electron_EnergyUnCorr->at(i) * TMath::Sin( el_theta );
+    double el_energy = apply_reg_correction? electron_Energy->at(i) : electron_EnergyUnCorr->at(i) ;
+    el.SetPtEtaPhiE( el_pt, electron_eta->at(i), electron_phi->at(i), el_energy);
 
     el.SetUncorrE(electron_EnergyUnCorr->at(i));
     el.SetSC(electron_scEta->at(i), electron_scPhi->at(i), electron_scEnergy->at(i));

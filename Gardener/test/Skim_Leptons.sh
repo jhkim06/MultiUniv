@@ -20,7 +20,8 @@ do
   echo $sample
   #mkGardener.py --Category SMP -a Skim_Leptons -y 2017 -i $sample  -n 500 --nTotFiles 1  --userflags MetFt,L --skimV 999
   #mkGardener.py --Category SMP -a Skim_Leptons -y 2017 -i $sample  -n 500 --nTotFiles 1  --userflags MetFt,L --skimV 999 --dry_run 
-  mkGardener.py --Category SMP -a Skim_Leptons -y 2017 -i $sample  -n 500 --nTotFiles 1  --userflags MetFt,L --skimV 999
+  mkGardener.py --Category SMP -a Skim_Efficiency -y 2017 -i $sample  -n 50 --nTotFiles 1  --InSkim MetFt_L_v1 --skimV 1 --dry_run
+  #mkGardener.py --Category SMP -a Skim_DiLep -y 2017 -i $sample -n 500 --nTotFiles 1 --InSkim MetFt_L_v0_LL_v0 --userflags MuMuOrElEl --skimV 99
 done
 
 #for sample in DoubleEG DoubleMuon SingleElectron SingleMuon DYJets10to50_MG DYJets TT_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia
