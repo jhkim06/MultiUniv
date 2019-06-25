@@ -410,6 +410,35 @@ std::vector<Jet> AnalyzerCore::GetJets(TString id, double ptmin, double fetamax)
 
 }
 
+// Get Jets with JES/JER scale variation
+std::vector<Jet> AnalyzerCore::GetJets(TString id, double ptmin, double fetamax, int en_up_down, int res_up_down){
+
+  std::vector<Jet> jets = GetAllJets();
+  std::vector<Jet> out;
+  for(unsigned int i=0; i<jets.size(); i++){
+    Jet this_jet= jets.at(i);
+    double en_shift = this_jet.EnShift(en_up_down);
+    double res_shift = this_jet.ResShift(res_up_down);
+    this_jet *=en_shift*res_shift;
+    if(!( this_jet.Pt()>ptmin )){
+      //cout << "Fail Pt : pt = " << this_jet.Pt() << ", cut = " << ptmin << endl;
+      continue;
+    }
+    if(!( fabs(this_jet.Eta())<fetamax )){
+      //cout << "Fail Eta : eta = " << fabs(this_jet.Eta()) << ", cut = " << fetamax << endl;
+      continue;
+    }
+    if(!( this_jet.PassID(id) )){
+      //cout << "Fail ID" << endl;
+      continue;
+    }
+    out.push_back(this_jet);
+  }
+  return out;
+
+}
+
+
 std::vector<FatJet> AnalyzerCore::GetAllFatJets(){
 
   std::vector<FatJet> out;
@@ -584,7 +613,7 @@ std::vector<Electron> AnalyzerCore::SelectElectrons(std::vector<Electron> electr
 
 }
 
-std::vector<Jet> AnalyzerCore::SelectJets(std::vector<Jet> jets, TString id, double ptmin, double fetamax){
+std::vector<Jet> AnalyzerCore::SelectJets(const std::vector<Jet> &jets, TString id, double ptmin, double fetamax){
 
   std::vector<Jet> out;
   for(unsigned int i=0; i<jets.size(); i++){
@@ -1223,7 +1252,7 @@ Muon AnalyzerCore::MuonUsePtCone(Muon muon){
 
 }
 
-Particle AnalyzerCore::UpdateMET(Particle METv, std::vector<Muon> muons){
+Particle AnalyzerCore::UpdateMET(const Particle &METv, const std::vector<Muon> &muons){
 
   float met_x = METv.Px();
   float met_y = METv.Py();
@@ -1239,6 +1268,29 @@ Particle AnalyzerCore::UpdateMET(Particle METv, std::vector<Muon> muons){
 
   }
 
+  met_x = met_x + px_orig - px_corrected;
+  met_y = met_y + py_orig - py_corrected;
+
+  Particle METout;
+  METout.SetPxPyPzE(met_x,met_y,0,sqrt(met_x*met_x+met_y*met_y));
+  return METout;
+
+}
+
+Particle AnalyzerCore::UpdateMET(const Particle &METv, const std::vector<Jet> &jets_nominal, const std::vector<Jet> &jets_corrected){
+
+  float met_x = METv.Px();
+  float met_y = METv.Py();
+
+  double px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
+  for(auto &jet : jets_nominal){
+    px_orig+= jet.Px();
+    py_orig+= jet.Py();
+  }
+  for(auto &jet : jets_corrected){
+    px_corrected += jet.Px();
+    py_corrected += jet.Py();
+  }
   met_x = met_x + px_orig - px_corrected;
   met_y = met_y + py_orig - py_corrected;
 
@@ -1329,7 +1381,7 @@ std::vector<Jet> AnalyzerCore::JetsAwayFromFatJet(std::vector<Jet> jets, std::ve
 
 }
 
-std::vector<Jet> AnalyzerCore::JetsVetoLeptonInside(std::vector<Jet> jets, std::vector<Electron> els, std::vector<Muon> mus){
+std::vector<Jet> AnalyzerCore::JetsVetoLeptonInside(const std::vector<Jet> &jets, const std::vector<Electron> &els, const std::vector<Muon> &mus){
 
   std::vector<Jet> out;
   for(unsigned int i=0; i<jets.size(); i++){

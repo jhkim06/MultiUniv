@@ -383,5 +383,3 @@
 /data7/DATA/SKFlat/Run2Legacy_v1/2017/PrivateMC/TTToSemiLeptonic_mtop171p5_TuneCP5_PSweights_13TeV-powheg-pythia8/190416_050630/0000/SKFlatNtuple_2017_MC_97.root
 /data7/DATA/SKFlat/Run2Legacy_v1/2017/PrivateMC/TTToSemiLeptonic_mtop171p5_TuneCP5_PSweights_13TeV-powheg-pythia8/190416_050630/0000/SKFlatNtuple_2017_MC_98.root
 /data7/DATA/SKFlat/Run2Legacy_v1/2017/PrivateMC/TTToSemiLeptonic_mtop171p5_TuneCP5_PSweights_13TeV-powheg-pythia8/190416_050630/0000/SKFlatNtuple_2017_MC_99.root
-/data7/DATA/SKFlat/Run2Legacy_v1/2017/PrivateMC/TTToSemiLeptonic_mtop171p5_TuneCP5_PSweights_13TeV-powheg-pythia8/190416_050630/0000/failed/SKFlatNtuple_2017_MC_148.root
-/data7/DATA/SKFlat/Run2Legacy_v1/2017/PrivateMC/TTToSemiLeptonic_mtop171p5_TuneCP5_PSweights_13TeV-powheg-pythia8/190416_050630/0000/failed/SKFlatNtuple_2017_MC_253.root

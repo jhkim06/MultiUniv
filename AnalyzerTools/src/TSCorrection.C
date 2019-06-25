@@ -1,4 +1,6 @@
 #include "TSCorrection.h"
+TSCorrection::TSCorrection(){
+}
 
 TSCorrection::TSCorrection(int DataYear_){
   DataYear=DataYear_;

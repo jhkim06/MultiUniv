@@ -9,7 +9,6 @@ from CommonPyTools.python.CommonTools import *
 
 #XXX: diff. between IdSF and IdSF_Q ?
 McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*recoSF*BTagSF'
-#McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
 
 #--------------------    
 # MC
@@ -31,7 +30,7 @@ samples['WJets_MG'] = {
     }
 
 samples['TTLJ_powheg'] = {
-    'skim'   :'',
+    'skim'   :'MetFt_L_v1_TTSemiLep_v2_K2_v2', #XXX
     'weight' :McWeight,
     }
 
@@ -137,7 +136,7 @@ samples['TTJJ_powheg_mass_Do'] = {
 
 samples['TT_MG'] = {
     'skim'   :'',
-    'weight' :McWeight,
+    'weight' :McWeight+'/PUweight', #XXX no PUweight
     }
 
 samples['ttbb'] = {
@@ -223,5 +222,12 @@ samples['SingleElectron'] = {
 
 samples['SingleMuon'] = {
     'skim'   :'MetFt_L_v1_TTSemiLep_v1_K2_v3',
+    'weight' :'1',
+    }
+#--------------------    
+# Signal
+#--------------------    
+samples['CHToCB_M120'] = {
+    'skim'   :'',
     'weight' :'1',
     }

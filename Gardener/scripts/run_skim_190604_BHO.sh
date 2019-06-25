@@ -27,7 +27,7 @@ done
 for sample in TTLJ_powheg 
 do
   #./mkGardener.py --Category SMP -a Skim_TTSemiLep -y 2017 -i $sample -n 300 --nTotFiles 0  --userflags TTSemiLep --InSkim  MetFt_L_v1 --skimV 2 --resubmit
-  #./mkGardener.py --Category SMP -a Skim_K2 -y 2017 -i $sample -n 300 --nTotFiles 0  --userflags K2 --InSkim MetFt_L_v1_TTSemiLep_v2 --skimV 1 --resubmit
+  ./mkGardener.py --Category SMP -a Skim_K2 -y 2017 -i $sample -n 300 --nTotFiles 0  --userflags K2 --InSkim MetFt_L_v1_TTSemiLep_v2 --skimV 2
   #sleep 1h
 done
 

@@ -76,6 +76,7 @@ public:
 
   std::vector<Jet> GetAllJets();
   std::vector<Jet> GetJets(TString id, double ptmin, double fetamax);
+  std::vector<Jet> GetJets(TString id, double ptmin, double fetamax, int en_up_down, int res_up_down);
 
   std::vector<FatJet> GetAllFatJets();
   std::vector<FatJet> GetFatJets(TString id, double ptmin, double fetamax);
@@ -92,7 +93,7 @@ public:
   std::vector<Muon> UseTunePMuon(std::vector<Muon> muons);
   std::vector<Muon> SelectMuons(std::vector<Muon> muons, TString id, double ptmin, double fetamax);
 
-  std::vector<Jet> SelectJets(std::vector<Jet> jets, TString id, double ptmin, double fetamax);
+  std::vector<Jet> SelectJets(const std::vector<Jet> &jets, TString id, double ptmin, double fetamax);
 
   std::vector<FatJet> SelectFatJets(std::vector<FatJet> jets, TString id, double ptmin, double fetamax);
 
@@ -168,14 +169,15 @@ public:
   std::vector<Muon> MuonPromptOnly(std::vector<Muon> muons, std::vector<Gen> gens);
   std::vector<Muon> MuonUsePtCone(std::vector<Muon> muons);
   Muon MuonUsePtCone(Muon muon);
-  Particle UpdateMET(Particle METv, std::vector<Muon> muons);
+  Particle UpdateMET(const Particle &METv, const std::vector<Muon> &muons);
+  Particle UpdateMET(const Particle &METv, const std::vector<Jet> &jets_nominal, const std::vector<Jet> &jets_corrected);
   std::vector<Muon> MuonApplyPtCut(std::vector<Muon> muons, double ptcut);
   std::vector<Electron> ElectronPromptOnly(std::vector<Electron> electrons, std::vector<Gen> gens);
   std::vector<Electron> ElectronUsePtCone(std::vector<Electron> electrons);
   Electron ElectronUsePtCone(Electron electron);
   std::vector<Electron> ElectronApplyPtCut(std::vector<Electron> electrons, double ptcut);
   std::vector<Jet> JetsAwayFromFatJet(std::vector<Jet> jets, std::vector<FatJet> fatjets, double mindr=1.0);
-  std::vector<Jet> JetsVetoLeptonInside(std::vector<Jet> jets, std::vector<Electron> els, std::vector<Muon> mus);
+  std::vector<Jet> JetsVetoLeptonInside(const std::vector<Jet> &jets, const std::vector<Electron> &els, const std::vector<Muon> &mus);
   std::vector<Jet> JetsAwayFromPhoton(std::vector<Jet> jets, std::vector<Photon> photons, double mindr);
   Particle AddFatJetAndLepton(FatJet fatjet, Lepton lep);
 

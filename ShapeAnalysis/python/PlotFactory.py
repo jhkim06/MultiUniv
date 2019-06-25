@@ -318,12 +318,14 @@ class PlotFactory:
 		    if sampleNuisName == sampleName:
 		      shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleToChange
 		elif nuisance['kind']=='variableChange':
-		  for variableNuisName, variableToChange in nuisance['variablesUp'].iteritems():
-		    if variableNuisName == variableName:
-		      shapeNameUp = cutName+"/"+variableToChange+'/histo_' + sampleName
-		  for variableNuisName, variableToChange in nuisance['variablesDo'].iteritems():
-		    if variableNuisName == variableName:
-		      shapeNameDown = cutName+"/"+variableToChange+'/histo_' + sampleName
+		  if variableName in nuisance['variablesUp']:
+		    shapeNameUp = cutName+"/"+nuisance['variablesUp'][variableName][0]+'/histo_' + sampleName
+		  else:
+		    shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleName
+		  if variableName in nuisance['variablesDo']:
+		    shapeNameDown = cutName+"/"+nuisance['variablesDo'][variableName][0]+'/histo_' + sampleName
+		  else:
+		    shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleName
 		elif 'name' in nuisance:
 		  shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisance['name']+"Up"
 		  shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisance['name']+"Down"

@@ -16,6 +16,7 @@ class TSCorrection{
 
 public:
 
+  TSCorrection();
   TSCorrection(int DataYear_);
   ~TSCorrection();
 
