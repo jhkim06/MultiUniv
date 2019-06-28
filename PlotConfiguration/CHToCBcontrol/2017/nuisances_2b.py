@@ -1,6 +1,6 @@
-'''
 nuisances['lumi'] = {
     'name' : 'lumi_13TeV',
+    'kind' : '',
     'type' : 'lnN',
     'samples' : {
       'DYJets'	              : '1.023',
@@ -26,6 +26,7 @@ nuisances['lumi'] = {
 
 nuisances['ttxsec'] = {
     'name' : 'ttxsec',
+    'kind' : '',
     'type' : 'lnN',
     'samples' : {
       'TTLJ_powheg'	: '1.06114',
@@ -33,7 +34,7 @@ nuisances['ttxsec'] = {
       'TTJJ_powheg'	: '1.06114',
     }
 }
-'''
+
 nuisances['JES'] = {
     'name' : 'JES',
     'kind' : 'variableChange',
@@ -193,7 +194,6 @@ nuisances['JER'] = {
 }
 
 
-'''
 nuisances['top_mass'] = {
     'name' : 'top_mass',
     'kind' : 'sampleChange',
@@ -214,8 +214,7 @@ nuisances['top_mass'] = {
       'TTJJ_powheg'	: 'TTJJ_powheg_mass_Do',
     },
 }
-'''
-'''
+
 nuisances['TuneCP5'] = {
     'name' : 'TuneCP5',
     'kind' : 'sampleChange',
@@ -279,8 +278,7 @@ nuisances['generator'] = {
     },
     #TODO will add signal samples
 }
-'''
-'''
+
 nuisances['PUweight'] = {
     'name' :'PUweight',
     'kind' : 'weight',
@@ -386,7 +384,6 @@ nuisances['recoSF'] = {
     }
 }
 '''
-'''
 nuisances['trgSF'] = {
     'name' : 'trgSF',
     'kind'	: 'weight',
@@ -413,7 +410,7 @@ nuisances['trgSF'] = {
     }
 }
 '''
-'''
+
 nuisances['BTagSF'] = {
     'name' : 'BTagSF',
     'kind'	: 'weight',
@@ -439,32 +436,34 @@ nuisances['BTagSF'] = {
       'ttbb'                  : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
     }
 }
+
 '''
-#nuisances['MisTagSF'] = {
-#    'name' : 'MisTagSF',
-#    'kind'	: 'weight',
-#    'type'	: 'shape',
-#    'samples' : {
-#      'DYJets'	               : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'DYJets10to50_MG'       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'WJets_MG'              : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'TTLJ_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'TTLL_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'TTJJ_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'SingleTop_sch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'SingleTop_tch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'SingleTop_tch_antitop' : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'SingleTop_tW_top'      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'SingleTop_tW_antitop'  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'WW_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'WZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'ZZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'ttW'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'ttZ'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'ttH_bb'                : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'ttbb'                  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#    }
-#}
+nuisances['MisTagSF'] = {
+    'name' : 'MisTagSF',
+    'kind'	: 'weight',
+    'type'	: 'shape',
+    'samples' : {
+      'DYJets'	               : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'DYJets10to50_MG'       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'WJets_MG'              : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'TTLJ_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'TTLL_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'TTJJ_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'SingleTop_sch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'SingleTop_tch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'SingleTop_tch_antitop' : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'SingleTop_tW_top'      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'SingleTop_tW_antitop'  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'WW_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'WZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'ZZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'ttW'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'ttZ'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'ttH_bb'                : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'ttbb'                  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+    }
+}
+'''
 
 #nuisances['leptonSF'] = {
 #    'name' : 'leptonSF',
@@ -476,7 +475,7 @@ nuisances['BTagSF'] = {
 #      'TTJJ_powheg'	: ['leptonSF_Up/leptonSF','leptonSF_Do/leptonSF'],
 #      }
 #}
-'''
+
 nuisances['ttbbxsec'] = {
     'name' : 'ttbbxsec',
     'kind'	: 'weight', 
@@ -485,7 +484,7 @@ nuisances['ttbbxsec'] = {
       'ttbb'	: ['2.05', '-0.05'],
       }
 }
-'''
+
 #nuisances['generator'] = {
 #    'name' : 'generator',
 #    'kind'	: 'weight', # Down is the same as nominal, nuisance for Signal sample
@@ -497,17 +496,18 @@ nuisances['ttbbxsec'] = {
 #      }
 #}
 
-#nuisances['gentoppt_reweight'] = {
-#    'name' : 'gentoppt_reweight',
-#    'kind'	: 'weight', # Down is the same as nominal
-#    'type'	: 'shape',
-#    'samples' : {
-#      'TTLJ_powheg'	: ['gentoppt_reweight' , '1.'],
-#      'TTLL_powheg'	: ['gentoppt_reweight' , '1.'],
-#      'TTJJ_powheg'	: ['gentoppt_reweight' , '1.'],
-#      }
-#}
-
+'''
+nuisances['gentoppt_reweight'] = {
+    'name' : 'gentoppt_reweight',
+    'kind'	: 'weight', # Down is the same as nominal
+    'type'	: 'shape',
+    'samples' : {
+      'TTLJ_powheg'	: ['gentoppt_reweight' , '1.'],
+      'TTLL_powheg'	: ['gentoppt_reweight' , '1.'],
+      'TTJJ_powheg'	: ['gentoppt_reweight' , '1.'],
+      }
+}
+'''
 ## other systematics(JEC/JER/top_mass/MEtoPS/generator) are not defined as event-by-event weight
 
 ########## Efficiency and Energy Scale
