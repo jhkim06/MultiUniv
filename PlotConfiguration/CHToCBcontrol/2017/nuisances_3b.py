@@ -1,6 +1,6 @@
-'''
 nuisances['lumi'] = {
     'name' : 'lumi_13TeV',
+    'kind' : '',
     'type' : 'lnN',
     'samples' : {
       'DYJets'	              : '1.023',
@@ -26,6 +26,7 @@ nuisances['lumi'] = {
 
 nuisances['ttxsec'] = {
     'name' : 'ttxsec',
+    'kind' : '',
     'type' : 'lnN',
     'samples' : {
       'TTLJ_powheg'	: '1.06114',
@@ -33,7 +34,164 @@ nuisances['ttxsec'] = {
       'TTJJ_powheg'	: '1.06114',
     }
 }
-'''
+
+nuisances['JES'] = {
+    'name' : 'JES',
+    'kind' : 'variableChange',
+    'type' : 'shape',
+    'samples' : { #TODO: will add all MC samples
+      'TTLJ_powheg'	: ['1.','1.'],
+      #'TTLL_powheg'	: ['1.','1.'],
+      #'TTJJ_powheg'	: ['1.','1.'],
+    },
+    'variablesUp' : {
+	'fitted_dijet_mass' : [
+          'fitted_dijet_mass_JES_Up',
+	  'fitted_dijet_m_JES_Up'
+	],
+	'fitter_status' : [
+	  'fitter_status_JES_Up',
+	  'fitter_status_JES_Up'
+	],
+	'1st_leading_jet_pt' : [
+	  '1st_leading_jet_pt_JES_Up',
+	  'selected_jet_pt_JES_Up[0]'
+	],
+	'2nd_leading_jet_pt' : [
+	  '2nd_leading_jet_pt_JES_Up',
+	  'selected_jet_pt_JES_Up[1]'
+        ],
+	'3rd_leading_jet_pt' : [
+	  '3rd_leading_jet_pt_JES_Up',
+	  'selected_jet_pt_JES_Up[2]'
+        ],
+	'4th_leading_jet_pt' : [
+	  '4th_leading_jet_pt_JES_Up',
+	  'selected_jet_pt_JES_Up[3]',
+        ],
+	'njets' : [
+	  'njets_JES_Up',
+	  'njets_JES_Up'
+	],
+	'pfMET_Type1_pt' : [
+	  'pfMET_Type1_pt_JES_Up',
+	  'pfMET_Type1_pt_JES_Up'
+	],
+    },
+    'variablesDo' : {
+	'fitted_dijet_mass' : [
+          'fitted_dijet_mass_JES_Do',
+	  'fitted_dijet_m_JES_Do'
+	],
+	'fitter_status' : [
+	  'fitter_status_JES_Do',
+	  'fitter_status_JES_Do'
+	],
+	'1st_leading_jet_pt' : [
+	  '1st_leading_jet_pt_JES_Do',
+	  'selected_jet_pt_JES_Do[0]'
+	],
+	'2nd_leading_jet_pt' : [
+	  '2nd_leading_jet_pt_JES_Do',
+	  'selected_jet_pt_JES_Do[1]'
+        ],
+	'3rd_leading_jet_pt' : [
+	  '3rd_leading_jet_pt_JES_Do',
+	  'selected_jet_pt_JES_Do[2]'
+        ],
+	'4th_leading_jet_pt' : [
+	  '4th_leading_jet_pt_JES_Do',
+	  'selected_jet_pt_JES_Do[3]',
+        ],
+	'njets' : [
+	  'njets_JES_Do',
+	  'njets_JES_Do'
+	],
+	'pfMET_Type1_pt' : [
+	  'pfMET_Type1_pt_JES_Do',
+	  'pfMET_Type1_pt_JES_Do'
+	],
+    },
+}
+
+nuisances['JER'] = {
+    'name' : 'JER',
+    'kind' : 'variableChange',
+    'type' : 'shape',
+    'samples' : { #TODO: will add all MC samples
+      'TTLJ_powheg'	: ['1.','1.'],
+      #'TTLL_powheg'	: ['1.','1.'],
+      #'TTJJ_powheg'	: ['1.','1.'],
+    },
+    'variablesUp' : {
+	'fitted_dijet_mass' : [
+          'fitted_dijet_mass_JER_Up',
+	  'fitted_dijet_m_JER_Up'
+	],
+	'fitter_status' : [
+	  'fitter_status_JER_Up',
+	  'fitter_status_JER_Up'
+	],
+	'1st_leading_jet_pt' : [
+	  '1st_leading_jet_pt_JER_Up',
+	  'selected_jet_pt_JER_Up[0]'
+	],
+	'2nd_leading_jet_pt' : [
+	  '2nd_leading_jet_pt_JER_Up',
+	  'selected_jet_pt_JER_Up[1]'
+        ],
+	'3rd_leading_jet_pt' : [
+	  '3rd_leading_jet_pt_JER_Up',
+	  'selected_jet_pt_JER_Up[2]'
+        ],
+	'4th_leading_jet_pt' : [
+	  '4th_leading_jet_pt_JER_Up',
+	  'selected_jet_pt_JER_Up[3]',
+        ],
+	'njets' : [
+	  'njets_JER_Up',
+	  'njets_JER_Up'
+	],
+	'pfMET_Type1_pt' : [
+	  'pfMET_Type1_pt_JER_Up',
+	  'pfMET_Type1_pt_JER_Up'
+	],
+    },
+    'variablesDo' : {
+	'fitted_dijet_mass' : [
+          'fitted_dijet_mass_JER_Do',
+	  'fitted_dijet_m_JER_Do'
+	],
+	'fitter_status' : [
+	  'fitter_status_JER_Do',
+	  'fitter_status_JER_Do'
+	],
+	'1st_leading_jet_pt' : [
+	  '1st_leading_jet_pt_JER_Do',
+	  'selected_jet_pt_JER_Do[0]'
+	],
+	'2nd_leading_jet_pt' : [
+	  '2nd_leading_jet_pt_JER_Do',
+	  'selected_jet_pt_JER_Do[1]'
+        ],
+	'3rd_leading_jet_pt' : [
+	  '3rd_leading_jet_pt_JER_Do',
+	  'selected_jet_pt_JER_Do[2]'
+        ],
+	'4th_leading_jet_pt' : [
+	  '4th_leading_jet_pt_JER_Do',
+	  'selected_jet_pt_JER_Do[3]',
+        ],
+	'njets' : [
+	  'njets_JER_Do',
+	  'njets_JER_Do'
+	],
+	'pfMET_Type1_pt' : [
+	  'pfMET_Type1_pt_JER_Do',
+	  'pfMET_Type1_pt_JER_Do'
+	],
+    },
+}
 
 nuisances['top_mass'] = {
     'name' : 'top_mass',
@@ -120,7 +278,6 @@ nuisances['generator'] = {
     #TODO will add signal samples
 }
 
-'''
 nuisances['PUweight'] = {
     'name' :'PUweight',
     'kind' : 'weight',
@@ -225,7 +382,7 @@ nuisances['recoSF'] = {
       'ttbb'                  : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
     }
 }
-'''
+
 '''
 nuisances['trgSF'] = {
     'name' : 'trgSF',
@@ -253,7 +410,7 @@ nuisances['trgSF'] = {
     }
 }
 '''
-'''
+
 nuisances['BTagSF'] = {
     'name' : 'BTagSF',
     'kind'	: 'weight',
@@ -279,32 +436,32 @@ nuisances['BTagSF'] = {
       'ttbb'                  : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
     }
 }
-'''
-#nuisances['MisTagSF'] = {
-#    'name' : 'MisTagSF',
-#    'kind'	: 'weight',
-#    'type'	: 'shape',
-#    'samples' : {
-#      'DYJets'	               : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'DYJets10to50_MG'       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'WJets_MG'              : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'TTLJ_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'TTLL_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'TTJJ_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'SingleTop_sch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'SingleTop_tch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'SingleTop_tch_antitop' : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'SingleTop_tW_top'      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'SingleTop_tW_antitop'  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'WW_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'WZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'ZZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'ttW'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'ttZ'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'ttH_bb'                : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#      'ttbb'                  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-#    }
-#}
+
+nuisances['MisTagSF'] = {
+    'name' : 'MisTagSF',
+    'kind'	: 'weight',
+    'type'	: 'shape',
+    'samples' : {
+      'DYJets'	               : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'DYJets10to50_MG'       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'WJets_MG'              : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'TTLJ_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'TTLL_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'TTJJ_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'SingleTop_sch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'SingleTop_tch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'SingleTop_tch_antitop' : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'SingleTop_tW_top'      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'SingleTop_tW_antitop'  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'WW_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'WZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'ZZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'ttW'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'ttZ'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'ttH_bb'                : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'ttbb'                  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+    }
+}
 
 #nuisances['leptonSF'] = {
 #    'name' : 'leptonSF',
@@ -316,7 +473,6 @@ nuisances['BTagSF'] = {
 #      'TTJJ_powheg'	: ['leptonSF_Up/leptonSF','leptonSF_Do/leptonSF'],
 #      }
 #}
-'''
 nuisances['ttbbxsec'] = {
     'name' : 'ttbbxsec',
     'kind'	: 'weight', 
@@ -325,7 +481,6 @@ nuisances['ttbbxsec'] = {
       'ttbb'	: ['2.05', '-0.05'],
       }
 }
-'''
 #nuisances['generator'] = {
 #    'name' : 'generator',
 #    'kind'	: 'weight', # Down is the same as nominal, nuisance for Signal sample
