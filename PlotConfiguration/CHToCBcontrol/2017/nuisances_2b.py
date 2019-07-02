@@ -1,6 +1,5 @@
 nuisances['lumi'] = {
     'name' : 'lumi_13TeV',
-    'kind' : '',
     'type' : 'lnN',
     'samples' : {
       'DYJets'	              : '1.023',
@@ -26,7 +25,6 @@ nuisances['lumi'] = {
 
 nuisances['ttxsec'] = {
     'name' : 'ttxsec',
-    'kind' : '',
     'type' : 'lnN',
     'samples' : {
       'TTLJ_powheg'	: '1.06114',
