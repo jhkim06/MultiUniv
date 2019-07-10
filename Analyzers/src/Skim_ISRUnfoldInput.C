@@ -271,7 +271,8 @@ void Skim_ISRUnfoldInput::executeEvent(){
     if(debug_) std::cout << "gen loop start..........." << std::endl;
     for( int i(0); i<(int) gens.size(); i++){
 
-      if( !gens.at(i).isPrompt()) continue; // not from hadron, muon, or tau
+      //if( !gens.at(i).isPrompt()) continue; // not from hadron, muon, or tau
+      //std::cout << i << " pid: " << gens.at(i).PID() << " mother index: " << gens.at(i).MotherIndex() << " Pt: " << gens.at(i).Pt() << " isPrompt: " << gens.at(i).isPrompt() << " isHardProcess: " << gens.at(i).isHardProcess() << std::endl;
 
       if( gens.at(i).isHardProcess()){ // from ME
 
@@ -283,6 +284,15 @@ void Skim_ISRUnfoldInput::executeEvent(){
           if(debug_) std::cout << "genHardL1 ID: " << gens.at(i).PID() << " index: " << i << " pt: " << gens.at(i).Pt() << std::endl;
           if(abs( genHardL1.PID()) == 11) isdielectron = 1;    
           if(abs( genHardL1.PID()) == 13) isdimuon = 1;    
+	  if(abs( genHardL1.PID()) == 11 || abs( genHardL1.PID()) == 13){
+		FillHist("lhe_zpt", (genHardL0+genHardL1).Pt(), evt->MCweight(), 100, 0, 100); 
+		
+		int initIndex = findInitialMoterIndex( gens.at(i).MotherIndex(), i, gens, false);
+		FillHist("first_pt", (gens.at(initIndex)).Pt(), evt->MCweight(), 100, 0, 100); 
+		FillHist("first_id", (gens.at(initIndex)).PID(), evt->MCweight(), 60, -30, 30); 
+		//std::cout << "zpt from isHardProcess dilepton: " << (genHardL0+genHardL1).Pt() << " pt of their initial decaying particle: " << gens.at(initIndex).Pt() << " PID: " << gens.at(initIndex).PID() << std::endl;  
+		//std::cout << "mother id: " << gens.at(initIndex).PID() << " index: " << initIndex << std::endl;  
+	  }
           if(abs( genHardL1.PID()) == 15){
  	    DYtautau = 1;  
             //prefix = "tau_";
@@ -434,6 +444,7 @@ void Skim_ISRUnfoldInput::executeEvent(){
       ptPreFSR.push_back(genL0preFSR.Pt());
       ptPreFSR.push_back(genL1preFSR.Pt());
       ptPreFSR.push_back((genZ).Pt());
+      FillHist("pre_pt_allFSR", (genZ).Pt(), evt->MCweight(), 100, 0, 100); 
 
       mPreFSR.push_back(genL0preFSR.M());
       mPreFSR.push_back(genL1preFSR.M());
@@ -702,7 +713,6 @@ void Skim_ISRUnfoldInput::executeEvent(){
                  L1Prefire = L1PrefireReweight_Central;
                  L1Prefire_Up = L1PrefireReweight_Up;
                  L1Prefire_Dn = L1PrefireReweight_Down;
-		 cout << L1Prefire  << L1Prefire_Up << L1Prefire_Dn  << endl;
                }
              }
 
@@ -746,7 +756,7 @@ void Skim_ISRUnfoldInput::executeEvent(){
   newtree->Fill();
 }
 
-int Skim_ISRUnfoldInput::findInitialMoterIndex(int motherIndex, int currentIndex, vector<Gen> &gens){
+int Skim_ISRUnfoldInput::findInitialMoterIndex(int motherIndex, int currentIndex, vector<Gen> &gens, bool onlySamePtl){
 
   int initIndex = -1;
   // stop if reach the initial protons
@@ -755,7 +765,7 @@ int Skim_ISRUnfoldInput::findInitialMoterIndex(int motherIndex, int currentIndex
     return -1;
   }
   // stop if mother ID and current ID is different 
-  else if(gens.at(motherIndex).PID() != gens.at(currentIndex).PID()){
+  else if((gens.at(motherIndex).PID() != gens.at(currentIndex).PID()) && onlySamePtl){
           return currentIndex;
   }
   else{
