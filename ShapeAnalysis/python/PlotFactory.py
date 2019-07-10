@@ -310,14 +310,14 @@ class PlotFactory:
 		is_this_nuisance_to_be_considered = False
 
 	      if is_this_nuisance_to_be_considered :
-		if nuisance['kind']=='sampleChange':
+		if nuisance.get('kind')=='sampleChange':
 		  for sampleNuisName, sampleToChange in nuisance['samplesUp'].iteritems():
 		    if sampleNuisName == sampleName:
 		      shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleToChange
 		  for sampleNuisName, sampleToChange in nuisance['samplesDo'].iteritems():
 		    if sampleNuisName == sampleName:
 		      shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleToChange
-		elif nuisance['kind']=='variableChange':
+		elif nuisance.get('kind')=='variableChange':
 		  if variableName in nuisance['variablesUp']:
 		    shapeNameUp = cutName+"/"+nuisance['variablesUp'][variableName][0]+'/histo_' + sampleName
 		  else:
