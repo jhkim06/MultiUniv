@@ -7,8 +7,8 @@
 void SKFlatNtuple::Loop(){
 
   Long64_t nentries = fChain->GetEntries();
-  nentries = 10;
-  cout << "nentries = " << nentries << endl;
+  //nentries = 10;
+  //cout << "nentries = " << nentries << endl;
 
   if(MaxEvent>0){
     nentries = std::min(nentries,MaxEvent);

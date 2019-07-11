@@ -89,9 +89,9 @@ class ShapeFactory:
 	
 	# create histogram
 	if 'weights' in sample.keys() :
-	  outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True)
+	  outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True, True)
 	else :
-	  outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True)
+	  outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True, True)
 
 	outputsHisto.Write()
 
@@ -183,7 +183,7 @@ class ShapeFactory:
     print 'FINISHED'
 
 
-  def _draw(self, var, rng, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros) :
+  def _draw(self, var, rng, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros, go1D = True) :
     '''
     var           :   the variable to plot
     rng           :   the variable to plot
@@ -192,6 +192,7 @@ class ShapeFactory:
     totCut           :   the selection
     trees        :   the list of input files for this particular sample
     '''
+    # go1D: option to select whether to go 1D from 2D or not (for unfolding matrix, one should not go to 2D)
     
     self._logger.info('Yields by process')
 
@@ -241,7 +242,9 @@ class ShapeFactory:
       self._FoldUnderflow (hTotal)
     
     # go 1d
-    hTotalFinal = self._h2toh1(hTotal)
+    hTotalFinal = hTotal
+    if go1D: hTotalFinal = self._h2toh1(hTotal)
+
     hTotalFinal.SetTitle('histo_' + sampleName)
     hTotalFinal.SetName('histo_' + sampleName)
 
