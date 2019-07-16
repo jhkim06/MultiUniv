@@ -1,5 +1,5 @@
 from CommonPyTools.python.CommonTools import *
-from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed
+from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed, kViolet
 
 # Signal only has the style, the other background has style 3001
 # lineWidth 2, this is another option

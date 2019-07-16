@@ -150,18 +150,23 @@ class ShapeFactory:
 		    newSampleWeightUp = sample['weight'] + '* (' + configurationNuis[0]  + ")"
 		    newSampleWeightDo = sample['weight'] + '* (' + configurationNuis[1]  + ")"
 
+		    for k, v in nuisance['variablesUp'].iteritems():
+		      totCutUp = totCut.replace(variables[k]['name'],v[1])
+		      
+		    for k, v in nuisance['variablesDo'].iteritems():
+		      totCutDo = totCut.replace(variables[k]['name'],v[1])
+
 		    if 'weights' in sample.keys() :
 		      if not newVariableNameUp==None:
-		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin)
+		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], newSampleWeightUp, sample['weights'], totCutUp, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin)
 		      if not newVariableNameDo==None:
-		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin)
+		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], newSampleWeightDo, sample['weights'], totCutDo, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin)
 		    else :
 		      #print 'newSampleWeightUp', newSampleWeightUp
 		      if not newVariableNameUp==None:
-		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin)
+		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], newSampleWeightUp, [],                totCutUp, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin)
 		      if not newVariableNameDo==None:
-		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin)
-
+		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], newSampleWeightDo, [],                totCutDo, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin)
 		    if not newVariableNameUp==None:
 	              self.outFile.mkdir(cutName+"/"+newVariableNameUp[0])
 	              self.outFile.cd(cutName+"/"+newVariableNameUp[0])

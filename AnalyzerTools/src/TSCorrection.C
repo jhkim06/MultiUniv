@@ -127,14 +127,14 @@ bool TSCorrection::PassResponseCut(TString key, double x, double response, doubl
   return (response > min && response < max);
 }
 
- TLorentzVector TSCorrection::GetCorrectedJet(TString flavour_key, TLorentzVector &jet){
-  double Et = jet.Et();
+TLorentzVector TSCorrection::GetCorrectedJet(TString flavour_key, TLorentzVector &jet){
+  double Pt = jet.Pt();
   double Eta = jet.Eta();
   double Phi = jet.Phi();
   double M = jet.M();
-  double corr = this->GetFittedMean("Et", flavour_key, Et, Eta);
+  double corr = this->GetFittedMean("Pt", flavour_key, Pt, Eta);
   TLorentzVector out_vector;
-  double corr_Pt = TMath::Sqrt(TMath::Power(Et*(corr+1),2) - TMath::Power(M,2));
+  double corr_Pt = Pt*(corr+1);
   out_vector.SetPtEtaPhiM(corr_Pt, Eta, Phi, M );
   return out_vector;
 }
@@ -184,8 +184,9 @@ int TSCorrection::MyFormula::FindEtaBin(double eta){
  else if(fabs(eta)<1.74) i=7;
  else if(fabs(eta)<2.4) i=8;
  else{
-  std::cout << "Error: TSCorrection::MyFormula::FindEtaBin"<< std::endl;
-  exit(EXIT_FAILURE);
+  //std::cout << "WARNING eta>=2.4 : "<< eta << std::endl;
+  i=8;
+  //exit(EXIT_FAILURE);
  }
 
  return i;
