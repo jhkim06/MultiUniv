@@ -63,6 +63,16 @@ private:
   int fitter_status_JER_Up;
   int fitter_status_JER_Do;
 
+  double hadronic_top_M;
+  double leptonic_top_M;
+  double leptonic_W_M;
+  bool IsRealNeuPz;
+
+  double hadronic_top_M_F;
+  double leptonic_top_M_F;
+  double leptonic_W_M_F;
+  double deltaS;
+
   std::vector<double> hadronic_top_M_vector_success;
   std::vector<double> hadronic_top_M_vector_fail;
   std::vector<double> hadronic_top_b_pt_vector_success;

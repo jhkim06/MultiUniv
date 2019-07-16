@@ -164,7 +164,7 @@ variables['nPV'] = {
     }
 
 variables['MET'] = {
-    'name': 'pfMET_Type1_pt',
+    'name': 'MET',
     'range':(60,0,300),
     'xaxis': 'MET [GeV]',
     'yaxis': 'Events / 5GeV',

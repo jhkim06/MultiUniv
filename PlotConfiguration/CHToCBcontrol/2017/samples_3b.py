@@ -63,10 +63,10 @@ samples['TTLJ_powheg_mass_Up'] = {
     'weight' :McWeight,
     }
 
-samples['TTLJ_powheg_mass_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
+#samples['TTLJ_powheg_mass_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
 
 samples['TTLL_powheg'] = {
     'skim'   :'',
@@ -220,18 +220,26 @@ samples['SingleMuon_FakeMu'] = {
 # DATA
 #--------------------    
 samples['SingleElectron'] = {
-    'skim'   :'MetFt_L_v1_TTSemiLep_v1_K2_v3',
+    'skim'   :'',
     'weight' :'n_bjet_deepcsv_m_noSF>=3',
     }
 
 samples['SingleMuon'] = {
-    'skim'   :'MetFt_L_v1_TTSemiLep_v1_K2_v3',
+    'skim'   :'',
     'weight' :'n_bjet_deepcsv_m_noSF>=3',
     }
 #--------------------    
 # Signal
 #--------------------    
+samples['CHToCB_M090'] = {
+    'skim'   :'',
+    'weight' :McWeight+'/PUweight', #XXX no PUweight
+    }
 samples['CHToCB_M120'] = {
     'skim'   :'',
-    'weight' :'1',
+    'weight' :McWeight+'/PUweight', #XXX no PUweight
+    }
+samples['CHToCB_M140'] = {
+    'skim'   :'',
+    'weight' :McWeight+'/PUweight', #XXX no PUweight
     }

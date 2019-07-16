@@ -1,5 +1,5 @@
 from CommonPyTools.python.CommonTools import *
-from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed
+from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed, kViolet
 
 # Signal only has the style, the other background has style 3001
 # lineWidth 2, this is another option
@@ -46,6 +46,24 @@ groupPlot['TTX'] = {
     'isSignal' : 0,
     'color':  kYellow,
     'samples' : ['ttW','ttZ','ttH_bb']
+    }
+groupPlot['CHSignal_090'] = {
+    'nameHR' : "H+(090)x0.1",
+    'isSignal' : 2,
+    'color':  kViolet,
+    'samples' : ['CHToCB_M090']
+    }
+groupPlot['CHSignal_120'] = {
+    'nameHR' : "H+(120)x0.1",
+    'isSignal' : 2,
+    'color':  kViolet+1,
+    'samples' : ['CHToCB_M120']
+    }
+groupPlot['CHSignal_140'] = {
+    'nameHR' : "H+(140)x0.1",
+    'isSignal' : 2,
+    'color':  kViolet+2,
+    'samples' : ['CHToCB_M140']
     }
 
 '''
@@ -192,12 +210,28 @@ plot['SingleElectron'] = {
     'scale':1,
     }
 
+plot['CHToCB_M090'] = {
+    'nameHR' : "CH M090",
+    'color':kViolet,
+    'isSignal':2,
+    'isData':0,
+    'scale':0.1,
+    }
+
 plot['CHToCB_M120'] = {
     'nameHR' : "CH M120",
-    'color':kBlack,
-    'isSignal':1,
+    'color':kViolet,
+    'isSignal':2,
     'isData':0,
-    'scale':1,
+    'scale':0.1,
+    }
+
+plot['CHToCB_M140'] = {
+    'nameHR' : "CH M140",
+    'color':kViolet,
+    'isSignal':2,
+    'isData':0,
+    'scale':0.1,
     }
 
 
