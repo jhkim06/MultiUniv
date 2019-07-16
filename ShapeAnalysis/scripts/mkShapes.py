@@ -116,12 +116,8 @@ Userflags = []
 if opt.Userflags != "":
   Userflags = (opt.Userflags).split(',')
 
-
 ## Set Output directory
 OutBase = Tools.GetOutDirBase(opt.Category,ProductionKey,opt.Outputdir,InSkimString,Userflags)
-
-
-
 
 ######### Necessary?##############
 ## TimeStamp

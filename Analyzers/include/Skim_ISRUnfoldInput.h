@@ -19,7 +19,7 @@ public:
 
   void WriteHist();
 
-  int findInitialMoterIndex(int motherIndex, int currentIndex, vector<Gen> &gens); 
+  int findInitialMoterIndex(int motherIndex, int currentIndex, vector<Gen> &gens, bool onlySamePtl = true); 
   void selectDilepton(vector<Gen> &gens, std::map<int,int> &parIndex, std::map<int,int> &aparIndex, vector<int> &gparticleIndex, vector<int> &gaparticleIndex);
   void saveMotherIndexMap(vector<Gen> &gens, int currentIndex, int motherIndex, std::map<int,int> &partindexmap);
 
