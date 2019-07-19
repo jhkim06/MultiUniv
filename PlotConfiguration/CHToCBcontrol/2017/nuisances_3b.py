@@ -37,10 +37,25 @@ nuisances['JES'] = {
     'name' : 'JES',
     'kind' : 'variableChange',
     'type' : 'shape',
-    'samples' : { #TODO: will add all MC samples
-      'TTLJ_powheg'	: ['1.','1.'],
-      #'TTLL_powheg'	: ['1.','1.'],
-      #'TTJJ_powheg'	: ['1.','1.'],
+    'samples' : {
+      'DYJet'                 : ['1', '1'],
+      'DYJets10to50_MG'       : ['1', '1'],
+      'WJets_MG'              : ['1', '1'],
+      'TTLJ_powheg'	      : ['1', '1'],
+      'TTLL_powheg'	      : ['1', '1'],
+      'TTJJ_powheg'	      : ['1', '1'],
+      'SingleTop_sch_top'     : ['1', '1'],
+      'SingleTop_tch_top'     : ['1', '1'],
+      'SingleTop_tch_antitop' : ['1', '1'],
+      'SingleTop_tW_top'      : ['1', '1'],
+      'SingleTop_tW_antitop'  : ['1', '1'],
+      'WW_pythia'             : ['1', '1'],
+      'WZ_pythia'             : ['1', '1'],
+      'ZZ_pythia'             : ['1', '1'],
+      'ttW'                   : ['1', '1'],
+      'ttZ'                   : ['1', '1'],
+      'ttH_bb'                : ['1', '1'],
+      'ttbb'                  : ['1', '1'],
     },
     'variablesUp' : {
 	'fitted_dijet_mass' : [
@@ -71,9 +86,9 @@ nuisances['JES'] = {
 	  'njets_JES_Up',
 	  'njets_JES_Up'
 	],
-	'pfMET_Type1_pt' : [
-	  'pfMET_Type1_pt_JES_Up',
-	  'pfMET_Type1_pt_JES_Up'
+	'MET' : [
+	  'MET_JES_Up',
+	  'MET_JES_Up'
 	],
     },
     'variablesDo' : {
@@ -105,9 +120,9 @@ nuisances['JES'] = {
 	  'njets_JES_Do',
 	  'njets_JES_Do'
 	],
-	'pfMET_Type1_pt' : [
-	  'pfMET_Type1_pt_JES_Do',
-	  'pfMET_Type1_pt_JES_Do'
+	'MET' : [
+	  'MET_JES_Do',
+	  'MET_JES_Do'
 	],
     },
 }
@@ -116,10 +131,25 @@ nuisances['JER'] = {
     'name' : 'JER',
     'kind' : 'variableChange',
     'type' : 'shape',
-    'samples' : { #TODO: will add all MC samples
-      'TTLJ_powheg'	: ['1.','1.'],
-      #'TTLL_powheg'	: ['1.','1.'],
-      #'TTJJ_powheg'	: ['1.','1.'],
+    'samples' : {
+      'DYJet'                 : ['1', '1'],
+      'DYJets10to50_MG'       : ['1', '1'],
+      'WJets_MG'              : ['1', '1'],
+      'TTLJ_powheg'	      : ['1', '1'],
+      'TTLL_powheg'	      : ['1', '1'],
+      'TTJJ_powheg'	      : ['1', '1'],
+      'SingleTop_sch_top'     : ['1', '1'],
+      'SingleTop_tch_top'     : ['1', '1'],
+      'SingleTop_tch_antitop' : ['1', '1'],
+      'SingleTop_tW_top'      : ['1', '1'],
+      'SingleTop_tW_antitop'  : ['1', '1'],
+      'WW_pythia'             : ['1', '1'],
+      'WZ_pythia'             : ['1', '1'],
+      'ZZ_pythia'             : ['1', '1'],
+      'ttW'                   : ['1', '1'],
+      'ttZ'                   : ['1', '1'],
+      'ttH_bb'                : ['1', '1'],
+      'ttbb'                  : ['1', '1'],
     },
     'variablesUp' : {
 	'fitted_dijet_mass' : [
@@ -150,9 +180,9 @@ nuisances['JER'] = {
 	  'njets_JER_Up',
 	  'njets_JER_Up'
 	],
-	'pfMET_Type1_pt' : [
-	  'pfMET_Type1_pt_JER_Up',
-	  'pfMET_Type1_pt_JER_Up'
+	'MET' : [
+	  'MET_JER_Up',
+	  'MET_JER_Up'
 	],
     },
     'variablesDo' : {
@@ -184,9 +214,9 @@ nuisances['JER'] = {
 	  'njets_JER_Do',
 	  'njets_JER_Do'
 	],
-	'pfMET_Type1_pt' : [
-	  'pfMET_Type1_pt_JER_Do',
-	  'pfMET_Type1_pt_JER_Do'
+	'MET' : [
+	  'MET_JER_Do',
+	  'MET_JER_Do'
 	],
     },
 }
@@ -435,29 +465,31 @@ nuisances['BTagSF'] = {
     }
 }
 
+MisTagSF_Up='(n_bjet_deepcsv_m_noSF==2)*MisTagSF_Up/MisTagSF+(n_bjet_deepcsv_m_noSF>=3)'
+MisTagSF_Do='(n_bjet_deepcsv_m_noSF==2)*MisTagSF_Do/MisTagSF+(n_bjet_deepcsv_m_noSF>=3)'
 nuisances['MisTagSF'] = {
     'name' : 'MisTagSF',
     'kind'	: 'weight',
     'type'	: 'shape',
     'samples' : {
-      'DYJets'	               : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'DYJets10to50_MG'       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'WJets_MG'              : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'TTLJ_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'TTLL_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'TTJJ_powheg'	       : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'SingleTop_sch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'SingleTop_tch_top'     : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'SingleTop_tch_antitop' : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'SingleTop_tW_top'      : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'SingleTop_tW_antitop'  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'WW_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'WZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'ZZ_pythia'             : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'ttW'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'ttZ'                   : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'ttH_bb'                : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
-      'ttbb'                  : ['MisTagSF_Up/MisTagSF', 'MisTagSF_Do/MisTagSF'],
+      'DYJets'	               : [MisTagSF_Up, MisTagSF_Do],
+      'DYJets10to50_MG'       : [MisTagSF_Up, MisTagSF_Do],
+      'WJets_MG'              : [MisTagSF_Up, MisTagSF_Do],
+      'TTLJ_powheg'	       : [MisTagSF_Up, MisTagSF_Do],
+      'TTLL_powheg'	       : [MisTagSF_Up, MisTagSF_Do],
+      'TTJJ_powheg'	       : [MisTagSF_Up, MisTagSF_Do],
+      'SingleTop_sch_top'     : [MisTagSF_Up, MisTagSF_Do],
+      'SingleTop_tch_top'     : [MisTagSF_Up, MisTagSF_Do],
+      'SingleTop_tch_antitop' : [MisTagSF_Up, MisTagSF_Do],
+      'SingleTop_tW_top'      : [MisTagSF_Up, MisTagSF_Do],
+      'SingleTop_tW_antitop'  : [MisTagSF_Up, MisTagSF_Do],
+      'WW_pythia'             : [MisTagSF_Up, MisTagSF_Do],
+      'WZ_pythia'             : [MisTagSF_Up, MisTagSF_Do],
+      'ZZ_pythia'             : [MisTagSF_Up, MisTagSF_Do],
+      'ttW'                   : [MisTagSF_Up, MisTagSF_Do],
+      'ttZ'                   : [MisTagSF_Up, MisTagSF_Do],
+      'ttH_bb'                : [MisTagSF_Up, MisTagSF_Do],
+      'ttbb'                  : [MisTagSF_Up, MisTagSF_Do],
     }
 }
 

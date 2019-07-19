@@ -60,10 +60,10 @@ samples['TTLJ_powheg_mass_Up'] = {
     'weight' :McWeight,
     }
 
-samples['TTLJ_powheg_mass_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
+#samples['TTLJ_powheg_mass_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
 
 samples['TTLL_powheg'] = {
     'skim'   :'',

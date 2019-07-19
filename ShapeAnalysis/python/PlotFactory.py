@@ -116,6 +116,8 @@ class PlotFactory:
 	nuisances_vy_up = {}
 	nuisances_vy_do = {}
 	tgrMC_vy = array('f')
+	tgrMC_vx = array('f')
+	tgrMC_evx = array('f')
 
 	ROOT.gROOT.cd()
 
@@ -544,6 +546,8 @@ class PlotFactory:
 	if thsBackground.GetNhists() != 0:
 	  for iBin in range(1,thsBackground.GetStack().Last().GetNbinsX()+1):
 	    tgrMC_vy.append(thsBackground.GetStack().Last().GetBinContent(iBin))
+	    tgrMC_vx.append(thsBackground.GetStack().Last().GetBinCenter(iBin))
+	    tgrMC_evx.append(thsBackground.GetStack().Last().GetBinWidth(iBin)/2.)
 
 	#NOTE##################################################################
 	# and now  let's add the signal on top of the background stack
@@ -578,12 +582,13 @@ class PlotFactory:
 	      nuisances_err_up[iBin] = self.SumQ (nuisances_err_up[iBin], nuisances_vy_do[nuisanceName][iBin] - tgrMC_vy[iBin])
 	      nuisances_err_do[iBin] = self.SumQ (nuisances_err_do[iBin], nuisances_vy_up[nuisanceName][iBin] - tgrMC_vy[iBin])
 	
-	tgrData = ROOT.TGraphAsymmErrors(thsBackground.GetStack().Last().GetNbinsX())
-	for iBin in range(0, len(tgrData_vx)) : 
-	  tgrData.SetPoint (iBin, tgrData_vx[iBin], tgrData_vy[iBin])
-	  tgrData.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], tgrData_evy_do[iBin], tgrData_evy_up[iBin])
-	tgrData.SetMarkerColor(dataColor)
-	tgrData.SetLineColor(dataColor)
+	if len(tgrData_vx) > 0:
+	  tgrData = ROOT.TGraphAsymmErrors(thsBackground.GetStack().Last().GetNbinsX())
+	  for iBin in range(0, len(tgrData_vx)) : 
+	    tgrData.SetPoint (iBin, tgrData_vx[iBin], tgrData_vy[iBin])
+	    tgrData.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], tgrData_evy_do[iBin], tgrData_evy_up[iBin])
+	  tgrData.SetMarkerColor(dataColor)
+	  tgrData.SetLineColor(dataColor)
 
 
 	## Default: --postFit 0 --> No additional line is drawn
@@ -601,42 +606,44 @@ class PlotFactory:
 	if self._postFit == 'b':
 	  tgrDataOverPF = tgrData.Clone("tgrDataOverPF") # use this for ratio with Post-Fit MC
 	  histoPF = fileIn.Get(cutName+"/"+variableName+'/histo_total_postfit_b')
-	
-	tgrDataOverMC = tgrData.Clone("tgrDataOverMC")
-	tgrDataMinusMC = tgrData.Clone("tgrDataMinusMC")
-	for iBin in range(0, len(tgrData_vx)) :
-	  tgrDataOverMC.SetPoint (iBin, tgrData_vx[iBin], self.Ratio(tgrData_vy[iBin] , thsBackground.GetStack().Last().GetBinContent(iBin+1)) )
-	  tgrDataOverMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(tgrData_evy_do[iBin], thsBackground.GetStack().Last().GetBinContent(iBin+1)) , self.Ratio(tgrData_evy_up[iBin], thsBackground.GetStack().Last().GetBinContent(iBin+1)) )
-	  if self._postFit == 'p' or self._postFit == 's' or self._postFit == 'b':
-	    tgrDataOverPF.SetPoint(iBin, tgrData_vx[iBin], self.Ratio(tgrData_vy[iBin] , histoPF.GetBinContent(iBin+1)) )
-	    tgrDataOverPF.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(tgrData_evy_do[iBin], histoPF.GetBinContent(iBin+1)) , self.Ratio(tgrData_evy_up[iBin], thsBackground.GetStack().Last().GetBinContent(iBin+1)) )
-	    print "Pre-fit ratio: " + str(self.Ratio(tgrData_vy[iBin] , histoPF.GetBinContent(iBin+1)))
-	    print "Post-fit ratio: " + str(self.Ratio(tgrData_vy[iBin] , thsBackground.GetStack().Last().GetBinContent(iBin+1)))
-	    print iBin
 
-	  #
-	  # data - MC :
-	  #    MC could be background only
-	  #    or it can include the signal.
-	  #    Default is background+signal (check isSignal = 1,2,3 options).
-	  #    You can activate the data - "background only" by 
-	  #    using the flag "showDataMinusBkgOnly".
-	  #    NB: this will change also the case of "(data - expected) / expected"
-	  #
-	  if self._showRelativeRatio :
-	    if self._showDataMinusBkgOnly :
-	      tgrDataMinusMC.SetPoint (iBin, tgrData_vx[iBin], self.Ratio( self.Difference(tgrData_vy[iBin] , tgrMC_vy[iBin]), tgrMC_vy[iBin] ) )
-	      tgrDataMinusMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(tgrData_evy_do[iBin], tgrMC_vy[iBin]) , self.Ratio(tgrData_evy_up[iBin], tgrMC_vy[iBin]) )
+	if len(tgrData_vx) > 0:
+	  tgrDataOverMC = tgrData.Clone("tgrDataOverMC")
+	  tgrDataMinusMC = tgrData.Clone("tgrDataMinusMC")
+	  for iBin in range(0, len(tgrData_vx)) :
+	    tgrDataOverMC.SetPoint (iBin, tgrData_vx[iBin], self.Ratio(tgrData_vy[iBin] , thsBackground.GetStack().Last().GetBinContent(iBin+1)) )
+	    tgrDataOverMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(tgrData_evy_do[iBin], thsBackground.GetStack().Last().GetBinContent(iBin+1)) , self.Ratio(tgrData_evy_up[iBin], thsBackground.GetStack().Last().GetBinContent(iBin+1)) )
+	    if self._postFit == 'p' or self._postFit == 's' or self._postFit == 'b':
+	      tgrDataOverPF.SetPoint(iBin, tgrData_vx[iBin], self.Ratio(tgrData_vy[iBin] , histoPF.GetBinContent(iBin+1)) )
+	      tgrDataOverPF.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(tgrData_evy_do[iBin], histoPF.GetBinContent(iBin+1)) , self.Ratio(tgrData_evy_up[iBin], thsBackground.GetStack().Last().GetBinContent(iBin+1)) )
+	      print "Pre-fit ratio: " + str(self.Ratio(tgrData_vy[iBin] , histoPF.GetBinContent(iBin+1)))
+	      print "Post-fit ratio: " + str(self.Ratio(tgrData_vy[iBin] , thsBackground.GetStack().Last().GetBinContent(iBin+1)))
+	      print iBin
+
+	  if len(tgrData_vx) > 0:
+	    #
+	    # data - MC :
+	    #    MC could be background only
+	    #    or it can include the signal.
+	    #    Default is background+signal (check isSignal = 1,2,3 options).
+	    #    You can activate the data - "background only" by 
+	    #    using the flag "showDataMinusBkgOnly".
+	    #    NB: this will change also the case of "(data - expected) / expected"
+	    #
+	    if self._showRelativeRatio :
+	      if self._showDataMinusBkgOnly :
+	        tgrDataMinusMC.SetPoint (iBin, tgrData_vx[iBin], self.Ratio( self.Difference(tgrData_vy[iBin] , tgrMC_vy[iBin]), tgrMC_vy[iBin] ) )
+	        tgrDataMinusMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(tgrData_evy_do[iBin], tgrMC_vy[iBin]) , self.Ratio(tgrData_evy_up[iBin], tgrMC_vy[iBin]) )
+	      else:
+	        tgrDataMinusMC.SetPoint (iBin, tgrData_vx[iBin], self.Ratio( self.Difference(tgrData_vy[iBin] , thsBackground.GetStack().Last().GetBinContent(iBin+1)), thsBackground.GetStack().Last().GetBinContent(iBin+1)) )
+	        tgrDataMinusMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(tgrData_evy_do[iBin], thsBackground.GetStack().Last().GetBinContent(iBin+1)) , self.Ratio(tgrData_evy_up[iBin], thsBackground.GetStack().Last().GetBinContent(iBin+1)) )
 	    else:
-	      tgrDataMinusMC.SetPoint (iBin, tgrData_vx[iBin], self.Ratio( self.Difference(tgrData_vy[iBin] , thsBackground.GetStack().Last().GetBinContent(iBin+1)), thsBackground.GetStack().Last().GetBinContent(iBin+1)) )
-	      tgrDataMinusMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(tgrData_evy_do[iBin], thsBackground.GetStack().Last().GetBinContent(iBin+1)) , self.Ratio(tgrData_evy_up[iBin], thsBackground.GetStack().Last().GetBinContent(iBin+1)) )
-	  else:
-	    if self._showDataMinusBkgOnly :
-	      tgrDataMinusMC.SetPoint (iBin, tgrData_vx[iBin], self.Difference(tgrData_vy[iBin] , tgrMC_vy[iBin] ) )
-	      tgrDataMinusMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], tgrData_evy_do[iBin] , tgrData_evy_up[iBin] )
-	    else:
-	      tgrDataMinusMC.SetPoint (iBin, tgrData_vx[iBin], self.Difference(tgrData_vy[iBin] , thsBackground.GetStack().Last().GetBinContent(iBin+1)) )
-	      tgrDataMinusMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], tgrData_evy_do[iBin] , tgrData_evy_up[iBin] )
+	      if self._showDataMinusBkgOnly :
+	        tgrDataMinusMC.SetPoint (iBin, tgrData_vx[iBin], self.Difference(tgrData_vy[iBin] , tgrMC_vy[iBin] ) )
+	        tgrDataMinusMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], tgrData_evy_do[iBin] , tgrData_evy_up[iBin] )
+	      else:
+	        tgrDataMinusMC.SetPoint (iBin, tgrData_vx[iBin], self.Difference(tgrData_vy[iBin] , thsBackground.GetStack().Last().GetBinContent(iBin+1)) )
+	        tgrDataMinusMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], tgrData_evy_do[iBin] , tgrData_evy_up[iBin] )
 
 	#
 	# if there is an histogram called 'histo_total'
@@ -665,58 +672,60 @@ class PlotFactory:
 
 	if len(mynuisances.keys()) != 0:
 	  tgrMC = ROOT.TGraphAsymmErrors() 
-	  for iBin in range(0, len(tgrData_vx)) :
-	    tgrMC.SetPoint (iBin, tgrData_vx[iBin], tgrMC_vy[iBin])
+	  for iBin in range(0, len(tgrMC_vx)) :
+	    tgrMC.SetPoint (iBin, tgrMC_vx[iBin], tgrMC_vy[iBin])
 	    if histo_total:
-	      tgrMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], histo_total.GetBinError(iBin+1), histo_total.GetBinError(iBin+1))
+	      tgrMC.SetPointError(iBin, tgrMC_evx[iBin], tgrMC_evx[iBin], histo_total.GetBinError(iBin+1), histo_total.GetBinError(iBin+1))
 	    else:
-	      tgrMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], nuisances_err_do[iBin], nuisances_err_up[iBin])
+	      tgrMC.SetPointError(iBin, tgrMC_evx[iBin], tgrMC_evx[iBin], nuisances_err_do[iBin], nuisances_err_up[iBin])
 
 	  tgrMCOverMC = tgrMC.Clone("tgrMCOverMC") 
 	  tgrMCMinusMC = tgrMC.Clone("tgrMCMinusMC")
-	  for iBin in range(0, len(tgrData_vx)) :
-	    tgrMCOverMC.SetPoint (iBin, tgrData_vx[iBin], 1.)
-	    tgrMCMinusMC.SetPoint (iBin, tgrData_vx[iBin], 0.)
+	  for iBin in range(0, len(tgrMC_vx)) :
+	    tgrMCOverMC.SetPoint (iBin, tgrMC_vx[iBin], 1.)
+	    tgrMCMinusMC.SetPoint (iBin, tgrMC_vx[iBin], 0.)
 	    if histo_total:
-	      tgrMCOverMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(histo_total.GetBinError(iBin+1), tgrMC_vy[iBin]), self.Ratio(histo_total.GetBinError(iBin+1), tgrMC_vy[iBin]))
+	      tgrMCOverMC.SetPointError(iBin, tgrMC_evx[iBin], tgrMC_evx[iBin], self.Ratio(histo_total.GetBinError(iBin+1), tgrMC_vy[iBin]), self.Ratio(histo_total.GetBinError(iBin+1), tgrMC_vy[iBin]))
 	      if self._showRelativeRatio :
-		tgrMCMinusMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(histo_total.GetBinError(iBin+1), tgrMC_vy[iBin]), self.Ratio(histo_total.GetBinError(iBin+1), tgrMC_vy[iBin]))
+		tgrMCMinusMC.SetPointError(iBin, tgrMC_evx[iBin], tgrMC_evx[iBin], self.Ratio(histo_total.GetBinError(iBin+1), tgrMC_vy[iBin]), self.Ratio(histo_total.GetBinError(iBin+1), tgrMC_vy[iBin]))
 	      else:
-		tgrMCMinusMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], histo_total.GetBinError(iBin+1), histo_total.GetBinError(iBin+1))
+		tgrMCMinusMC.SetPointError(iBin, tgrMC_evx[iBin], tgrMC_evx[iBin], histo_total.GetBinError(iBin+1), histo_total.GetBinError(iBin+1))
 	    else:
-	      tgrMCOverMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(nuisances_err_do[iBin], tgrMC_vy[iBin]), self.Ratio(nuisances_err_up[iBin], tgrMC_vy[iBin]))
+	      tgrMCOverMC.SetPointError(iBin, tgrMC_evx[iBin], tgrMC_evx[iBin], self.Ratio(nuisances_err_do[iBin], tgrMC_vy[iBin]), self.Ratio(nuisances_err_up[iBin], tgrMC_vy[iBin]))
 	      if self._showRelativeRatio :
-		tgrMCMinusMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(nuisances_err_do[iBin], tgrMC_vy[iBin]), self.Ratio(nuisances_err_up[iBin], tgrMC_vy[iBin]))
+		tgrMCMinusMC.SetPointError(iBin, tgrMC_evx[iBin], tgrMC_evx[iBin], self.Ratio(nuisances_err_do[iBin], tgrMC_vy[iBin]), self.Ratio(nuisances_err_up[iBin], tgrMC_vy[iBin]))
 	      else:
-		tgrMCMinusMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], nuisances_err_do[iBin], nuisances_err_up[iBin])
+		tgrMCMinusMC.SetPointError(iBin, tgrMC_evx[iBin], tgrMC_evx[iBin], nuisances_err_do[iBin], nuisances_err_up[iBin])
 
 	tgrRatioList = {}
-	for samplesToRatioName, samplesToRatio in sigForAdditionalRatioList.iteritems() :
-	  tgrDataOverMCTemp = tgrData.Clone("tgrDataOverMC"+samplesToRatioName)
-	  for iBin in range(0, len(tgrData_vx)) : 
-	    tgrDataOverMCTemp.SetPoint (iBin, tgrData_vx[iBin], self.Ratio(tgrData_vy[iBin] , samplesToRatio.GetBinContent(iBin+1)) )
-	    tgrDataOverMCTemp.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(tgrData_evy_do[iBin], samplesToRatio.GetBinContent(iBin+1)) , self.Ratio(tgrData_evy_up[iBin], samplesToRatio.GetBinContent(iBin+1)) )
-	    if variableName == 'events' :
-	      print ' >> ratio[', cutName, '][', samplesToRatioName, ']  = ', self.Ratio(tgrData_vy[0] , samplesToRatio.GetBinContent(0+1)) 
-	    tgrDataOverMCTemp.SetLineColor(samplesToRatio.GetLineColor())
-	    tgrDataOverMCTemp.SetMarkerColor(samplesToRatio.GetLineColor())
-	    tgrDataOverMCTemp.SetMarkerSize(0.3)
-	    tgrRatioList[samplesToRatioName] = tgrDataOverMCTemp
+	if len(tgrData_vx) > 0:
+	  for samplesToRatioName, samplesToRatio in sigForAdditionalRatioList.iteritems() :
+	    tgrDataOverMCTemp = tgrData.Clone("tgrDataOverMC"+samplesToRatioName)
+	    for iBin in range(0, len(tgrData_vx)) : 
+	      tgrDataOverMCTemp.SetPoint (iBin, tgrData_vx[iBin], self.Ratio(tgrData_vy[iBin] , samplesToRatio.GetBinContent(iBin+1)) )
+	      tgrDataOverMCTemp.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(tgrData_evy_do[iBin], samplesToRatio.GetBinContent(iBin+1)) , self.Ratio(tgrData_evy_up[iBin], samplesToRatio.GetBinContent(iBin+1)) )
+	      if variableName == 'events' :
+	        print ' >> ratio[', cutName, '][', samplesToRatioName, ']  = ', self.Ratio(tgrData_vy[0] , samplesToRatio.GetBinContent(0+1)) 
+	      tgrDataOverMCTemp.SetLineColor(samplesToRatio.GetLineColor())
+	      tgrDataOverMCTemp.SetMarkerColor(samplesToRatio.GetLineColor())
+	      tgrDataOverMCTemp.SetMarkerSize(0.3)
+	      tgrRatioList[samplesToRatioName] = tgrDataOverMCTemp
 
 
         tgrDifferenceList = {}
-	for samplesToDifferenceName, samplesToDifference in sigForAdditionalDifferenceList.iteritems() :
-	  tgrDataMinusMCTemp = tgrData.Clone("tgrDataMinusMC"+samplesToDifferenceName)
-	  for iBin in range(0, len(tgrData_vx)) : 
-	    tgrDataMinusMCTemp.SetPoint (iBin, tgrData_vx[iBin], self.Difference(tgrData_vy[iBin] , samplesToDifference.GetBinContent(iBin+1)) )
-	    tgrDataMinusMCTemp.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], tgrData_evy_do[iBin] , tgrData_evy_up[iBin] )
-	    if variableName == 'events' :
-	      print ' >> difference[', cutName, '][', samplesToDifferenceName, ']  = ', self.Difference(tgrData_vy[0] , samplesToDifference.GetBinContent(0+1)) 
+	if len(tgrData_vx) > 0:
+	  for samplesToDifferenceName, samplesToDifference in sigForAdditionalDifferenceList.iteritems() :
+	    tgrDataMinusMCTemp = tgrData.Clone("tgrDataMinusMC"+samplesToDifferenceName)
+	    for iBin in range(0, len(tgrData_vx)) : 
+	      tgrDataMinusMCTemp.SetPoint (iBin, tgrData_vx[iBin], self.Difference(tgrData_vy[iBin] , samplesToDifference.GetBinContent(iBin+1)) )
+	      tgrDataMinusMCTemp.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], tgrData_evy_do[iBin] , tgrData_evy_up[iBin] )
+	      if variableName == 'events' :
+	        print ' >> difference[', cutName, '][', samplesToDifferenceName, ']  = ', self.Difference(tgrData_vy[0] , samplesToDifference.GetBinContent(0+1)) 
 
-	  tgrDataMinusMCTemp.SetLineColor(samplesToDifference.GetLineColor())
-	  tgrDataMinusMCTemp.SetMarkerColor(samplesToDifference.GetLineColor())
-	  tgrDataMinusMCTemp.SetMarkerSize(0.3)
-	  tgrDifferenceList[samplesToDifferenceName] = tgrDataMinusMCTemp
+	    tgrDataMinusMCTemp.SetLineColor(samplesToDifference.GetLineColor())
+	    tgrDataMinusMCTemp.SetMarkerColor(samplesToDifference.GetLineColor())
+	    tgrDataMinusMCTemp.SetMarkerSize(0.3)
+	    tgrDifferenceList[samplesToDifferenceName] = tgrDataMinusMCTemp
 
 	groupFlag = False
 	#---- prepare the grouped histograms
@@ -863,9 +872,10 @@ class PlotFactory:
 	    hist.Draw("hist same")
 	
 	#     - then the DATA 
-	if tgrData.GetN() != 0:
+	if len(tgrData_vx) > 0:
+	#if tgrData.GetN() != 0:
 	  tgrData.Draw("P0")
-	else: # never happening if at least one data histogram is provided
+	else: # never happening if at least one data histogram is provided  -> modified for mc only case
 	  for sampleName, plotdef in plot.iteritems():
 	    if 'samples' in variable and sampleName not in variable['samples']:
 	      continue
@@ -1139,7 +1149,8 @@ class PlotFactory:
 	    hist.Draw("hist same")
 
 	#     - then the DATA  
-	if tgrData.GetN() != 0:
+	if len(tgrData_vx) > 0:
+	#if tgrData.GetN() != 0:
 	  tgrData.Draw("P0")
 
 	tlegend.Draw()
@@ -1172,8 +1183,10 @@ class PlotFactory:
 	self.Pad2TAxis(frameRatio)
 	if (len(mynuisances.keys())!=0):
 	  tgrMCOverMC.Draw("2") 
-	
-	tgrDataOverMC.Draw("P0")
+
+	if len(tgrData_vx) > 0:
+	#if tgrData.GetN() != 0:
+	  tgrDataOverMC.Draw("P0")
 
 	if self._postFit == 'p' or self._postFit == 's' or self._postFit == 'b':
 	  #---- Ratio Legend

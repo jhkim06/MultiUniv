@@ -100,8 +100,7 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   newtree->Branch("MisTagSF_Up", &MisTagSF_Up,"MisTagSF_Up/D");
   newtree->Branch("MisTagSF_Do", &MisTagSF_Do,"MisTagSF_Do/D");
 
-  //newtree->Branch("TopPtReweight_Up", &TopPtReweight_Up,"TopPtReweight_Up/D");
-  //newtree->Branch("TopPtReweight_Do", &TopPtReweight_Do,"TopPtReweight_Do/D");
+  //newtree->Branch("TopPtReweight", &TopPtReweight,"TopPtReweight/D");
 
   // clear vector residual
   SingleMuTrgs.clear();
@@ -252,8 +251,7 @@ void Skim_TTSemiLep::executeEvent(){
   newtree->SetBranchAddress("MisTagSF_Up", &MisTagSF_Up);
   newtree->SetBranchAddress("MisTagSF_Do", &MisTagSF_Do);
 
-  //newtree->Branch("TopPtReweight_Up", &TopPtReweight_Up);
-  //newtree->Branch("TopPtReweight_Do", &TopPtReweight_Do);
+  //newtree->Branch("TopPtReweight", &TopPtReweight);
 
   FillHist("CutFlow",5,1,30,0,30);
   // Filters ====================
@@ -574,34 +572,7 @@ void Skim_TTSemiLep::executeEvent(){
   }
 
   //std::vector<Gen> gens = GetGens();
-  //TopPtReweight_Up = mcCorr->GetTopPtReweight(gens);
-  //TopPtReweight_Do = 1.;
-    ///////////////////////////////////////////////////////////
-   // !!!!!!!!!!!!!!!!!! execute fitter !!!!!!!!!!!!!!!!!!! //
-  ///////////////////////////////////////////////////////////
-  /*
-  if(IsMu){
-    fitter_driver->SetAllObjects(jetsLveto, 
-                                 btag_vector_noSF,
-                                 (TLorentzVector)muons.at(0),
-                                 (TLorentzVector)evt->GetMETVector()
-                                );
-  }
-  else if(IsEl){
-    fitter_driver->SetAllObjects(jetsLveto,
-                                 btag_vector_noSF,
-                                 (TLorentzVector)electrons.at(0),
-                                 (TLorentzVector)evt->GetMETVector()
-                                );
-  }
-  fitter_driver->FindBestChi2Fit(false);
-  if(fitter_driver->GetStatus()!=0) return; //0 means fit converge
-  FillHist("CutFlow",12,1,30,0,30);
-
-  initial_dijet_m = fitter_driver->GetBestInitialDijetMass();
-  fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
-  best_chi2 = fitter_driver->GetChi2();
-  */
+  //TopPtReweight = mcCorr->GetTopPtReweight(gens);
   newtree->Fill();
 
 

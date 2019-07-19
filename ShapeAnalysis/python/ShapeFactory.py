@@ -159,6 +159,12 @@ class ShapeFactory:
 		    newSampleWeightUp = sample['weight'] + '* (' + configurationNuis[0]  + ")"
 		    newSampleWeightDo = sample['weight'] + '* (' + configurationNuis[1]  + ")"
 
+		    for k, v in nuisance['variablesUp'].iteritems():
+		      totCutUp = totCut.replace(variables[k]['name'],v[1])
+		      
+		    for k, v in nuisance['variablesDo'].iteritems():
+		      totCutDo = totCut.replace(variables[k]['name'],v[1])
+
 		    if 'weights' in sample.keys() :
 		      if not newVariableNameUp==None:
 		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, isResMatrix, unfoldBinType)

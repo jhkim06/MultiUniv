@@ -103,7 +103,7 @@ private:
   double BTagSF, BTagSF_Up, BTagSF_Do;
   double MisTagSF, MisTagSF_Up, MisTagSF_Do;
 
-  //double TopPtReweight_Up, TopPtReweight_Do;
+  //double TopPtReweight;
 
   std::vector<Jet::Tagger> vtaggers;
   std::vector<Jet::WP> v_wps;
