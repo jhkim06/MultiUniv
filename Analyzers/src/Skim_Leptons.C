@@ -25,6 +25,12 @@ void Skim_Leptons::initializeAnalyzer(){
   outfile->cd("recoTree");
   newtree = fChain->CloneTree(0);
 
+  // disable branch
+  if(fChain->GetEntries()>0){
+    newtree->SetBranchStatus("Flag_*",0);
+    newtree->SetBranchStatus("fatjet*",0);
+    newtree->SetBranchStatus("photon*",0);
+  }
 
   // New Branch
   TBranch* b_baseW =(TBranch*) newtree->GetListOfBranches()->FindObject("baseW");
