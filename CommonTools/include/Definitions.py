@@ -15,3 +15,12 @@ class SingleLepCh:
   Mu = 0
   El = 1
   NA = 2
+
+class ISRUnfold:
+
+    PtRec2DHist = 0
+    PtGen2DHist = 1
+    PtMigrationM = 2
+    MassRec1DHist = 3
+    MassGen1DHist = 4
+    MassMigrationM = 5

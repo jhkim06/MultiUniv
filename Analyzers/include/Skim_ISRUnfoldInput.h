@@ -4,6 +4,27 @@
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 
+#include "TUnfoldBinning.h"
+
+const int nmassBins_fine_muon = 58;
+const int nmassBins_wide_muon = 29;
+const Double_t massBins_fine_muon[nmassBins_fine_muon+1] =     {40,42.5,45,47.5,50,52.5,55,57.5,60,62.5,65,67.5,70,72.5,75,77.5,80,82.5,85,87.5,90,92.5,95,97.5,100,102.5,105,107.5,110,112.5,115,117.5,120,123,126,129.5,133,137,141,145.5,150,155,160,165.5,171,178,185,192.5,200,209,218,229,240,254,268,284,300,325,350};
+const Double_t massBins_wide_muon[nmassBins_wide_muon+1] =     {40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,126,133,141,150,160,171,185,200,218,240,268,300,350};
+
+const int nmassBins_fine_electron = 54;
+const int nmassBins_wide_electron = 27;
+const Double_t massBins_fine_electron[nmassBins_fine_electron+1] = {50,52.5,55,57.5,60,62.5,65,67.5,70,72.5,75,77.5,80,82.5,85,87.5,90,92.5,95,97.5,100,102.5,105,107.5,110,112.5,115,117.5,120,123,126,129.5,133,137,141,145.5,150,155,160,165.5,171,178,185,192.5,200,209,218,229,240,254,268,284,300,325,350};
+const Double_t massBins_wide_electron[nmassBins_wide_electron+1] = {50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,126,133,141,150,160,171,185,200,218,240,268,300,350};
+
+const int nmassBins_forPt = 5;
+const Double_t massBins_forPt_muon[nmassBins_forPt+1] =     {40,60,80,100,200,350};
+const Double_t massBins_forPt_electron[nmassBins_forPt+1] = {50,65,80,100,200,350};
+
+const int nptbin_fine=17;
+const double ptbin_fine[nptbin_fine+1]={0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 35., 45., 55., 65., 75., 85., 100.};
+const int nptbin_wide=9;
+const double ptbin_wide[nptbin_wide+1]={0., 4., 8., 12., 18., 28., 40., 55., 80., 100.};
+
 class Skim_ISRUnfoldInput : public AnalyzerCore {
 
 public:
@@ -97,6 +118,19 @@ private:
   std::vector<Double_t> ptPostFSR,mPostFSR;
   std::vector<TLorentzVector> particleFSR, anparticleFSR;
 
+  // binning definition for pt
+  TUnfoldBinning* ptBinningRec;
+  TUnfoldBinning* ptBinningGen;
+
+  // binning definition for mass
+  TUnfoldBinning* massBinningRec;
+  TUnfoldBinning* massBinningGen;
+
+  // tunfolding binning index
+  Int_t diptBinIndex_Rec, dimassBinIndex_Rec;
+  Int_t diptBinIndex_Gen, dimassBinIndex_Gen;
+
+  //
   TLorentzVector particlePostFSR, anparticlePostFSR;
   Double_t weightGen, weightRec, bTagReweight;
   Double_t L1Prefire, L1Prefire_Up, L1Prefire_Dn;
