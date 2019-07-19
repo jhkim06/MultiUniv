@@ -63,6 +63,8 @@ class ShapeFactory:
 	  gROOT.ProcessLineSync(line)
     
     TH1D.SetDefaultSumw2(True)
+    TH2D.SetDefaultSumw2(True)
+
     self.outFile = TFile(outFile,'recreate')
  
     #print 'ShapeFactory',self._treeName
@@ -80,7 +82,6 @@ class ShapeFactory:
 	self.outFile.cd(cutName+"/"+variableName)
         print variableName
         print " variable[name] = ", variable['name']
-	#print 'variable[range]', variable['range'][0],':', variable['range'][1],':', variable['range'][2] # commented out since it gives out of range error with variable bins
 
 	doFold = 0
 	if 'fold' in variable.keys() :
@@ -97,11 +98,6 @@ class ShapeFactory:
           print "       variable[useTUnfoldBin] = ", variable['useTUnfoldBin']
           useTUnfoldBin = variable['useTUnfoldBin']
 
-        isResMatrix = False
-        if 'isResMatrix' in variable.keys() :
-          print "       variable[isResMatrix] = ", variable['isResMatrix']
-          isResMatrix = variable['isResMatrix']
-
         unfoldBinType  = None
         if 'unfoldBinType' in variable.keys() :
           print "       variable[unfoldBinType] = ", variable['unfoldBinType']
@@ -110,9 +106,9 @@ class ShapeFactory:
 	
 	# create histogram
 	if 'weights' in sample.keys() :
-	  outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True, go1D, useTUnfoldBin, isResMatrix, unfoldBinType)
+	  outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True, go1D, useTUnfoldBin, unfoldBinType)
 	else :
-	  outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True, go1D, useTUnfoldBin, isResMatrix, unfoldBinType)
+	  outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True, go1D, useTUnfoldBin, unfoldBinType)
 
 	outputsHisto.Write()
 
@@ -131,12 +127,12 @@ class ShapeFactory:
 		    newSampleWeightDo = sample['weight'] + '* (' + configurationNuis[1]  + ")"
 
 		    if 'weights' in sample.keys() :
-		      outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, sample['weights'], totCut, newSampleNameUp, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, isResMatrix, unfoldBinType)
-		      outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, sample['weights'], totCut, newSampleNameDo, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, isResMatrix, unfoldBinType)
+		      outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, sample['weights'], totCut, newSampleNameUp, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType)
+		      outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, sample['weights'], totCut, newSampleNameDo, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType)
 		    else :
 		      #print 'newSampleWeightUp', newSampleWeightUp
-		      outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, [],                totCut, newSampleNameUp, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, isResMatrix, unfoldBinType)
-		      outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, [],                totCut, newSampleNameDo, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, isResMatrix, unfoldBinType)
+		      outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, [],                totCut, newSampleNameUp, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType)
+		      outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, [],                totCut, newSampleNameDo, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType)
 
 		    outputsHistoUp.Write()
 		    outputsHistoDo.Write()
@@ -167,15 +163,15 @@ class ShapeFactory:
 
 		    if 'weights' in sample.keys() :
 		      if not newVariableNameUp==None:
-		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, isResMatrix, unfoldBinType)
+		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType)
 		      if not newVariableNameDo==None:
-		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, isResMatrix, unfoldBinType)
+		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType)
 		    else :
 		      #print 'newSampleWeightUp', newSampleWeightUp
 		      if not newVariableNameUp==None:
-		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, isResMatrix, unfoldBinType)
+		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType)
 		      if not newVariableNameDo==None:
-		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, isResMatrix, unfoldBinType)
+		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType)
 
 		    if not newVariableNameUp==None:
 	              self.outFile.mkdir(cutName+"/"+newVariableNameUp[0])
@@ -210,7 +206,7 @@ class ShapeFactory:
     print 'FINISHED'
 
 
-  def _draw(self, var, rng, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros, go1D = True, useTUnfoldBin = False, isResMatrix = False, unfoldBinType = None) :
+  def _draw(self, var, rng, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros, go1D = True, useTUnfoldBin = False, unfoldBinType = None) :
     '''
     var           :   the variable to plot
     rng           :   the variable to plot
@@ -227,7 +223,7 @@ class ShapeFactory:
     numTree = 0
     bigName = 'histo_' + sampleName + '_' + cutName + '_' + variableName
     globalCut = "(" + totCut + ") * (" + global_weight + ")" 
-    hTotal = self._makeshape(bigName, rng, useTUnfoldBin, isResMatrix, unfoldBinType) # TODO for histograms for TUnfold input, read TUnfoldBinning saved in the input root file and use it to create histograms
+    hTotal = self._makeshape(bigName, rng, useTUnfoldBin, unfoldBinType) 
     #print 'number of trees >>>>>>>>>>>>>>>>>>', len(trees)
     for tree in trees :
       #chain = TChain(self._treeName)
@@ -236,7 +232,7 @@ class ShapeFactory:
       ## new histogram
       shapeName = 'histo_' + sampleName + str(numTree)
       # prepare a dummy to fill
-      shape = self._makeshape(shapeName, rng, useTUnfoldBin, isResMatrix, unfoldBinType)
+      shape = self._makeshape(shapeName, rng, useTUnfoldBin, unfoldBinType)
 
       self._logger.debug('---'+sampleName+'---')
       self._logger.debug('Formula: '+var+'>>'+shapeName)
@@ -249,8 +245,6 @@ class ShapeFactory:
         if weights[numTree] != '-' :
           globalCut = "(" + globalCut + ") * (" + weights[numTree] + ")" 
      
-
-      #rt.gROOT.ProcessLineSync(".L /home/jhkim/MultiUniv/ShapeAnalysis/python/userfunc.C") # load macro where the bin definition defined
       entries = tree.Draw( var+'>>'+shapeName, globalCut, 'goff')
       if useTUnfoldBin: rt.ClearUnfoldBins()
 
@@ -750,7 +744,7 @@ class ShapeFactory:
 	histogram_to_be_fixed.SetBinError(ibin, histogram_to_be_fixed.GetBinContent(n)) 
 
   @staticmethod
-  def _makeshape( name, bins, useTUnfoldBin = False, isMatrix = False, unfoldBinType = None):
+  def _makeshape( name, bins, useTUnfoldBin = False, unfoldBinType = None):
 
     if useTUnfoldBin == False :
         hclass, hargs, ndim = ShapeFactory._bins2hclass( bins )
@@ -763,12 +757,12 @@ class ShapeFactory:
         rt.SetMassBinningGen()
         rt.SetPtBinningGen()
 
-        if unfoldBinType == ISRUnfold.PtRec2DHist:    return rt.get2DHistogramPtRec(name) 
-        if unfoldBinType == ISRUnfold.PtGen2DHist:    return rt.get2DHistogramPtGen(name) 
+        if unfoldBinType == ISRUnfold.PtRec2DHist:     return rt.get2DHistogramPtRec(name) 
+        if unfoldBinType == ISRUnfold.PtGen2DHist:     return rt.get2DHistogramPtGen(name) 
         if unfoldBinType == ISRUnfold.PtMigrationM:    return rt.getMigrationMforPt(name) 
-        if unfoldBinType == ISRUnfold.MassRec1DHist:  return rt.get1DHistogramMassRec(name) 
-        if unfoldBinType == ISRUnfold.MassGen1DHist:  return rt.get1DHistogramMassGen(name) 
-        if unfoldBinType == ISRUnfold.MassMigrationM: return rt.getMigrationMforMass(name) 
+        if unfoldBinType == ISRUnfold.MassRec1DHist:   return rt.get1DHistogramMassRec(name) 
+        if unfoldBinType == ISRUnfold.MassGen1DHist:   return rt.get1DHistogramMassGen(name) 
+        if unfoldBinType == ISRUnfold.MassMigrationM:  return rt.getMigrationMforMass(name) 
 
   def _connectInputs(self, samples, inputDir, skipMissingFiles, friendsDir = None, skimListDir = None):
     listTrees = []
@@ -853,9 +847,4 @@ class ShapeFactory:
     w2 = sumw2.At( b2 )
     sumw2.SetAt(0, b1)
     sumw2.SetAt(w1+w2, b2)
-
-
-    
-
-
 
