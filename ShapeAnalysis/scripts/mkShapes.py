@@ -36,6 +36,7 @@ parser.add_argument('--MonitJob', dest='MonitJob', default=False, type=bool)
 parser.add_argument('--Category', dest='Category', default="SMP")
 parser.add_argument('--treeName', dest='treeName', default="")
 parser.add_argument('--cleanUp', dest='cleanUp', action='store_true')
+parser.add_argument('--useTUnfold', dest='useTUnfold', action='store_true', default=False)
 
 
 Tools.AddOptions(parser)
@@ -408,9 +409,16 @@ for InputSample in InputSamples:
       jobs.mkJds()
       #jobs.AddSh(shCmd)
       #jobs.AddPy2Sh()
-      jobs.AddPy("from ShapeAnalysis.python.ShapeFactory import ShapeFactory\n")
+     
+      if opt.useTUnfold:
+        jobs.AddPy("import os, sys")     
+        jobs.AddPy("SKFlat_WD = os.getenv('SKFlat_WD')")
+        jobs.AddPy("sys.path.insert(0,SKFlat_WD+'/CommonTools/include')")
+        jobs.AddPy("from Definitions import *")
+
+      jobs.AddPy("from ShapeAnalysis.python.ShapeFactory import ShapeFactory\n") 
       jobs.AddPy("factory = ShapeFactory()")
-      jobs.AddPy('factory._treeName = '+'"'+opt.treeName+'"' )
+      jobs.AddPy("factory._treeName = "+"'"+opt.treeName+"'" )
       instructions  = ""
       instructions += "factory.makeNominals( \n"
       instructions += "		'"+ sampleName + "', \n"

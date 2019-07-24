@@ -1,10 +1,9 @@
-import os
-import sys
+import os, sys
 from ShapeAnalysis.python.ShapeFactory import ShapeFactory
 
 SKFlat_WD = os.getenv('SKFlat_WD')
 sys.path.insert(0,SKFlat_WD+'/CommonTools/include')
-from Definitions import *
+from Definitions import * # to use enumerate for unfolding histogram type
 
 factory = ShapeFactory()
 factory._treeName = "tree"
@@ -13,8 +12,8 @@ factory.makeNominals(
 		{'skim': '', 'weight': 'weightGen*weightRec'}, 
 		['/home/jhkim/MultiUniv/lib/ISR_gen_test.root'], 
 		'/home/jhkim/MultiUniv/PlotConfiguration/TUnfold/2016/Output_MuMuOrElEl_v0_DY/DYJets/DYJets_tmp_0.root ', 
-		{ 'ptll-mll TUnfold': {'unfoldBinType': ISRUnfold.PtRec2DHist, 'linesToAdd': (".L /home/jhkim/MultiUniv/ShapeAnalysis/python/userfunc.C",),'fold': 3, 'range': None, 'name': 'Get2DPtRecBinIndex(ptRec[2], mRec[2])', 'xaxis': ' Mass p_{T} [GeV]', 'yaxis': 'Events','useTUnfoldBin': True,'go1D': True}, 
-                  'mll TUnfold': {'unfoldBinType': ISRUnfold.MassRec1DHist, 'fold': 3, 'range': None, 'name': 'Get1DMassRecBinIndex(mRec[2])', 'xaxis': 'm_{ll} [GeV]','useTUnfoldBin': True,'go1D': True}, 
+		{ 'ptll-mll TUnfold':   {'unfoldBinType': ISRUnfold.PtRec2DHist, 'linesToAdd': (".L /home/jhkim/MultiUniv/ShapeAnalysis/python/userfunc.C",),'fold': 3, 'range': None, 'name': 'Get2DPtRecBinIndex(ptRec[2], mRec[2])', 'xaxis': ' Mass p_{T} [GeV]', 'yaxis': 'Events','useTUnfoldBin': True,'go1D': True}, 
+                  'mll TUnfold':        {'unfoldBinType': ISRUnfold.MassRec1DHist, 'fold': 3, 'range': None, 'name': 'Get1DMassRecBinIndex(mRec[2])', 'xaxis': 'm_{ll} [GeV]','useTUnfoldBin': True,'go1D': True}, 
                   'mll TUnfold matrix': {'unfoldBinType': ISRUnfold.MassMigrationM,'fold': 3, 'range': None, 'name': 'Get1DMassRecBinIndex(mRec[2]):Get1DMassGenBinIndex(mPreFSR[2])', 'xaxis': 'm_{ll} [GeV]','useTUnfoldBin': True,'go1D': False,'isResMatrix':True}
                 }, 
 		[], 
