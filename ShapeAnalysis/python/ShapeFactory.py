@@ -246,7 +246,19 @@ class ShapeFactory:
           globalCut = "(" + globalCut + ") * (" + weights[numTree] + ")" 
      
       entries = tree.Draw( var+'>>'+shapeName, globalCut, 'goff')
-      if useTUnfoldBin: rt.ClearUnfoldBins()
+
+      if useTUnfoldBin: 
+        if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.PtMigrationM:
+            #print "Fill not selected but generated events"
+            #print "(" + totCut.split("&&")[0] + "&& !(" + "&&".join(totCut.split("&&")[1:]) + "))*(" + global_weight.split("*")[0]+")"
+            #print "Fill bin zero for efficiency correction"
+            #print "("+totCut + ")*(" + global_weight.split("*")[0] + "*(1-(" + "*".join(global_weight.split("*")[1:])  +")))"
+
+            # Fill Bin Zero
+            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& !(" + "&&".join(totCut.split("&&")[1:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') # Fill not selected but generated events 
+            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "("+totCut + ")*(" + global_weight.split("*")[0] + "*(1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff') # Fill bin zero for efficiency correction 
+
+        rt.ClearUnfoldBins() # delete TUnfoldBinning objects
 
       nTries = shape.Integral()
       #print ' entries after cut    >> ',entries,' integral:', nTries
