@@ -13,8 +13,8 @@ from Definitions import * # to use enumerate for unfolding histogram type
 variables['ptll-mll TUnfold'] = {
 
     'unfoldBinType': ISRUnfold.PtRec2DHist, 
-    'linesToAdd': (".L /home/jhkim/MultiUniv/ShapeAnalysis/python/userfunc.C",),
-    'fold': 3, 
+    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
+    'fold': 0, 
     'range': None, 
     'name': 'Get2DPtRecBinIndex(ptRec[2], mRec[2])', 
     'xaxis': 'Mass p_{T} [GeV]', 
@@ -26,7 +26,7 @@ variables['ptll-mll TUnfold'] = {
 variables['mll TUnfold matrix'] = {
 
     'unfoldBinType': ISRUnfold.MassMigrationM,
-    'fold': 3, 
+    'fold': 0, 
     'range': None, 
     'name': 'Get1DMassRecBinIndex(mRec[2]):Get1DMassGenBinIndex(mPreFSR[2])', 
     'xaxis': 'm_{ll} [GeV]',
