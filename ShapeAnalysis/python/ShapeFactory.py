@@ -264,8 +264,11 @@ class ShapeFactory:
             #print "("+totCut + ")*(" + global_weight.split("*")[0] + "*(1-(" + "*".join(global_weight.split("*")[1:])  +")))"
 
             # Fill Bin Zero
-            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& !(" + "&&".join(totCut.split("&&")[1:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') # Fill not selected but generated events 
+            # Cautioin: if the vector size in an event is zero, the event is just skipped  
+            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& !(" + "&&".join(totCut.split("&&")[1:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') # Fill not selected but generated events, for the case the size of PtRec is not zero
+            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + global_weight.split("*")[0]+")", 'goff') # Fill not selected but generated events, for the case the size of PtRec is zero
             tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "("+totCut + ")*(" + global_weight.split("*")[0] + "*(1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff') # Fill bin zero for efficiency correction 
+
 
       #  rt.ClearUnfoldBins() # delete TUnfoldBinning objects
 
