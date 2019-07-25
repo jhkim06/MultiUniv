@@ -19,11 +19,11 @@ samples['DYJets'] = {
     'weight' :McWeight,
     }
 
-#samples['DYJets10to50_MG'] = {
-#    'skim'   :'', # use default skim defined in configuration.py
-#    'weight' :McWeight,
-#    }
-#
+samples['DYJets10to50'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'weight' :McWeight,
+    }
+
 
 #samples['TT_powheg'] = {
 #    'skim'   :'', # use default skim defined in configuration.py

@@ -29,7 +29,19 @@ variables['mll TUnfold matrix'] = {
     'fold': 0, 
     'range': None, 
     'name': 'Get1DMassRecBinIndex(mRec[2]):Get1DMassGenBinIndex(mPreFSR[2])', 
-    'xaxis': 'm_{ll} [GeV]',
+    'xaxis': 'Pre FSR',
+    'useTUnfoldBin': True,
+    'go1D': False,
+    'isResMatrix':True
+}
+
+variables['ptll TUnfold matrix'] = {
+
+    'unfoldBinType': ISRUnfold.PtMigrationM,
+    'fold': 0,
+    'range': None,
+    'name': 'Get2DPtRecBinIndex(ptRec[2],mRec[2]):Get2DPtGenBinIndex(ptPreFSR[2],mPreFSR[2])',
+    'xaxis': 'Pre FSR',
     'useTUnfoldBin': True,
     'go1D': False,
     'isResMatrix':True

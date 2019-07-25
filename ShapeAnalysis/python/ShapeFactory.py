@@ -36,7 +36,7 @@ class ShapeFactory:
 
     return theVariable
 
-  def makeNominals(self, sampleName, sample, inFiles, outFile, variables, columns, definitions, cuts, supercut, nuisances):
+  def makeNominals(self, sampleName, sample, inFiles, outFile, variables, columns, definitions, cuts, supercut, nuisances, isFisrtJob = False):
     print "===================="
     print "=== makeNominals ==="
     print "===================="
@@ -111,7 +111,13 @@ class ShapeFactory:
 	  outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True, go1D, useTUnfoldBin, unfoldBinType)
 
 	outputsHisto.Write()
-
+    
+        # save bin definition just for unfolding histograms
+        if isFisrtJob and useTUnfoldBin:
+            rt.ptBinningRec.Write()
+            rt.ptBinningGen.Write()
+            rt.massBinningRec.Write()
+            rt.massBinningGen.Write()
  
         # weight based nuisances: kind = weight
 	for nuisanceName, nuisance in nuisances.iteritems():
@@ -120,19 +126,22 @@ class ShapeFactory:
 	      if nuisance['kind'] == 'weight' :
 		for sampleNuisName, configurationNuis in nuisance['samples'].iteritems() :
 		  if sampleNuisName ==  sampleName :
-		    newSampleNameUp = sampleName + '_' + nuisance['name'] + 'Up'
-		    newSampleNameDo = sampleName + '_' + nuisance['name'] + 'Down'
+		    #newSampleNameUp = sampleName + '_' + nuisance['name'] + 'Up'
+		    #newSampleNameDo = sampleName + '_' + nuisance['name'] + 'Down'
+
+		    sysNameUp = '_' + nuisance['name'] + 'Up'
+		    sysNameDo = '_' + nuisance['name'] + 'Down'
 		    #                                 the first weight is "up", the second is "down"
 		    newSampleWeightUp = sample['weight'] + '* (' + configurationNuis[0]  + ")"
 		    newSampleWeightDo = sample['weight'] + '* (' + configurationNuis[1]  + ")"
 
 		    if 'weights' in sample.keys() :
-		      outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, sample['weights'], totCut, newSampleNameUp, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType)
-		      outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, sample['weights'], totCut, newSampleNameDo, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType)
+		      outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, sysNameUp)
+		      outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, sysNameDo)
 		    else :
 		      #print 'newSampleWeightUp', newSampleWeightUp
-		      outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, [],                totCut, newSampleNameUp, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType)
-		      outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, [],                totCut, newSampleNameDo, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType)
+		      outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, sysNameUp)
+		      outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, sysNameDo)
 
 		    outputsHistoUp.Write()
 		    outputsHistoDo.Write()
@@ -206,7 +215,7 @@ class ShapeFactory:
     print 'FINISHED'
 
 
-  def _draw(self, var, rng, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros, go1D = True, useTUnfoldBin = False, unfoldBinType = None) :
+  def _draw(self, var, rng, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros, go1D = True, useTUnfoldBin = False, unfoldBinType = None, sysName = None) :
     '''
     var           :   the variable to plot
     rng           :   the variable to plot
@@ -258,7 +267,7 @@ class ShapeFactory:
             tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& !(" + "&&".join(totCut.split("&&")[1:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') # Fill not selected but generated events 
             tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "("+totCut + ")*(" + global_weight.split("*")[0] + "*(1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff') # Fill bin zero for efficiency correction 
 
-        rt.ClearUnfoldBins() # delete TUnfoldBinning objects
+      #  rt.ClearUnfoldBins() # delete TUnfoldBinning objects
 
       nTries = shape.Integral()
       #print ' entries after cut    >> ',entries,' integral:', nTries
@@ -283,8 +292,24 @@ class ShapeFactory:
     hTotalFinal = hTotal
     if go1D: hTotalFinal = self._h2toh1(hTotal)
 
-    hTotalFinal.SetTitle('histo_' + sampleName)
-    hTotalFinal.SetName('histo_' + sampleName)
+    hTotalFinalName = 'histo_' + sampleName
+    if sysName != None: hTotalFinalName = hTotalFinalName + sysName
+
+    if useTUnfoldBin:
+        if unfoldBinType == ISRUnfold.PtMigrationM: # 
+            hTotalFinalName = 'hmcPtGenRec'
+
+        if unfoldBinType == ISRUnfold.MassMigrationM: # 
+            hTotalFinalName = 'hmcMassGenRec'
+    
+        if sysName != None:
+            hTotalFinalName = hTotalFinalName + sysName
+        else : 
+            hTotalFinalName = hTotalFinalName + "nominal"
+
+
+    hTotalFinal.SetTitle(hTotalFinalName)
+    hTotalFinal.SetName(hTotalFinalName)
 
     # fix negative (almost never happening)
     # don't do it here by default, because you may have interference that is actually negative!
