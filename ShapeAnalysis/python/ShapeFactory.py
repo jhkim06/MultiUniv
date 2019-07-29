@@ -53,7 +53,7 @@ class ShapeFactory:
     #print 'ShapeFactory:outFile',self._outFile
     #print 'ShapeFactory:variables',self._variables
     #print 'ShapeFactory:cuts',self._cuts
-    print 'ShapeFactory:supercut',supercut
+    print 'ShapeFactory:supercut',supercut 
 
     #in case some variables need a compiled function
     for variableName, variable in self._variables.iteritems():
@@ -74,7 +74,7 @@ class ShapeFactory:
     #print 'inFiles', inFiles
     trees = self._connectInputs( inFiles, inputDir, False)
     for cutName, cut in self._cuts.iteritems():
-      totCut = cut+"&&"+supercut
+      totCut = cut+" && "+supercut # what is the purpose to use supercut?
       print 'cut',cutName,'::',cut
       self.outFile.mkdir(cutName)
       for variableName, variable in variables.iteritems():
@@ -118,6 +118,8 @@ class ShapeFactory:
             rt.ptBinningGen.Write()
             rt.massBinningRec.Write()
             rt.massBinningGen.Write()
+
+            rt.ClearUnfoldBins()
  
         # weight based nuisances: kind = weight
 	for nuisanceName, nuisance in nuisances.iteritems():
@@ -216,31 +218,38 @@ class ShapeFactory:
 
 
   def _draw(self, var, rng, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros, go1D = True, useTUnfoldBin = False, unfoldBinType = None, sysName = None) :
+
     '''
     var           :   the variable to plot
     rng           :   the variable to plot
     global_weight :   the global weight for the samples
     weights       :   the wieghts 'root file' dependent
-    totCut           :   the selection
-    trees        :   the list of input files for this particular sample
+    totCut        :   the selection
+    trees         :   the list of input files for this particular sample
+
+    =============== variables related to unfolding histograms ===================================
+    go1D          : option to select whether to go 1D from 2D or not  
+    useTUnfoldBin : use TUnfoldBinning class in TUnfold
+    unfoldBinType : miagraion matrix or input histogram    
+    =============================================================================================
     '''
-    # go1D: option to select whether to go 1D from 2D or not  
-    # useTUnfoldBin: use TUnfoldBinning class in TUnfold
     
     self._logger.info('Yields by process')
 
     numTree = 0
     bigName = 'histo_' + sampleName + '_' + cutName + '_' + variableName
-    globalCut = "(" + totCut + ") * (" + global_weight + ")" 
+    globalCut = "(" + totCut + ") * (" + global_weight + ")" # totCut = superCut + cuts,  globalcut = weight * totCut, 
     hTotal = self._makeshape(bigName, rng, useTUnfoldBin, unfoldBinType) 
     #print 'number of trees >>>>>>>>>>>>>>>>>>', len(trees)
+
     for tree in trees :
       #chain = TChain(self._treeName)
       #chain.AddFile(aFile)
       print '   sampleName     {0:<20} : entries {1:^9}'.format(sampleName,tree.GetEntries())
-      ## new histogram
+
+      ## temporary histogram
       shapeName = 'histo_' + sampleName + str(numTree)
-      # prepare a dummy to fill
+      # create a temporary histogram to fill, it will be summed to hTotal as the final histogram
       shape = self._makeshape(shapeName, rng, useTUnfoldBin, unfoldBinType)
 
       self._logger.debug('---'+sampleName+'---')
@@ -258,19 +267,13 @@ class ShapeFactory:
 
       if useTUnfoldBin: 
         if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.PtMigrationM:
-            #print "Fill not selected but generated events"
-            #print "(" + totCut.split("&&")[0] + "&& !(" + "&&".join(totCut.split("&&")[1:]) + "))*(" + global_weight.split("*")[0]+")"
-            #print "Fill bin zero for efficiency correction"
-            #print "("+totCut + ")*(" + global_weight.split("*")[0] + "*(1-(" + "*".join(global_weight.split("*")[1:])  +")))"
 
-            # Fill Bin Zero
-            # Cautioin: if the vector size in an event is zero, the event is just skipped  
+            # Fill bin zero
+            # Caution: if the vector size in an event is zero, the event is just skipped  
             tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& !(" + "&&".join(totCut.split("&&")[1:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') # Fill not selected but generated events, for the case the size of PtRec is not zero
-            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + global_weight.split("*")[0]+")", 'goff') # Fill not selected but generated events, for the case the size of PtRec is zero
-            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "("+totCut + ")*(" + global_weight.split("*")[0] + "*(1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff') # Fill bin zero for efficiency correction 
+            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + global_weight.split("*")[0]+")", 'goff')                           # Fill not selected but generated events, for the case the size of PtRec is zero
+            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut + ")*(" + global_weight.split("*")[0] + "*(1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')        # Fill bin zero for efficiency correction 
 
-
-      #  rt.ClearUnfoldBins() # delete TUnfoldBinning objects
 
       nTries = shape.Integral()
       #print ' entries after cut    >> ',entries,' integral:', nTries
@@ -285,7 +288,7 @@ class ShapeFactory:
       
       numTree += 1
 
-    # fold if needed
+    # fold if needed: add under/overflow bin to the first/last bin
     if doFold == 1 or doFold == 3 :
       self._FoldOverflow (hTotal)
     if doFold == 2 or doFold == 3 :
@@ -295,6 +298,7 @@ class ShapeFactory:
     hTotalFinal = hTotal
     if go1D: hTotalFinal = self._h2toh1(hTotal)
 
+    # decide the histogram name to be written in the output file
     hTotalFinalName = 'histo_' + sampleName
     if sysName != None: hTotalFinalName = hTotalFinalName + sysName
 
@@ -323,7 +327,6 @@ class ShapeFactory:
     #
     if fixZeros and 'suppressNegative' in sample.keys() and ( cutName in sample['suppressNegative'] or 'all' in sample['suppressNegative']) : 
       self._fixNegativeBinAndError(hTotalFinal)
-
      
     return hTotalFinal
 
