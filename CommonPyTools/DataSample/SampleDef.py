@@ -3,7 +3,7 @@
 import os,sys,time
 from CommonPyTools.python.getEvn import *
 
-DATaSets = ["DoubleMuon", "DoubleEG", "SingleMuon", "SingleElectron", "SinglePhoton"]
+DATaSets = ["DoubleMuon", "DoubleEG", "SingleMuon", "SingleElectron", "SinglePhoton", "EGamma"]
 DATaSets_Fake = ["DoubleMuon_FakeMuMu", "DoubleEG_FakeElEl", "SingleMuon_FakeMu", "SingleElectron_FakeEl"]
 def DataPeriods(Year):
   AvailableDataPeriods = []

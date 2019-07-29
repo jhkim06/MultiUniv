@@ -27,9 +27,7 @@ void Skim_Leptons::initializeAnalyzer(){
 
   // disable branch
   if(fChain->GetEntries()>0){
-    newtree->SetBranchStatus("Flag_*",0);
     newtree->SetBranchStatus("fatjet*",0);
-    newtree->SetBranchStatus("photon*",0);
   }
 
   // New Branch
