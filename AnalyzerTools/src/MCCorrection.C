@@ -690,6 +690,77 @@ double MCCorrection::GetPileUpWeight(int N_vtx, int syst){
   return this_hist->GetBinContent(this_bin);
 
 }
+
+double MCCorrection::MuonIDISO_SF(TString ID, double eta, double pt, int sys){
+
+  if(ID=="Default") return 1.;
+
+    TH2F *this_hist = map_hist_Muon["IDISO_SF_"+ID];
+    _EtaPtOrder = map_VarOrder_Muon["IDISO_SF_"+ID];
+
+    if(!this_hist){
+      if(IgnoreNoHist) return 1.;
+      else{
+        cout << "[MCCorrection::MuonID_SF] No "<<"ID_SF_"+ID<<endl;
+        exit(EXIT_FAILURE);
+      }
+    }
+
+    if(_EtaPtOrder == "etapt"){
+      return RootHelper::GetBinContent4SF(this_hist, eta, pt, sys);
+    }else
+    if(_EtaPtOrder == "pteta"){
+      return RootHelper::GetBinContent4SF(this_hist, pt, eta, sys);
+    }else{
+      cout<<"[MCCorrection::MuonID_SF] wrong etaPtOrder:"<<_EtaPtOrder<<endl;
+      exit(EXIT_FAILURE);
+    }
+
+  return 1;
+}
+
+double MCCorrection::MuonIDISO_RD_SF(TString ID, double eta, double pt, int sys){
+
+  if(ID=="Default") return 1.;
+
+  // for run dependent SF
+
+    TH2F* this_hist[4]={};
+    TString sdata[2]={"DATA","MC"};
+    TString speriod[2]={"BCDEF","GH"};
+
+    for(int id=0;id<2;id++){
+      for(int ip=0;ip<2;ip++){
+        this_hist[2*id+ip]=map_hist_Muon["IDISO_Eff_"+sdata[id]+"_"+ID+"_"+speriod[ip]];
+      }
+    }
+    if(!this_hist[0]||!this_hist[1]||!this_hist[2]||!this_hist[3]){
+      cout << "[MCCorrection::IDISO_SF] No "<<ID<<endl;
+      exit(EXIT_FAILURE);
+    }
+
+    double lumi_periodB = 5.929001722;
+    double lumi_periodC = 2.645968083;
+    double lumi_periodD = 4.35344881;
+    double lumi_periodE = 4.049732039;
+    double lumi_periodF = 3.157020934;
+    double lumi_periodG = 7.549615806;
+    double lumi_periodH = 8.545039549 + 0.216782873;
+
+    double total_lumi = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH);
+
+    double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
+    double WeightGtoH = (lumi_periodG+lumi_periodH)/total_lumi;
+
+    double idisoEff[4]={1.,1.,1.,1.};
+    for(int i=0;i<4;i++){
+        idisoEff[i]=RootHelper::GetBinContent4SF(this_hist[i],eta, pt,(i<2?1.:-1.)*sys);
+    }
+    return (idisoEff[0]*WeightBtoF+idisoEff[1]*WeightGtoH)/(idisoEff[2]*WeightBtoF+idisoEff[3]*WeightGtoH);
+
+  return 1;
+}
+
 double MCCorrection::DiLeptonTrg_SF(TString IdKey0,TString IdKey1,const vector<Lepton*>& leps,int sys){
   if(leps.size() < 2){
     cout<<"[MCCorrection::DiLeptonTrg_SF] only dilepton algorithm"<<endl;
@@ -733,7 +804,7 @@ double MCCorrection::DiLeptonTrg_SF(TString IdKey0,TString IdKey1,const vector<L
       }
     }
     if(!this_hist[0]||!this_hist[1]||!this_hist[2]||!this_hist[3]){
-      cout << "[SMPValidation::Trigger_SF] No "<<IdKey0<<" or "<<IdKey1<<endl;
+      cout << "[MCCorection::Trigger_SF] No "<<IdKey0<<" or "<<IdKey1<<endl;
       exit(EXIT_FAILURE);
     }
 

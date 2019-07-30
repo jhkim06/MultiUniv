@@ -401,6 +401,7 @@ for InputSample in InputSamples:
 R__LOAD_LIBRARY(libPhysics.so)
 R__LOAD_LIBRARY(libTree.so)
 R__LOAD_LIBRARY(libHist.so)
+R__LOAD_LIBRARY(libUnfold.so)
 R__LOAD_LIBRARY({1}libCommonTools.so)
 R__LOAD_LIBRARY({1}libDataFormats.so)
 R__LOAD_LIBRARY({1}libKinematicFitter.so)

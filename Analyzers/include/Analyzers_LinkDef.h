@@ -18,6 +18,7 @@
 #pragma link C++ class Skim_ISRUnfoldInput+;
 #pragma link C++ class Skim_FakeEst+;
 #pragma link C++ class Skim_Efficiency+;
+#pragma link C++ class Skim_DiLep_AFBtemp+;
 
 #pragma link C++ class Skim_TSCorrTree+;
 #pragma link C++ class Skim_Jets+;

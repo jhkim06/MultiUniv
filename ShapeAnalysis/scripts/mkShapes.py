@@ -375,6 +375,11 @@ for InputSample in InputSamples:
     #print FileRanges[it_job],
     #print " --> "+str(len(FileRanges[it_job]))
 
+    # check if this is the first job just for unfolding histograms
+    isFirstJob = "False"
+    if it_job == 0:
+        isFirstJob = "True"
+
     CheckTotalNFile = CheckTotalNFile+len(FileRanges[it_job])
 
     thisjob_dir = (base_rundir+'/job_'+str(it_job)+'/').replace('///','/').replace('//','/')
@@ -408,9 +413,10 @@ for InputSample in InputSamples:
       jobs.mkJds()
       #jobs.AddSh(shCmd)
       #jobs.AddPy2Sh()
-      jobs.AddPy("from ShapeAnalysis.python.ShapeFactory import ShapeFactory\n")
+     
+      jobs.AddPy("from ShapeAnalysis.python.ShapeFactory import ShapeFactory\n") 
       jobs.AddPy("factory = ShapeFactory()")
-      jobs.AddPy('factory._treeName = '+'"'+opt.treeName+'"' )
+      jobs.AddPy("factory._treeName = "+"'"+opt.treeName+"'" )
       instructions  = ""
       instructions += "factory.makeNominals( \n"
       instructions += "		'"+ sampleName + "', \n"
@@ -422,7 +428,8 @@ for InputSample in InputSamples:
       instructions += "		"+str(definitions) + ", \n"
       instructions += "		"+str(cuts) + ", \n"
       instructions += "		'"+supercut + "', \n"
-      instructions += "		"+str(nuisances) + ") \n"
+      instructions += "		"+str(nuisances) + ", \n"
+      instructions += "		"+ isFirstJob + ") \n"
       jobs.AddPy(instructions)
 
       jobs.Sub()

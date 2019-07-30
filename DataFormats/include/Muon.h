@@ -103,6 +103,7 @@ public:
   bool Pass_POGLooseWithLooseIso();
   bool Pass_POGTightWithLooseIso();
   bool Pass_POGHighPtWithLooseTrkIso();
+  bool Pass_POGMediumWithLooseTrkIso();
   bool Pass_TESTID();
 
 private:

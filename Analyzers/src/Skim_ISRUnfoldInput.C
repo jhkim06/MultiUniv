@@ -98,6 +98,11 @@ void Skim_ISRUnfoldInput::initializeAnalyzer(){
   newtree->Branch("Scale",&Scale);
   newtree->Branch("PDFerror",&PDFerror);
 
+  newtree->Branch("diptBinIndex_Rec",  &diptBinIndex_Rec);
+  newtree->Branch("dimassBinIndex_Rec",&dimassBinIndex_Rec);
+  newtree->Branch("diptBinIndex_Gen", &diptBinIndex_Gen);
+  newtree->Branch("dimassBinIndex_Gen",&dimassBinIndex_Gen);
+
   //b_trgSF = newtree->Branch("trgSF", &trgSF,"trgSF/F");
   //b_trgSF_Up = newtree->Branch("trgSF_Up", &trgSF_Up,"trgSF_Up/F");
   //b_trgSF_Dn = newtree->Branch("trgSF_Dn", &trgSF_Dn,"trgSF_Dn/F");
@@ -148,11 +153,13 @@ void Skim_ISRUnfoldInput::executeEvent(){
   muons.clear();
   muons_momentumUp.clear();
   muons_momentumDown.clear();
+
   electrons.clear();
   electrons_momentumUp.clear();
   electrons_momentumDown.clear();
   electrons_momentumResUp.clear();
   electrons_momentumResDown.clear();
+
   leps.clear();
   leps_momentumUp.clear();
   leps_momentumDown.clear();
@@ -170,6 +177,7 @@ void Skim_ISRUnfoldInput::executeEvent(){
   mRec_momentumResUp.clear();
   ptRec_momentumResDown.clear();
   mRec_momentumResDown.clear();
+
   ptPreFSR.clear();
   mPreFSR.clear();
   ptPostFSR.clear();
@@ -194,6 +202,11 @@ void Skim_ISRUnfoldInput::executeEvent(){
 
   isdielectron = 0;
   isdimuon = 0;
+
+  diptBinIndex_Rec = 0;
+  dimassBinIndex_Rec = 0;
+  diptBinIndex_Gen = 0;
+  dimassBinIndex_Gen = 0;
 
   evt = new Event;
   *evt = GetEvent();
@@ -459,6 +472,23 @@ void Skim_ISRUnfoldInput::executeEvent(){
       mPostFSR.push_back(genL1postFSR.M());
       mPostFSR.push_back((genL0postFSR+genL1postFSR).M());
 
+      ptBinningGen=(new TUnfoldBinning("Gen_Pt"));
+      ptBinningGen->AddAxis("pt",nptbin_wide,ptbin_wide,false,true);
+
+      if( isdielectron ) ptBinningGen->AddAxis("mass", nmassBins_forPt, massBins_forPt_electron, true, true);
+      if( isdimuon  )    ptBinningGen->AddAxis("mass", nmassBins_forPt, massBins_forPt_muon, true, true);
+
+      massBinningGen=(new TUnfoldBinning("Gen_Mass"));
+      if( isdielectron ) massBinningGen->AddAxis("gen mass", nmassBins_wide_electron, massBins_wide_electron, true, true);
+      if( isdimuon )     massBinningGen->AddAxis("gen mass", nmassBins_wide_muon,     massBins_wide_muon,     true, true);
+
+
+      diptBinIndex_Gen   = ptBinningGen->GetGlobalBinNumber(ptPreFSR[2], mPreFSR[2]);
+      dimassBinIndex_Gen = massBinningGen->GetGlobalBinNumber(mPreFSR[2]);
+
+      delete ptBinningGen;
+      delete massBinningGen;
+
     }// not DY to tautau event
   }// only for DY MC
 
@@ -517,6 +547,7 @@ void Skim_ISRUnfoldInput::executeEvent(){
 	electrons_momentumResUp.push_back(el_tempResUp);
 	electrons_momentumResDown.push_back(el_tempResDown);
      }
+
      std::sort(electrons.begin(),electrons.end(),PtComparing);
      std::sort(electrons_momentumUp.begin(),electrons_momentumUp.end(),PtComparing);
      std::sort(electrons_momentumDown.begin(),electrons_momentumDown.end(),PtComparing);
@@ -611,6 +642,21 @@ void Skim_ISRUnfoldInput::executeEvent(){
              mRec.push_back(leps.at(0)->M());
              mRec.push_back(leps.at(1)->M());
              mRec.push_back( (*(leps.at(0))+*(leps.at(1))).M() );
+
+             ptBinningRec= new TUnfoldBinning("Rec_Pt");
+             ptBinningRec->AddAxis("pt",nptbin_fine,ptbin_fine,false,true);
+             if( IsElEl ) ptBinningRec->AddAxis("mass", nmassBins_forPt, massBins_forPt_electron, true, true);
+             if( IsMuMu ) ptBinningRec->AddAxis("mass", nmassBins_forPt, massBins_forPt_muon, true, true);
+
+             massBinningRec=(new TUnfoldBinning("Rec_Mass"));
+             if( IsElEl ) massBinningRec->AddAxis("reco mass", nmassBins_fine_electron, massBins_fine_electron, false, false);
+             if( IsMuMu ) massBinningRec->AddAxis("reco mass", nmassBins_fine_muon,     massBins_fine_muon, false, false);
+
+             diptBinIndex_Rec   = ptBinningRec->GetGlobalBinNumber(ptRec[2], mRec[2]); 
+             dimassBinIndex_Rec = massBinningRec->GetGlobalBinNumber(mRec[2]);
+
+             delete massBinningRec;
+             delete ptBinningRec;
 
 	     // momentum up
              ptRec_momentumUp.push_back(leps_momentumUp.at(0)->Pt());
@@ -754,6 +800,8 @@ void Skim_ISRUnfoldInput::executeEvent(){
   } // pass METfilter 
 
   newtree->Fill();
+
+  delete evt;
 }
 
 int Skim_ISRUnfoldInput::findInitialMoterIndex(int motherIndex, int currentIndex, vector<Gen> &gens, bool onlySamePtl){
