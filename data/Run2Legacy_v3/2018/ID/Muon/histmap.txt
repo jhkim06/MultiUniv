@@ -7,3 +7,18 @@ Trigger Eff_DATA  IsoMu24_POGTight  RunAveraged_Eff_Trigger.root IsoMu24_PtEtaBi
 Trigger Eff_MC  IsoMu24_POGTight  RunAveraged_Eff_Trigger.root IsoMu24_PtEtaBins/efficienciesMC/pt_abseta_MC
 Trigger Eff_DATA  Mu50_POGHighPtLooseTrkIso RunAveraged_Eff_Trigger.root  Mu50_OR_OldMu100_OR_TkMu100_PtEtaBins/efficienciesDATA/pt_abseta_DATA
 Trigger Eff_MC  Mu50_POGHighPtLooseTrkIso RunAveraged_Eff_Trigger.root  Mu50_OR_OldMu100_OR_TkMu100_PtEtaBins/efficienciesMC/pt_abseta_MC
+#############################################################
+### AFB study: Charge Separate
+#############################################################
+IDISO   SF      MediumID_trkIso_QPlus                 IDISO_Plus_2018_medTrkIsoLoose_v1.root        muonEffi_data_eta_pt    TH2D  etapt
+IDISO   SF      MediumID_trkIso_QMinus                IDISO_Minus_2018_medTrkIsoLoose_v1.root       muonEffi_data_eta_pt    TH2D  etapt
+IDISO   SF      MediumID_trkIso_QPlus                 IDISO_Plus_2018_medTrkIsoLoose_v1.root        muonEffi_mc_eta_pt    TH2D  etapt
+IDISO   SF      MediumID_trkIso_QMinus                IDISO_Minus_2018_medTrkIsoLoose_v1.root       muonEffi_mc_eta_pt    TH2D  etapt
+Trigger SF      LeadMu17_MediumID_trkIso_QPlus        Mu17_Plus_2018_medTrkIsoLoose_v1.root         muonEffi_data_eta_pt    TH2D  etapt
+Trigger SF      LeadMu17_MediumID_trkIso_QMinus       Mu17_Minus_2018_medTrkIsoLoose_v1.root        muonEffi_data_eta_pt    TH2D  etapt
+Trigger SF      TailMu8_MediumID_trkIso_QPlus         Mu8_Plus_2018_medTrkIsoLoose_v1.root          muonEffi_data_eta_pt    TH2D  etapt
+Trigger SF      TailMu8_MediumID_trkIso_QMinus        Mu8_Minus_2018_medTrkIsoLoose_v1.root         muonEffi_data_eta_pt    TH2D  etapt
+Trigger SF      LeadMu17_MediumID_trkIso_QPlus        Mu17_Plus_2018_medTrkIsoLoose_v1.root         muonEffi_mc_eta_pt    TH2D  etapt
+Trigger SF      LeadMu17_MediumID_trkIso_QMinus       Mu17_Minus_2018_medTrkIsoLoose_v1.root        muonEffi_mc_eta_pt    TH2D  etapt
+Trigger SF      TailMu8_MediumID_trkIso_QPlus         Mu8_Plus_2018_medTrkIsoLoose_v1.root          muonEffi_mc_eta_pt    TH2D  etapt
+Trigger SF      TailMu8_MediumID_trkIso_QMinus        Mu8_Minus_2018_medTrkIsoLoose_v1.root         muonEffi_mc_eta_pt    TH2D  etapt
