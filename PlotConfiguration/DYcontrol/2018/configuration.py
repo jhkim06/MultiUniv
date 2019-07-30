@@ -2,7 +2,7 @@
 Analyzer    = 'mkShape'
 Outputdir   = 'Output'
 Category    = 'SMP'
-Year        = '2017'
+Year        = '2018'
 #lumi        = 41.527540
 InSkim      = 'MetFt_L_v2_MuMu_v1'
 # Userflags: separate by ','

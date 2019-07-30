@@ -114,6 +114,11 @@ void Skim_DiLep_AFBtemp::initializeAnalyzer(){
       "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"
     };
   }
+  else if(DataYear==2018){
+    DiMuTrgs = {
+      "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v",
+    };
+  }
   else{
     cout<<"[Skim_DiLep_AFBtemp::executeEvent] ERROR, this year "<<DataYear<<" is not prepared sorry, exiting..."<<endl;
     exit(EXIT_FAILURE);
@@ -326,14 +331,24 @@ void Skim_DiLep_AFBtemp::executeEvent(){
   }
 
   /////////////////PUreweight///////////////////
-  PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
+  if(DataYear!=2018)
+    PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
+  else 
+    PileUpWeight = NULL; // FIXME update pileup for 2018
 
   PUweight=1.,PUweight_Up=1.,PUweight_Do=1.;
 
   if(!IsDATA){
-    PUweight=(mcCorr->*PileUpWeight)(nPileUp,0);
-    PUweight_Up=(mcCorr->*PileUpWeight)(nPileUp,1);
-    PUweight_Do=(mcCorr->*PileUpWeight)(nPileUp,-1);
+    if(PileUpWeight!=NULL){
+        PUweight=(mcCorr->*PileUpWeight)(nPileUp,0);
+        PUweight_Up=(mcCorr->*PileUpWeight)(nPileUp,1);
+        PUweight_Do=(mcCorr->*PileUpWeight)(nPileUp,-1);
+    }
+    else{
+        PUweight= 1.;
+        PUweight_Up= 1.;
+        PUweight_Do= 1.;
+    }
   }
   //==============================
   // SF 

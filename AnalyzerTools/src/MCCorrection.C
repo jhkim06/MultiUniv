@@ -325,7 +325,7 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
     }
   }
 
-  if( DataYear !=2016 && DataYear != 2017 ){
+  if( DataYear !=2016 && DataYear != 2017 && DataYear != 2018){
     cout << "[MCCorrection::MuonISO_SF] Wrong year : "<<DataYear<<endl;
     exit(EXIT_FAILURE);
   }
@@ -371,7 +371,7 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
 
 
 
-  if( DataYear != 2016 && DataYear != 2017){
+  if( DataYear != 2016 && DataYear != 2017 && DataYear != 2018){
     cout << "[MCCorrection::MuonTrigger_Eff] Wrong year : "<<DataYear<<endl;
     exit(EXIT_FAILURE);
   }

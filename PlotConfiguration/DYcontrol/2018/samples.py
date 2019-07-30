@@ -10,7 +10,7 @@ McWeight = 'baseW*PUweight*trgSF_Q*IdSF_Q'
 # MC
 #--------------------    
 
-samples['DYJets'] = {
+samples['DYJets_MG'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'weight' :McWeight,
     }

@@ -35,7 +35,7 @@ groupPlot['DY'] = {
     'style': 4050,
     'lineColor':807,
     'lineWidth':1,
-    'samples' : ['DYJets']
+    'samples' : ['DYJets_MG']
     }
 
 #plot['DYJets10to50'] = {
@@ -46,7 +46,7 @@ groupPlot['DY'] = {
 #    'scale':1,
 #    }
 
-plot['DYJets'] = {
+plot['DYJets_MG'] = {
     'color': kYellow,
     'isSignal' :0,
     'isData': 0,

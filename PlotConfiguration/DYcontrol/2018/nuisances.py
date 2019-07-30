@@ -31,7 +31,7 @@ nuisances['trigg'] = {
     'kind'	: 'weight',
     'type'	: 'shape',
     'samples'	: {
-      	'DYJets'	: trg_syst ,
+      	'DYJets_MG'	: trg_syst ,
 	'TTLL_powheg'	: trg_syst ,
 	'WJets_MG'	: trg_syst ,
 	'WW_pythia'	: trg_syst ,
@@ -46,7 +46,7 @@ nuisances['eff'] = {
     'kind'	: 'weight',
     'type'	: 'shape',
     'samples'	: {
-      	'DYJets'	: id_syst ,
+      	'DYJets_MG'	: id_syst ,
 	'TTLL_powheg'	: id_syst ,
 	'WJets_MG'	: id_syst ,
 	'WW_pythia'	: id_syst ,
@@ -54,6 +54,21 @@ nuisances['eff'] = {
 	'ZZ_pythia'	: id_syst ,
 	},
 }
+
+#nuisances['alphaS'] = {
+#    'name'	: 'alphaS',
+#    'kind'	: 'PDF',
+#    'type'	: 'alphaS',
+#    'samples'	: {
+#      	'DYJets'	: alphaS_syst ,
+#	'TTLL_powheg'	: alphaS_syst ,
+#	'WJets_MG'	: alphaS_syst ,
+#	'WW_pythia'	: alphaS_syst ,
+#	'WZ_pythia'	: alphaS_syst ,
+#	'ZZ_pythia'	: alphaS_syst ,
+#	},
+#}
+#
 #nuisances['pdfScale'] = {
 #    'name'	: 'pdfScale',
 #    'kind'	: 'PDF',
