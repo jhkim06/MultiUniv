@@ -7,7 +7,7 @@ from CommonPyTools.python.CommonTools import *
 
 variables['mll'] = {
     'name': 'diLep_m',
-    'range':(120,50,120),
+    'range':(120,60,120),
     'xaxis': 'm_{ll} [GeV]',
     'fold' : 3
     }

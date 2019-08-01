@@ -3,3 +3,5 @@
 *.d
 *.so
 *_Dict.cxx
+./PlotConfiguration/DYcontrol/2018/Plot_DY
+./PlotConfiguration/DYcontrol/2018/Output_MetFt_L_v2_MuMu_v1_DY

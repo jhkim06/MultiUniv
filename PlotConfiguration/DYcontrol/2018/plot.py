@@ -78,8 +78,8 @@ plot['WJets_MG'] = {
     'scale':1,
     }
 
-plot['DoubleMuon'] = {
-    'nameHR' : "DoubleMuon",
+plot['SingleMuon'] = {
+    'nameHR' : "SingleMuon",
     'color':kBlack,
     'isSignal':0,
     'isData':1,

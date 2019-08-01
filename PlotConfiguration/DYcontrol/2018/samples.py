@@ -45,7 +45,7 @@ samples['ZZ_pythia'] = {
     'weight' :McWeight,
     }
 
-samples['DoubleMuon'] = {
+samples['SingleMuon'] = {
     'skim'   :'',
     'weight' :'1',
     }
