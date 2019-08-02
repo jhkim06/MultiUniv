@@ -122,6 +122,8 @@ queue {0}
 '''.format(str(1), self.MacShell)
 # We don't use the multi queue at the moment
 #transfer_output_remaps = "hists.root = output/hists_$(Process).root"
+
+    # multi queue available in SNU server
     elif IsSNU:
 
       print>>jdsFile, '''executable = {0}
@@ -154,9 +156,6 @@ accounting_group=group_cms
 queue {0}
 '''.format(str(nQueue), "/".join((self.jobDir).split("/")[:-2]))
 
-
-# We don't use the multi queue at the moment
-#transfer_output_remaps = "hists.root = output/hists_$(Process).root"
     else:
       print "This host", HOSTNAME, "is not ready for batch job, exiting..........."
       exit()
@@ -179,65 +178,58 @@ echo "[mkGardener.py] Okay, let's run the analysis"
         #export PATH=$GCC_HOME/bin:$PATH
         #export LD_LIBRARY_PATH=$GCC_HOME/lib/gcc/x86_64-redhat-linux:$GCC_HOME/lib64:$LD_LIBRARY_PATH
         print>>sFile,'''#!/bin/bash
-                        SECTION=`printf $1` '''
+SECTION=`printf $1` '''
         if not self.multiQueue:
-            print>>sFile,''' WORKDIR=`pwd` '''
+            print>>sFile,'''WORKDIR=`pwd` '''
         else :
-            print>>sFile,''' WORKDIR=`printf $2` '''
+            print>>sFile,'''WORKDIR=`printf $2` '''
 
-        print>>sFile, '''
-                        SumNoAuth=999
-                        Trial=0
+        print>>sFile, '''SumNoAuth=999
+Trial=0
                         
-                        export LC_ALL=C
+export LC_ALL=C
                         
-                        export CMS_PATH=/cvmfs/cms.cern.ch
-                        source $CMS_PATH/cmsset_default.sh
-                        export SCRAM_ARCH={0}
-                        export cmsswrel={1}
-                        cd /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/$cmsswrel/src
-                        eval `scramv1 runtime -sh`
-                        cd -
-                        source /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/$cmsswrel/external/$SCRAM_ARCH/bin/thisroot.sh
-                        
-                        while [ "$SumNoAuth" -ne 0 ]; do
-                          if [ "$Trial" -gt 9999 ]; then
-                            break
-                          fi
-                          echo "#### Processing ####" '''.format(SCRAM_ARCH, cmsswrel)
+export CMS_PATH=/cvmfs/cms.cern.ch
+source $CMS_PATH/cmsset_default.sh
+export SCRAM_ARCH={0}
+export cmsswrel={1}
+cd /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/$cmsswrel/src
+eval `scramv1 runtime -sh`
+cd -
+source /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/$cmsswrel/external/$SCRAM_ARCH/bin/thisroot.sh
+
+while [ "$SumNoAuth" -ne 0 ]; do
+  if [ "$Trial" -gt 9999 ]; then
+    break
+  fi
+  echo "#### Processing ####" '''.format(SCRAM_ARCH, cmsswrel)
 
         if not self.multiQueue:
-            print>>sFile, '''{0} 2> err.log || echo "EXIT_FAILURE" >> err.log 
+            print>>sFile, '''  {0} 2> err.log || echo "EXIT_FAILURE" >> err.log 
 
-                          NoAuthError_Open=`grep "Error in <TNetXNGFile::Open>" err.log -R | wc -l`
-                          NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" err.log -R | wc -l`
-                          '''.format(self.exCmd)
+  NoAuthError_Open=`grep "Error in <TNetXNGFile::Open>" err.log -R | wc -l`
+  NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" err.log -R | wc -l`
+  '''.format(self.exCmd)
         else :
-            print>>sFile, '''cd ${{WORKDIR}} 
-                          {0} ./job_${{SECTION}}/job_${{SECTION}}_mkShape.py 2> ./job_${{SECTION}}/err.log || echo "EXIT_FAILURE" >> ./job_${{SECTION}}/err.log
-                          NoAuthError_Open=`grep "Error in <TNetXNGFile::Open>" ./job_${{SECTION}}/err.log -R | wc -l`
-                          NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" ./job_${{SECTION}}/err.log -R | wc -l`
+            print>>sFile, '''  cd ${{WORKDIR}} 
+  {0} ./job_${{SECTION}}/job_${{SECTION}}_mkShape.py 2> ./job_${{SECTION}}/err.log || echo "EXIT_FAILURE" >> ./job_${{SECTION}}/err.log
+  NoAuthError_Open=`grep "Error in <TNetXNGFile::Open>" ./job_${{SECTION}}/err.log -R | wc -l`
+  NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" ./job_${{SECTION}}/err.log -R | wc -l`'''.format(self.cmdType)  
 
-                          '''.format(self.cmdType)  
-
-        print>>sFile, '''
+        print>>sFile, '''  SumNoAuth=$(($NoAuthError_Open + $NoAuthError_Close))
                         
-                          SumNoAuth=$(($NoAuthError_Open + $NoAuthError_Close))
+  if [ "$SumNoAuth" -ne 0 ]; then
+    echo "SumNoAuth="$SumNoAuth
+    echo "AUTH error occured.. running again in 30 seconds.."
+    Trial=$((Trial+=1))
+    sleep 30
+  fi
                         
-                          if [ "$SumNoAuth" -ne 0 ]; then
-                            echo "SumNoAuth="$SumNoAuth
-                            echo "AUTH error occured.. running again in 30 seconds.."
-                            Trial=$((Trial+=1))
-                            sleep 30
-                          fi
-                        
-                        done '''
+done '''
         if not self.multiQueue:
-            print>>sFile, '''
-                        cat err.log >&2 '''
+            print>>sFile, '''cat err.log >&2 '''
         else :
-            print>>sFile, '''
-                        cat ./job_${SECTION}/err.log >&2 '''
+            print>>sFile, '''cat ./job_${SECTION}/err.log >&2 '''
 
         sFile.close()
 

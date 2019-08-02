@@ -387,7 +387,7 @@ for InputSample in InputSamples:
     os.system('mkdir -p '+thisjob_dir)
 
     inFileFullNames =[]
-    print 'FileRanges: ', FileRanges[it_job]
+    #print 'FileRanges: ', FileRanges[it_job]
     for it_file in FileRanges[it_job]:
       inFileFullNames.append( inputFileList[it_file].strip('\n') )
 
