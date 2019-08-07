@@ -68,7 +68,7 @@ public:
 
   TString _EtaPtOrder;
 
-  double GetTopPtReweight(std::vector<Gen> gens);
+  double GetTopPtReweight(const std::vector<Gen> &gens);
   
 };
 
