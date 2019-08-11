@@ -201,7 +201,7 @@ bool GenMatching_CHToCB::FindMinDeltaRMatching(matchedPartonJet &partonjet){
   }
   vector<double>::iterator min_deltaR = std::min_element(deltaR.begin(),deltaR.end());
   for(int i =0; i<njets; i++){
-    if(*min_deltaR>0.4) break;
+    if(*min_deltaR>0.3) break;
     if(*min_deltaR != deltaR[i]) continue;
     partonjet.matched_jet = jets->at(i);
     partonjet.jet_index = i;

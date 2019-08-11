@@ -314,8 +314,8 @@ bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, flo
   bool isBTagged = JetDiscriminant>TaggerCut;
   
   //==== For now 2017 only SF are available so apply no SF to 2016/2018
-  if (DataYear == 2016) return isBTagged; 
-  if (DataYear == 2018) return isBTagged; 
+  //if (DataYear == 2016) return isBTagged; 
+  //if (DataYear == 2018) return isBTagged; 
   
 
   //=== Data: no correction needed

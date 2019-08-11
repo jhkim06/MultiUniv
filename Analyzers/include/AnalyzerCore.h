@@ -82,6 +82,7 @@ public:
   std::vector<FatJet> GetFatJets(TString id, double ptmin, double fetamax);
 
   std::vector<Gen> GetGens();
+  void BHGetGens(std::vector<Gen>& out);
 
   //===================================================
   //==== Get objects METHOD 2
