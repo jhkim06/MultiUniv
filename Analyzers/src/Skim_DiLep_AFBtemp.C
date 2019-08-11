@@ -7,7 +7,8 @@ void Skim_DiLep_AFBtemp::initializeAnalyzer(){
   //=================================
   // Skim Types
   //=================================
-   
+
+  psProv.setPrescaleProvider("/home/jhkim/MultiUniv/data/Run2Legacy_v3/2016/TrigPreScale/triggerData2016");   
 
   if( HasFlag("MuMu")){
     cout<<"[Skim_DiLep_AFBtemp::initializeAnalyzer] MuMu Selection"<<endl;
@@ -208,7 +209,7 @@ void Skim_DiLep_AFBtemp::executeEvent(){
   if(muons.size() == 2  && electrons.size() == 0){
     IsMuMu = 1;
   }
-  if(num_tight_mu == 0 && electrons.size() == 2){
+  if(muons.size() == 0 && electrons.size() == 2){
     IsElEl = 1;
   }
   if(IsMuMu != 1 && IsElEl != 1) return;
@@ -247,31 +248,47 @@ void Skim_DiLep_AFBtemp::executeEvent(){
 
   } //---------------------------------------------
   if(IsElEl == 1){ // Electron =======================
-    if(! evt->PassTrigger(DiElTrgs) )return;
-    if(electrons[0].SelectiveQ() )if(electrons[1].SelectiveQ())  diLep_passSelectiveQ = true;
-    leps=MakeLeptonPointerVector(electrons);
-    Lep0PtCut=25.;
-    Lep1PtCut=15.;
-    LepEtaCut = 2.5;
-    LeptonID_SF  = &MCCorrection::ElectronID_SF;
-    LeptonReco_SF= &MCCorrection::ElectronReco_SF;
-    // key for private or official SF
-    LeptonID_key_POG= "passMediumID";
-    LeptonID_key    = "MediumID_pt10";
-    LeptonID_QPlus_key    = "Selective_MediumID_QPlus_pt10"; // currently only selective charge dependent SFs exist for 2016
-    LeptonID_QMinu_key    = "Selective_MediumID_QMinus_pt10";
+    //if(! evt->PassTrigger(DiElTrgs) )return;
 
-    trgSF_QPlus_key0="Selective_LeadEle23_MediumID_QPlus";
-    trgSF_QMinu_key0="Selective_LeadEle23_MediumID_QMinus";
+    //if( evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v") == 0 && evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v") == 1){
+    //    cout << "DZ filter: " << evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v") << endl;
+    //    cout << "non DZ filter: " << evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v") << endl;
+    //    //std::cout <<"l1 ps "<<psProv.l1Prescale("L1_SingleEG26",run,lumi)<<std::endl;
+    //    std::cout <<"hlt ps "<<psProv.hltPrescale("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v",run,lumi)<<std::endl;
+    //}
 
-    trgSF_key1="TailEle12_MediumID";
-    trgSF_QPlus_key1="Selective_TailEle12_MediumID_QPlus";
-    trgSF_QMinu_key1="Selective_TailEle12_MediumID_QMinus";
+    if( evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v") == 1 && evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v") == 0){
+        cout << "DZ filter: " << evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v") << endl;
+        cout << "non DZ filter: " << evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v") << endl;
+        //std::cout <<"l1 ps "<<psProv.l1Prescale("L1_SingleEG26",run,lumi)<<std::endl;
+        std::cout <<"hlt ps "<<psProv.hltPrescale("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v",run,lumi)<<std::endl;
+    }
+
+    //if(electrons[0].SelectiveQ() )if(electrons[1].SelectiveQ())  diLep_passSelectiveQ = true;
+    //leps=MakeLeptonPointerVector(electrons);
+    //Lep0PtCut=25.;
+    //Lep1PtCut=15.;
+    //LepEtaCut = 2.5;
+    //LeptonID_SF  = &MCCorrection::ElectronID_SF;
+    //LeptonReco_SF= &MCCorrection::ElectronReco_SF;
+    //// key for private or official SF
+    //LeptonID_key_POG= "passMediumID";
+    //LeptonID_key    = "MediumID_pt10";
+    //LeptonID_QPlus_key    = "Selective_MediumID_QPlus_pt10"; // currently only selective charge dependent SFs exist for 2016
+    //LeptonID_QMinu_key    = "Selective_MediumID_QMinus_pt10";
+
+    //trgSF_QPlus_key0="Selective_LeadEle23_MediumID_QPlus";
+    //trgSF_QMinu_key0="Selective_LeadEle23_MediumID_QMinus";
+
+    //trgSF_key1="TailEle12_MediumID";
+    //trgSF_QPlus_key1="Selective_TailEle12_MediumID_QPlus";
+    //trgSF_QMinu_key1="Selective_TailEle12_MediumID_QMinus";
 
 
   } //===========================================
   FillHist("CutFlow",7,1,30,0,30);
 
+  return;
   // ================================
   // Kinematic cuts 
   // ================================
@@ -350,10 +367,10 @@ void Skim_DiLep_AFBtemp::executeEvent(){
         PUweight_Do= 1.;
     }
   }
+
   //==============================
   // SF 
   //==============================
-
 
   trgSF    = 1; trgSF_Up   = 1; trgSF_Do   = 1;
   trgSF_Q  = 1; trgSF_Q_Up = 1; trgSF_Q_Do = 1;

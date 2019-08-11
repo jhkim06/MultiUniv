@@ -18,4 +18,9 @@
 #pragma link C++ class TSCorrection+;
 #pragma link C++ class RocCorrUtil+;
 
+#pragma link C++ class PrescaleProvider-;
+#pragma link C++ class RunInfo-;
+#pragma link C++ class PrescaleTbl-;
+
+
 #endif

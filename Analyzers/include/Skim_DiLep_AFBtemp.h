@@ -4,11 +4,13 @@
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 #include "Definitions.h"
+#include "PrescaleProvider.h"
 
 class Skim_DiLep_AFBtemp : public AnalyzerCore {
 
 public:
 
+  PrescaleProvider psProv;
   void initializeAnalyzer();
   void executeEventFromParameter(AnalyzerParameter param);
   void executeEvent();
