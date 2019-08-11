@@ -7,11 +7,14 @@ void Skim_Jets::initializeAnalyzer(){
   // Skim Types
   //=================================
   if( HasFlag("JJJJ")){
-    cout<<"[Skim_Jets::initializeAnalyzer] 4 jet Skim"<<endl;}
+    cout<<"[Skim_Jets::initializeAnalyzer] 4 jet Skim"<<endl;
+  }
   else if(HasFlag("DeepCSVMBB")){
-    cout<<"[Skim_Jets::initializeAnalyzer] 2 b Skim"<<endl;}
+    cout<<"[Skim_Jets::initializeAnalyzer] 2 b Skim"<<endl;
+  }
   else if(HasFlag("prune")){
-    cout<<"[Skim_Jets::initializeAnalyzer] prune Skim, remove fatjet, photon"<<endl;}
+    cout<<"[Skim_Jets::initializeAnalyzer] prune Skim, remove fatjet, photon"<<endl;
+  }
   else{
     cout <<"[Skim_Jets::executeEvent] Not ready for this Flags ";
     for(unsigned int i=0; i<Userflags.size(); i++){

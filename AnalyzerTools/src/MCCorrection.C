@@ -863,7 +863,7 @@ double MCCorrection::GetZPtWeight(double zpt, double zrap, Lepton::Flavour flavo
 }
 
 
-double MCCorrection::GetTopPtReweight(std::vector<Gen> gens){
+double MCCorrection::GetTopPtReweight(const std::vector<Gen> &gens){
   //==== ref: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting2017
   //==== Only top quarks in SM ttbar events must be reweighted, 
   //==== not single tops or tops from BSM production mechanisms.
@@ -874,14 +874,14 @@ double MCCorrection::GetTopPtReweight(std::vector<Gen> gens){
   double toppt1=10000, toppt2=10000;
   bool found_top = false, found_atop = false;
 
-  for(vector<Gen>::iterator genit=gens.begin(); genit!=gens.end(); genit++){
-    if(genit->Status() == 22){
-      if(genit->PID() == 6){
-        toppt1= genit->Pt();
+  for(auto &genit : gens){
+    if(genit.Status() == 22){
+      if(genit.PID() == 6){
+        toppt1= genit.Pt();
         found_top = true;
       }
-      else if(genit->PID() == -6){
-        toppt2= genit->Pt();
+      else if(genit.PID() == -6){
+        toppt2= genit.Pt();
         found_atop = true;
       }
     }
