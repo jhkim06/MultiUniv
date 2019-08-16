@@ -7,24 +7,24 @@ from CommonPyTools.python.CommonTools import *
 
 variables['mll'] = {
     'name': 'diLep_m',
-    'range':(120,50,120),
+    'range':(120,60,120),
     'xaxis': 'm_{ll} [GeV]',
     'fold' : 3
     }
 variables['leading_muon_pt'] = {
-    'name': 'muon_pt[0]',
+    'name': 'leading_pt',
     'range':(100,0,100),
     'xaxis': '#mu p_{T} [GeV]',
     'yaxis': 'Events / 5GeV',
     'fold' : 3
     }
-#variables['leading_ele_pt'] = {
-#    'name': 'electron_pt[0]',
-#    'range':(100,0,100),
-#    'xaxis': 'e p_{T} [GeV]',
-#    'yaxis': 'Events / 5GeV',
-#    'fold' : 3
-#    }
+variables['subleading_muon_pt'] = {
+    'name': 'subleading_pt',
+    'range':(100,0,100),
+    'xaxis': '#mu p_{T} [GeV]',
+    'yaxis': 'Events / 5GeV',
+    'fold' : 3
+    }
 #variables['ZpT'] = {
 #    'name': 'diLep_pt',
 #    'range':(120,0,120),

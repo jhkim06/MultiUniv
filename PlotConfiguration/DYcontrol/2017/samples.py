@@ -4,11 +4,7 @@ from CommonPyTools.python.CommonTools import *
 # Number of Leptons and WP
 ###########################
 
-Nlep='2'
-eleWP='mediumSelectiveQ'
-
-McWeight = 'baseW*PUweight*trgSF_Q*recoSF*IdSF_Q*IsoSF*ZPtCor'
-#McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
+McWeight = 'baseW*PUweight*trgSF_Q*IdSF_Q'
 
 #--------------------    
 # MC
@@ -19,11 +15,11 @@ samples['DYJets'] = {
     'weight' :McWeight,
     }
 
-#samples['DYJets10to50_MG'] = {
+#samples['DYJets10to50'] = {
 #    'skim'   :'', # use default skim defined in configuration.py
 #    'weight' :McWeight,
 #    }
-#
+
 samples['TTLL_powheg'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'weight' :McWeight,
@@ -49,15 +45,10 @@ samples['ZZ_pythia'] = {
     'weight' :McWeight,
     }
 
-samples['DoubleEG'] = {
+samples['DoubleMuon'] = {
     'skim'   :'',
     'weight' :'1',
     }
-
-#samples['DoubleMuon'] = {
-#    'skim'   :'',
-#    'weight' :'1',
-#    }
 #--------------------    
 # DATA driven QCD
 #--------------------

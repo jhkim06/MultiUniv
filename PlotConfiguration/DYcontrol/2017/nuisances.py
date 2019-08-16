@@ -27,7 +27,7 @@ pdfErr_syst  = ['PDFWeights_Error']
 #id_syst_ele = ['LepSF'+Nlep+'l_ele_'+eleWP+'_Up', 'LepSF'+Nlep+'l_ele_'+eleWP+'_Do']
 
 nuisances['trigg'] = {
-    'name'	: 'trg_2017',
+    'name'	: 'trg',
     'kind'	: 'weight',
     'type'	: 'shape',
     'samples'	: {
@@ -42,7 +42,7 @@ nuisances['trigg'] = {
 
 
 nuisances['eff'] = {
-    'name'	: 'eff_2017',
+    'name'	: 'eff',
     'kind'	: 'weight',
     'type'	: 'shape',
     'samples'	: {
@@ -54,21 +54,6 @@ nuisances['eff'] = {
 	'ZZ_pythia'	: id_syst ,
 	},
 }
-
-#nuisances['alphaS'] = {
-#    'name'	: 'alphaS',
-#    'kind'	: 'PDF',
-#    'type'	: 'alphaS',
-#    'samples'	: {
-#      	'DYJets'	: alphaS_syst ,
-#	'TTLL_powheg'	: alphaS_syst ,
-#	'WJets_MG'	: alphaS_syst ,
-#	'WW_pythia'	: alphaS_syst ,
-#	'WZ_pythia'	: alphaS_syst ,
-#	'ZZ_pythia'	: alphaS_syst ,
-#	},
-#}
-#
 #nuisances['pdfScale'] = {
 #    'name'	: 'pdfScale',
 #    'kind'	: 'PDF',

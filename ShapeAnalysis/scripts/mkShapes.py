@@ -29,6 +29,7 @@ parser.add_argument('--InSkim', dest='InSkim', default="")
 parser.add_argument('--dry_run', action='store_true')
 parser.add_argument('--doBatch', action='store_true')
 parser.add_argument('--doHadd', action='store_true')
+parser.add_argument('--multiQueue', action='store_true', default = False)
 parser.add_argument('--userflags', dest='Userflags', default="test")
 parser.add_argument('--skimV', dest='skimV', default="0")
 parser.add_argument('--nTotFiles', dest='nTotFiles', default=0, type=int)
@@ -303,7 +304,6 @@ for InputSample in InputSamples:
       exit()
   #print 'inputFiles',inputFileList
 
-
   if opt.nTotFiles > 0:
     NTotalFiles = opt.nTotFiles
   else:
@@ -364,18 +364,18 @@ for InputSample in InputSamples:
 
 
   ## Write run script
-
   CheckTotalNFile=0
   #OutFullPathFile_List =[]
   cmdType = 'python'
   for it_job in range(0,len(FileRanges)):
+    
     time.sleep(0.2)
 
     #print "["+str(it_job)+"th]",
     #print FileRanges[it_job],
     #print " --> "+str(len(FileRanges[it_job]))
 
-    # check if this is the first job just for unfolding histograms
+    # check if this is the first job and if so save TUnfoldBinning object in the output file of the first job (JUST for histograms using TUnfold package)
     isFirstJob = "False"
     if it_job == 0:
         isFirstJob = "True"
@@ -387,7 +387,7 @@ for InputSample in InputSamples:
     os.system('mkdir -p '+thisjob_dir)
 
     inFileFullNames =[]
-    print 'FileRanges: ', FileRanges[it_job]
+    #print 'FileRanges: ', FileRanges[it_job]
     for it_file in FileRanges[it_job]:
       inFileFullNames.append( inputFileList[it_file].strip('\n') )
 
@@ -400,17 +400,25 @@ for InputSample in InputSamples:
     OutFullPathFile = OutSampleDir + '/' + outFileName
     #OutFullPathFile_List.append(OutFullPathFile)
 
-
     #print 'mkShape: sample', sample
-
 
     if opt.doBatch and not opt.doHadd:
       #print 'batch making histo'
       #jobName = 'mkShape'
       jobName = 'job_'+str(it_job)+'_mkShape'
-      jobs = batchJobs(jobName,opt.Queue, thisjob_dir,cmdType, opt.dry_run)
-      jobs.mkShCommand()
-      jobs.mkJds()
+      ########################################################################
+      # 'jobName'.py is created when object (jobs) of batchJobs class is created
+      jobs = batchJobs(jobName, opt.Queue, thisjob_dir,cmdType, opt.dry_run, opt.multiQueue) 
+      ########################################################################
+      # make shell scripts when ONE queue
+      if not opt.multiQueue: jobs.mkShCommand()
+      ################################################### 
+      # make submit.jds currently only SINGLE queue ###
+      # this is INSIDE for loop of N jobs since N submit.jds are needed in case of SINGLE queue
+      # make condor submit script when ONE queue
+      if not opt.multiQueue: jobs.mkJds() 
+      ###################################################      
+
       #jobs.AddSh(shCmd)
       #jobs.AddPy2Sh()
      
@@ -432,8 +440,14 @@ for InputSample in InputSamples:
       instructions += "		"+ isFirstJob + ") \n"
       jobs.AddPy(instructions)
 
-      jobs.Sub()
+      # submit jobs when ONE queue 
+      if not opt.multiQueue: jobs.Sub()
 
+      # make ONE shell script and ONE submit.jds here for MULTIPLE queue case
+      if opt.multiQueue and it_job == len(FileRanges)-1: 
+        jobs.mkShCommand()
+        jobs.mkJds(it_job+1)
+        jobs.Sub()
 
       #cmd = thisjob_dir+'commands.sh'
       #if opt.dry_run:
@@ -459,6 +473,7 @@ for InputSample in InputSamples:
   if CheckTotalNFile != NTotalFiles:
     print 'mkShapes: CheckTotalNFile is not the same to NTotalFiles, plz check, exitting...'
     exit()
+
 
 if opt.doHadd:
   print "let's collect them all"

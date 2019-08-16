@@ -38,14 +38,14 @@ groupPlot['DY'] = {
     'samples' : ['DYJets']
     }
 
-#plot['DYJets10to50_MG'] = {
+#plot['DYJets10to50'] = {
 #    'color': 418,
 #    'isSignal' :1,
 #    'isData': 0,
 #    'style': 4050,
 #    'scale':1,
 #    }
-#
+
 plot['DYJets'] = {
     'color': kYellow,
     'isSignal' :0,
@@ -78,15 +78,15 @@ plot['WJets_MG'] = {
     'scale':1,
     }
 
-plot['DoubleEG'] = {
-    'nameHR' : "DoubleEG",
+plot['DoubleMuon'] = {
+    'nameHR' : "DoubleMuon",
     'color':kBlack,
     'isSignal':0,
     'isData':1,
     'scale':1,
     }
 
-legend['lumi'] = 'L = 41.5/fb'
+legend['lumi'] = 'L = 35.9/fb'
 legend['sqrt'] = '#sqrt{s} = 13 TeV'
 # extraText default is Preliminary
 #legend['extraText'] = 'Preliminary'
