@@ -69,7 +69,8 @@ public:
   TString _EtaPtOrder;
 
   double GetTopPtReweight(const std::vector<Gen> &gens);
-  
+  double GetTopPtReweight(const std::vector<double> *gen_pt_, const std::vector<int> *gen_PID_, const std::vector<int> *gen_status_);
+
 };
 
 #endif

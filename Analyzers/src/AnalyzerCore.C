@@ -545,6 +545,49 @@ std::vector<Gen> AnalyzerCore::GetGens(){
 
 }
 
+void AnalyzerCore::BHGetGens(std::vector<Gen>& out ){
+
+  out.clear();
+
+  if(IsDATA) return;
+
+
+  for(unsigned int i=0; i<gen_pt->size(); i++){
+    if(abs(gen_PID->at(i))!=6){
+      continue;
+    }
+    if(gen_status->at(i)!=22){
+      continue;
+    }
+    out.push_back(Gen());
+    Gen& gen = out.back();
+
+    gen.SetIsEmpty(false);
+    gen.SetPtEtaPhiM(gen_pt->at(i), gen_eta->at(i), gen_phi->at(i), gen_mass->at(i));
+    //gen.SetCharge(gen_charge->at(i));
+    gen.SetIndexPIDStatus(i, gen_PID->at(i), gen_status->at(i));
+    gen.SetMother(gen_mother_index->at(i));
+    //gen.SetGenStatusFlag_isPrompt( gen_isPrompt->at(i) );
+    //gen.SetGenStatusFlag_isPromptFinalState( gen_isPromptFinalState->at(i) );
+    //gen.SetGenStatusFlag_isTauDecayProduct( gen_isTauDecayProduct->at(i) );
+    //gen.SetGenStatusFlag_isPromptTauDecayProduct( gen_isPromptTauDecayProduct->at(i) );
+    //gen.SetGenStatusFlag_isDirectPromptTauDecayProductFinalState( gen_isDirectPromptTauDecayProductFinalState->at(i) );
+    //gen.SetGenStatusFlag_isHardProcess( gen_isHardProcess->at(i) );
+    //gen.SetGenStatusFlag_isLastCopy( gen_isLastCopy->at(i) );
+    //gen.SetGenStatusFlag_isLastCopyBeforeFSR( gen_isLastCopyBeforeFSR->at(i) );
+    //gen.SetGenStatusFlag_isPromptDecayed( gen_isPromptDecayed->at(i) );
+    //gen.SetGenStatusFlag_isDecayedLeptonHadron( gen_isDecayedLeptonHadron->at(i) );
+    //gen.SetGenStatusFlag_fromHardProcessBeforeFSR( gen_fromHardProcessBeforeFSR->at(i) );
+    //gen.SetGenStatusFlag_fromHardProcessDecayed( gen_fromHardProcessDecayed->at(i) );
+    //gen.SetGenStatusFlag_fromHardProcessFinalState( gen_fromHardProcessFinalState->at(i) );
+    //gen.SetGenStatusFlag_isMostlyLikePythia6Status3( gen_isMostlyLikePythia6Status3->at(i) );
+
+  }
+
+  return;
+
+}
+
 std::vector<Muon> AnalyzerCore::UseTunePMuon(std::vector<Muon> muons){
 
   std::vector<Muon> out;
@@ -966,7 +1009,12 @@ void AnalyzerCore::BtaggingSFEvtbyEvt(std::vector<Jet> &jets, Jet::Tagger tagger
     else{
       //=== Event reweighting SF
       if(!IsDATA){
-          btag_sf *= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+	  if(Btag_Eff == 1.){
+	    btag_sf *= 1.;
+	  }
+	  else{
+            btag_sf *= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+	  }
       }
     }
   }
@@ -1028,11 +1076,22 @@ void AnalyzerCore::BtaggingSFEvtbyEvt(std::vector<Jet> &jets, Jet::Tagger tagger
     else{
       //=== Event reweighting SF
       if(!IsDATA){
-        btag_sf *= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+
+	if(Btag_Eff == 1.){
+          btag_sf *= 1.;
+        }
+	else{
+          btag_sf *= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+	}
         if(Btag_SF>1){
-	  float tmp_mistag_sf = 1 - (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
-	  tmp_mistag_sf /= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
-	  mistag_sf.push_back(tmp_mistag_sf);
+	  if(Btag_Eff == 1.){
+	    mistag_sf.push_back(0.);
+	  }
+	  else{
+	    float tmp_mistag_sf = 1 - (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+	    tmp_mistag_sf /= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+	    mistag_sf.push_back(tmp_mistag_sf);
+	  }
         }
 	else{
 	  mistag_sf.push_back(0.);

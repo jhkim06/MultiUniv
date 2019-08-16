@@ -86,15 +86,12 @@ private:
 
   TLorentzVector genZ;
 
-  std::vector<bool> btag_vector_noSF;
   int n_bjet_deepcsv_m_noSF;
   double BTagSF, BTagSF_Up, BTagSF_Do;
   double MisTagSF, MisTagSF_Up, MisTagSF_Do;
 
-  //double TopPtReweight;
+  double TopPtReweight;
 
-  std::vector<Jet::Tagger> vtaggers;
-  std::vector<Jet::WP> v_wps;
   vector<Jet> this_AllJets ;
   vector<Jet> jets;
   vector<Jet> jetsLveto;
