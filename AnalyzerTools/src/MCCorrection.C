@@ -324,12 +324,12 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
       exit(EXIT_FAILURE);
     }
   }
-
+/*
   if( DataYear !=2016 && DataYear != 2017 ){
     cout << "[MCCorrection::MuonISO_SF] Wrong year : "<<DataYear<<endl;
     exit(EXIT_FAILURE);
   }
-
+*/
   if(_EtaPtOrder == "etapt"){
     return RootHelper::GetBinContent4SF(this_hist, eta, pt, sys);
   }else

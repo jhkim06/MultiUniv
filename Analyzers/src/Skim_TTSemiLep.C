@@ -77,7 +77,8 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   cout << "[Skim_TTSemiLep::initializeAnalyzer] Skim List====================== " << endl;
   if(DataYear==2016){
     SingleMuTrgs = {
-      "HLT_IsoMu24_v"
+      "HLT_IsoMu24_v",
+      "HLT_IsoTkMu24_v"
     };
     trgSFkeyMu = "IsoMu24";
     TriggerSafePtCutMu=26.;

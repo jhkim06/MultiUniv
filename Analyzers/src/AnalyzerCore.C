@@ -1009,7 +1009,12 @@ void AnalyzerCore::BtaggingSFEvtbyEvt(std::vector<Jet> &jets, Jet::Tagger tagger
     else{
       //=== Event reweighting SF
       if(!IsDATA){
-          btag_sf *= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+	  if(Btag_Eff == 1.){
+	    btag_sf *= 1.;
+	  }
+	  else{
+            btag_sf *= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+	  }
       }
     }
   }
@@ -1071,11 +1076,22 @@ void AnalyzerCore::BtaggingSFEvtbyEvt(std::vector<Jet> &jets, Jet::Tagger tagger
     else{
       //=== Event reweighting SF
       if(!IsDATA){
-        btag_sf *= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+
+	if(Btag_Eff == 1.){
+          btag_sf *= 1.;
+        }
+	else{
+          btag_sf *= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+	}
         if(Btag_SF>1){
-	  float tmp_mistag_sf = 1 - (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
-	  tmp_mistag_sf /= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
-	  mistag_sf.push_back(tmp_mistag_sf);
+	  if(Btag_Eff == 1.){
+	    mistag_sf.push_back(0.);
+	  }
+	  else{
+	    float tmp_mistag_sf = 1 - (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+	    tmp_mistag_sf /= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+	    mistag_sf.push_back(tmp_mistag_sf);
+	  }
         }
 	else{
 	  mistag_sf.push_back(0.);
