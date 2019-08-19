@@ -8,7 +8,10 @@ void Skim_DiLep_AFBtemp::initializeAnalyzer(){
   // Skim Types
   //=================================
 
-  psProv.setPrescaleProvider("/home/jhkim/MultiUniv/data/Run2Legacy_v3/2016/TrigPreScale/triggerData2016");   
+  TString data_prescale = getenv("SKFlat_WD");
+  data_prescale += "/data/Run2Legacy_v3/2016/TrigPreScale/triggerData2016"; 
+  //psProv.setPrescaleProvider("/home/jhkim/MultiUniv/data/Run2Legacy_v3/2016/TrigPreScale/triggerData2016");   
+  psProv.setPrescaleProvider(data_prescale.Data());   
 
   if( HasFlag("MuMu")){
     cout<<"[Skim_DiLep_AFBtemp::initializeAnalyzer] MuMu Selection"<<endl;

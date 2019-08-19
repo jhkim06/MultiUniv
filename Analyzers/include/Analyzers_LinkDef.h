@@ -23,6 +23,7 @@
 #pragma link C++ class Skim_TSCorrTree+;
 #pragma link C++ class Skim_Jets+;
 #pragma link C++ class Skim_TTSemiLep+;
+#pragma link C++ class Skim_DZfilter+;
 
 #pragma link C++ class Skim_K1+;
 #pragma link C++ class Skim_K2+;
