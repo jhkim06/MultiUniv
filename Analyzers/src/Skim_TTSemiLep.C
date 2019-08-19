@@ -59,7 +59,6 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   newtree->Branch("pdf_scale_Up", &pdf_scale_Up,"pdf_scale_Up/D");
   newtree->Branch("pdf_scale_Do", &pdf_scale_Do,"pdf_scale_Do/D");
 
-  newtree->Branch("btag_vector_noSF","vector<bool>",&btag_vector_noSF);
   newtree->Branch("n_bjet_deepcsv_m_noSF", &n_bjet_deepcsv_m_noSF,"n_bjet_deepcsv_m_noSF/I");
   newtree->Branch("BTagSF", &BTagSF,"BTagSF/D");
   newtree->Branch("BTagSF_Up", &BTagSF_Up,"BTagSF_Up/D");
@@ -68,7 +67,7 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   newtree->Branch("MisTagSF_Up", &MisTagSF_Up,"MisTagSF_Up/D");
   newtree->Branch("MisTagSF_Do", &MisTagSF_Do,"MisTagSF_Do/D");
 
-  //newtree->Branch("TopPtReweight", &TopPtReweight,"TopPtReweight/D");
+  newtree->Branch("TopPtReweight", &TopPtReweight,"TopPtReweight/D");
 
   // clear vector residual
   SingleMuTrgs.clear();
@@ -78,7 +77,8 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   cout << "[Skim_TTSemiLep::initializeAnalyzer] Skim List====================== " << endl;
   if(DataYear==2016){
     SingleMuTrgs = {
-      "HLT_IsoMu24_v"
+      "HLT_IsoMu24_v",
+      "HLT_IsoTkMu24_v"
     };
     trgSFkeyMu = "IsoMu24";
     TriggerSafePtCutMu=26.;
@@ -125,7 +125,7 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   std::vector<Jet::Tagger> taggers = {Jet::DeepCSV};
   std::vector<Jet::WP> wps ={Jet::Medium};
 
-  SetupBTagger(taggers, wps, true, true);
+  SetupBTagger(taggers, wps, true, DataYear==2017?true:false);
 
 }
 
@@ -133,20 +133,16 @@ void Skim_TTSemiLep::executeEvent(){
 
   muons.clear();
   electrons.clear();
+  gens.clear();
   leps.clear();
-  btag_vector_noSF.clear();
-  vtaggers.clear();
-  v_wps.clear();
   this_AllJets.clear();
   jets.clear();
   jetsLveto.clear();
 
   muons.shrink_to_fit();
   electrons.shrink_to_fit();
+  gens.shrink_to_fit();
   leps.shrink_to_fit();
-  btag_vector_noSF.shrink_to_fit();
-  vtaggers.shrink_to_fit();
-  v_wps.shrink_to_fit();
   this_AllJets.shrink_to_fit();
   jets.shrink_to_fit();
   jetsLveto.shrink_to_fit();
@@ -173,49 +169,6 @@ void Skim_TTSemiLep::executeEvent(){
 
   evt = new Event;
   *evt = GetEvent();
-
-  newtree->SetBranchAddress("IsMu",   &IsMu);
-  newtree->SetBranchAddress("IsEl",   &IsEl);
-  newtree->SetBranchAddress("weight_Prefire",   &weight_Prefire);
-
-  newtree->SetBranchAddress("passTightID",   &passTightID);
-  newtree->SetBranchAddress("passIso",   &passIso);
-  newtree->SetBranchAddress("passAntiIso",   &passAntiIso);
-  newtree->SetBranchAddress("passAntiIso_Up",   &passAntiIso_Up);
-  newtree->SetBranchAddress("passAntiIso_Do",   &passAntiIso_Do);
-
-  newtree->SetBranchAddress("PUweight",   &PUweight);
-  newtree->SetBranchAddress("PUweight_Up",&PUweight_Up);
-  newtree->SetBranchAddress("PUweight_Do",&PUweight_Do);
-
-  newtree->SetBranchAddress("trgSF",   &trgSF);
-  newtree->SetBranchAddress("trgSF_Up",&trgSF_Up);
-  newtree->SetBranchAddress("trgSF_Do",&trgSF_Do);
-
-  newtree->SetBranchAddress("recoSF",   &recoSF);
-  newtree->SetBranchAddress("recoSF_Up",&recoSF_Up);
-  newtree->SetBranchAddress("recoSF_Do",&recoSF_Do);
-
-  newtree->SetBranchAddress("IdSF",   &IdSF);
-  newtree->SetBranchAddress("IdSF_Up",&IdSF_Up);
-  newtree->SetBranchAddress("IdSF_Do",&IdSF_Do);
-
-  newtree->SetBranchAddress("IsoSF",   &IsoSF);
-  newtree->SetBranchAddress("IsoSF_Up",&IsoSF_Up);
-  newtree->SetBranchAddress("IsoSF_Do",&IsoSF_Do);
-
-  newtree->SetBranchAddress("pdf_scale_Up",&pdf_scale_Up);
-  newtree->SetBranchAddress("pdf_scale_Do",&pdf_scale_Do);
-
-  newtree->SetBranchAddress("n_bjet_deepcsv_m_noSF",&n_bjet_deepcsv_m_noSF);
-  newtree->SetBranchAddress("BTagSF", &BTagSF);
-  newtree->SetBranchAddress("BTagSF_Up", &BTagSF_Up);
-  newtree->SetBranchAddress("BTagSF_Do", &BTagSF_Do);
-  newtree->SetBranchAddress("MisTagSF", &MisTagSF);
-  newtree->SetBranchAddress("MisTagSF_Up", &MisTagSF_Up);
-  newtree->SetBranchAddress("MisTagSF_Do", &MisTagSF_Do);
-
-  //newtree->Branch("TopPtReweight", &TopPtReweight);
 
   FillHist("CutFlow",5,1,30,0,30);
 
@@ -288,14 +241,12 @@ void Skim_TTSemiLep::executeEvent(){
     LeptonID_SF  = &MCCorrection::ElectronID_SF;
     LeptonReco_SF= &MCCorrection::ElectronReco_SF;
     // key for private or official SF
-    LeptonID_key_POG= "passMediumID"; //FIXME: H+ ->cb use Tight electron
-    LeptonID_key    = "MediumID_pt10";
+    LeptonID_key    = "passTightID";
 
 
 
 
   } //===========================================
-  FillHist("CutFlow",7,1,30,0,30);
 
   // ================================
   // Kinematic cuts 
@@ -314,11 +265,29 @@ void Skim_TTSemiLep::executeEvent(){
      if(fabs(Aod_eta[i])>1.4442&&fabs(Aod_eta[i])<1.566) return; // two lepton only
     }
   }
-  FillHist("CutFlow",8,1,30,0,30);
   if(Aod_pt[0] < Lep0PtCut) return;
   if(fabs(Aod_eta[0]) > LepEtaCut) return;
     
+  FillHist("CutFlow",7,1,30,0,30);
+  this_AllJets = GetAllJets();
+  jets = SelectJets(this_AllJets, "tight", 20., 2.4);
+  jetsLveto = JetsVetoLeptonInside(jets, electrons, muons);
+  std::sort(jetsLveto.begin(), jetsLveto.end(), PtComparing);
+  if(jetsLveto.size()<4) return;
+  FillHist("CutFlow",8,1,30,0,30);
+
+
+  for(unsigned int ij = 0 ; ij < jetsLveto.size(); ij++){
+    if(IsBTagged(jetsLveto.at(ij), Jet::DeepCSV, Jet::Medium,false,0)){
+      n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
+    }
+    else{
+    }
+  }
+  //require more than 2b tagged jetLvetos
+  if(n_bjet_deepcsv_m_noSF < 2) return;
   FillHist("CutFlow",9,1,30,0,30);
+
 
   /////////////////PUreweight///////////////////
   PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
@@ -354,34 +323,6 @@ void Skim_TTSemiLep::executeEvent(){
 
     }
   }
-  //==== Test btagging code
-  //==== add taggers and WP that you want to use in analysis
-  vtaggers.push_back(Jet::DeepCSV);
-  v_wps.push_back(Jet::Medium); 
-
-  //=== list of taggers, WP, setup systematics, use period SFs
-  SetupBTagger(vtaggers,v_wps, true, true);
-
-  this_AllJets = GetAllJets();
-  jets = SelectJets(this_AllJets, "tight", 30., 2.4);
-  jetsLveto = JetsVetoLeptonInside(jets, electrons, muons);
-  std::sort(jetsLveto.begin(), jetsLveto.end(), PtComparing);
-  if(jetsLveto.size()<4) return;
-  FillHist("CutFlow",10,1,30,0,30);
-
-
-  for(unsigned int ij = 0 ; ij < jetsLveto.size(); ij++){
-    if(IsBTagged(jetsLveto.at(ij), Jet::DeepCSV, Jet::Medium,false,0)){
-      n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
-      btag_vector_noSF.push_back(true);
-    }
-    else{
-      btag_vector_noSF.push_back(false);
-    }
-  }
-  //require more than 2b tagged jetLvetos
-  if(n_bjet_deepcsv_m_noSF < 2) return;
-  FillHist("CutFlow",11,1,30,0,30);
 
   BtaggingSFEvtbyEvt(jetsLveto, Jet::DeepCSV, Jet::Medium, 0, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
   BTagSF = tmp_btagsf;
@@ -402,13 +343,12 @@ void Skim_TTSemiLep::executeEvent(){
     MisTagSF_Do += x;
   }
 
-  if(jetsLveto.size()!=btag_vector_noSF.size()){
-    cout <<"[Skim_TTSemiLep::executeEvent] check jet vector size" << endl;
-    exit(EXIT_FAILURE);
-  }
 
-  //std::vector<Gen> gens = GetGens();
+
+  //gens = GetGens();
+  //BHGetGens(gens);
   //TopPtReweight = mcCorr->GetTopPtReweight(gens);
+  TopPtReweight = mcCorr->GetTopPtReweight(gen_pt, gen_PID, gen_status);
   newtree->Fill();
 
 

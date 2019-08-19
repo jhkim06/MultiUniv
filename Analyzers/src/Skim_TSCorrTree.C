@@ -70,9 +70,9 @@ void Skim_TSCorrTree::initializeAnalyzer(){
   
 
   gen_matcher = new GenMatching_CHToCB();
-  ts_correction = new TSCorrection(DataYear);
-  ts_correction->ReadFittedError("fit_error_pythia.txt");
-  ts_correction->ReadFittedMean("fit_mean_pythia.txt");
+  //ts_correction = new TSCorrection(DataYear);
+  //ts_correction->ReadFittedError("fit_error_pythia.txt");
+  //ts_correction->ReadFittedMean("fit_mean_pythia.txt");
 }
 
 void Skim_TSCorrTree::executeEvent(){
@@ -126,11 +126,8 @@ void Skim_TSCorrTree::executeEvent(){
   if(!gen_matcher->MatchJets()) return; // match parton-jet min-delta R
   FillHist("CutFlow",7,1,30,0,30);
 
-  if(!gen_matcher->MatchJets()) return; // check flavour of matched jet and parton
-  FillHist("CutFlow",8,1,30,0,30);
-
   if(!gen_matcher->CheckAmbiguity()) return; // check ambiguity matching
-  FillHist("CutFlow",9,1,30,0,30);
+  FillHist("CutFlow",8,1,30,0,30);
 
   *b_jet_from_top = gen_matcher->Get_hadronic_top_b_jet()->matched_jet;
   *b_jet_from_anti_top = gen_matcher->Get_leptonic_top_b_jet()->matched_jet;
@@ -276,11 +273,11 @@ void Skim_TSCorrTree::executeEvent(){
         ){
 
          double response_top_b = this->GetResponse(it_res->first, b_jet_from_top, b_parton_from_top);
-         if(ts_correction->PassResponseCut(name,b_jet_from_top->Pt(),response_top_b)){
+         /*if(ts_correction->PassResponseCut(name,b_jet_from_top->Pt(),response_top_b)){
            BHFillProfile("response_profile",name,
                           b_jet_from_top->Pt(),response_top_b,
                           baseW);
-         }
+         }*/
          BHFillProfile("response_profile_nocut",name,
                         b_jet_from_top->Pt(),response_top_b,
                         baseW);
@@ -293,11 +290,11 @@ void Skim_TSCorrTree::executeEvent(){
         ){
 
          double response_anti_top_b = this->GetResponse(it_res->first, b_jet_from_anti_top, b_parton_from_anti_top);
-         if(ts_correction->PassResponseCut(name,b_jet_from_anti_top->Pt(),response_anti_top_b)){
+         /*if(ts_correction->PassResponseCut(name,b_jet_from_anti_top->Pt(),response_anti_top_b)){
            BHFillProfile("response_profile",name,
                          b_jet_from_anti_top->Pt(),response_anti_top_b,
                          baseW);
-         }
+         }*/
          BHFillProfile("response_profile_nocut",name,
                        b_jet_from_anti_top->Pt(),response_anti_top_b,
                        baseW);
@@ -310,11 +307,11 @@ void Skim_TSCorrTree::executeEvent(){
         ){
 
          double response_up_type_flav = this->GetResponse(it_res->first, up_type_jet_from_w_ch, up_type_parton_from_w_ch);
-         if(ts_correction->PassResponseCut(name,up_type_jet_from_w_ch->Pt(),response_up_type_flav)){
+         /*if(ts_correction->PassResponseCut(name,up_type_jet_from_w_ch->Pt(),response_up_type_flav)){
            BHFillProfile("response_profile",name,
                          up_type_jet_from_w_ch->Pt(),response_up_type_flav,
                          baseW);
-         }
+         }*/
          BHFillProfile("response_profile_nocut",name,
                        up_type_jet_from_w_ch->Pt(),response_up_type_flav,
                        baseW);
@@ -327,11 +324,11 @@ void Skim_TSCorrTree::executeEvent(){
         ){
 
          double response_down_type_flav = this->GetResponse(it_res->first, down_type_jet_from_w_ch, down_type_parton_from_w_ch);
-         if(ts_correction->PassResponseCut(name,down_type_jet_from_w_ch->Pt(),response_down_type_flav)){
+         /*if(ts_correction->PassResponseCut(name,down_type_jet_from_w_ch->Pt(),response_down_type_flav)){
            BHFillProfile("response_profile",name,
                          down_type_jet_from_w_ch->Pt(),response_down_type_flav,
                          baseW);
-         }
+         }*/
          BHFillProfile("response_profile_nocut",name,
                        down_type_jet_from_w_ch->Pt(),response_down_type_flav,
                        baseW);

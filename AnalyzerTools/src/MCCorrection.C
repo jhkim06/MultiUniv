@@ -862,6 +862,42 @@ double MCCorrection::GetZPtWeight(double zpt, double zrap, Lepton::Flavour flavo
   return valzptcor*valzptcor_norm;
 }
 
+double MCCorrection::GetTopPtReweight(const std::vector<double> *gen_pt_, const std::vector<int> *gen_PID_, const std::vector<int> *gen_status_){
+
+  //==== ref: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting2017
+  //==== Only top quarks in SM ttbar events must be reweighted, 
+  //==== not single tops or tops from BSM production mechanisms.
+  if(!MCSample.Contains("TT") || !MCSample.Contains("powheg")){
+    return 1.;
+  }
+  //==== initialize with large number
+  double toppt1=10000, toppt2=10000;
+  bool found_top = false, found_atop = false;
+
+  for(unsigned int i=0; i<gen_pt_->size(); i++){
+    if(gen_status_->at(i) == 22){
+      if(gen_PID_->at(i) == 6){
+        toppt1= gen_pt_->at(i);
+        found_top = true;
+      }
+      else if(gen_PID_->at(i) == -6){
+        toppt2= gen_pt_->at(i);
+        found_atop = true;
+      }
+    }
+    //==== after we found top pair, break the loop
+    if(found_top && found_atop) break;
+  }
+  double pt_reweight = 1.;
+  //==== if top pair is not found, return 1.
+  //==== the measurement covers only the range pt(top)<=800GeV, otherwise, return 1.
+  if(toppt1<=800 && toppt2 <=800){
+    pt_reweight*=exp(0.0615-0.0005*toppt1);
+    pt_reweight*=exp(0.0615-0.0005*toppt2);
+    pt_reweight = sqrt(pt_reweight);
+  }
+  return pt_reweight;
+}
 
 double MCCorrection::GetTopPtReweight(const std::vector<Gen> &gens){
   //==== ref: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting2017
