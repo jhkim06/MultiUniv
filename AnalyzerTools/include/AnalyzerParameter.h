@@ -18,6 +18,7 @@ public:
 
   TString Lepton_ID;
   TString Lepton_ISO_ID;
+  TString Lepton_TRIGGER;
   TString Lepton_ID_SF_Key;
   TString Lepton_ISO_SF_Key;
   std::map<TString, std::vector<TString>> Lepton_Trigger_map;

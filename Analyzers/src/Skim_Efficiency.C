@@ -3,9 +3,6 @@
 void Skim_Efficiency::initializeAnalyzer(){
 
   // initializeAnalyzerTools();
-  // Skim_Efficiency just adds SFs for ID Iso Trigger (i.e., without skimming)
-  // If there are leptons passing some lepton ID  condition, it just calculate ID Iso Reco SFs for each leptons 
-  // TODO need to check 2018, currently checked for 2016 and 2017
 
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");
@@ -14,207 +11,23 @@ void Skim_Efficiency::initializeAnalyzer(){
   cout << "initializeAnalyzer" << endl;
 
   if(DataYear==2016){
-
-        // muon
-        muWPs["POGTight"]["Id"].push_back("POGTight"); // set name to be used to select muons
-        muWPs["POGTight"]["Iso"].push_back("TightIso");
-        muWPs["POGTight"]["Iso"].push_back("LooseIso");
-        muWPs["POGTight"]["Trigger"].push_back("IsoMu24");
-        muWPs["POGTight"]["Trigger"].push_back("IsoMu24");
-
-        muKEYs["POGTight"]["Id"].push_back("NUM_TightID_DEN_genTracks"); // TODO is there function to find keys for selection already? if not let's make it
-        muKEYs["POGTight"]["Iso"].push_back("NUM_TightRelIso_DEN_TightIDandIPCut");
-        muKEYs["POGTight"]["Iso"].push_back("NUM_LooseRelTkIso_DEN_HighPtIDandIPCut");
-        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(0)+muWPs["POGTight"]["Iso"].at(0)].push_back("IsoMu24_POGTight");
-        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(1)+muWPs["POGTight"]["Iso"].at(1)].push_back("NA");
-
-        // electron
-        eleWPs["POGTight"]["Id"].push_back("passTightID");
-        eleWPs["POGTight"]["Id"].push_back("passTightID_vetoIso");
-        eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
-        eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
-
-
-        eleKEYs["POGTight"]["Id"].push_back("NA");
-        eleKEYs["POGTight"]["Id"].push_back("NA");
-        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(0)+eleWPs["POGTight"]["Id"].at(0)].push_back("NA");
-        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(1)+eleWPs["POGTight"]["Id"].at(1)].push_back("NA");
   }
   else if(DataYear==2017){
-
-	// muon
-  	muWPs["POGTight"]["Id"].push_back("POGTight"); // set name to be used to select muons
-  	muWPs["POGTight"]["Iso"].push_back("TightIso");
-  	muWPs["POGTight"]["Iso"].push_back("LooseIso");
-  	muWPs["POGTight"]["Trigger"].push_back("IsoMu27");
-  	muWPs["POGTight"]["Trigger"].push_back("IsoMu27");
-
-  	muKEYs["POGTight"]["Id"].push_back("NUM_TightID_DEN_genTracks"); // TODO is there function to find keys for selection already? if not let's make it
-  	muKEYs["POGTight"]["Iso"].push_back("NUM_TightRelIso_DEN_TightIDandIPCut");
-  	muKEYs["POGTight"]["Iso"].push_back("NUM_LooseRelTkIso_DEN_HighPtIDandIPCut");
-  	muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(0)+muWPs["POGTight"]["Iso"].at(0)].push_back("IsoMu27_POGTight");
-  	muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(1)+muWPs["POGTight"]["Iso"].at(1)].push_back("NA");
-
-	// electron
-  	eleWPs["POGTight"]["Id"].push_back("passTightID");
-  	eleWPs["POGTight"]["Id"].push_back("passTightID_vetoIso");
-  	eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
-  	eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
-
-
-  	eleKEYs["POGTight"]["Id"].push_back("passTightID");
-  	eleKEYs["POGTight"]["Id"].push_back("NA");
-  	eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(0)+eleWPs["POGTight"]["Id"].at(0)].push_back("NA");
-  	eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(1)+eleWPs["POGTight"]["Id"].at(1)].push_back("NA");
+        muonWPs =  new LeptonSFs(LeptonType::muon, 1, "POGTight", "TightIso", "IsoMu27");
+        muonWPs->setBranchForSFs(newtree);
   }
   else if(DataYear==2018){
-
-        // muon
-        muWPs["POGTight"]["Id"].push_back("POGTight"); // set name to be used to select muons
-        muWPs["POGTight"]["Iso"].push_back("TightIso");
-        muWPs["POGTight"]["Iso"].push_back("LooseIso");
-        muWPs["POGTight"]["Trigger"].push_back("IsoMu24");
-        muWPs["POGTight"]["Trigger"].push_back("IsoMu24");
-
-        muKEYs["POGTight"]["Id"].push_back("NUM_TightID_DEN_genTracks"); // TODO is there function to find keys for selection already? if not let's make it
-        muKEYs["POGTight"]["Iso"].push_back("NUM_TightRelIso_DEN_TightIDandIPCut");
-        muKEYs["POGTight"]["Iso"].push_back("NUM_LooseRelTkIso_DEN_HighPtIDandIPCut");
-        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(0)+muWPs["POGTight"]["Iso"].at(0)].push_back("IsoMu24_POGTight");
-        muKEYs["POGTight"][muWPs["POGTight"]["Trigger"].at(1)+muWPs["POGTight"]["Iso"].at(1)].push_back("NA");
-
-        // electron
-        eleWPs["POGTight"]["Id"].push_back("passTightID");
-        eleWPs["POGTight"]["Id"].push_back("passTightID_vetoIso");
-        eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
-        eleWPs["POGTight"]["Trigger"].push_back("HLT_Ele27_WPTight_Gsf");
-
-
-        eleKEYs["POGTight"]["Id"].push_back("passTightID");
-        eleKEYs["POGTight"]["Id"].push_back("NA");
-        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(0)+eleWPs["POGTight"]["Id"].at(0)].push_back("NA");
-        eleKEYs["POGTight"][eleWPs["POGTight"]["Trigger"].at(1)+eleWPs["POGTight"]["Id"].at(1)].push_back("NA");
-
   }
-
-  // set muon SF branches
-  std::map<TString, std::map<TString, std::vector<TString>>>::iterator it = muWPs.begin();
-  while(it != muWPs.end()){
-
-	int nIso = (it->second)["Iso"].size();
-  	int nTrg = (it->second)["Trigger"].size();
-	int nId = (it->second)["Id"].size();
-
-  	for(int i = 0; i < 4; i++){
-
-		for(int k = 0; k < nId;  k++){
-  			for(int j = 0; j < nIso; j++){
-  	     			if( i != 3){ 
-
-  	     				newtree->Branch(SFs[i] + "_mu_" + (it->second)["Id"].at(k) + (it->second)["Iso"].at(j), 
-  	     					        &lepSFs["mu"+(it->second)["Id"].at(k) + (it->second)["Iso"].at(j)][SFs[i]]);
-
-  	     			}
-  	     			else if(i == 3){ // for trigger SF
-
-  	     					newtree->Branch(SFs[i] + "_" + (it->second)["Trigger"].at(j) + "_" + "mu_" + (it->second)["Id"].at(k) + (it->second)["Iso"].at(j), 
-  	     						        &lepSFs["mu"+(it->second)["Id"].at(k) + (it->second)["Iso"].at(j) + (it->second)["Trigger"].at(j)][SFs[i]]);
-
-  	    			}// for trigger 
-  			}// nIso
-		}// nId
-  	}
-	it++;
-  }
-
-  // set electron SF branches
-  it = eleWPs.begin();
-  while(it != eleWPs.end()){
-
-        int nTrg = (it->second)["Trigger"].size();
-        int nId = (it->second)["Id"].size();
-
-        for(int i = 0; i < 4; i++){
-
-                for(int k = 0; k < nId;  k++){
-                                if( i != 3){
-
-                                        newtree->Branch(SFs[i] + "_ele_" + (it->second)["Id"].at(k),
-                                                        &lepSFs["ele"+(it->second)["Id"].at(k)][SFs[i]]);
-
-                                }
-                                else if(i == 3){ // for trigger SF
-
-                                                newtree->Branch(SFs[i] + "_" + (it->second)["Trigger"].at(k) + "_" + "ele_" + (it->second)["Id"].at(k),
-                                                                &lepSFs["ele"+(it->second)["Id"].at(k) + (it->second)["Trigger"].at(k)][SFs[i]]);
-                                }// for trigger 
-                }// nId
-        }
-        it++;
-  }
-
-
 }
 
 void Skim_Efficiency::executeEvent(){
  
-  AllMuons = GetAllMuons();
-  AllElectrons = GetAllElectrons();
-
   AnalyzerParameter param; // TODO make EfficiencyParameter class
 
-  //
-  std::map<TString, std::map<TString, std::vector<TString>>>::iterator it = muWPs.begin();
-  while(it != muWPs.end()){
-  	int nIso = (it->second)["Iso"].size();
-  	int nId = (it->second)["Id"].size();
-
-	for(int k = 0; k < nId;  k++){
-  		for(int i = 0; i < nIso; i++){
-
-  		      param.Lepton_ID     = (it->second)["Id"].at(k);
-  		      param.Lepton_ISO_ID =     (it->second)["Iso"].at(i);
-  		 
-  		      // set keys
-  		      param.Lepton_ID_SF_Key = muKEYs[it->first]["Id"].at(k);
-  		      param.Lepton_ISO_SF_Key = muKEYs[it->first]["Iso"].at(i);
-
-  		      int nTrg = (it->second)["Trigger"].size();
-  		      for(int l = 0; l < muKEYs[it->first][(it->second)["Trigger"].at(i)+(it->second)["Iso"].at(i)].size(); l++){
-  		      	        (param.Lepton_Trigger_map)[it->second["Trigger"].at(i)].push_back(muKEYs[it->first][(it->second)["Trigger"].at(i)+(it->second)["Iso"].at(i)].at(l));
-  		      }
-  		      executeEventFromParameter(param);
-  		      param.Clear();
-
-  		}
-	}
-	it++;
-  }
-
-  it = eleWPs.begin();
-  while(it != eleWPs.end()){
-        int nId = (it->second)["Id"].size();
-
-        for(int k = 0; k < nId;  k++){
-
-                      param.Lepton_ID     = (it->second)["Id"].at(k);
-
-                      // set keys
-                      param.Lepton_ID_SF_Key = eleKEYs[it->first]["Id"].at(k);
-
-                      int nTrg = (it->second)["Trigger"].size();
-                      for(int i = 0; i < eleKEYs[it->first][(it->second)["Trigger"].at(k)+(it->second)["Id"].at(k)].size(); i++){
-                                (param.Lepton_Trigger_map)[it->second["Trigger"].at(k)].push_back(eleKEYs[it->first][(it->second)["Trigger"].at(k)+(it->second)["Id"].at(k)].at(i));
-                      }
-                      executeEventFromParameter(param, false);
-                      param.Clear();
-
-        }
-        it++;
-  }
-
-
-  AllMuons.clear();
-  AllElectrons.clear(); 
+  muonWPs->resetSFs();
+  muonWPs->setAnalyzerParameter(param);
+  executeEventFromParameter(param);
+  param.Clear();
 
   newtree->Fill();
 
@@ -228,113 +41,68 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, bool is
   evt = new Event;
   *evt = GetEvent();
 
-  vector<Muon> this_AllMuons = AllMuons; 
-  vector<Electron> this_AllElectrons = AllElectrons; 
+  vector<Muon> this_AllMuons = GetAllMuons(); 
+  vector<Electron> this_AllElectrons = GetAllElectrons(); 
 
   if(param.syst_ == AnalyzerParameter::Central){ }
 
-  vector<Muon> muons;
+  vector<Muon>     muons;
   vector<Electron> electrons;
   std::vector<Lepton*> leps;
 
-  TString prefix;
-
+  // get leptons with desired ID, Iso, Trigger
   if(isMu){
-	muons = SelectMuons(this_AllMuons, param.Lepton_ID+"With"+param.Lepton_ISO_ID, 7., 2.4);
-	std::sort(muons.begin(), muons.end(),PtComparing);
-	leps=MakeLeptonPointerVector(muons);
-
-        LeptonReco_SF = NULL;
-        LeptonTrg_SF = &MCCorrection::MuonTrigger_SF;
-        LeptonID_SF   =&MCCorrection::MuonID_SF;
-        LeptonISO_SF  =&MCCorrection::MuonISO_SF;
-	
-	prefix = "mu";
-  }
-  else{
-
-        electrons = SelectElectrons(this_AllElectrons, param.Lepton_ID, 9., 2.5);
-        std::sort(electrons.begin(), electrons.end(),PtComparing);
-        leps=MakeLeptonPointerVector(electrons);
-
-        LeptonReco_SF = &MCCorrection::ElectronReco_SF;
-        LeptonTrg_SF = NULL;
-        LeptonID_SF   =&MCCorrection::ElectronID_SF;
-        LeptonISO_SF  =NULL;
-
-        prefix = "ele";
+    muons = SelectMuons(this_AllMuons, param.Lepton_ID+"With"+param.Lepton_ISO_ID, 7., 2.4);
+    std::sort(muons.begin(), muons.end(),PtComparing);
+    leps=MakeLeptonPointerVector(muons);
+    
+    LeptonReco_SF = NULL;
+    LeptonID_SF   =&MCCorrection::MuonID_SF;
+    LeptonISO_SF  =&MCCorrection::MuonISO_SF;
+    LeptonTrg_SF = &MCCorrection::MuonTrigger_SF;
   }
 
   if(!IsDATA){
 
-		lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["RecoSF"].clear();
-		lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IdSF"].clear();
-		lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IsoSF"].clear();
+    if(leps.size() > 0){
+        // trigger first
+        // check wheter it is single or double trigger by counting the number of trigger keys
+        unsigned int nKeys = param.Lepton_Trigger_map[param.Lepton_TRIGGER].size();
+        for(unsigned int ikey = 0; ikey < nKeys; ikey++){
+            if(isMu){
+            	std::vector<Muon> temp_muon;
+            	temp_muon.push_back((*(Muon*)leps.at(ikey))); 
 
-		std::map<TString, std::vector<TString>>::iterator it = param.Lepton_Trigger_map.begin();
-		while(it != param.Lepton_Trigger_map.end()){
+                // get SFs using uncorrected lepton inside the MuonTrigger_SF 
+                Double_t temp_trgSF = LeptonTrg_SF?(mcCorr->*LeptonTrg_SF)(param.Lepton_ID, param.Lepton_TRIGGER, temp_muon,  0) : 1.;
+                muonWPs->setTriggerSF(temp_trgSF, SysUpDown::Central);
+            }
+        }
+       
+        Double_t total_RECOSF = 1.;
+        Double_t total_IDSF = 1.;
+        Double_t total_ISOSF = 1.; 
 
-			lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID+it->first]["TrgSF"].clear();
+        for( unsigned int i(0); i< muonWPs->getNLeptons(); i++){
 
-			// check wheter it is single or double trigger by counting the number of trigger keys
-			int nKeys = (it->second).size();
-			if(nKeys == 1){ // single trigger
-				if(leps.size() > 0){
+       	    if(isMu){
+                // ID SF
+                Double_t tempIDSF = LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.;
+                total_IDSF *= tempIDSF;
+                
+                // Iso SF
+                Double_t tempISOSF = LeptonISO_SF?(mcCorr->*LeptonISO_SF)(param.Lepton_ISO_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.;
+                total_ISOSF *= tempISOSF;
+       	    }
+        }// loop over leptons passing ID
 
-					if(isMu){
-						std::vector<Muon> temp_muon;
-						temp_muon.push_back((*(Muon*)leps.at(0))); // the first lepton, the largest pt?
-						if((it->second).at(0).CompareTo("NA") !=0)
-							// MuonTrigger_SF use ID and ISO name and make key for SF
-							lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID+it->first]["TrgSF"].push_back( LeptonTrg_SF?(mcCorr->*LeptonTrg_SF)(param.Lepton_ID, it->first, temp_muon,  0) : 1. ); 
-						else lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID+it->first]["TrgSF"].push_back( 1.); 
-					}
-					else{
-						std::vector<Electron> temp_electron;
-						temp_electron.push_back((*(Electron*)leps.at(0))); // the first lepton, the largest pt?
-						//if((it->first).CompareTo("NA") !=0)lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID+it->first]["TrgSF"].push_back( LeptonTrg_SF?(mcCorr->*LeptonTrg_SF)(param.Lepton_ID, it->first, temp_electron,  0) : 1. ); 
-						//else lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID+it->first]["TrgSF"].push_back( 1.); 
-						lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID+it->first]["TrgSF"].push_back( 1.); 
-					}
-				}
-				else{// no lepton passing ID requirement
-					lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID+it->first]["TrgSF"].push_back( 1.); 
-				}
-			}// single triger
-
-			it++;
-		}// trigger parameter map loop
-
-    		for( int i(0); i<leps.size() ; i++){
-
-			if(isMu){
-				// Reco SF: just set 1. since this is for muon
-    				lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["RecoSF"].push_back( 1.);
-
-				// ID SF
-    		  		if((param.Lepton_ID_SF_Key).CompareTo("NA") !=0){
-					lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IdSF"].push_back(LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.);
-				}
-				else lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IdSF"].push_back(1.);
-
-				// Iso SF
-    		  		if((param.Lepton_ISO_SF_Key).CompareTo("NA") !=0) lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IsoSF"].push_back(LeptonISO_SF?(mcCorr->*LeptonISO_SF)(param.Lepton_ISO_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.);
-				else lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IsoSF"].push_back(1.);
-			}
-			else{
-				// Reco SF
-    				lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["RecoSF"].push_back( LeptonReco_SF?(mcCorr->*LeptonReco_SF)(((Electron*)leps.at(i))->scEta(), leps.at(i)->Pt(),  0) : 1.);
-
-				// ID SF
-    		  		if((param.Lepton_ID_SF_Key).CompareTo("NA") !=0) lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IdSF"].push_back(LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, ((Electron*)leps.at(i))->scEta(), leps.at(i)->Pt(),  0) : 1.);
-				else lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IdSF"].push_back(1.);
-
-				// Iso SF: just set 1. since this is for electron
-				lepSFs[prefix+param.Lepton_ID+param.Lepton_ISO_ID]["IsoSF"].push_back(1.);
-			}
-    		}// loop over leptons passing ID
-
+        muonWPs->setIDSF(total_IDSF, SysUpDown::Central);
+        muonWPs->setISOSF(total_ISOSF, SysUpDown::Central);
+    }// check if number of selected leptons > 0
   }// for MC
+
+  this_AllMuons.clear();
+  this_AllElectrons.clear(); 
 
   delete evt;
 }
@@ -349,11 +117,9 @@ Skim_Efficiency::~Skim_Efficiency(){
 
 void Skim_Efficiency::WriteHist(){
 
-  //outfile->mkdir("recoTree");
-  //outfile->cd("recoTree"); Already at Skim_Efficiency::initializeAnalyzer
   newtree->AutoSave();
-  //newtree->Write();
   outfile->cd();
+
   for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
     TString this_fullname=mapit->second->GetName();
     TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());

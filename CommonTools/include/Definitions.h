@@ -10,4 +10,12 @@ enum class SingleLepCh{
   Mu, El, NA
 };
 
+enum class LeptonType{
+    electron, muon
+};
+
+enum class SysUpDown{
+    Central, Up, Down
+};
+
 #endif
