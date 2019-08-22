@@ -125,7 +125,7 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
         // for double muon trigger 
         if(nKeys == 2){
             Double_t temp_trgSF = mcCorr->DiLeptonTrg_SF(param.Lepton_Trigger_map[param.Lepton_TRIGGER].at(0), param.Lepton_Trigger_map[param.Lepton_TRIGGER].at(1), leps, 0);
-            if(!(temp_trgSF > 10.)) total_TRGSF *= temp_trgSF; // just to avoid to save meaninglessly huge numbers...
+            if(!(temp_trgSF > 10.)) total_TRGSF *= temp_trgSF; // just to avoid saving meaninglessly huge numbers...
         }
       
         // now Id, Iso 

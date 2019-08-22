@@ -15,7 +15,9 @@ void MCCorrection::ReadHistograms(){
   //==== ID/Trigger
   TString IDpath = datapath+"/"+TString::Itoa(DataYear,10)+"/ID/";
 
+  // for electron
   string elline;
+  // read histmap.txt line by line
   ifstream in(IDpath+"/Electron/histmap.txt");
   while(getline(in,elline)){
     std::istringstream is( elline );
@@ -35,6 +37,8 @@ void MCCorrection::ReadHistograms(){
       cout<<"empty histname"<<endl;
       continue;
     }
+
+    // now read root file
     TFile *file = new TFile(IDpath+"/Electron/"+d);
 
     if(f=="TH2F"){
@@ -51,6 +55,7 @@ void MCCorrection::ReadHistograms(){
     }
   }
 
+  // print out histogram name and graph in the map
   cout << "[MCCorrection::MCCorrection] map_hist_Electron :" << endl;
   for(std::map< TString, TH2F* >::iterator it=map_hist_Electron.begin(); it!=map_hist_Electron.end(); it++){
     cout << it->first << endl;
@@ -60,7 +65,7 @@ void MCCorrection::ReadHistograms(){
     cout << it->first << endl;
   }
 
-
+  // for muon, basically do the same thing
   string elline2;
   ifstream in2(IDpath+"/Muon/histmap.txt");
   while(getline(in2,elline2)){
@@ -93,7 +98,6 @@ void MCCorrection::ReadHistograms(){
     cout << it->first << endl;
   }
 
-
   // == Get Prefiring maps
   TString PrefirePath  = datapath+"/"+TString::Itoa(DataYear,10)+"/Prefire/";
 
@@ -113,7 +117,6 @@ void MCCorrection::ReadHistograms(){
     TFile *file = new TFile(PrefirePath+b);
     map_hist_prefire[a + "_prefire"] = (TH2F *)file->Get(c);
   }
-
 
   // == Get Pileup Reweight maps
   map_hist_pileup.clear();
@@ -166,6 +169,12 @@ void MCCorrection::ReadHistograms(){
       }
     }
   }
+  // TODO update for 2018 pileup
+  cout << "[MCCorrection::MCCorrection] map_hist_pileup :" << endl;
+  for(std::map< TString, TH1D* >::iterator it=map_hist_pileup.begin(); it!=map_hist_pileup.end(); it++){
+    cout << it->first << endl;
+  }
+
   //=====================================
   // ZpT weight maps
   //=====================================
@@ -231,13 +240,6 @@ void MCCorrection::ReadHistograms(){
     //}
   }
 
-/*
-  cout << "[MCCorrection::MCCorrection] map_hist_pileup :" << endl;
-  for(std::map< TString, TH1D* >::iterator it=map_hist_pileup.begin(); it!=map_hist_pileup.end(); it++){
-    cout << it->first << endl;
-  }
-*/
-
 }
 
 MCCorrection::~MCCorrection(){
@@ -275,7 +277,7 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
 
   //cout<<"MuonID_SF ID, eta, pt, sys:"<<ID<<" "<<eta<<" "<<pt<<" "<<sys<<endl;
   //cout<<"MuonID_SF varOrder:"<<_EtaPtOrder<<endl;
-  //
+  
   TH2F *this_hist = map_hist_Muon["ID_SF_"+ID];
   _EtaPtOrder = map_VarOrder_Muon["ID_SF_"+ID];
   if(!this_hist){
@@ -288,8 +290,8 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
 
   if(_EtaPtOrder == "etapt"){
     return RootHelper::GetBinContent4SF(this_hist, eta, pt, sys);
-  }else
-  if(_EtaPtOrder == "pteta"){
+  }
+  else if(_EtaPtOrder == "pteta"){
     return RootHelper::GetBinContent4SF(this_hist, pt, eta, sys);
   }else{
     cout<<"[MCCorrection::MuonID_SF] wrong etaPtOrder:"<<_EtaPtOrder<<endl;
@@ -302,9 +304,8 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
   //cout << "[MCCorrection::MuonID_SF] value = " << value << endl;
 
   //return value+double(sys)*error;
-  // nenver reachs here.
+  //nenver reachs here.
   return 1;
-
 }
 
 double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
@@ -332,8 +333,8 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
 
   if(_EtaPtOrder == "etapt"){
     return RootHelper::GetBinContent4SF(this_hist, eta, pt, sys);
-  }else
-  if(_EtaPtOrder == "pteta"){
+  }
+  else if(_EtaPtOrder == "pteta"){
     return RootHelper::GetBinContent4SF(this_hist, pt, eta, sys);
   }else{
     cout<<"[MCCorrection::MuonID_SF] wrong etaPtOrder:"<<_EtaPtOrder<<endl;
@@ -342,7 +343,80 @@ double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
 
   // never reaches here!
   return 1;
+}
 
+double MCCorrection::MuonIDISO_SF(TString ID, double eta, double pt, int sys){
+
+  if(ID=="Default") return 1.;
+
+    TH2F *this_hist = map_hist_Muon["IDISO_SF_"+ID];
+    _EtaPtOrder = map_VarOrder_Muon["IDISO_SF_"+ID];
+
+    if(!this_hist){
+      if(IgnoreNoHist) return 1.;
+      else{
+        cout << "[MCCorrection::MuonID_SF] No "<<"ID_SF_"+ID<<endl;
+        exit(EXIT_FAILURE);
+      }
+    }
+
+    if(_EtaPtOrder == "etapt"){
+      return RootHelper::GetBinContent4SF(this_hist, eta, pt, sys);
+    }
+    else if(_EtaPtOrder == "pteta"){
+      return RootHelper::GetBinContent4SF(this_hist, pt, eta, sys);
+    }else{
+      cout<<"[MCCorrection::MuonID_SF] wrong etaPtOrder:"<<_EtaPtOrder<<endl;
+      exit(EXIT_FAILURE);
+    }
+
+  return 1;
+}
+
+double MCCorrection::MuonIDISO_RD_SF(TString ID, double eta, double pt, int sys){
+
+  if(ID=="Default") return 1.;
+
+    // for run dependent SF
+
+    TH2F* this_hist[4]={};
+    TString sdata[2]={"DATA","MC"};
+    TString speriod[2]={"BCDEF","GH"};
+
+    // loop over data or mc
+    for(int id=0;id<2;id++){
+      // loop over periods
+      for(int ip=0;ip<2;ip++){
+        this_hist[2*id+ip]=map_hist_Muon["IDISO_Eff_"+sdata[id]+"_"+ID+"_"+speriod[ip]];
+      }
+    }
+
+    // check if all needed histograms are set
+    if(!this_hist[0]||!this_hist[1]||!this_hist[2]||!this_hist[3]){
+      cout << "[MCCorrection::IDISO_SF] No "<<ID<<endl;
+      exit(EXIT_FAILURE);
+    }
+
+    double lumi_periodB = 5.929001722;
+    double lumi_periodC = 2.645968083;
+    double lumi_periodD = 4.35344881;
+    double lumi_periodE = 4.049732039;
+    double lumi_periodF = 3.157020934;
+    double lumi_periodG = 7.549615806;
+    double lumi_periodH = 8.545039549 + 0.216782873;
+
+    double total_lumi = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH);
+
+    double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
+    double WeightGtoH = (lumi_periodG+lumi_periodH)/total_lumi;
+
+    double idisoEff[4]={1.,1.,1.,1.};
+    for(int i=0;i<4;i++){
+        idisoEff[i]=RootHelper::GetBinContent4SF(this_hist[i],eta, pt,(i<2?1.:-1.)*sys);
+    }
+    return (idisoEff[0]*WeightBtoF+idisoEff[1]*WeightGtoH)/(idisoEff[2]*WeightBtoF+idisoEff[3]*WeightGtoH);
+
+  return 1;
 }
 
 double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, double eta, double pt, int sys){
@@ -369,8 +443,6 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
     }
   }
 
-
-
   if( DataYear != 2016 && DataYear != 2017 && DataYear != 2018){
     cout << "[MCCorrection::MuonTrigger_Eff] Wrong year : "<<DataYear<<endl;
     exit(EXIT_FAILURE);
@@ -378,42 +450,40 @@ double MCCorrection::MuonTrigger_Eff(TString ID, TString trig, int DataOrMC, dou
 
   if(_EtaPtOrder == "etapt"){
     return RootHelper::GetBinContent4SF(this_hist, eta, pt, sys);
-  }else
-  if(_EtaPtOrder == "pteta"){
+  }
+  else if(_EtaPtOrder == "pteta"){
     return  RootHelper::GetBinContent4SF(this_hist, pt, eta, sys);
   }else{
     cout << "[MCCorrection::MuonTrigger_Eff] No etaptOrder "<<_EtaPtOrder<<endl;
     exit(EXIT_FAILURE);
   }
 
-
   // never reaches here
   return 1;
-
-
 }
 
+// this is actually for single muon trigger
 double MCCorrection::MuonTrigger_SF(TString ID, TString trig, std::vector<Muon> muons, int sys){
 
   if(ID=="Default") return 1.;
 
   double value = 1.;
-
+  
   if(trig=="IsoMu24" || trig=="IsoMu27" || trig=="Mu50"){
 
     double eff_DATA = 1.;
     double eff_MC = 1.;
 
+    // do we need loop over all muons? since this is for single muon trigger...
     for(unsigned int i=0; i<muons.size(); i++){
       eff_DATA *= ( 1.-MuonTrigger_Eff(ID, trig, 0, muons.at(i).Eta(), muons.at(i).MiniAODPt(), sys) );
-      eff_MC   *= ( 1.-MuonTrigger_Eff(ID, trig, 1, muons.at(i).Eta(), muons.at(i).MiniAODPt(), -sys) );
+      eff_MC   *= ( 1.-MuonTrigger_Eff(ID, trig, 1, muons.at(i).Eta(), muons.at(i).MiniAODPt(), -sys) ); 
     }
 
     eff_DATA = 1.-eff_DATA;
     eff_MC = 1.-eff_MC;
 
     value = eff_DATA/eff_MC;
-
 /*
     if(eff_DATA==0||eff_MC==0){
       cout << "==== Zero Trigger Eff ====" << endl;
@@ -422,11 +492,9 @@ double MCCorrection::MuonTrigger_SF(TString ID, TString trig, std::vector<Muon> 
       }
     }
 */
-
   }
 
   return value;
-
 }
 
 double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys){
@@ -478,13 +546,12 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
         else return y-y_low;
 
       }
-
     }
     cout << "[MCCorrection::ElectronID_SF] (Graph) pt range strange.. "<<"ID_SF_"+ID<<", with pt = " << pt << endl;
     exit(EXIT_FAILURE);
     return 1.;
-
   }
+  // non HEEP ID
   else{
 
     TH2F *this_hist = map_hist_Electron["ID_SF_"+ID];
@@ -498,8 +565,8 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
     }
     if(_EtaPtOrder == "etapt"){
       return RootHelper::GetBinContent4SF(this_hist, sceta, pt, sys);
-    }else
-    if(_EtaPtOrder == "pteta"){
+    }
+    else if(_EtaPtOrder == "pteta"){
       return RootHelper::GetBinContent4SF(this_hist, pt, sceta, sys);
     }else{
       cout << "[MCCorrection::ElectronID_SF] (Hist) No etaptOrder "<<_EtaPtOrder<<endl;
@@ -508,9 +575,7 @@ double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys)
 
     // never reaches here
     return 1;
-
   }
-
 }
 
 double MCCorrection::ElectronReco_SF(double sceta, double pt, int sys){
@@ -539,14 +604,13 @@ double MCCorrection::ElectronReco_SF(double sceta, double pt, int sys){
 
   if(_EtaPtOrder == "etapt"){
     return RootHelper::GetBinContent4SF(this_hist, sceta, pt, sys);
-  }else
-  if(_EtaPtOrder == "pteta"){
+  }
+  else if(_EtaPtOrder == "pteta"){
     return RootHelper::GetBinContent4SF(this_hist, pt, sceta, sys);
   }else{
     cout << "[MCCorrection::ElectronID_SF] (Hist) No etaptOrder "<<_EtaPtOrder<<endl;
     exit(EXIT_FAILURE);
   }
-
 }
 
 
@@ -691,75 +755,6 @@ double MCCorrection::GetPileUpWeight(int N_vtx, int syst){
 
 }
 
-double MCCorrection::MuonIDISO_SF(TString ID, double eta, double pt, int sys){
-
-  if(ID=="Default") return 1.;
-
-    TH2F *this_hist = map_hist_Muon["IDISO_SF_"+ID];
-    _EtaPtOrder = map_VarOrder_Muon["IDISO_SF_"+ID];
-
-    if(!this_hist){
-      if(IgnoreNoHist) return 1.;
-      else{
-        cout << "[MCCorrection::MuonID_SF] No "<<"ID_SF_"+ID<<endl;
-        exit(EXIT_FAILURE);
-      }
-    }
-
-    if(_EtaPtOrder == "etapt"){
-      return RootHelper::GetBinContent4SF(this_hist, eta, pt, sys);
-    }else
-    if(_EtaPtOrder == "pteta"){
-      return RootHelper::GetBinContent4SF(this_hist, pt, eta, sys);
-    }else{
-      cout<<"[MCCorrection::MuonID_SF] wrong etaPtOrder:"<<_EtaPtOrder<<endl;
-      exit(EXIT_FAILURE);
-    }
-
-  return 1;
-}
-
-double MCCorrection::MuonIDISO_RD_SF(TString ID, double eta, double pt, int sys){
-
-  if(ID=="Default") return 1.;
-
-  // for run dependent SF
-
-    TH2F* this_hist[4]={};
-    TString sdata[2]={"DATA","MC"};
-    TString speriod[2]={"BCDEF","GH"};
-
-    for(int id=0;id<2;id++){
-      for(int ip=0;ip<2;ip++){
-        this_hist[2*id+ip]=map_hist_Muon["IDISO_Eff_"+sdata[id]+"_"+ID+"_"+speriod[ip]];
-      }
-    }
-    if(!this_hist[0]||!this_hist[1]||!this_hist[2]||!this_hist[3]){
-      cout << "[MCCorrection::IDISO_SF] No "<<ID<<endl;
-      exit(EXIT_FAILURE);
-    }
-
-    double lumi_periodB = 5.929001722;
-    double lumi_periodC = 2.645968083;
-    double lumi_periodD = 4.35344881;
-    double lumi_periodE = 4.049732039;
-    double lumi_periodF = 3.157020934;
-    double lumi_periodG = 7.549615806;
-    double lumi_periodH = 8.545039549 + 0.216782873;
-
-    double total_lumi = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH);
-
-    double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
-    double WeightGtoH = (lumi_periodG+lumi_periodH)/total_lumi;
-
-    double idisoEff[4]={1.,1.,1.,1.};
-    for(int i=0;i<4;i++){
-        idisoEff[i]=RootHelper::GetBinContent4SF(this_hist[i],eta, pt,(i<2?1.:-1.)*sys);
-    }
-    return (idisoEff[0]*WeightBtoF+idisoEff[1]*WeightGtoH)/(idisoEff[2]*WeightBtoF+idisoEff[3]*WeightGtoH);
-
-  return 1;
-}
 
 double MCCorrection::DiLeptonTrg_SF(TString IdKey0,TString IdKey1,const vector<Lepton*>& leps,int sys){
   if(leps.size() < 2){

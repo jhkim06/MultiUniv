@@ -7,7 +7,7 @@ LeptonSFs::~LeptonSFs(){
 
 }
 
-/////////////////////////////////////////// 2016 ///////////////////////////////////////////////////////////////////
+/////////////////////////////////////////// 2016 Lepton SF info ///////////////////////////////////////////////////////////////////
 /////////////////////////////////////// electron ////////////////////////////////////////////////////////////////
 map<TString, TString> LeptonSFs::electron_2016_IDname_key_map = {
    {"passMediumID",             "passMediumID"},
@@ -31,6 +31,7 @@ map<TString, map<TString, vector<TString>>> LeptonSFs::muon_2016_TRIGname_key_ma
     {"IsoMu24",  {{"POGTight", {"IsoMu24_POGTight"}}, } } ,
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////// End of 2016 ///////////////////////////////////////////////////////////////////
 
 // 2017 muon
 map<TString, TString> LeptonSFs::muon_IDname_key_map = {
@@ -92,7 +93,7 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
 
         trigName_ = trigName;
 
-        if (isoName_.CompareTo("") != 0)
+        if (isoName_ != "")
             fullIdIsoName = idName_+"With"+isoName_;
         else 
             fullIdIsoName = idName;
@@ -115,7 +116,7 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
 
         trigName_ = trigName;
 
-        if (isoName_.CompareTo("") != 0) // TODO check how names are defined for ID with seperated isolation condition
+        if (isoName_ != "") // TODO check how names are defined for ID with seperated isolation condition
             fullIdIsoName = idName_+"With"+isoName_;
         else
             fullIdIsoName = idName;
