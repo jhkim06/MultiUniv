@@ -94,7 +94,6 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
     LeptonISO_SF  = NULL;
   }
 
-
   Double_t total_RECOSF = 1.;
   Double_t total_IDSF = 1.;
   Double_t total_ISOSF = 1.;
@@ -102,7 +101,11 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
 
   if(!IsDATA){
 
-    if(muonWPs.at(ithWP)->getNLeptons() <= leps.size()){
+    unsigned int requiredLeptonSize;
+    if(isMu) requiredLeptonSize = muonWPs.at(ithWP)->getNLeptons();
+    else requiredLeptonSize = electronWPs.at(ithWP)->getNLeptons();
+
+    if(requiredLeptonSize <= leps.size()){
         // trigger first
         // check wheter it is single or double trigger by counting the number of trigger keys
         unsigned int nKeys = param.Lepton_Trigger_map[param.Lepton_TRIGGER].size();
@@ -126,7 +129,7 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
         }
       
         // now Id, Iso 
-        for( unsigned int i(0); i< muonWPs.at(ithWP)->getNLeptons(); i++){
+        for( unsigned int i(0); i< requiredLeptonSize; i++){
 
        	    if(isMu){
                 // ID SF
