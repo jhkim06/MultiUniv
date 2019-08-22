@@ -25,6 +25,7 @@ public:
 private:
 
   vector<LeptonSFs*> muonWPs;
+  vector<LeptonSFs*> electronWPs;
 
   double (MCCorrection::*LeptonID_SF)(TString,double,double,int);
   double (MCCorrection::*LeptonISO_SF)(TString,double,double,int);

@@ -7,6 +7,31 @@ LeptonSFs::~LeptonSFs(){
 
 }
 
+/////////////////////////////////////////// 2016 ///////////////////////////////////////////////////////////////////
+/////////////////////////////////////// electron ////////////////////////////////////////////////////////////////
+map<TString, TString> LeptonSFs::electron_2016_IDname_key_map = {
+   {"passMediumID",             "passMediumID"},
+};
+
+map<TString, map<TString, vector<TString>>> LeptonSFs::electron_2016_TRIGname_key_map = {
+    {"DoubleElectron",  {{"passMediumID", {"LeadEle23_MediumID","TailEle12_MediumID"}}, } } ,
+};
+
+//////////////////////////////////////// muon //////////////////////////////////////////////////////////////////
+map<TString, TString> LeptonSFs::muon_2016_IDname_key_map = {
+   {"POGTight",             "NUM_TightID_DEN_genTracks"},
+};
+
+map<TString, map<TString, TString>> LeptonSFs::muon_2016_ISOname_key_map = {
+   {"TightIso", {{"POGTight", "NUM_TightRelIso_DEN_TightIDandIPCut"}, } },
+};
+
+map<TString, map<TString, vector<TString>>> LeptonSFs::muon_2016_TRIGname_key_map = {
+    {"DoubleMuon",  {{"POGTight", {"Lead17_POGTight","Tail8_POGTight"}}, } } ,
+    {"IsoMu24",  {{"POGTight", {"IsoMu24_POGTight"}}, } } ,
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // 2017 muon
 map<TString, TString> LeptonSFs::muon_IDname_key_map = {
    {"POGTight",             "NUM_TightID_DEN_genTracks"},
@@ -21,9 +46,12 @@ map<TString, map<TString, vector<TString>>> LeptonSFs::muon_TRIGname_key_map = {
 };
 
 
+
+
 // constructor
 LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TString idName, const TString isoName, const TString trigName, unsigned int dataYear){
 
+    TString fullIdIsoName;
     dataYear_ = dataYear;
     // set lepton type
     if( leptonType == LeptonType::electron || leptonType == LeptonType::muon ){
@@ -54,34 +82,62 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
 
     // set lepton Id, Iso, Trig name and its key
     if( leptonType_ == LeptonType::muon ){
-
-        TString fullIdIsoName;
         idName_ = idName;
         isoName_ = isoName;
 
-        idName_key[idName_]= muon_IDname_key_map[idName_];
-        isoName_key[isoName_] = muon_ISOname_key_map[isoName_][idName_];
+        if(dataYear == 2016){
+            idName_key[idName_]= muon_2016_IDname_key_map[idName_];
+            isoName_key[isoName_] = muon_2016_ISOname_key_map[isoName_][idName_];
+        }
 
         trigName_ = trigName;
 
-        if (isoName_ != NULL)
+        if (isoName_.CompareTo("") != 0)
             fullIdIsoName = idName_+"With"+isoName_;
         else 
             fullIdIsoName = idName;
 
-        unsigned int trig_key_size = muon_TRIGname_key_map[trigName_][idName_].size();
-        for(unsigned int ikey = 0; ikey < trig_key_size; ikey++){
-            trigName_key[trigName_].push_back(muon_TRIGname_key_map[trigName_][idName_].at(ikey));
+        if(dataYear == 2016){
+            unsigned int trig_key_size = muon_2016_TRIGname_key_map[trigName_][idName_].size();
+            for(unsigned int ikey = 0; ikey < trig_key_size; ikey++){
+                trigName_key[trigName_].push_back(muon_2016_TRIGname_key_map[trigName_][idName_].at(ikey));
+            }
+        }
+    }
+
+    if( leptonType_ == LeptonType::electron ){
+        idName_ = idName;
+        isoName_ = isoName;
+
+        if(dataYear == 2016){
+            idName_key[idName_]= electron_2016_IDname_key_map[idName_];
         }
 
-        // make branch names
-        outIdBranchName   = leptonName + "_" + strLeptonN + "_idSF_" + fullIdIsoName;
-        outIsoBranchName   = leptonName + "_" + strLeptonN + "_isoSF_" + fullIdIsoName;
-        outTrigBranchName = leptonName + "_" + strLeptonN + "_trigSF_" + trigName_ + "_" + fullIdIsoName;
+        trigName_ = trigName;
 
-        cout << "name check id: " << outIdBranchName << endl;
-        cout << "name check trig: " << outTrigBranchName << endl;
+        if (isoName_.CompareTo("") != 0) // TODO check how names are defined for ID with seperated isolation condition
+            fullIdIsoName = idName_+"With"+isoName_;
+        else
+            fullIdIsoName = idName;
+
+        if(dataYear == 2016){
+            unsigned int trig_key_size = electron_2016_TRIGname_key_map[trigName_][idName_].size();
+            for(unsigned int ikey = 0; ikey < trig_key_size; ikey++){
+                trigName_key[trigName_].push_back(electron_2016_TRIGname_key_map[trigName_][idName_].at(ikey));
+            }
+        }
     }
+
+
+    // make branch names
+    outRecoBranchName   = leptonName + "_" + strLeptonN + "_recoSF_" + fullIdIsoName;
+    outIdBranchName   = leptonName + "_" + strLeptonN + "_idSF_" + fullIdIsoName;
+    outIsoBranchName   = leptonName + "_" + strLeptonN + "_isoSF_" + fullIdIsoName;
+    outTrigBranchName = leptonName + "_" + strLeptonN + "_trigSF_" + trigName_ + "_" + fullIdIsoName;
+
+    cout << "name check id: " << outIdBranchName << endl;
+    cout << "name check trig: " << outTrigBranchName << endl;
+
 
 }
 
@@ -110,10 +166,18 @@ void LeptonSFs::setAnalyzerParameter(AnalyzerParameter & param){
 
 void LeptonSFs::setBranchForSFs(TTree *tree){
 
+    tree->Branch(outRecoBranchName, &recoSF);
     tree->Branch(outIdBranchName, &idSF);
     tree->Branch(outIsoBranchName, &isoSF);
     tree->Branch(outTrigBranchName, &trigSF);
 
+}
+
+void LeptonSFs::setRECOSF(Double_t sf, SysUpDown sys){
+
+    if(sys == SysUpDown::Central){
+        recoSF = sf; 
+    }   
 }
 
 void LeptonSFs::setIDSF(Double_t sf, SysUpDown sys){

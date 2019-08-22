@@ -10,16 +10,24 @@ void Skim_Efficiency::initializeAnalyzer(){
   cout << "initializeAnalyzer" << endl;
 
   if(DataYear==2016){
-        //muonWPs =  new LeptonSFs(LeptonType::muon, 1, "POGTight", "TightIso", "IsoMu24", 2016);
-        //muonWPs->setBranchForSFs(newtree);
+        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "DoubleMuon", 2016));
+        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 1, "POGTight", "TightIso", "IsoMu24", 2016));
+
+        electronWPs.push_back(new LeptonSFs(LeptonType::electron, 2, "passMediumID", "", "DoubleElectron", 2016));
   }
   else if(DataYear==2017){
         muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "IsoMu27", 2017));
-        muonWPs.at(0)->setBranchForSFs(newtree);
   }
   else if(DataYear==2018){
         muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "IsoMu24", 2018));
-        muonWPs.at(0)->setBranchForSFs(newtree);
+  }
+
+  for(unsigned int iWP= 0; iWP < muonWPs.size(); iWP++){
+    muonWPs.at(iWP)->setBranchForSFs(newtree);
+  }
+
+  for(unsigned int iWP= 0; iWP < electronWPs.size(); iWP++){
+    electronWPs.at(iWP)->setBranchForSFs(newtree);
   }
 }
 
@@ -27,10 +35,20 @@ void Skim_Efficiency::executeEvent(){
  
   AnalyzerParameter param; // TODO make EfficiencyParameter class
 
-  muonWPs.at(0)->resetSFs();
-  muonWPs.at(0)->setAnalyzerParameter(param);
-  executeEventFromParameter(param, 0);
-  param.Clear();
+  for(unsigned int iWP= 0; iWP < muonWPs.size(); iWP++){
+    muonWPs.at(iWP)->resetSFs();
+    muonWPs.at(iWP)->setAnalyzerParameter(param);
+    executeEventFromParameter(param, iWP);
+    param.Clear();
+  }
+
+  for(unsigned int iWP= 0; iWP < electronWPs.size(); iWP++){
+    electronWPs.at(iWP)->resetSFs();
+    electronWPs.at(iWP)->setAnalyzerParameter(param);
+    executeEventFromParameter(param, iWP, false);
+    param.Clear();
+  }
+
 
   newtree->Fill();
 
@@ -65,6 +83,18 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
     LeptonTrg_SF = &MCCorrection::MuonTrigger_SF;
   }
 
+  if(!isMu){
+    electrons = SelectElectrons(this_AllElectrons, param.Lepton_ID, 7., 2.5);
+    std::sort(electrons.begin(), electrons.end(),PtComparing);
+    leps=MakeLeptonPointerVector(electrons);
+
+    LeptonReco_SF = &MCCorrection::ElectronReco_SF;
+    LeptonID_SF   = &MCCorrection::ElectronID_SF;
+    LeptonTrg_SF  = NULL;
+    LeptonISO_SF  = NULL;
+  }
+
+
   Double_t total_RECOSF = 1.;
   Double_t total_IDSF = 1.;
   Double_t total_ISOSF = 1.;
@@ -72,19 +102,27 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
 
   if(!IsDATA){
 
-    if(leps.size() > 0){
+    if(muonWPs.at(ithWP)->getNLeptons() <= leps.size()){
         // trigger first
         // check wheter it is single or double trigger by counting the number of trigger keys
         unsigned int nKeys = param.Lepton_Trigger_map[param.Lepton_TRIGGER].size();
-        for(unsigned int ikey = 0; ikey < nKeys; ikey++){
-            if(isMu){
-            	std::vector<Muon> temp_muon;
-            	temp_muon.push_back((*(Muon*)leps.at(ikey))); 
-
+        
+        if(nKeys == 1){
+            if(isMu){ // TODO update for single electron triggers
+                unsigned int ikey = 0;
+                std::vector<Muon> temp_muon;
+                temp_muon.push_back((*(Muon*)leps.at(ikey))); 
                 // get SFs using uncorrected lepton inside the MuonTrigger_SF 
+                // for single muon trigger
                 Double_t temp_trgSF = LeptonTrg_SF?(mcCorr->*LeptonTrg_SF)(param.Lepton_ID, param.Lepton_TRIGGER, temp_muon,  0) : 1.;
                 total_TRGSF *= temp_trgSF;
             }
+        }
+       
+        // for double muon trigger 
+        if(nKeys == 2){
+            Double_t temp_trgSF = mcCorr->DiLeptonTrg_SF(param.Lepton_Trigger_map[param.Lepton_TRIGGER].at(0), param.Lepton_Trigger_map[param.Lepton_TRIGGER].at(1), leps, 0);
+            if(!(temp_trgSF > 10.)) total_TRGSF *= temp_trgSF; // just to avoid to save meaninglessly huge numbers...
         }
       
         // now Id, Iso 
@@ -99,14 +137,34 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
                 Double_t tempISOSF = LeptonISO_SF?(mcCorr->*LeptonISO_SF)(param.Lepton_ISO_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.;
                 total_ISOSF *= tempISOSF;
        	    }
+
+            if(!isMu){
+                // ID SF
+                Double_t tempIDSF = LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.;
+                total_IDSF *= tempIDSF;
+
+                Double_t tempRECOSF = LeptonReco_SF?(mcCorr->*LeptonReco_SF)(((Electron*)leps.at(i))->scEta(), leps.at(i)->Pt(),  0) : 1.;
+                total_RECOSF *= tempRECOSF;
+
+            }
+
         }// loop over leptons passing ID
 
     }// check if number of selected leptons > 0
   }// for MC
 
-  muonWPs.at(ithWP)->setTriggerSF(total_TRGSF, SysUpDown::Central);
-  muonWPs.at(ithWP)->setIDSF(total_IDSF, SysUpDown::Central);
-  muonWPs.at(ithWP)->setISOSF(total_ISOSF, SysUpDown::Central);
+  if(isMu){
+    muonWPs.at(ithWP)->setTriggerSF(total_TRGSF, SysUpDown::Central);
+    muonWPs.at(ithWP)->setRECOSF(total_RECOSF, SysUpDown::Central);
+    muonWPs.at(ithWP)->setIDSF(total_IDSF, SysUpDown::Central);
+    muonWPs.at(ithWP)->setISOSF(total_ISOSF, SysUpDown::Central);
+  }
+  else{
+    electronWPs.at(ithWP)->setTriggerSF(total_TRGSF, SysUpDown::Central);
+    electronWPs.at(ithWP)->setRECOSF(total_RECOSF, SysUpDown::Central);
+    electronWPs.at(ithWP)->setIDSF(total_IDSF, SysUpDown::Central);
+    electronWPs.at(ithWP)->setISOSF(total_ISOSF, SysUpDown::Central);
+  }
 
   this_AllMuons.clear();
   this_AllElectrons.clear(); 

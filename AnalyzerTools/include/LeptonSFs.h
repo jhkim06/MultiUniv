@@ -32,6 +32,7 @@ class LeptonSFs {
   // make branch name
     void setBranchForSFs(TTree *tree);
     void resetSFs();
+    void setRECOSF(Double_t sf, SysUpDown sys);
     void setIDSF(Double_t sf, SysUpDown sys);
     void setISOSF(Double_t sf, SysUpDown sys);
     void setTriggerSF(Double_t sf, SysUpDown sys);
@@ -40,6 +41,13 @@ class LeptonSFs {
     unsigned int getNLeptons();
 
  private:
+
+    static map<TString,TString>                        electron_2016_IDname_key_map;
+    static map<TString, map<TString, vector<TString>>> electron_2016_TRIGname_key_map;
+
+    static map<TString,TString>                        muon_2016_IDname_key_map;
+    static map<TString, map<TString, TString>>         muon_2016_ISOname_key_map;
+    static map<TString, map<TString, vector<TString>>> muon_2016_TRIGname_key_map;
 
     static map<TString,TString> muon_IDname_key_map;
     static map<TString, map<TString, TString>>  muon_ISOname_key_map;
@@ -61,6 +69,7 @@ class LeptonSFs {
     TString leptonName;
     TString strLeptonN;
     TString outIdBranchName;
+    TString outRecoBranchName;
     TString outIsoBranchName;
     TString outTrigBranchName;
     TString outAdditionalBranchName;
