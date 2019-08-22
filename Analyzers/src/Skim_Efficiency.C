@@ -143,10 +143,10 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
 
             if(!isMu){
                 // ID SF
-                Double_t tempIDSF = LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.;
+                Double_t tempIDSF = LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, ( (Electron*)leps.at(i) )->scEta(), leps.at(i)->Pt(),  0) : 1.;
                 total_IDSF *= tempIDSF;
 
-                Double_t tempRECOSF = LeptonReco_SF?(mcCorr->*LeptonReco_SF)(((Electron*)leps.at(i))->scEta(), leps.at(i)->Pt(),  0) : 1.;
+                Double_t tempRECOSF = LeptonReco_SF?(mcCorr->*LeptonReco_SF)( ( (Electron*)leps.at(i) )->scEta(), leps.at(i)->Pt(),  0) : 1.;
                 total_RECOSF *= tempRECOSF;
 
             }
