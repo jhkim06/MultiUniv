@@ -17,8 +17,8 @@ rm JobCheck.log
 
 #for sample in  DoubleMuon DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia # tested for 2016
 #for sample in  DoubleMuon DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia # for 2017 
-for sample in   DYJets_MG   # for 2018
-#for sample in  DoubleMuon DYJets_MG TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia  # for 2018
+for sample in   DYJets_MG TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia   # for 2018
+#for sample in  SingleMuon  DYJets_MG TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia  # for 2018
 do
   echo $sample
   mkGardener.py --Category SMP -a Skim_DiLep_AFBtemp -y 2018 -i $sample -n 100 --userflags MuMu --InSkim MetFt_L_v2 --skimV 1 

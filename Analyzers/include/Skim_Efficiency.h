@@ -14,7 +14,7 @@ public:
   ~Skim_Efficiency();
 
   void initializeAnalyzer();
-  void executeEventFromParameter(AnalyzerParameter param, bool isMu = true);
+  void executeEventFromParameter(AnalyzerParameter param, unsigned int ithWP, bool isMu = true);
   void executeEvent();
 
   Event* evt;
@@ -24,7 +24,7 @@ public:
 
 private:
 
-  LeptonSFs *muonWPs;
+  vector<LeptonSFs*> muonWPs;
 
   double (MCCorrection::*LeptonID_SF)(TString,double,double,int);
   double (MCCorrection::*LeptonISO_SF)(TString,double,double,int);

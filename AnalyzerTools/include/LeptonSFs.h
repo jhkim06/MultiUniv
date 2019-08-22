@@ -26,8 +26,8 @@ class LeptonSFs {
   //LeptonSFs();
   ~LeptonSFs();
 
-  LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TString idName, const TString isoName, const TString trigName);
-  LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TString idName, const TString isoName, const TString trigName, const TString additionalName);
+  LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TString idName, const TString isoName, const TString trigName, unsigned int dataYear);
+  LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TString idName, const TString isoName, const TString trigName, unsigned int dataYear, const TString additionalName);
 
   // make branch name
     void setBranchForSFs(TTree *tree);
@@ -45,6 +45,7 @@ class LeptonSFs {
     static map<TString, map<TString, TString>>  muon_ISOname_key_map;
     static map<TString, map<TString, vector<TString>>> muon_TRIGname_key_map;
 
+    unsigned int dataYear_;
     bool momentumCorrected_;
     LeptonType leptonType_;
     unsigned int nLepton_;

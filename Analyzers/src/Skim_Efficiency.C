@@ -3,7 +3,6 @@
 void Skim_Efficiency::initializeAnalyzer(){
 
   // initializeAnalyzerTools();
-
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");
   newtree = fChain->CloneTree(0);
@@ -11,12 +10,16 @@ void Skim_Efficiency::initializeAnalyzer(){
   cout << "initializeAnalyzer" << endl;
 
   if(DataYear==2016){
+        //muonWPs =  new LeptonSFs(LeptonType::muon, 1, "POGTight", "TightIso", "IsoMu24", 2016);
+        //muonWPs->setBranchForSFs(newtree);
   }
   else if(DataYear==2017){
-        muonWPs =  new LeptonSFs(LeptonType::muon, 1, "POGTight", "TightIso", "IsoMu27");
-        muonWPs->setBranchForSFs(newtree);
+        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "IsoMu27", 2017));
+        muonWPs.at(0)->setBranchForSFs(newtree);
   }
   else if(DataYear==2018){
+        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "IsoMu24", 2018));
+        muonWPs.at(0)->setBranchForSFs(newtree);
   }
 }
 
@@ -24,9 +27,9 @@ void Skim_Efficiency::executeEvent(){
  
   AnalyzerParameter param; // TODO make EfficiencyParameter class
 
-  muonWPs->resetSFs();
-  muonWPs->setAnalyzerParameter(param);
-  executeEventFromParameter(param);
+  muonWPs.at(0)->resetSFs();
+  muonWPs.at(0)->setAnalyzerParameter(param);
+  executeEventFromParameter(param, 0);
   param.Clear();
 
   newtree->Fill();
@@ -36,7 +39,7 @@ void Skim_Efficiency::executeEvent(){
 }
 
 
-void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, bool isMu){
+void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigned int ithWP, bool isMu){
 
   evt = new Event;
   *evt = GetEvent();
@@ -62,6 +65,11 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, bool is
     LeptonTrg_SF = &MCCorrection::MuonTrigger_SF;
   }
 
+  Double_t total_RECOSF = 1.;
+  Double_t total_IDSF = 1.;
+  Double_t total_ISOSF = 1.;
+  Double_t total_TRGSF = 1.;
+
   if(!IsDATA){
 
     if(leps.size() > 0){
@@ -75,15 +83,12 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, bool is
 
                 // get SFs using uncorrected lepton inside the MuonTrigger_SF 
                 Double_t temp_trgSF = LeptonTrg_SF?(mcCorr->*LeptonTrg_SF)(param.Lepton_ID, param.Lepton_TRIGGER, temp_muon,  0) : 1.;
-                muonWPs->setTriggerSF(temp_trgSF, SysUpDown::Central);
+                total_TRGSF *= temp_trgSF;
             }
         }
-       
-        Double_t total_RECOSF = 1.;
-        Double_t total_IDSF = 1.;
-        Double_t total_ISOSF = 1.; 
-
-        for( unsigned int i(0); i< muonWPs->getNLeptons(); i++){
+      
+        // now Id, Iso 
+        for( unsigned int i(0); i< muonWPs.at(ithWP)->getNLeptons(); i++){
 
        	    if(isMu){
                 // ID SF
@@ -96,10 +101,12 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, bool is
        	    }
         }// loop over leptons passing ID
 
-        muonWPs->setIDSF(total_IDSF, SysUpDown::Central);
-        muonWPs->setISOSF(total_ISOSF, SysUpDown::Central);
     }// check if number of selected leptons > 0
   }// for MC
+
+  muonWPs.at(ithWP)->setTriggerSF(total_TRGSF, SysUpDown::Central);
+  muonWPs.at(ithWP)->setIDSF(total_IDSF, SysUpDown::Central);
+  muonWPs.at(ithWP)->setISOSF(total_ISOSF, SysUpDown::Central);
 
   this_AllMuons.clear();
   this_AllElectrons.clear(); 

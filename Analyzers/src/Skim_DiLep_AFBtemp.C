@@ -120,7 +120,7 @@ void Skim_DiLep_AFBtemp::initializeAnalyzer(){
   }
   else if(DataYear==2018){
     DiMuTrgs = {
-      "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v",
+      "HLT_IsoMu24_v",
     };
   }
   else{
@@ -261,10 +261,10 @@ void Skim_DiLep_AFBtemp::executeEvent(){
     //}
 
     if( evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v") == 1 && evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v") == 0){
-        cout << "DZ filter: " << evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v") << endl;
-        cout << "non DZ filter: " << evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v") << endl;
+        //cout << "DZ filter: " << evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v") << endl;
+        //cout << "non DZ filter: " << evt->PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v") << endl;
         //std::cout <<"l1 ps "<<psProv.l1Prescale("L1_SingleEG26",run,lumi)<<std::endl;
-        std::cout <<"hlt ps "<<psProv.hltPrescale("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v",run,lumi)<<std::endl;
+        //std::cout <<"hlt ps "<<psProv.hltPrescale("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v",run,lumi)<<std::endl;
     }
 
     //if(electrons[0].SelectiveQ() )if(electrons[1].SelectiveQ())  diLep_passSelectiveQ = true;
@@ -291,7 +291,6 @@ void Skim_DiLep_AFBtemp::executeEvent(){
   } //===========================================
   FillHist("CutFlow",7,1,30,0,30);
 
-  return;
   // ================================
   // Kinematic cuts 
   // ================================
@@ -428,7 +427,6 @@ void Skim_DiLep_AFBtemp::executeEvent(){
       cout<<"Skim_DiLep_AFBtemp: two charge combination is strange."<<endl;
       exit(EXIT_FAILURE);
     }
-
   }
 
   newtree->Fill();

@@ -7,6 +7,7 @@ LeptonSFs::~LeptonSFs(){
 
 }
 
+// 2017 muon
 map<TString, TString> LeptonSFs::muon_IDname_key_map = {
    {"POGTight",             "NUM_TightID_DEN_genTracks"},
 };
@@ -16,13 +17,14 @@ map<TString, map<TString, TString>> LeptonSFs::muon_ISOname_key_map = {
 };
 
 map<TString, map<TString, vector<TString>>> LeptonSFs::muon_TRIGname_key_map = {
-    {"IsoMu27",  {{"POGTight", {"IsoMu27_POGTight"}}, {"POGMedium", {"IsoMu27_POGMedium"}} } } ,
+    {"IsoMu24",  {{"POGTight", {"IsoMu24_POGTight"}}, } } ,
 };
 
 
 // constructor
-LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TString idName, const TString isoName, const TString trigName){
+LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TString idName, const TString isoName, const TString trigName, unsigned int dataYear){
 
+    dataYear_ = dataYear;
     // set lepton type
     if( leptonType == LeptonType::electron || leptonType == LeptonType::muon ){
         leptonType_ = leptonType;
@@ -71,6 +73,7 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
         for(unsigned int ikey = 0; ikey < trig_key_size; ikey++){
             trigName_key[trigName_].push_back(muon_TRIGname_key_map[trigName_][idName_].at(ikey));
         }
+
         // make branch names
         outIdBranchName   = leptonName + "_" + strLeptonN + "_idSF_" + fullIdIsoName;
         outIsoBranchName   = leptonName + "_" + strLeptonN + "_isoSF_" + fullIdIsoName;
@@ -92,7 +95,6 @@ void LeptonSFs::resetSFs(){
 
 void LeptonSFs::setAnalyzerParameter(AnalyzerParameter & param){
 
-
     param.Lepton_ID     = idName_;
     param.Lepton_ISO_ID = isoName_;
     param.Lepton_TRIGGER = trigName_;
@@ -104,7 +106,6 @@ void LeptonSFs::setAnalyzerParameter(AnalyzerParameter & param){
     for(unsigned int l = 0; l < trigName_key[trigName_].size(); l++){
               (param.Lepton_Trigger_map)[trigName_].push_back(trigName_key[trigName_].at(l));
     }
-
 }
 
 void LeptonSFs::setBranchForSFs(TTree *tree){
