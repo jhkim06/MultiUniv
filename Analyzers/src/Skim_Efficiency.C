@@ -10,8 +10,8 @@ void Skim_Efficiency::initializeAnalyzer(){
   cout << "initializeAnalyzer" << endl;
 
   if(DataYear==2016){
-//        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "DoubleMuon", 2016, ""));
-//        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 1, "POGTight", "TightIso", "IsoMu24", 2016, ""));
+        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "DoubleMuon", 2016, ""));
+        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 1, "POGTight", "TightIso", "IsoMu24", 2016, ""));
 
         electronWPs.push_back(new LeptonSFs(LeptonType::electron, 2, "passMediumID", "", "DoubleElectron", 2016, "DZfilter"));
   }
