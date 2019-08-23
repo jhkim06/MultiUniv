@@ -613,6 +613,39 @@ double MCCorrection::ElectronReco_SF(double sceta, double pt, int sys){
   }
 }
 
+double MCCorrection::ElectronDZfilter_SF(TString Key, const vector<Lepton*>& leps, int nvtx, int syst){
+
+    double triggerSF=1.;
+    
+    if( leps.size() < 2){
+        return triggerSF;
+    }
+
+    TH2F* this_hist=map_hist_Electron["Trigger_SF_"+Key];
+
+    if(!this_hist){
+      cout << "[MCCorrection::ElectronDZfilter_SF] No Trigger_SF_"<<Key<<endl;
+      exit(EXIT_FAILURE);
+    }
+
+    double leading_eta = fabs(((Electron*)leps.at(0))->scEta());
+    double subleading_eta = fabs(((Electron*)leps.at(1))->scEta());
+
+    int bb_be_ee; 
+    if( leading_eta < 2. && subleading_eta < 2.)
+        bb_be_ee = 0.5;
+    else if (leading_eta < 2. && subleading_eta > 2.)
+        bb_be_ee = 1.5;
+    else if (leading_eta > 2. && subleading_eta < 2.)
+        bb_be_ee = 1.5;
+    else 
+        bb_be_ee = 2.5;
+
+    triggerSF*=RootHelper::GetBinContent4SF(this_hist, bb_be_ee, nvtx, syst);
+
+    return triggerSF;
+}
+
 
 double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<Jet> jets, int sys){
 

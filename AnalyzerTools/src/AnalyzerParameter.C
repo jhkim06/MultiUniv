@@ -8,8 +8,10 @@ void AnalyzerParameter::Clear(){
 
   Lepton_ID="";
   Lepton_ISO_ID="";
+  Lepton_EXTRATRG="";
   Lepton_ID_SF_Key="";
   Lepton_ISO_SF_Key="";
+  Lepton_EXTRATRG_SF_Key="";
   Lepton_Trigger_map.clear();
 
   Electron_Tight_ID = "";

@@ -13,6 +13,10 @@ map<TString, TString> LeptonSFs::electron_2016_IDname_key_map = {
    {"passMediumID",             "passMediumID"},
 };
 
+map<TString, TString> LeptonSFs::electron_2016_Extraname_key_map = {
+   {"DZfilter",             "DZfilter"},
+};
+
 map<TString, map<TString, vector<TString>>> LeptonSFs::electron_2016_TRIGname_key_map = {
     {"DoubleElectron",  {{"passMediumID", {"LeadEle23_MediumID","TailEle12_MediumID"}}, } } ,
 };
@@ -47,12 +51,26 @@ map<TString, map<TString, vector<TString>>> LeptonSFs::muon_TRIGname_key_map = {
 };
 
 
+LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TString idName, const TString isoName, const TString trigName, unsigned int dataYear, const TString extraTrigName): LeptonSFs(leptonType, nLepton, idName, isoName, trigName, dataYear){
 
+    extraTrigName_ = extraTrigName;
+    outExtraBranchName = leptonName + "_" + strLeptonN + "_extraTrigSF_" + fullIdIsoName;
+    cout << "long constructor: " << extraTrigName_ << endl;
+
+    if( leptonType_ == LeptonType::electron ){
+
+        if(dataYear == 2016){
+            extraTrigName_key[extraTrigName_] = electron_2016_Extraname_key_map[extraTrigName_];
+        }
+
+    }
+
+}
 
 // constructor
-LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TString idName, const TString isoName, const TString trigName, unsigned int dataYear){
+LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TString idName, const TString isoName, const TString trigName, unsigned int dataYear): extraTrigName_("") {
 
-    TString fullIdIsoName;
+    cout << "short constructor: " << extraTrigName_ << endl;
     dataYear_ = dataYear;
     // set lepton type
     if( leptonType == LeptonType::electron || leptonType == LeptonType::muon ){
@@ -126,7 +144,9 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
             for(unsigned int ikey = 0; ikey < trig_key_size; ikey++){
                 trigName_key[trigName_].push_back(electron_2016_TRIGname_key_map[trigName_][idName_].at(ikey));
             }
+            extraTrigName_key[extraTrigName_] = electron_2016_Extraname_key_map[extraTrigName_];
         }
+        
     }
 
 
@@ -147,7 +167,7 @@ void LeptonSFs::resetSFs(){
     idSF = 1.;
     isoSF = 1.;
     trigSF = 1.;
-    additionalSF = 1.;
+    extraTrigSF = 1.;
 }
 
 void LeptonSFs::setAnalyzerParameter(AnalyzerParameter & param){
@@ -155,10 +175,13 @@ void LeptonSFs::setAnalyzerParameter(AnalyzerParameter & param){
     param.Lepton_ID     = idName_;
     param.Lepton_ISO_ID = isoName_;
     param.Lepton_TRIGGER = trigName_;
+    param.Lepton_EXTRATRG = extraTrigName_;
     
     // set keys
     param.Lepton_ID_SF_Key = idName_key[idName_];
     param.Lepton_ISO_SF_Key = isoName_key[isoName_];
+    param.Lepton_EXTRATRG_SF_Key = extraTrigName_key[extraTrigName_];
+    if(extraTrigName_ != "") param.Lepton_EXTRATRG_SF_Key = extraTrigName_key[extraTrigName_];
     
     for(unsigned int l = 0; l < trigName_key[trigName_].size(); l++){
               (param.Lepton_Trigger_map)[trigName_].push_back(trigName_key[trigName_].at(l));
@@ -171,6 +194,7 @@ void LeptonSFs::setBranchForSFs(TTree *tree){
     tree->Branch(outIdBranchName, &idSF);
     tree->Branch(outIsoBranchName, &isoSF);
     tree->Branch(outTrigBranchName, &trigSF);
+    if(extraTrigName_ != "") tree->Branch(outExtraBranchName, &extraTrigSF);
 
 }
 
@@ -199,6 +223,13 @@ void LeptonSFs::setTriggerSF(Double_t sf, SysUpDown sys){
 
     if(sys == SysUpDown::Central){
         trigSF = sf;
+    }
+}
+
+void LeptonSFs::setExtraTrigSF(Double_t sf, SysUpDown sys){
+
+    if(sys == SysUpDown::Central){
+        extraTrigSF = sf;
     }
 }
 

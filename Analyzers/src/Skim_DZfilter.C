@@ -288,8 +288,9 @@ void Skim_DZfilter::executeEvent(){
         subleading_eta = (*leps.at(1)).Eta();
         pair_mass  = diLep.M();
 
-        if(IsDATA) nPV_ = nPV;
-        else nPV_ = nPileUp;
+        //if(IsDATA) nPV_ = nPV;
+        //else nPV_ = nPileUp;
+        nPV_ = nPV;
 
         if( fabs(leading_eta) < 2.0 && fabs(subleading_eta) < 2.0){
             isBB = 1; eventCategory = 0.5;

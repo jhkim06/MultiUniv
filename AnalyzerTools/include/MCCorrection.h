@@ -48,6 +48,7 @@ public:
 
   double ElectronReco_SF(double sceta, double pt, int sys=0);
   double ElectronID_SF(TString ID, double sceta, double pt, int sys=0);
+  double ElectronDZfilter_SF(TString Key, const vector<Lepton*>& leps, int nvtx, int syst=0);
   std::map< TString, TH2F* > map_hist_Electron;
   std::map< TString, TString > map_VarOrder_Electron;
   std::map< TString, TGraphAsymmErrors* > map_graph_Electron;

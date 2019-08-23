@@ -10,10 +10,10 @@ void Skim_Efficiency::initializeAnalyzer(){
   cout << "initializeAnalyzer" << endl;
 
   if(DataYear==2016){
-        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "DoubleMuon", 2016));
-        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 1, "POGTight", "TightIso", "IsoMu24", 2016));
+//        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "DoubleMuon", 2016, ""));
+//        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 1, "POGTight", "TightIso", "IsoMu24", 2016, ""));
 
-        electronWPs.push_back(new LeptonSFs(LeptonType::electron, 2, "passMediumID", "", "DoubleElectron", 2016));
+        electronWPs.push_back(new LeptonSFs(LeptonType::electron, 2, "passMediumID", "", "DoubleElectron", 2016, "DZfilter"));
   }
   else if(DataYear==2017){
         muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "IsoMu27", 2017));
@@ -98,6 +98,7 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
   Double_t total_IDSF = 1.;
   Double_t total_ISOSF = 1.;
   Double_t total_TRGSF = 1.;
+  Double_t total_EXTRATRGSF = 1.;
 
   if(!IsDATA){
 
@@ -126,6 +127,9 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
         if(nKeys == 2){
             Double_t temp_trgSF = mcCorr->DiLeptonTrg_SF(param.Lepton_Trigger_map[param.Lepton_TRIGGER].at(0), param.Lepton_Trigger_map[param.Lepton_TRIGGER].at(1), leps, 0);
             if(!(temp_trgSF > 10.)) total_TRGSF *= temp_trgSF; // just to avoid saving meaninglessly huge numbers...
+            if(param.Lepton_EXTRATRG_SF_Key != "" && !isMu){
+                total_EXTRATRGSF *= mcCorr->ElectronDZfilter_SF(param.Lepton_EXTRATRG_SF_Key, leps, nPV, 0);
+            }
         }
       
         // now Id, Iso 
@@ -167,6 +171,7 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
     electronWPs.at(ithWP)->setRECOSF(total_RECOSF, SysUpDown::Central);
     electronWPs.at(ithWP)->setIDSF(total_IDSF, SysUpDown::Central);
     electronWPs.at(ithWP)->setISOSF(total_ISOSF, SysUpDown::Central);
+    if(param.Lepton_EXTRATRG_SF_Key != "") electronWPs.at(ithWP)->setExtraTrigSF(total_EXTRATRGSF, SysUpDown::Central);
   }
 
   this_AllMuons.clear();
