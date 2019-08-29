@@ -67,7 +67,7 @@ public:
   std::vector<Muon> GetMuons(TString id, double ptmin, double fetamax, bool apply_roc = true, bool update_roc = false, int s = 0, int m = 0);
 
   std::vector<Photon> GetAllPhotons();
-  std::vector<Photon> GetPhotons(TString id, double ptmin, double fetamax);
+  std::vector<Photon> GetPhotons(TString id, double ptmin, double fetamax, bool checkPixelSeed = false);
 
   //==== If TightIso is set, it calculate ptcone
   //==== If UseMini is true, Lepton::RelIso() returns MiniRelIso

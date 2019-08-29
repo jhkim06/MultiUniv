@@ -2,7 +2,6 @@
 
 void Skim_Efficiency::initializeAnalyzer(){
 
-  // initializeAnalyzerTools();
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");
   newtree = fChain->CloneTree(0);

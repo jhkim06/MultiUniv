@@ -319,12 +319,16 @@ std::vector<Photon> AnalyzerCore::GetAllPhotons(){
   
 }
 
-std::vector<Photon> AnalyzerCore::GetPhotons(TString id, double ptmin, double fetamax){
+std::vector<Photon> AnalyzerCore::GetPhotons(TString id, double ptmin, double fetamax, bool checkPixelSeed){
 
   std::vector<Photon> photons = GetAllPhotons();
   std::vector<Photon> out;
   for(unsigned int i=0; i<photons.size(); i++){
     Photon this_photon= photons.at(i);
+    if(checkPixelSeed){
+       if(photon_hasPixelSeed->at(i) == true) continue;
+    }
+
     if(!( this_photon.Pt()>ptmin )){
       continue;
     }
