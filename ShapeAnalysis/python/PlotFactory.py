@@ -805,7 +805,7 @@ class PlotFactory:
 	
 	#print " X axis = ", minXused, " - ", maxXused
 	frame = ROOT.TH1F
-	frame = tcanvas.DrawFrame(minXused, 0.0, maxXused, 1.0)
+	frame = tcanvas.DrawFrame(minXused, minYused, maxXused, maxYused) # previous arguments(minXused, 0, maxXused, 1), why set ymin ymax as 0 1?
 	# style from https://ghm.web.cern.ch/ghm/plots/MacroExample/myMacro.py
 	xAxis = frame.GetXaxis()
 	xAxis.SetNdivisions(6,5,0)
@@ -1022,7 +1022,7 @@ class PlotFactory:
 	print "- draw tlegend"
 	tlegend.Draw()
 
-	frame.GetYaxis().SetRangeUser( 0, maxYused )
+	#frame.GetYaxis().SetRangeUser( 0, maxYused ) # why set ymin as zero here?
 	# draw back all the axes
 	tcanvas.RedrawAxis()
 
