@@ -32,6 +32,23 @@ void Skim_ISR::initializeAnalyzer(){
     newtree->Branch("leadinglep_eta_rec", &leadinglep_eta_rec,"leadinglep_eta_rec/D");
     newtree->Branch("subleadinglep_eta_rec", &subleadinglep_eta_rec,"subleadinglep_eta_rec/D");
 
+    // gen info
+    newtree->Branch("mother_id_of_prefsr_dilep", &mother_id_of_prefsr_dilep,"mother_id_of_prefsr_dilep/I");
+    newtree->Branch("dilep_pt_gen_prefsr", &dilep_pt_gen_prefsr,"dilep_pt_gen_prefsr/D");
+    newtree->Branch("dilep_mass_gen_prefsr", &dilep_mass_gen_prefsr,"dilep_mass_gen_prefsr/D");
+    newtree->Branch("particle_pt_prefsr", &particle_pt_prefsr,"particle_pt_prefsr/D");
+    newtree->Branch("antiparticle_pt_prefsr", &antiparticle_pt_prefsr,"antiparticle_pt_prefsr/D");
+    newtree->Branch("particle_eta_prefsr", &particle_eta_prefsr,"particle_eta_prefsr/D");
+    newtree->Branch("antiparticle_eta_prefsr", &antiparticle_eta_prefsr,"antiparticle_eta_prefsr/D");
+
+    newtree->Branch("dilep_pt_gen_postfsr", &dilep_pt_gen_postfsr,"dilep_pt_gen_postfsr/D");
+    newtree->Branch("dilep_mass_gen_postfsr", &dilep_mass_gen_postfsr,"dilep_mass_gen_postfsr/D");
+    newtree->Branch("particle_pt_postfsr", &particle_pt_postfsr,"particle_pt_postfsr/D");
+    newtree->Branch("antiparticle_pt_postfsr", &antiparticle_pt_postfsr,"antiparticle_pt_postfsr/D");
+    newtree->Branch("particle_eta_postfsr", &particle_eta_postfsr,"particle_eta_postfsr/D");
+    newtree->Branch("antiparticle_eta_postfsr", &antiparticle_eta_postfsr,"antiparticle_eta_postfsr/D");
+    
+
     // branches for photon for FSR study but seems "slimmedPhotons" has Et > 10 GeV cut
     // so need to use PFPhotons which is not available in the current SKFlat 
     newtree->Branch("dilep_photon_mass_rec", &dilep_photon_mass_rec,"dilep_photon_mass_rec/D");
@@ -55,7 +72,6 @@ void Skim_ISR::initializeAnalyzer(){
     newtree->Branch("evt_tag_ditau_gen", &evt_tag_ditau_gen,"evt_tag_ditau_gen/O");
     newtree->Branch("evt_tag_dielectron_gen", &evt_tag_dielectron_gen,"evt_tag_dielectron_gen/O");
     newtree->Branch("evt_tag_dimuon_gen", &evt_tag_dimuon_gen,"evt_tag_dimuon_gen/O");
-
 
     newtree->Branch("evt_tag_bvetoed_rec", &evt_tag_bvetoed_rec,"evt_tag_bvetoed_rec/O");
 
@@ -115,13 +131,29 @@ void Skim_ISR::executeEvent(){
     photons.clear();
     leps.clear();
 
-    dilep_pt_rec = -999.;
-    dilep_mass_rec = -999.;
+    dilep_pt_rec          = -999.;
+    dilep_mass_rec        = -999.;
     dilep_photon_mass_rec = -999.;
-    leadinglep_pt_rec = -999.;
-    subleadinglep_pt_rec = -999.;
-    leadinglep_eta_rec = -999.;
+    leadinglep_pt_rec     = -999.;
+    subleadinglep_pt_rec  = -999.;
+    leadinglep_eta_rec    = -999.;
     subleadinglep_eta_rec = -999.;
+
+    mother_id_of_prefsr_dilep = -999;
+
+    dilep_pt_gen_prefsr   = -999.;
+    dilep_mass_gen_prefsr = -999.;
+    particle_pt_prefsr     = -999.;
+    antiparticle_pt_prefsr     = -999.;
+    particle_eta_prefsr     = -999.;
+    antiparticle_eta_prefsr     = -999.;
+
+    dilep_pt_gen_postfsr   = -999.;
+    dilep_mass_gen_postfsr = -999.;
+    particle_pt_postfsr     = -999.;
+    antiparticle_pt_postfsr     = -999.;
+    particle_eta_postfsr     = -999.;
+    antiparticle_eta_postfsr     = -999.;
 
     photon_n_rec = 0;
     leadingphoton_pt_rec = -999.;
@@ -269,7 +301,6 @@ void Skim_ISR::executeEvent(){
                 }
 
             }// status 1 particles
-
         }// gen particle loop
 
         // basic check for the selected dilpton pairs
@@ -278,7 +309,24 @@ void Skim_ISR::executeEvent(){
                 cout << "dilepton pair not selected properly..." << endl; 
                 exit(EXIT_FAILURE);
             }
+
+            mother_id_of_prefsr_dilep = gen_particles.at(gen_particles.at(gen_particle_index_ME).MotherIndex()).PID();
+            
+            dilep_pt_gen_prefsr   = (gen_particles.at(gen_particle_index_ME) + gen_particles.at(gen_antiparticle_index_ME)).Pt();
+            dilep_mass_gen_prefsr = (gen_particles.at(gen_particle_index_ME) + gen_particles.at(gen_antiparticle_index_ME)).M();
+            particle_pt_prefsr     = gen_particles.at(gen_particle_index_ME).Pt();
+            antiparticle_pt_prefsr     = gen_particles.at(gen_antiparticle_index_ME).Pt();
+            particle_eta_prefsr     = gen_particles.at(gen_particle_index_ME).Eta();
+            antiparticle_eta_prefsr     = gen_particles.at(gen_antiparticle_index_ME).Eta();
+
+            dilep_pt_gen_postfsr   = (gen_particles.at(gen_particle_index_status1) + gen_particles.at(gen_antiparticle_index_status1)).Pt();
+            dilep_mass_gen_postfsr = (gen_particles.at(gen_particle_index_status1) + gen_particles.at(gen_antiparticle_index_status1)).M();
+            particle_pt_postfsr     = gen_particles.at(gen_particle_index_status1).Pt();
+            antiparticle_pt_postfsr     = gen_particles.at(gen_antiparticle_index_status1).Pt();
+            particle_eta_postfsr     = gen_particles.at(gen_particle_index_status1).Eta();
+            antiparticle_eta_postfsr     = gen_particles.at(gen_antiparticle_index_status1).Eta();
         }
+         
         if(debug_){
             if(evt_tag_dielectron_gen){
                 cout << "DY->ee event..." << endl;

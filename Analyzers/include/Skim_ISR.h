@@ -53,6 +53,22 @@ private:
     double Lep1PtCut;
     double LepEtaCut;
 
+    int mother_id_of_prefsr_dilep;
+
+    double dilep_pt_gen_prefsr   ;
+    double dilep_mass_gen_prefsr ;
+    double particle_pt_prefsr ;
+    double antiparticle_pt_prefsr;
+    double particle_eta_prefsr   ;
+    double antiparticle_eta_prefsr;
+
+    double dilep_pt_gen_postfsr   ;
+    double dilep_mass_gen_postfsr ;
+    double particle_pt_postfsr  ;
+    double antiparticle_pt_postfsr ;
+    double particle_eta_postfsr   ;
+    double antiparticle_eta_postfsr;
+
     double dilep_pt_rec;
     double dilep_mass_rec;
     double dilep_photon_mass_rec;
