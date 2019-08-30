@@ -11,6 +11,8 @@ public:
     void initializeAnalyzer();
     void executeEventFromParameter(AnalyzerParameter param);
     void executeEvent();
+    
+    int findInitialMoterIndex(int mother_index, int current_index, bool same_flavor=true);
 
     Skim_ISR();
     ~Skim_ISR();
@@ -31,10 +33,17 @@ private:
 
     Event* evt;
 
-    std::vector<Muon> muons;
+    std::vector<Gen>      gen_particles;
+    std::vector<Gen>      gen_photons;
+    std::vector<Muon>     muons;
     std::vector<Electron> electrons;
-    std::vector<Photon> photons;
-    std::vector<Lepton*> leps;
+    std::vector<Photon>   photons;
+    std::vector<Lepton*>  leps;
+
+    Gen gen_particle_ME, gen_antiparticle_ME;
+    Gen gen_particle_status1, gen_antiparticle_status1;
+    int gen_particle_index_ME, gen_antiparticle_index_ME;
+    int gen_particle_index_status1, gen_antiparticle_index_status1;
 
     double (MCCorrection::*PileUpWeight)(int,int);
     double PUweight, PUweight_Up, PUweight_Dn;
