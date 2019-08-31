@@ -10,6 +10,8 @@ void Skim_ISR::initializeAnalyzer(){
     if( HasFlag("ISR")){
       cout<<"[Skim_ISR::initializeAnalyzer] "<<endl;
     }
+    // add options: only generator level
+    //
     else{
       cout <<"[Skim_ISR::executeEvent] Not ready for this Flags ";
       for(unsigned int i=0; i<Userflags.size(); i++){
@@ -36,18 +38,29 @@ void Skim_ISR::initializeAnalyzer(){
     newtree->Branch("mother_id_of_prefsr_dilep", &mother_id_of_prefsr_dilep,"mother_id_of_prefsr_dilep/I");
     newtree->Branch("dilep_pt_gen_prefsr", &dilep_pt_gen_prefsr,"dilep_pt_gen_prefsr/D");
     newtree->Branch("dilep_mass_gen_prefsr", &dilep_mass_gen_prefsr,"dilep_mass_gen_prefsr/D");
-    newtree->Branch("particle_pt_prefsr", &particle_pt_prefsr,"particle_pt_prefsr/D");
-    newtree->Branch("antiparticle_pt_prefsr", &antiparticle_pt_prefsr,"antiparticle_pt_prefsr/D");
-    newtree->Branch("particle_eta_prefsr", &particle_eta_prefsr,"particle_eta_prefsr/D");
-    newtree->Branch("antiparticle_eta_prefsr", &antiparticle_eta_prefsr,"antiparticle_eta_prefsr/D");
+    newtree->Branch("particle_pt_gen_prefsr", &particle_pt_gen_prefsr,"particle_pt_gen_prefsr/D");
+    newtree->Branch("antiparticle_pt_gen_prefsr", &antiparticle_pt_gen_prefsr,"antiparticle_pt_gen_prefsr/D");
+    newtree->Branch("particle_eta_gen_prefsr", &particle_eta_gen_prefsr,"particle_eta_gen_prefsr/D");
+    newtree->Branch("antiparticle_eta_gen_prefsr", &antiparticle_eta_gen_prefsr,"antiparticle_eta_gen_prefsr/D");
 
     newtree->Branch("dilep_pt_gen_postfsr", &dilep_pt_gen_postfsr,"dilep_pt_gen_postfsr/D");
     newtree->Branch("dilep_mass_gen_postfsr", &dilep_mass_gen_postfsr,"dilep_mass_gen_postfsr/D");
-    newtree->Branch("particle_pt_postfsr", &particle_pt_postfsr,"particle_pt_postfsr/D");
-    newtree->Branch("antiparticle_pt_postfsr", &antiparticle_pt_postfsr,"antiparticle_pt_postfsr/D");
-    newtree->Branch("particle_eta_postfsr", &particle_eta_postfsr,"particle_eta_postfsr/D");
-    newtree->Branch("antiparticle_eta_postfsr", &antiparticle_eta_postfsr,"antiparticle_eta_postfsr/D");
-    
+    newtree->Branch("particle_pt_gen_postfsr", &particle_pt_gen_postfsr,"particle_pt_gen_postfsr/D");
+    newtree->Branch("antiparticle_pt_gen_postfsr", &antiparticle_pt_gen_postfsr,"antiparticle_pt_gen_postfsr/D");
+    newtree->Branch("particle_eta_gen_postfsr", &particle_eta_gen_postfsr,"particle_eta_gen_postfsr/D");
+    newtree->Branch("antiparticle_eta_gen_postfsr", &antiparticle_eta_gen_postfsr,"antiparticle_eta_gen_postfsr/D");
+
+    newtree->Branch("dilep_pt_gen_dressed_drX",&dilep_pt_gen_dressed_drX);
+    newtree->Branch("dilep_mass_gen_dressed_drX",&dilep_mass_gen_dressed_drX);
+    newtree->Branch("drX_gen_dressed",&drX_gen_dressed);
+    newtree->Branch("dilep_pt_gen_lepton_matched_dressed_drX",&dilep_pt_gen_lepton_matched_dressed_drX);
+    newtree->Branch("dilep_mass_gen_lepton_matched_dressed_drX",&dilep_mass_gen_lepton_matched_dressed_drX);
+    newtree->Branch("drX_gen_lepton_matched_dressed",&drX_gen_lepton_matched_dressed); // actually redundant
+
+    newtree->Branch("photons_et_gen",&photons_et_gen);
+    newtree->Branch("photons_mother_id_gen",&photons_mother_id_gen);
+    newtree->Branch("photons_closest_dr_to_leptons_gen",&photons_closest_dr_to_leptons_gen);
+    newtree->Branch("lepton_matched_photons_closest_dr_to_leptons_gen",&lepton_matched_photons_closest_dr_to_leptons_gen);
 
     // branches for photon for FSR study but seems "slimmedPhotons" has Et > 10 GeV cut
     // so need to use PFPhotons which is not available in the current SKFlat 
@@ -143,17 +156,30 @@ void Skim_ISR::executeEvent(){
 
     dilep_pt_gen_prefsr   = -999.;
     dilep_mass_gen_prefsr = -999.;
-    particle_pt_prefsr     = -999.;
-    antiparticle_pt_prefsr     = -999.;
-    particle_eta_prefsr     = -999.;
-    antiparticle_eta_prefsr     = -999.;
+    particle_pt_gen_prefsr     = -999.;
+    antiparticle_pt_gen_prefsr     = -999.;
+    particle_eta_gen_prefsr     = -999.;
+    antiparticle_eta_gen_prefsr     = -999.;
 
     dilep_pt_gen_postfsr   = -999.;
     dilep_mass_gen_postfsr = -999.;
-    particle_pt_postfsr     = -999.;
-    antiparticle_pt_postfsr     = -999.;
-    particle_eta_postfsr     = -999.;
-    antiparticle_eta_postfsr     = -999.;
+    particle_pt_gen_postfsr     = -999.;
+    antiparticle_pt_gen_postfsr     = -999.;
+    particle_eta_gen_postfsr     = -999.;
+    antiparticle_eta_gen_postfsr     = -999.;
+
+    dilep_pt_gen_dressed_drX.clear();
+    dilep_mass_gen_dressed_drX.clear();
+    drX_gen_dressed.clear();
+
+    dilep_pt_gen_lepton_matched_dressed_drX.clear();
+    dilep_mass_gen_lepton_matched_dressed_drX.clear();
+    drX_gen_lepton_matched_dressed.clear();
+
+    photons_et_gen.clear();
+    photons_mother_id_gen.clear();
+    photons_closest_dr_to_leptons_gen.clear();
+    lepton_matched_photons_closest_dr_to_leptons_gen.clear();
 
     photon_n_rec = 0;
     leadingphoton_pt_rec = -999.;
@@ -314,17 +340,87 @@ void Skim_ISR::executeEvent(){
             
             dilep_pt_gen_prefsr   = (gen_particles.at(gen_particle_index_ME) + gen_particles.at(gen_antiparticle_index_ME)).Pt();
             dilep_mass_gen_prefsr = (gen_particles.at(gen_particle_index_ME) + gen_particles.at(gen_antiparticle_index_ME)).M();
-            particle_pt_prefsr     = gen_particles.at(gen_particle_index_ME).Pt();
-            antiparticle_pt_prefsr     = gen_particles.at(gen_antiparticle_index_ME).Pt();
-            particle_eta_prefsr     = gen_particles.at(gen_particle_index_ME).Eta();
-            antiparticle_eta_prefsr     = gen_particles.at(gen_antiparticle_index_ME).Eta();
+            particle_pt_gen_prefsr     = gen_particles.at(gen_particle_index_ME).Pt();
+            antiparticle_pt_gen_prefsr     = gen_particles.at(gen_antiparticle_index_ME).Pt();
+            particle_eta_gen_prefsr     = gen_particles.at(gen_particle_index_ME).Eta();
+            antiparticle_eta_gen_prefsr     = gen_particles.at(gen_antiparticle_index_ME).Eta();
 
             dilep_pt_gen_postfsr   = (gen_particles.at(gen_particle_index_status1) + gen_particles.at(gen_antiparticle_index_status1)).Pt();
             dilep_mass_gen_postfsr = (gen_particles.at(gen_particle_index_status1) + gen_particles.at(gen_antiparticle_index_status1)).M();
-            particle_pt_postfsr     = gen_particles.at(gen_particle_index_status1).Pt();
-            antiparticle_pt_postfsr     = gen_particles.at(gen_antiparticle_index_status1).Pt();
-            particle_eta_postfsr     = gen_particles.at(gen_particle_index_status1).Eta();
-            antiparticle_eta_postfsr     = gen_particles.at(gen_antiparticle_index_status1).Eta();
+            particle_pt_gen_postfsr     = gen_particles.at(gen_particle_index_status1).Pt();
+            antiparticle_pt_gen_postfsr     = gen_particles.at(gen_antiparticle_index_status1).Pt();
+            particle_eta_gen_postfsr     = gen_particles.at(gen_particle_index_status1).Eta();
+            antiparticle_eta_gen_postfsr     = gen_particles.at(gen_antiparticle_index_status1).Eta();
+
+
+            TLorentzVector dilepton_p4_status1 = gen_particles.at(gen_particle_index_status1) + gen_particles.at(gen_antiparticle_index_status1);
+            std::map<Double_t, TLorentzVector> dilepton_gamma_p4_drX = {{0.1, dilepton_p4_status1},{0.2, dilepton_p4_status1}, {0.3, dilepton_p4_status1},
+                                                                        {0.5, dilepton_p4_status1},{0.7, dilepton_p4_status1}, {1., dilepton_p4_status1},
+                                                                        {2., dilepton_p4_status1}, {3., dilepton_p4_status1}, {5., dilepton_p4_status1}, {10, dilepton_p4_status1}}; 
+
+            std::map<Double_t, TLorentzVector> dilepton_lepton_matched_gamma_p4_drX = {{0.1, dilepton_p4_status1},{0.2, dilepton_p4_status1}, {0.3, dilepton_p4_status1},
+                                                                                       {0.5, dilepton_p4_status1},{0.7, dilepton_p4_status1}, {1., dilepton_p4_status1},
+                                                                                       {2., dilepton_p4_status1}, {3., dilepton_p4_status1}, {5., dilepton_p4_status1}, {10, dilepton_p4_status1}};
+
+
+            // save index between status 1 and the initial ME lepton
+            std::map<int, int> index_map;
+            saveIndexToMap(gen_particle_index_status1,     gen_particle_index_ME,     index_map);
+            saveIndexToMap(gen_antiparticle_index_status1, gen_antiparticle_index_ME, index_map);
+
+            // status 1 photons
+            //
+            unsigned int size_gen_photons = gen_photons.size();
+            for(unsigned int iph = 0; iph < size_gen_photons; iph++){
+
+                photons_et_gen.push_back(gen_photons.at(iph).Pt());
+                photons_mother_id_gen.push_back( gen_particles.at(gen_photons.at(iph).MotherIndex()).PID() );
+ 
+                // find the closest delta R between photon and lepton and save it               
+                Double_t dr_gamma_particle = gen_photons.at(iph).DeltaR( gen_particles.at(gen_particle_index_status1) ); 
+                Double_t dr_gamma_antiparticle = gen_photons.at(iph).DeltaR( gen_particles.at(gen_antiparticle_index_status1) );
+                Double_t dr_temp;
+                if(dr_gamma_particle > dr_gamma_antiparticle){
+                    photons_closest_dr_to_leptons_gen.push_back(dr_gamma_antiparticle);
+                    dr_temp = dr_gamma_antiparticle;
+                }
+                else{
+                    photons_closest_dr_to_leptons_gen.push_back(dr_gamma_particle);
+                    dr_temp = dr_gamma_particle;
+                }
+
+                if( index_map.find(gen_photons.at(iph).MotherIndex()) != index_map.end() ){
+                    lepton_matched_photons_closest_dr_to_leptons_gen.push_back(dr_temp);
+                }
+
+                // 
+                TLorentzVector photon_temp = gen_photons.at(iph);
+                for(std::map<Double_t, TLorentzVector>::iterator mapit = dilepton_gamma_p4_drX.begin(); mapit!=dilepton_gamma_p4_drX.end(); mapit++){
+                    if(dr_temp < mapit->first){
+                        mapit->second += photon_temp; 
+
+                        // only for photons sharing the same index with decaying lepton
+                        // this is the current way to correct FSR in ISR analysis without delta R cut
+                        if( index_map.find(gen_photons.at(iph).MotherIndex()) != index_map.end() ){
+                            dilepton_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
+                        }
+                    }
+                    else continue;
+                }// loop for dilepton_gamma_p4_drX
+            }// loop over status 1 photons
+
+            for(std::map<Double_t, TLorentzVector>::iterator mapit = dilepton_gamma_p4_drX.begin(); mapit!=dilepton_gamma_p4_drX.end(); mapit++){
+                dilep_pt_gen_dressed_drX.push_back((mapit->second).Pt());
+                dilep_mass_gen_dressed_drX.push_back((mapit->second).M());
+                drX_gen_dressed.push_back(mapit->first);
+            }// loop for dilepton_gamma_p4_drX
+
+            for(std::map<Double_t, TLorentzVector>::iterator mapit = dilepton_lepton_matched_gamma_p4_drX.begin(); mapit!=dilepton_lepton_matched_gamma_p4_drX.end(); mapit++){
+                dilep_pt_gen_lepton_matched_dressed_drX.push_back((mapit->second).Pt());
+                dilep_mass_gen_lepton_matched_dressed_drX.push_back((mapit->second).M());
+                drX_gen_lepton_matched_dressed.push_back(mapit->first);
+            }// loop for dilepton_lepton_matched_gamma_p4_drX
+
         }
          
         if(debug_){
@@ -522,6 +618,17 @@ int Skim_ISR::findInitialMoterIndex(int mother_index, int current_index, bool sa
     }
 
     return init_index;
+}
+
+void Skim_ISR::saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map){
+
+    if(current_index==mother_index){
+       partindex_map.insert(std::make_pair(current_index, gen_particles.at(current_index).PID()));
+    }
+    else{
+         partindex_map.insert(std::make_pair(current_index, gen_particles.at(current_index).PID()));
+         saveIndexToMap(gen_particles.at(current_index).MotherIndex(), mother_index, partindex_map);
+    }
 }
 
 Skim_ISR::Skim_ISR(){

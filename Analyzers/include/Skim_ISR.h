@@ -13,6 +13,7 @@ public:
     void executeEvent();
     
     int findInitialMoterIndex(int mother_index, int current_index, bool same_flavor=true);
+    void saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map);
 
     Skim_ISR();
     ~Skim_ISR();
@@ -57,17 +58,30 @@ private:
 
     double dilep_pt_gen_prefsr   ;
     double dilep_mass_gen_prefsr ;
-    double particle_pt_prefsr ;
-    double antiparticle_pt_prefsr;
-    double particle_eta_prefsr   ;
-    double antiparticle_eta_prefsr;
+    double particle_pt_gen_prefsr ;
+    double antiparticle_pt_gen_prefsr;
+    double particle_eta_gen_prefsr   ;
+    double antiparticle_eta_gen_prefsr;
 
     double dilep_pt_gen_postfsr   ;
     double dilep_mass_gen_postfsr ;
-    double particle_pt_postfsr  ;
-    double antiparticle_pt_postfsr ;
-    double particle_eta_postfsr   ;
-    double antiparticle_eta_postfsr;
+    double particle_pt_gen_postfsr  ;
+    double antiparticle_pt_gen_postfsr ;
+    double particle_eta_gen_postfsr   ;
+    double antiparticle_eta_gen_postfsr;
+
+    std::vector<Double_t> dilep_pt_gen_dressed_drX;
+    std::vector<Double_t> dilep_mass_gen_dressed_drX;
+    std::vector<Double_t> drX_gen_dressed;
+
+    std::vector<Double_t> dilep_pt_gen_lepton_matched_dressed_drX;
+    std::vector<Double_t> dilep_mass_gen_lepton_matched_dressed_drX;
+    std::vector<Double_t> drX_gen_lepton_matched_dressed;
+
+    std::vector<Double_t> photons_et_gen;
+    std::vector<Int_t> photons_mother_id_gen;
+    std::vector<Double_t> photons_closest_dr_to_leptons_gen;
+    std::vector<Double_t> lepton_matched_photons_closest_dr_to_leptons_gen;
 
     double dilep_pt_rec;
     double dilep_mass_rec;
