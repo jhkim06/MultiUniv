@@ -34,6 +34,9 @@ private:
 
     Event* evt;
 
+    bool save_detector_info;
+    bool save_generator_info;
+
     std::vector<Gen>      gen_particles;
     std::vector<Gen>      gen_photons;
     std::vector<Muon>     muons;
@@ -98,6 +101,10 @@ private:
     double evt_weight_total_gen;
     double evt_weight_total_rec;
     double evt_weight_btag_rec;
+
+    double evt_weight_pureweight, evt_weight_pureweight_up, evt_weight_pureweight_down;
+    double evt_weight_l1prefire, evt_weight_l1prefire_up, evt_weight_l1prefire_down;
+    double evt_weight_bveto, evt_weight_bveto_up, evt_weight_bveto_down;
 
     bool evt_tag_leptonpt_sel_rec;
     bool evt_tag_leptoneta_sel_rec;

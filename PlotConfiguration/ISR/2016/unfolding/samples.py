@@ -7,7 +7,7 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-McWeight = 'weightGen*weightRec'
+McWeight = 'evt_weight_total_gen*evt_weight_total_rec'
 #McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
 
 #--------------------    

@@ -7,8 +7,17 @@ void Skim_ISR::initializeAnalyzer(){
     //=================================
      
     debug_ = false;
-    if( HasFlag("ISR")){
-      cout<<"[Skim_ISR::initializeAnalyzer] "<<endl;
+    if( HasFlag("ISR_detector_only")){
+        save_detector_info = true;
+        save_generator_info = false;
+    }
+    else if (HasFlag("ISR_generator_only")){
+        save_detector_info = false;
+        save_generator_info = true;
+    }
+    else if (HasFlag("ISR")){
+        save_detector_info = true;
+        save_generator_info = true;
     }
     // add options: only generator level
     //
@@ -25,68 +34,83 @@ void Skim_ISR::initializeAnalyzer(){
     outfile->cd("recoTree");
     newtree = fChain->CloneTree(0);
 
-    // New Branch
-    // branches below include which might be better to be handled in varialbe skim later
-    newtree->Branch("dilep_pt_rec", &dilep_pt_rec,"dilep_pt_rec/D");
-    newtree->Branch("dilep_mass_rec", &dilep_mass_rec,"dilep_mass_rec/D");
-    newtree->Branch("leadinglep_pt_rec", &leadinglep_pt_rec,"leadinglep_pt_rec/D");
-    newtree->Branch("subleadinglep_pt_rec", &subleadinglep_pt_rec,"subleadinglep_pt_rec/D");
-    newtree->Branch("leadinglep_eta_rec", &leadinglep_eta_rec,"leadinglep_eta_rec/D");
-    newtree->Branch("subleadinglep_eta_rec", &subleadinglep_eta_rec,"subleadinglep_eta_rec/D");
+    if(save_detector_info){
+        // New Branch
+        // branches below include which might be better to be handled in varialbe skim later
+        newtree->Branch("dilep_pt_rec", &dilep_pt_rec,"dilep_pt_rec/D");
+        newtree->Branch("dilep_mass_rec", &dilep_mass_rec,"dilep_mass_rec/D");
+        newtree->Branch("leadinglep_pt_rec", &leadinglep_pt_rec,"leadinglep_pt_rec/D");
+        newtree->Branch("subleadinglep_pt_rec", &subleadinglep_pt_rec,"subleadinglep_pt_rec/D");
+        newtree->Branch("leadinglep_eta_rec", &leadinglep_eta_rec,"leadinglep_eta_rec/D");
+        newtree->Branch("subleadinglep_eta_rec", &subleadinglep_eta_rec,"subleadinglep_eta_rec/D");
 
-    // gen info
-    newtree->Branch("mother_id_of_prefsr_dilep", &mother_id_of_prefsr_dilep,"mother_id_of_prefsr_dilep/I");
-    newtree->Branch("dilep_pt_gen_prefsr", &dilep_pt_gen_prefsr,"dilep_pt_gen_prefsr/D");
-    newtree->Branch("dilep_mass_gen_prefsr", &dilep_mass_gen_prefsr,"dilep_mass_gen_prefsr/D");
-    newtree->Branch("particle_pt_gen_prefsr", &particle_pt_gen_prefsr,"particle_pt_gen_prefsr/D");
-    newtree->Branch("antiparticle_pt_gen_prefsr", &antiparticle_pt_gen_prefsr,"antiparticle_pt_gen_prefsr/D");
-    newtree->Branch("particle_eta_gen_prefsr", &particle_eta_gen_prefsr,"particle_eta_gen_prefsr/D");
-    newtree->Branch("antiparticle_eta_gen_prefsr", &antiparticle_eta_gen_prefsr,"antiparticle_eta_gen_prefsr/D");
+        // branches for photon for FSR study but seems "slimmedPhotons" has Et > 10 GeV cut
+        // so need to use PFPhotons which is not available in the current SKFlat 
+        newtree->Branch("dilep_photon_mass_rec", &dilep_photon_mass_rec,"dilep_photon_mass_rec/D");
+        newtree->Branch("photon_n_rec", &photon_n_rec,"photon_n_rec/I");
+        newtree->Branch("leadingphoton_pt_rec", &leadingphoton_pt_rec,"leadingphoton_pt_rec/D");
+        newtree->Branch("leadingphoton_eta_rec", &leadingphoton_eta_rec,"leadingphoton_eta_rec/D");
+        newtree->Branch("leadingphoton_lepton_dr_rec", &leadingphoton_lepton_dr_rec,"leadingphoton_lepton_dr_rec/D");
 
-    newtree->Branch("dilep_pt_gen_postfsr", &dilep_pt_gen_postfsr,"dilep_pt_gen_postfsr/D");
-    newtree->Branch("dilep_mass_gen_postfsr", &dilep_mass_gen_postfsr,"dilep_mass_gen_postfsr/D");
-    newtree->Branch("particle_pt_gen_postfsr", &particle_pt_gen_postfsr,"particle_pt_gen_postfsr/D");
-    newtree->Branch("antiparticle_pt_gen_postfsr", &antiparticle_pt_gen_postfsr,"antiparticle_pt_gen_postfsr/D");
-    newtree->Branch("particle_eta_gen_postfsr", &particle_eta_gen_postfsr,"particle_eta_gen_postfsr/D");
-    newtree->Branch("antiparticle_eta_gen_postfsr", &antiparticle_eta_gen_postfsr,"antiparticle_eta_gen_postfsr/D");
+        newtree->Branch("evt_weight_total_gen", &evt_weight_total_gen,"evt_weight_total_gen/D");
+        newtree->Branch("evt_weight_total_rec", &evt_weight_total_rec,"evt_weight_total_rec/D");
 
-    newtree->Branch("dilep_pt_gen_dressed_drX",&dilep_pt_gen_dressed_drX);
-    newtree->Branch("dilep_mass_gen_dressed_drX",&dilep_mass_gen_dressed_drX);
-    newtree->Branch("drX_gen_dressed",&drX_gen_dressed);
-    newtree->Branch("dilep_pt_gen_lepton_matched_dressed_drX",&dilep_pt_gen_lepton_matched_dressed_drX);
-    newtree->Branch("dilep_mass_gen_lepton_matched_dressed_drX",&dilep_mass_gen_lepton_matched_dressed_drX);
-    newtree->Branch("drX_gen_lepton_matched_dressed",&drX_gen_lepton_matched_dressed); // actually redundant
+        newtree->Branch("evt_weight_pureweight", &evt_weight_pureweight,"evt_weight_pureweight/D");
+        newtree->Branch("evt_weight_pureweight_up", &evt_weight_pureweight_up,"evt_weight_pureweight_up/D");
+        newtree->Branch("evt_weight_pureweight_down", &evt_weight_pureweight_down,"evt_weight_pureweight_down/D");
+        newtree->Branch("evt_weight_l1prefire", &evt_weight_l1prefire,"evt_weight_l1prefire/D");
+        newtree->Branch("evt_weight_l1prefire_up", &evt_weight_l1prefire_up,"evt_weight_l1prefire_up/D");
+        newtree->Branch("evt_weight_l1prefire_down", &evt_weight_l1prefire_down, "evt_weight_l1prefire_down/D");
+        newtree->Branch("evt_weight_bveto", &evt_weight_bveto,"evt_weight_bveto/D");
+        newtree->Branch("evt_weight_bveto_up", &evt_weight_bveto_up,"evt_weight_bveto_up/D");
+        newtree->Branch("evt_weight_bveto_down", &evt_weight_bveto_down,"evt_weight_bveto_down/D");
 
-    newtree->Branch("photons_et_gen",&photons_et_gen);
-    newtree->Branch("photons_mother_id_gen",&photons_mother_id_gen);
-    newtree->Branch("photons_closest_dr_to_leptons_gen",&photons_closest_dr_to_leptons_gen);
-    newtree->Branch("lepton_matched_photons_closest_dr_to_leptons_gen",&lepton_matched_photons_closest_dr_to_leptons_gen);
+        // branches for analysis selection tags
+        // tags at reconstruction level
+        newtree->Branch("evt_tag_dielectron_rec", &evt_tag_dielectron_rec,"evt_tag_dielectron_rec/O");
+        newtree->Branch("evt_tag_dimuon_rec", &evt_tag_dimuon_rec,"evt_tag_dimuon_rec/O");
+        newtree->Branch("evt_tag_leptonpt_sel_rec", &evt_tag_leptonpt_sel_rec,"evt_tag_leptonpt_sel_rec/O");
+        newtree->Branch("evt_tag_leptoneta_sel_rec", &evt_tag_leptoneta_sel_rec,"evt_tag_leptoneta_sel_rec/O");
+        newtree->Branch("evt_tag_oppositecharge_sel_rec", &evt_tag_oppositecharge_sel_rec,"evt_tag_oppositecharge_sel_rec/O");
+        newtree->Branch("evt_tag_analysisevnt_sel_rec", &evt_tag_analysisevnt_sel_rec,"evt_tag_analysisevnt_sel_rec/O");
 
-    // branches for photon for FSR study but seems "slimmedPhotons" has Et > 10 GeV cut
-    // so need to use PFPhotons which is not available in the current SKFlat 
-    newtree->Branch("dilep_photon_mass_rec", &dilep_photon_mass_rec,"dilep_photon_mass_rec/D");
-    newtree->Branch("photon_n_rec", &photon_n_rec,"photon_n_rec/I");
-    newtree->Branch("leadingphoton_pt_rec", &leadingphoton_pt_rec,"leadingphoton_pt_rec/D");
-    newtree->Branch("leadingphoton_eta_rec", &leadingphoton_eta_rec,"leadingphoton_eta_rec/D");
-    newtree->Branch("leadingphoton_lepton_dr_rec", &leadingphoton_lepton_dr_rec,"leadingphoton_lepton_dr_rec/D");
+        newtree->Branch("evt_tag_bvetoed_rec", &evt_tag_bvetoed_rec,"evt_tag_bvetoed_rec/O");
+    }
 
-    newtree->Branch("evt_weight_total_gen", &evt_weight_total_gen,"evt_weight_total_gen/D");
-    newtree->Branch("evt_weight_total_rec", &evt_weight_total_rec,"evt_weight_total_rec/D");
 
-    // branches for analysis selection tags
-    // tags at reconstruction level
-    newtree->Branch("evt_tag_dielectron_rec", &evt_tag_dielectron_rec,"evt_tag_dielectron_rec/O");
-    newtree->Branch("evt_tag_dimuon_rec", &evt_tag_dimuon_rec,"evt_tag_dimuon_rec/O");
-    newtree->Branch("evt_tag_leptonpt_sel_rec", &evt_tag_leptonpt_sel_rec,"evt_tag_leptonpt_sel_rec/O");
-    newtree->Branch("evt_tag_leptoneta_sel_rec", &evt_tag_leptoneta_sel_rec,"evt_tag_leptoneta_sel_rec/O");
-    newtree->Branch("evt_tag_oppositecharge_sel_rec", &evt_tag_oppositecharge_sel_rec,"evt_tag_oppositecharge_sel_rec/O");
-    newtree->Branch("evt_tag_analysisevnt_sel_rec", &evt_tag_analysisevnt_sel_rec,"evt_tag_analysisevnt_sel_rec/O");
+    if(save_generator_info){
+        // gen info
+        newtree->Branch("evt_tag_ditau_gen", &evt_tag_ditau_gen,"evt_tag_ditau_gen/O");
+        newtree->Branch("evt_tag_dielectron_gen", &evt_tag_dielectron_gen,"evt_tag_dielectron_gen/O");
+        newtree->Branch("evt_tag_dimuon_gen", &evt_tag_dimuon_gen,"evt_tag_dimuon_gen/O");
 
-    newtree->Branch("evt_tag_ditau_gen", &evt_tag_ditau_gen,"evt_tag_ditau_gen/O");
-    newtree->Branch("evt_tag_dielectron_gen", &evt_tag_dielectron_gen,"evt_tag_dielectron_gen/O");
-    newtree->Branch("evt_tag_dimuon_gen", &evt_tag_dimuon_gen,"evt_tag_dimuon_gen/O");
+        newtree->Branch("mother_id_of_prefsr_dilep", &mother_id_of_prefsr_dilep,"mother_id_of_prefsr_dilep/I");
+        newtree->Branch("dilep_pt_gen_prefsr", &dilep_pt_gen_prefsr,"dilep_pt_gen_prefsr/D");
+        newtree->Branch("dilep_mass_gen_prefsr", &dilep_mass_gen_prefsr,"dilep_mass_gen_prefsr/D");
+        newtree->Branch("particle_pt_gen_prefsr", &particle_pt_gen_prefsr,"particle_pt_gen_prefsr/D");
+        newtree->Branch("antiparticle_pt_gen_prefsr", &antiparticle_pt_gen_prefsr,"antiparticle_pt_gen_prefsr/D");
+        newtree->Branch("particle_eta_gen_prefsr", &particle_eta_gen_prefsr,"particle_eta_gen_prefsr/D");
+        newtree->Branch("antiparticle_eta_gen_prefsr", &antiparticle_eta_gen_prefsr,"antiparticle_eta_gen_prefsr/D");
 
-    newtree->Branch("evt_tag_bvetoed_rec", &evt_tag_bvetoed_rec,"evt_tag_bvetoed_rec/O");
+        newtree->Branch("dilep_pt_gen_postfsr", &dilep_pt_gen_postfsr,"dilep_pt_gen_postfsr/D");
+        newtree->Branch("dilep_mass_gen_postfsr", &dilep_mass_gen_postfsr,"dilep_mass_gen_postfsr/D");
+        newtree->Branch("particle_pt_gen_postfsr", &particle_pt_gen_postfsr,"particle_pt_gen_postfsr/D");
+        newtree->Branch("antiparticle_pt_gen_postfsr", &antiparticle_pt_gen_postfsr,"antiparticle_pt_gen_postfsr/D");
+        newtree->Branch("particle_eta_gen_postfsr", &particle_eta_gen_postfsr,"particle_eta_gen_postfsr/D");
+        newtree->Branch("antiparticle_eta_gen_postfsr", &antiparticle_eta_gen_postfsr,"antiparticle_eta_gen_postfsr/D");
+
+        newtree->Branch("dilep_pt_gen_dressed_drX",&dilep_pt_gen_dressed_drX);
+        newtree->Branch("dilep_mass_gen_dressed_drX",&dilep_mass_gen_dressed_drX);
+        newtree->Branch("drX_gen_dressed",&drX_gen_dressed);
+        newtree->Branch("dilep_pt_gen_lepton_matched_dressed_drX",&dilep_pt_gen_lepton_matched_dressed_drX);
+        newtree->Branch("dilep_mass_gen_lepton_matched_dressed_drX",&dilep_mass_gen_lepton_matched_dressed_drX);
+        newtree->Branch("drX_gen_lepton_matched_dressed",&drX_gen_lepton_matched_dressed); // actually redundant
+
+        newtree->Branch("photons_et_gen",&photons_et_gen);
+        newtree->Branch("photons_mother_id_gen",&photons_mother_id_gen);
+        newtree->Branch("photons_closest_dr_to_leptons_gen",&photons_closest_dr_to_leptons_gen);
+        newtree->Branch("lepton_matched_photons_closest_dr_to_leptons_gen",&lepton_matched_photons_closest_dr_to_leptons_gen);
+    }
 
     // clear vector residual
     DiMuTrgs.clear();
@@ -189,6 +213,18 @@ void Skim_ISR::executeEvent(){
     evt_weight_total_gen = 1.;
     evt_weight_total_rec = 1.;
     evt_weight_btag_rec = 1.;
+
+    evt_weight_pureweight = 1.;
+    evt_weight_pureweight_up = 1.;
+    evt_weight_pureweight_down = 1.;
+
+    evt_weight_l1prefire = 1.;
+    evt_weight_l1prefire_up = 1.;
+    evt_weight_l1prefire_down = 1.;
+    
+    evt_weight_bveto = 1.;
+    evt_weight_bveto_up = 1.;
+    evt_weight_bveto_down = 1.;
   
     evt_tag_leptonpt_sel_rec = 0;
     evt_tag_leptoneta_sel_rec = 0;
@@ -208,13 +244,12 @@ void Skim_ISR::executeEvent(){
     FillHist("CutFlow",5,1,30,0,30);
 
     if(!IsDATA){
-        
         evt_weight_total_gen *= weight_norm_1invpb*evt->GetTriggerLumi("Full");
         evt_weight_total_gen *= evt->MCweight();
     }
 
     ///////////////////////////////////// generator level, only for Drell-Yan MC
-    if(MCSample.Contains("DYJets")){
+    if(MCSample.Contains("DYJets") && save_generator_info ){
         if(debug_) cout << "Generator information for " + MCSample << endl;
         gen_particles.clear();
         gen_photons.clear();
@@ -450,7 +485,7 @@ void Skim_ISR::executeEvent(){
     }/////////////////////////////////////////////////////////////////// generator level
 
     // reconstruction level
-    if(PassMETFilter()){ 
+    if(PassMETFilter() && save_detector_info){ 
 
         FillHist("CutFlow",6,1,30,0,30);
         
@@ -511,7 +546,6 @@ void Skim_ISR::executeEvent(){
                 // opposite charge requirements
                 if((leps.at(0)->Charge() + leps.at(1)->Charge()) == 0) evt_tag_oppositecharge_sel_rec = 1;
 
-                if(evt_tag_leptonpt_sel_rec && evt_tag_leptoneta_sel_rec && evt_tag_leptoneta_sel_rec && evt_tag_oppositecharge_sel_rec) evt_tag_analysisevnt_sel_rec = 1;
 
                 leadinglep_pt_rec = leps.at(0)->Pt();
                 subleadinglep_pt_rec = leps.at(1)->Pt();
@@ -541,23 +575,20 @@ void Skim_ISR::executeEvent(){
 
                 PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
 
-                PUweight=1.,PUweight_Up=1.,PUweight_Dn=1.;
-
                 if(!IsDATA){
-                  PUweight=(mcCorr->*PileUpWeight)(nPileUp,0);
-                  PUweight_Up=(mcCorr->*PileUpWeight)(nPileUp,1);
-                  PUweight_Dn=(mcCorr->*PileUpWeight)(nPileUp,-1);
+                  evt_weight_pureweight=(mcCorr->*PileUpWeight)(nPileUp,0);
+                  evt_weight_pureweight_up=(mcCorr->*PileUpWeight)(nPileUp,1);
+                  evt_weight_pureweight_down=(mcCorr->*PileUpWeight)(nPileUp,-1);
                   evt_weight_total_rec *= PUweight;
                 }
 
-                L1Prefire =1, L1Prefire_Up =1, L1Prefire_Dn =1;
 
                 if(!IsDATA){
                   if(DataYear<=2017){
+                    evt_weight_l1prefire = L1PrefireReweight_Central;
+                    evt_weight_l1prefire_up = L1PrefireReweight_Up;
+                    evt_weight_l1prefire_down = L1PrefireReweight_Down;
                     evt_weight_total_rec *= L1PrefireReweight_Central;
-                    L1Prefire = L1PrefireReweight_Central;
-                    L1Prefire_Up = L1PrefireReweight_Up;
-                    L1Prefire_Dn = L1PrefireReweight_Down;
                   }
                 }
 
@@ -581,12 +612,26 @@ void Skim_ISR::executeEvent(){
                   if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)) n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
                 }
 
-                 if(n_bjet_deepcsv_m_noSF == 0) evt_tag_bvetoed_rec = 1;
+                if(n_bjet_deepcsv_m_noSF == 0) evt_tag_bvetoed_rec = 1;
 
-                 float btag_sf = 1, misbtag_sf = 1.;
-                 BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 0, btag_sf, misbtag_sf);
-                 if(!IsDATA) evt_weight_total_rec = btag_sf * misbtag_sf;
-                 if(debug_) std::cout <<"misbtag_sf: " << misbtag_sf << " btag_sf : " << btag_sf << " n bjets (noSF): " << n_bjet_deepcsv_m_noSF << " n bjets: " << n_bjet_deepcsv_m << std::endl;
+                float btag_sf = 1, misbtag_sf = 1.;
+                float btag_sf_up = 1, misbtag_sf_up = 1.;
+                float btag_sf_down = 1, misbtag_sf_down = 1.;
+
+                BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 0, btag_sf, misbtag_sf);
+                BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 1, btag_sf_up, misbtag_sf_down);
+                BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, -1, btag_sf_down, misbtag_sf_down);
+
+                if(!IsDATA){
+                    evt_weight_total_rec *= (btag_sf * misbtag_sf);
+                    evt_weight_bveto = (btag_sf * misbtag_sf);
+                    evt_weight_bveto_up = (btag_sf_up * misbtag_sf_up);
+                    evt_weight_bveto_down = (btag_sf_down * misbtag_sf_down);
+                }
+                if(debug_) std::cout <<"misbtag_sf: " << misbtag_sf << " btag_sf : " << btag_sf << " n bjets (noSF): " << n_bjet_deepcsv_m_noSF << " n bjets: " << n_bjet_deepcsv_m << std::endl;
+
+                if(evt_tag_leptonpt_sel_rec && evt_tag_leptoneta_sel_rec && evt_tag_oppositecharge_sel_rec && evt_tag_bvetoed_rec) evt_tag_analysisevnt_sel_rec = 1;
+                if(!save_generator_info && (evt_tag_dimuon_rec == 0 && evt_tag_dielectron_rec == 0)) return;
 
             } // passing dilepton trigger (dont need trigger matching?)
         } // two leptons passing ID

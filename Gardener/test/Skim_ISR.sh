@@ -15,11 +15,12 @@
 
 rm JobCheck.log
 
-for sample in  TTLL_powheg 
-#for sample in DoubleEG DoubleMuon DYJets10to50 DYJets TT_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
+for sample in  DoubleMuon  
+#for sample in DoubleEG DoubleMuon DYJets10to50 DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
 do
   echo $sample
-  mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 100 --InSkim MetFt_L_v2_LL_v1 --skimV 1 --userflags ISR  
+  #mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 100 --InSkim MetFt_L_v2_LL_v1 --skimV 1 --userflags ISR  
+  mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 100 --skimV 1 --userflags ISR_detector_only --InSkim MetFt_L_v2_LL_v1 
   #./checkGardenerBatch.py -a Skim_DiLep -y 2017 -i $sample -n 500 --nTotFiles 1 --RundirBase /data7/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0_LL_v0_MuMuOrElEl_v9
 done
 
