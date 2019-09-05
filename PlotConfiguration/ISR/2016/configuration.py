@@ -3,7 +3,7 @@ Analyzer    = 'mkShape'
 Outputdir   = 'Output'
 Category    = 'SMP'
 Year        = '2016'
-InSkim      = 'MetFt_L_v2_LL_v1_ISR_v1'
+InSkim      = 'MetFt_L_v2_LL_v1_ISR_detector_only_v1_Eff_SF_v1'
 Userflags   = 'ISR'
 treeName    = 'recoTree/SKFlat'
 

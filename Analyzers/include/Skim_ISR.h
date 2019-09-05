@@ -50,8 +50,6 @@ private:
     int gen_particle_index_status1, gen_antiparticle_index_status1;
 
     double (MCCorrection::*PileUpWeight)(int,int);
-    double PUweight, PUweight_Up, PUweight_Dn;
-    double L1Prefire, L1Prefire_Up, L1Prefire_Dn;
 
     double Lep0PtCut;
     double Lep1PtCut;

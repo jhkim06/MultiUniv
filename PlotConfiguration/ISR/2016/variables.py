@@ -12,7 +12,28 @@ from Definitions import * # to use enumerate for unfolding histogram type
 
 variables['mll'] = {
     'name': 'dilep_mass_rec',
-    'range':(120,60,120),
+    'range':(380, 20,400),
+    'xaxis': 'm_{ll} [GeV]',
+    'fold' : 0
+    }
+
+variables['mll_40_60'] = {
+    'name': 'dilep_mass_rec',
+    'range':(20, 40, 60),
+    'xaxis': 'm_{ll} [GeV]',
+    'fold' : 0
+    }
+
+variables['mll_60_80'] = {
+    'name': 'dilep_mass_rec',
+    'range':(20, 60, 80),
+    'xaxis': 'm_{ll} [GeV]',
+    'fold' : 0
+    }
+
+variables['mll_80_100'] = {
+    'name': 'dilep_mass_rec',
+    'range':(20, 80, 100),
     'xaxis': 'm_{ll} [GeV]',
     'fold' : 0
     }
@@ -20,6 +41,20 @@ variables['mll'] = {
 variables['ptll'] = {
     'name': 'dilep_pt_rec',
     'range':(100,0,1000),
-    'xaxis': 'm_{ll} [GeV]',
+    'xaxis': 'pt_{ll} [GeV]',
+    'fold' : 0
+    }
+
+variables['ptll_100'] = {
+    'name': 'dilep_pt_rec',
+    'range':(100,0,100),
+    'xaxis': 'pt_{ll} [GeV]',
+    'fold' : 0
+    }
+
+variables['PU'] = {
+    'name': 'nPV',
+    'range':(50,0,50),
+    'xaxis': 'Number of PU',
     'fold' : 0
     }

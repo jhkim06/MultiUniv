@@ -579,7 +579,7 @@ void Skim_ISR::executeEvent(){
                   evt_weight_pureweight=(mcCorr->*PileUpWeight)(nPileUp,0);
                   evt_weight_pureweight_up=(mcCorr->*PileUpWeight)(nPileUp,1);
                   evt_weight_pureweight_down=(mcCorr->*PileUpWeight)(nPileUp,-1);
-                  evt_weight_total_rec *= PUweight;
+                  evt_weight_total_rec *= evt_weight_pureweight;
                 }
 
 

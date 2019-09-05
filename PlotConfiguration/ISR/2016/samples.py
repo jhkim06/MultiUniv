@@ -7,7 +7,8 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec'
+McWeight = 'evt_weight_total_gen * evt_weight_total_rec * electron_double_recoSF_passMediumID * electron_double_idSF_passMediumID * electron_double_recoSF_passMediumID * electron_double_trigSF_DoubleElectron_passMediumID * electron_double_extraTrigSF_passMediumID'
+#McWeight = 'evt_weight_total_gen * evt_weight_total_rec'
 
 #--------------------    
 # MC
@@ -18,10 +19,10 @@ samples['DYJets'] = {
     'weight' :McWeight,
     }
 
-#samples['DYJets10to50'] = {
-#    'skim'   :'', # use default skim defined in configuration.py
-#    'weight' :McWeight,
-#    }
+samples['DYJets10to50'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'weight' :McWeight,
+    }
 
 
 samples['TTLL_powheg'] = {
