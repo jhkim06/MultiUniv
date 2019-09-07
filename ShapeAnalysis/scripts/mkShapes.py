@@ -157,11 +157,18 @@ StringForHash = ""
 InputSampleKeys = []
 InputSampleSkims = {}
 for key in samples:
+
   InputSampleKeys.append(key)
   tmp_skim_string = samples[key]['skim']
   if tmp_skim_string is '': # use default skim defined in configuration.py
     tmp_skim_string= InSkimString
-  InputSampleSkims[key]=tmp_skim_string
+
+  if len(key.split("@")) > 1 :
+    key_ =     key.split("@")[1]
+  else :
+    key_ = key
+
+  InputSampleSkims[key_]=tmp_skim_string
 InputSamples,StringForHash = GetInputSamples(InputSampleKeys,opt.DataPeriod,opt.Year,opt.Category,ProductionKey)
 print 'InputSamples', InputSamples  
 
@@ -190,6 +197,7 @@ for InputSample in InputSamples:
   IsDATA = False
   DataPeriod = ""
   print 'InputSample', InputSample
+  # for data
   if ":" in InputSample:
     IsDATA = True
     #tmp = InputSample
@@ -197,10 +205,21 @@ for InputSample in InputSamples:
     DataPeriod = InputSample.split(":")[1]
     print 'DataPeriod', DataPeriod
 
-  # variable 'InputSample' is full name of sample
-  sampleName = InputSamples[InputSample]['key']
-  SampleInSkimString = InputSampleSkims[sampleName]
-  sample     = samples[sampleName]
+    sampleName = InputSample.split(":")[0]
+    SampleInSkimString = InputSampleSkims[sampleName]
+  else :
+    # variable 'InputSample' is full name of sample
+    sampleName = InputSample
+    SampleInSkimString = InputSampleSkims[sampleName]
+
+  sampleName_set = False
+  for key in samples:
+    if sampleName in key:
+        sample     = samples[key]
+        sampleName_set = True
+
+  if not sampleName_set:
+    sample     = samples[sampleName]
 
 
 
@@ -273,7 +292,7 @@ for InputSample in InputSamples:
   if IsDATA:
     sampleBaseName = sampleName+'/'+'period'+DataPeriod
   else:
-    sampleBaseName = InputSample
+    sampleBaseName = InputSamples[InputSample]['full_name']
   if SampleInSkimString == "":
     if IsDATA:
       tmpfilepath = SAMPLE_INFO_DIR+'/For'+HostNickName+'/'+sampleName+'_'+DataPeriod+'.txt'

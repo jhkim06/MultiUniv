@@ -65,30 +65,44 @@ def GetInputSamples(InputSampleKeys,DataPeriod,Year,Category,ProductionKey):
       if DataPeriod=="ALL":
         print key, Year,'ALL', Dataperiods
         for period in Dataperiods:
-          InputSamples[key+":"+period]={'key':key}
+          #InputSamples[key+":"+period]={'key':key}
+          InputSamples[key+":"+period]={'full_name':key}
           StringForHash += key+":"+period
       elif DataPeriod in Dataperiods:
         print key, Year, DataPeriod
-        InputSamples[key+":"+DataPeriod]={'key':key}
+        #InputSamples[key+":"+DataPeriod]={'key':key}
+        InputSamples[key+":"+DataPeriod]={'full_name':key}
         StringForHash += key+":"+DataPeriod
     elif key in DATaSets_Fake:
       tmp_key = key.split('_')[0]
       if DataPeriod=="ALL":
         print key, Year,'ALL', Dataperiods
         for period in Dataperiods:
-          InputSamples[tmp_key+":"+period]={'key':key}
+          #InputSamples[tmp_key+":"+period]={'key':key}
+          InputSamples[key+":"+period]={'full_path':key}
           StringForHash += tmp_key+":"+period
       elif DataPeriod in Dataperiods:
         print key, Year, DataPeriod
-        InputSamples[tmp_key+":"+DataPeriod]={'key':key}
+        #InputSamples[tmp_key+":"+DataPeriod]={'key':key}
+        InputSamples[key+":"+DataPeriod]={'full_path':key}
         StringForHash += tmp_key+":"+DataPeriod
     elif 'Fake' in key:
       raise RuntimeError('Fake sample %s is not defined!!'%key)
     else:
       print 'key', key
-      fullName=sampleInfo[key]['name'] #full MC name defined in CommonPyTools/DataSample/Samples
-      InputSamples[fullName]={'key':key}
-      StringForHash += key
+
+      if len(key.split("@")) > 1 :
+        base_key = key.split("@")[0]
+        key_ =     key.split("@")[1]
+      else :
+        base_key = key
+        key_ = key
+        
+      fullName=sampleInfo[base_key]['name'] #full MC name defined in CommonPyTools/DataSample/Samples
+      #InputSamples[fullName]={'key':key_}
+      InputSamples[key_]={'full_name':fullName}
+      StringForHash += key_
+    
 
   return InputSamples, StringForHash
 

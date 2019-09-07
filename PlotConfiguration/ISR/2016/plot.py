@@ -27,6 +27,16 @@ groupPlot['VV'] = {
     'samples' : ['WW_pythia','WZ_pythia','ZZ_pythia']
     }
 
+groupPlot['DYtoTauTau'] = {
+    'nameHR' : "DYtoTauTau",
+    'isSignal' :0,
+    'color': kRed,
+    'style': 4050,
+    'lineColor':807,
+    'lineWidth':1,
+    'samples' : ['DYJetsToTauTau','DYJets10to50ToTauTau']
+    }
+
 # kOrange 800
 groupPlot['DY'] = {
     'nameHR' : "DY",
@@ -35,10 +45,10 @@ groupPlot['DY'] = {
     'style': 4050,
     'lineColor':807,
     'lineWidth':1,
-    'samples' : ['DYJets','DYJets10to50']
+    'samples' : ['DYJetsToEE','DYJets10to50ToEE']
     }
 
-plot['DYJets10to50'] = {
+plot['DYJets10to50ToEE'] = {
     'color': 418,
     'isSignal' :1,
     'isData': 0,
@@ -46,7 +56,22 @@ plot['DYJets10to50'] = {
     'scale':1,
     }
 
-plot['DYJets'] = {
+plot['DYJetsToEE'] = {
+    'color': kYellow,
+    'isSignal' :0,
+    'isData': 0,
+    'style': 4050,
+    }
+
+plot['DYJets10to50ToTauTau'] = {
+    'color': 418,
+    'isSignal' :1,
+    'isData': 0,
+    'style': 4050,
+    'scale':1,
+    }
+
+plot['DYJetsToTauTau'] = {
     'color': kYellow,
     'isSignal' :0,
     'isData': 0,

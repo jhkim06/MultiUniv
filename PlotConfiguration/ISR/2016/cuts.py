@@ -7,3 +7,4 @@ supercut = 'evt_tag_dielectron_rec == 1 && evt_tag_analysisevnt_sel_rec == 1'
 
 cuts['dipt_cut'] = 'dilep_pt_rec < 100'
 
+cuts['no_cut'] = '1'

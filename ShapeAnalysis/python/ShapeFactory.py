@@ -106,9 +106,9 @@ class ShapeFactory:
 	
 	# create histogram
 	if 'weights' in sample.keys() :
-	  outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True, go1D, useTUnfoldBin, unfoldBinType)
+	  outputsHisto = self._draw( variable['name'], variable['range'], sample['cut'], sample['weight'], sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True, go1D, useTUnfoldBin, unfoldBinType)
 	else :
-	  outputsHisto = self._draw( variable['name'], variable['range'], sample['weight'], [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True, go1D, useTUnfoldBin, unfoldBinType)
+	  outputsHisto = self._draw( variable['name'], variable['range'], sample['cut'], sample['weight'], [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, True, go1D, useTUnfoldBin, unfoldBinType)
 
 	outputsHisto.Write()
     
@@ -138,12 +138,12 @@ class ShapeFactory:
 		    newSampleWeightDo = sample['weight'] + '* (' + configurationNuis[1]  + ")"
 
 		    if 'weights' in sample.keys() :
-		      outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, sysNameUp)
-		      outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, sysNameDo)
+		      outputsHistoUp = self._draw( variable['name'], variable['range'], sample['cut'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, sysNameUp)
+		      outputsHistoDo = self._draw( variable['name'], variable['range'], sample['cut'], newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, sysNameDo)
 		    else :
 		      #print 'newSampleWeightUp', newSampleWeightUp
-		      outputsHistoUp = self._draw( variable['name'], variable['range'], newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, sysNameUp)
-		      outputsHistoDo = self._draw( variable['name'], variable['range'], newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, sysNameDo)
+		      outputsHistoUp = self._draw( variable['name'], variable['range'], sample['cut'], newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, sysNameUp)
+		      outputsHistoDo = self._draw( variable['name'], variable['range'], sample['cut'], newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, sysNameDo)
 
 		    outputsHistoUp.Write()
 		    outputsHistoDo.Write()
@@ -174,15 +174,15 @@ class ShapeFactory:
 
 		    if 'weights' in sample.keys() :
 		      if not newVariableNameUp==None:
-		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType)
+		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], sample['cut'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType)
 		      if not newVariableNameDo==None:
-		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType)
+		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], sample['cut'], newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType)
 		    else :
 		      #print 'newSampleWeightUp', newSampleWeightUp
 		      if not newVariableNameUp==None:
-		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType)
+		        outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], sample['cut'], newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType)
 		      if not newVariableNameDo==None:
-		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType)
+		        outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], sample['cut'], newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType)
 
 		    if not newVariableNameUp==None:
 	              self.outFile.mkdir(cutName+"/"+newVariableNameUp[0])
@@ -217,7 +217,7 @@ class ShapeFactory:
     print 'FINISHED'
 
 
-  def _draw(self, var, rng, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros, go1D = True, useTUnfoldBin = False, unfoldBinType = None, sysName = None) :
+  def _draw(self, var, rng, sample_cut, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros, go1D = True, useTUnfoldBin = False, unfoldBinType = None, sysName = None) :
 
     '''
     var           :   the variable to plot
@@ -262,6 +262,9 @@ class ShapeFactory:
         # if weight is not given for a given root file, '-', do not apply file dependent weight for that root file
         if weights[numTree] != '-' :
           globalCut = "(" + globalCut + ") * (" + weights[numTree] + ")" 
+
+      if len(sample_cut) != 0 :
+        globalCut = "(" + totCut + " && " + sample_cut + ") * (" + global_weight + ")"
      
       entries = tree.Draw( var+'>>'+shapeName, globalCut, 'goff')
 
