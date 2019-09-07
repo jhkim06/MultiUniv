@@ -424,7 +424,11 @@ for InputSample in InputSamples:
     if opt.doBatch and not opt.doHadd:
       #print 'batch making histo'
       #jobName = 'mkShape'
-      jobName = 'job_'+str(it_job)+'_mkShape'
+      if IsDATA:
+        jobName = 'job_'+str(it_job)+'_mkShape_' + sampleName + "_" + DataPeriod
+      else :
+        jobName = 'job_'+str(it_job)+'_mkShape_' + sampleName
+
       ########################################################################
       # 'jobName'.py is created when object (jobs) of batchJobs class is created
       jobs = batchJobs(jobName, opt.Queue, thisjob_dir,cmdType, opt.dry_run, opt.multiQueue) 
