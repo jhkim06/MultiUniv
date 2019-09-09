@@ -12,8 +12,8 @@ Userflags   = 'CHToCB' # flag appends to ouput directory name
 treeName    = 'recoTree/SKFlat'
 
 
-sampleCfg   = 'samples.py'
-plotCfg     = 'plot.py'
-variableCfg = 'variables.py'
-cutCfg      = 'cuts.py'
-nuisancesCfg= 'nuisances.py'
+samplesFile   = 'samples.py'
+plotFile      = 'plot.py'
+variablesFile = 'variables.py'
+cutsFile      = 'cuts.py'
+nuisancesFile = 'nuisances.py'
