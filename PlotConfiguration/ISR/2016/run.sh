@@ -51,6 +51,7 @@
 
 
 #mkShapes.py --pycfg  configuration.py -n 300 --nTotFiles 0  --overWrite --doBatch --multiQueue  
+#mkShapes.py --pycfg  configuration.py -n 300 --nTotFiles 0  --overWrite --doBatch  
 
 #checkMakeShapeBatch.py -y 2017 -n 300 --nTotFiles 0 --RundirBase /data6/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0_LL_v0_MuMuOrElEl_v1_PDF
 

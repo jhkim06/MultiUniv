@@ -45,10 +45,10 @@ groupPlot['DY'] = {
     'style': 4050,
     'lineColor':807,
     'lineWidth':1,
-    'samples' : ['DYJetsToEE','DYJets10to50ToEE']
+    'samples' : ['DYJetsToMuMu','DYJets10to50ToMuMu']
     }
 
-plot['DYJets10to50ToEE'] = {
+plot['DYJets10to50ToMuMu'] = {
     'color': 418,
     'isSignal' :1,
     'isData': 0,
@@ -56,7 +56,7 @@ plot['DYJets10to50ToEE'] = {
     'scale':1,
     }
 
-plot['DYJetsToEE'] = {
+plot['DYJetsToMuMu'] = {
     'color': kYellow,
     'isSignal' :0,
     'isData': 0,
@@ -103,8 +103,8 @@ plot['WJets_MG'] = {
     'scale':1,
     }
 
-plot['DoubleEG'] = {
-    'nameHR' : "DoubleEG",
+plot['DoubleMuon'] = {
+    'nameHR' : "DoubleMuon",
     'color':kBlack,
     'isSignal':0,
     'isData':1,
