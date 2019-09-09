@@ -488,6 +488,63 @@ void Skim_ISR::executeEvent(){
     if(PassMETFilter() && save_detector_info){ 
 
         FillHist("CutFlow",6,1,30,0,30);
+
+        PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
+
+        if(!IsDATA){
+          evt_weight_pureweight=(mcCorr->*PileUpWeight)(nPileUp,0);
+          evt_weight_pureweight_up=(mcCorr->*PileUpWeight)(nPileUp,1);
+          evt_weight_pureweight_down=(mcCorr->*PileUpWeight)(nPileUp,-1);
+          evt_weight_total_rec *= evt_weight_pureweight;
+        }
+
+
+        if(!IsDATA){
+          if(DataYear<=2017){
+            evt_weight_l1prefire = L1PrefireReweight_Central;
+            evt_weight_l1prefire_up = L1PrefireReweight_Up;
+            evt_weight_l1prefire_down = L1PrefireReweight_Down;
+            evt_weight_total_rec *= L1PrefireReweight_Central;
+          }
+        }
+
+        // b tag 
+        std::vector<Jet::Tagger> vtaggers;
+        vtaggers.push_back(Jet::DeepCSV);
+
+        std::vector<Jet::WP> v_wps;
+        v_wps.push_back(Jet::Medium);
+
+        SetupBTagger(vtaggers,v_wps, true, false);
+
+        vector<Jet> this_AllJets = GetAllJets();
+        vector<Jet> jets = SelectJets(this_AllJets, "tight", 30., 2.4);
+
+        int n_bjet_deepcsv_m=0;
+        int n_bjet_deepcsv_m_noSF=0;
+
+        for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+          if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,true,0)) n_bjet_deepcsv_m++; // method for getting btag with SF applied to MC
+          if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)) n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
+        }
+
+        if(n_bjet_deepcsv_m_noSF == 0) evt_tag_bvetoed_rec = 1;
+
+        float btag_sf = 1, misbtag_sf = 1.;
+        float btag_sf_up = 1, misbtag_sf_up = 1.;
+        float btag_sf_down = 1, misbtag_sf_down = 1.;
+
+        BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 0, btag_sf, misbtag_sf);
+        BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 1, btag_sf_up, misbtag_sf_down);
+        BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, -1, btag_sf_down, misbtag_sf_down);
+
+        if(!IsDATA){
+            evt_weight_total_rec *= (btag_sf * misbtag_sf);
+            evt_weight_bveto = (btag_sf * misbtag_sf);
+            evt_weight_bveto_up = (btag_sf_up * misbtag_sf_up);
+            evt_weight_bveto_down = (btag_sf_down * misbtag_sf_down);
+        }
+        if(debug_) std::cout <<"misbtag_sf: " << misbtag_sf << " btag_sf : " << btag_sf << " n bjets (noSF): " << n_bjet_deepcsv_m_noSF << " n bjets: " << n_bjet_deepcsv_m << std::endl;
         
         // Lepton ID
         muons = GetMuons("POGTightWithTightIso", 7., 2.4);
@@ -518,6 +575,7 @@ void Skim_ISR::executeEvent(){
                 }
             } 
             if(IsElEl == 1){ 
+
                 if(evt->PassTrigger(DiElTrgs) ){
                     leps=MakeLeptonPointerVector(electrons);
                     evt_tag_dielectron_rec = 1;
@@ -546,12 +604,11 @@ void Skim_ISR::executeEvent(){
                 // opposite charge requirements
                 if((leps.at(0)->Charge() + leps.at(1)->Charge()) == 0) evt_tag_oppositecharge_sel_rec = 1;
 
-
-                leadinglep_pt_rec = leps.at(0)->Pt();
-                subleadinglep_pt_rec = leps.at(1)->Pt();
-                leadinglep_eta_rec = leps.at(0)->Eta();
+                leadinglep_pt_rec =     leps.at(0)->Pt();
+                subleadinglep_pt_rec =  leps.at(1)->Pt();
+                leadinglep_eta_rec =    leps.at(0)->Eta();
                 subleadinglep_eta_rec = leps.at(1)->Eta();
-                dilep_pt_rec = (*(leps.at(0))+*(leps.at(1))).Pt();
+                dilep_pt_rec =   (*(leps.at(0))+*(leps.at(1))).Pt();
                 dilep_mass_rec = (*(leps.at(0))+*(leps.at(1))).M();
 
                 // check if there are photons passing required ID
@@ -573,64 +630,9 @@ void Skim_ISR::executeEvent(){
                     }
                 }
 
-                PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
+                if(evt_tag_leptonpt_sel_rec && evt_tag_leptoneta_sel_rec && evt_tag_oppositecharge_sel_rec && evt_tag_bvetoed_rec) 
+                    evt_tag_analysisevnt_sel_rec = 1;
 
-                if(!IsDATA){
-                  evt_weight_pureweight=(mcCorr->*PileUpWeight)(nPileUp,0);
-                  evt_weight_pureweight_up=(mcCorr->*PileUpWeight)(nPileUp,1);
-                  evt_weight_pureweight_down=(mcCorr->*PileUpWeight)(nPileUp,-1);
-                  evt_weight_total_rec *= evt_weight_pureweight;
-                }
-
-
-                if(!IsDATA){
-                  if(DataYear<=2017){
-                    evt_weight_l1prefire = L1PrefireReweight_Central;
-                    evt_weight_l1prefire_up = L1PrefireReweight_Up;
-                    evt_weight_l1prefire_down = L1PrefireReweight_Down;
-                    evt_weight_total_rec *= L1PrefireReweight_Central;
-                  }
-                }
-
-                // b tag 
-                std::vector<Jet::Tagger> vtaggers;
-                vtaggers.push_back(Jet::DeepCSV);
-
-                std::vector<Jet::WP> v_wps;
-                v_wps.push_back(Jet::Medium); 
-
-                SetupBTagger(vtaggers,v_wps, true, false);
-
-                vector<Jet> this_AllJets = GetAllJets();
-                vector<Jet> jets = SelectJets(this_AllJets, "tight", 30., 2.4);
-
-                int n_bjet_deepcsv_m=0;
-                int n_bjet_deepcsv_m_noSF=0;
-
-                for(unsigned int ij = 0 ; ij < jets.size(); ij++){
-                  if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,true,0)) n_bjet_deepcsv_m++; // method for getting btag with SF applied to MC
-                  if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)) n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
-                }
-
-                if(n_bjet_deepcsv_m_noSF == 0) evt_tag_bvetoed_rec = 1;
-
-                float btag_sf = 1, misbtag_sf = 1.;
-                float btag_sf_up = 1, misbtag_sf_up = 1.;
-                float btag_sf_down = 1, misbtag_sf_down = 1.;
-
-                BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 0, btag_sf, misbtag_sf);
-                BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, 1, btag_sf_up, misbtag_sf_down);
-                BtaggingSFEvtbyEvt(jets, Jet::DeepCSV, Jet::Medium, -1, btag_sf_down, misbtag_sf_down);
-
-                if(!IsDATA){
-                    evt_weight_total_rec *= (btag_sf * misbtag_sf);
-                    evt_weight_bveto = (btag_sf * misbtag_sf);
-                    evt_weight_bveto_up = (btag_sf_up * misbtag_sf_up);
-                    evt_weight_bveto_down = (btag_sf_down * misbtag_sf_down);
-                }
-                if(debug_) std::cout <<"misbtag_sf: " << misbtag_sf << " btag_sf : " << btag_sf << " n bjets (noSF): " << n_bjet_deepcsv_m_noSF << " n bjets: " << n_bjet_deepcsv_m << std::endl;
-
-                if(evt_tag_leptonpt_sel_rec && evt_tag_leptoneta_sel_rec && evt_tag_oppositecharge_sel_rec && evt_tag_bvetoed_rec) evt_tag_analysisevnt_sel_rec = 1;
                 if(!save_generator_info && (evt_tag_dimuon_rec == 0 && evt_tag_dielectron_rec == 0)) return;
 
             } // passing dilepton trigger (dont need trigger matching?)
