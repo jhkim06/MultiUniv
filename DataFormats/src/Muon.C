@@ -14,6 +14,9 @@ Muon::Muon() : Lepton() {
   j_rc = -999.;
   j_rc_err = -999.;
   j_TunePPtError = -999.;
+
+  j_relIsoNoPH = -999.;
+  j_relIsoNoPHNoCH = -999.;
 }
 
 Muon::~Muon(){
@@ -34,6 +37,11 @@ void Muon::SetIso(double ch04, double nh04, double ph04, double pu04, double trk
   j_PU04 = pu04;
   j_trkiso = trkiso;
   CalcPFRelIso();
+}
+
+void Muon::SetRelIsoFSRStudy(){
+  j_relIsoNoPH =     (j_PFCH04+std::max( 0., j_PFNH04 - 0.5*j_PU04 )) / this->Pt();
+  j_relIsoNoPHNoCH = (std::max( 0., j_PFNH04 - 0.5*j_PU04 )) / this->Pt();
 }
 
 void Muon::SetChi2(double chi2){
@@ -97,6 +105,8 @@ bool Muon::PassID(TString ID){
   if(ID=="POGLooseWithLooseIso") return Pass_POGLooseWithLooseIso();
   if(ID=="POGHighPtWithLooseTrkIso") return Pass_POGHighPtWithLooseTrkIso();
   //==== Customized
+  if(ID=="POGTightWithRelIsoNoPH") return Pass_isPOGTightWithRelIsoNoPH();
+  if(ID=="POGTightWithRelIsoNoPHCH") return Pass_isPOGTightWithRelIsoNoPHCH();
   if(ID=="POGTightWithLooseIso") return Pass_POGTightWithLooseIso();
   if(ID=="POGMediumWithLooseTrkIso") return Pass_POGMediumWithLooseTrkIso();
   if(ID=="TEST") return Pass_TESTID();
@@ -128,6 +138,18 @@ bool Muon::isAntiIso(int syst){
   }
 
   if(!(reliso>reliso_min && reliso<reliso_max)) return false;
+  return true;
+}
+
+bool Muon::Pass_isPOGTightWithRelIsoNoPH(){
+  if(!( isPOGTight() )) return false;
+  if(!( j_relIsoNoPH < 0.15 ))  return false;
+  return true;
+}
+
+bool Muon::Pass_isPOGTightWithRelIsoNoPHCH(){
+  if(!( isPOGTight() )) return false;
+  if(!( j_relIsoNoPHNoCH < 0.15 ))  return false;
   return true;
 }
 

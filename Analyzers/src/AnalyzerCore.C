@@ -103,6 +103,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(bool apply_roc, bool update_roc, int
     mu.SetIDBit(muon_IDBit->at(i));
     mu.SetChi2(muon_normchi->at(i));
     mu.SetIso(muon_PfChargedHadronIsoR04->at(i),muon_PfNeutralHadronIsoR04->at(i),muon_PfGammaIsoR04->at(i),muon_PFSumPUIsoR04->at(i),muon_trkiso->at(i));
+    mu.SetRelIsoFSRStudy();
 
     //==== Should be set after Eta is set
     mu.SetMiniIso(
