@@ -10,7 +10,7 @@ from Definitions import * # to use enumerate for unfolding histogram type
 
 # xaxis, yaxis to set title
 
-variables['ptll-mll TUnfold'] = {
+variables['hist_ptll'] = {
 
     'unfoldBinType': ISRUnfold.PtRec2DHist, 
     'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
@@ -23,26 +23,14 @@ variables['ptll-mll TUnfold'] = {
     'go1D': True
 }
 
-variables['mll TUnfold matrix'] = {
+variables['hist_mll'] = {
 
-    'unfoldBinType': ISRUnfold.MassMigrationM,
-    'fold': 0, 
-    'range': None, 
-    'name': 'Get1DMassRecBinIndex(dilep_mass_rec):Get1DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[9])', 
-    'xaxis': 'Pre FSR',
+    'unfoldBinType': ISRUnfold.MassRec1DHist,
+    'fold':   0,
+    'range':  None,
+    'name':  'Get1DMassRecBinIndex(dilep_mass_rec)',
+    'xaxis': 'Mass [GeV]',
+    'yaxis': 'Events',
     'useTUnfoldBin': True,
-    'go1D': False,
-    'isResMatrix':True
-}
-
-variables['ptll TUnfold matrix'] = {
-
-    'unfoldBinType': ISRUnfold.PtMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DPtRecBinIndex(dilep_pt_rec, dilep_mass_rec):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[9], dilep_mass_gen_lepton_matched_dressed_drX[9])',
-    'xaxis': 'Pre FSR',
-    'useTUnfoldBin': True,
-    'go1D': False,
-    'isResMatrix':True
+    'go1D': False
 }
