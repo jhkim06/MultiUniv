@@ -95,6 +95,15 @@ void Skim_ISR::initializeAnalyzer(){
         newtree->Branch("evt_tag_dielectron_gen", &evt_tag_dielectron_gen,"evt_tag_dielectron_gen/O");
         newtree->Branch("evt_tag_dimuon_gen", &evt_tag_dimuon_gen,"evt_tag_dimuon_gen/O");
 
+        newtree->Branch("photon_n_gen", &photon_n_gen,"photon_n_gen/I");
+        newtree->Branch("lepton_matched_photon_n_gen", &lepton_matched_photon_n_gen,"lepton_matched_photon_n_gen/I");
+        newtree->Branch("lepton_matched_photon_et_gen_drX", &lepton_matched_photon_et_gen_drX);
+        newtree->Branch("evt_tag_dielectron_fiducial_post_fsr", &evt_tag_dielectron_fiducial_post_fsr,"evt_tag_dielectron_fiducial_post_fsr/O");
+        newtree->Branch("evt_tag_dimuon_fiducial_post_fsr", &evt_tag_dimuon_fiducial_post_fsr,"evt_tag_dimuon_fiducial_post_fsr/O");
+
+        newtree->Branch("evt_tag_dielectron_fiducial_lepton_matched_dressed_drX", &evt_tag_dielectron_fiducial_lepton_matched_dressed_drX);
+        newtree->Branch("evt_tag_dimuon_fiducial_lepton_matched_dressed_drX", &evt_tag_dimuon_fiducial_lepton_matched_dressed_drX);
+
         newtree->Branch("mother_id_of_prefsr_dilep", &mother_id_of_prefsr_dilep,"mother_id_of_prefsr_dilep/I");
         newtree->Branch("dilep_pt_gen_prefsr", &dilep_pt_gen_prefsr,"dilep_pt_gen_prefsr/D");
         newtree->Branch("dilep_mass_gen_prefsr", &dilep_mass_gen_prefsr,"dilep_mass_gen_prefsr/D");
@@ -251,6 +260,15 @@ void Skim_ISR::executeEvent(){
     evt_tag_dielectron_rec = 0;
     evt_tag_dimuon_rec = 0;
     evt_tag_bvetoed_rec = 0;
+
+    evt_tag_dielectron_fiducial_post_fsr = false;
+    evt_tag_dimuon_fiducial_post_fsr = false;
+    photon_n_gen = 0;
+    lepton_matched_photon_n_gen = 0;
+
+    lepton_matched_photon_et_gen_drX.clear();
+    evt_tag_dielectron_fiducial_lepton_matched_dressed_drX.clear();
+    evt_tag_dimuon_fiducial_lepton_matched_dressed_drX.clear();
   
     evt = new Event;
     *evt = GetEvent();
@@ -401,7 +419,16 @@ void Skim_ISR::executeEvent(){
             particle_eta_gen_postfsr     = gen_particles.at(gen_particle_index_status1).Eta();
             antiparticle_eta_gen_postfsr     = gen_particles.at(gen_antiparticle_index_status1).Eta();
 
+            if( ((particle_pt_gen_postfsr > 25. && antiparticle_pt_gen_postfsr > 15.) || (particle_pt_gen_postfsr > 15. && antiparticle_pt_gen_postfsr > 25.)) && fabs(particle_eta_gen_postfsr) < 2.5 && fabs(antiparticle_eta_gen_postfsr) < 2.5 )
+                evt_tag_dielectron_fiducial_post_fsr = true;
+            else evt_tag_dielectron_fiducial_post_fsr = false;
 
+            if( ((particle_pt_gen_postfsr > 20. && antiparticle_pt_gen_postfsr > 10.) || (particle_pt_gen_postfsr > 10. && antiparticle_pt_gen_postfsr > 20.)) && fabs(particle_eta_gen_postfsr) < 2.4 && fabs(antiparticle_eta_gen_postfsr) < 2.4 )
+                evt_tag_dimuon_fiducial_post_fsr = true;
+            else evt_tag_dimuon_fiducial_post_fsr = false;
+
+
+            // dilepton from dressed leptons for dR = X
             TLorentzVector dilepton_p4_status1 = gen_particles.at(gen_particle_index_status1) + gen_particles.at(gen_antiparticle_index_status1);
             std::map<Double_t, TLorentzVector> dilepton_gamma_p4_drX = {{0.1, dilepton_p4_status1},{0.2, dilepton_p4_status1}, {0.3, dilepton_p4_status1},
                                                                         {0.5, dilepton_p4_status1},{0.7, dilepton_p4_status1}, {1., dilepton_p4_status1},
@@ -412,6 +439,24 @@ void Skim_ISR::executeEvent(){
                                                                                        {2., dilepton_p4_status1}, {3., dilepton_p4_status1}, {5., dilepton_p4_status1}, {10, dilepton_p4_status1}};
 
 
+            // dressed lepton for dR = X
+            TLorentzVector particle_p4_status1 = gen_particles.at(gen_particle_index_status1);
+            TLorentzVector antiparticle_p4_status1 = gen_particles.at(gen_antiparticle_index_status1);
+
+            std::map<Double_t, TLorentzVector> particle_lepton_matched_gamma_p4_drX = {{0.1, particle_p4_status1},{0.2, particle_p4_status1}, {0.3, particle_p4_status1},
+                                                                                       {0.5, particle_p4_status1},{0.7, particle_p4_status1}, {1., particle_p4_status1},
+                                                                                       {2., particle_p4_status1}, {3., particle_p4_status1}, {5., particle_p4_status1}, {10, particle_p4_status1}};
+
+            std::map<Double_t, TLorentzVector> antiparticle_lepton_matched_gamma_p4_drX = {{0.1, antiparticle_p4_status1},{0.2, antiparticle_p4_status1}, {0.3, antiparticle_p4_status1},
+                                                                                       {0.5, antiparticle_p4_status1},{0.7, antiparticle_p4_status1}, {1., antiparticle_p4_status1},
+                                                                                       {2., antiparticle_p4_status1}, {3., antiparticle_p4_status1}, {5., antiparticle_p4_status1}, {10, antiparticle_p4_status1}};
+
+            // added photons
+            TLorentzVector photon_sum_p4;
+            std::map<Double_t, TLorentzVector> photon_p4_drX = {{0.1, photon_sum_p4},{0.2, photon_sum_p4}, {0.3, photon_sum_p4},
+                                                                                       {0.5, photon_sum_p4},{0.7, photon_sum_p4}, {1., photon_sum_p4},
+                                                                                       {2., photon_sum_p4}, {3., photon_sum_p4}, {5., photon_sum_p4}, {10, photon_sum_p4}};
+
             // save index between status 1 and the initial ME lepton
             std::map<int, int> index_map;
             saveIndexToMap(gen_particle_index_status1,     gen_particle_index_ME,     index_map);
@@ -420,6 +465,7 @@ void Skim_ISR::executeEvent(){
             // status 1 photons
             //
             unsigned int size_gen_photons = gen_photons.size();
+            photon_n_gen = size_gen_photons;
             for(unsigned int iph = 0; iph < size_gen_photons; iph++){
 
                 photons_et_gen.push_back(gen_photons.at(iph).Pt());
@@ -429,6 +475,8 @@ void Skim_ISR::executeEvent(){
                 Double_t dr_gamma_particle = gen_photons.at(iph).DeltaR( gen_particles.at(gen_particle_index_status1) ); 
                 Double_t dr_gamma_antiparticle = gen_photons.at(iph).DeltaR( gen_particles.at(gen_antiparticle_index_status1) );
                 Double_t dr_temp;
+
+                bool matched_to_particle = false;
                 if(dr_gamma_particle > dr_gamma_antiparticle){
                     photons_closest_dr_to_leptons_gen.push_back(dr_gamma_antiparticle);
                     dr_temp = dr_gamma_antiparticle;
@@ -436,9 +484,11 @@ void Skim_ISR::executeEvent(){
                 else{
                     photons_closest_dr_to_leptons_gen.push_back(dr_gamma_particle);
                     dr_temp = dr_gamma_particle;
+                    matched_to_particle = true; 
                 }
 
                 if( index_map.find(gen_photons.at(iph).MotherIndex()) != index_map.end() ){
+                    lepton_matched_photon_n_gen++;
                     lepton_matched_photons_closest_dr_to_leptons_gen.push_back(dr_temp);
                 }
 
@@ -452,6 +502,14 @@ void Skim_ISR::executeEvent(){
                         // this is the current way to correct FSR in ISR analysis without delta R cut
                         if( index_map.find(gen_photons.at(iph).MotherIndex()) != index_map.end() ){
                             dilepton_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
+                            photon_p4_drX[mapit->first] += photon_temp;
+
+                            if(matched_to_particle){
+                                particle_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
+                            }
+                            else{
+                                antiparticle_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
+                            }
                         }
                     }
                     else continue;
@@ -469,6 +527,27 @@ void Skim_ISR::executeEvent(){
                 dilep_mass_gen_lepton_matched_dressed_drX.push_back((mapit->second).M());
                 drX_gen_lepton_matched_dressed.push_back(mapit->first);
             }// loop for dilepton_lepton_matched_gamma_p4_drX
+
+
+            std::map<Double_t, TLorentzVector>::iterator mapit_particle = particle_lepton_matched_gamma_p4_drX.begin();
+            std::map<Double_t, TLorentzVector>::iterator mapit_antiparticle = antiparticle_lepton_matched_gamma_p4_drX.begin();
+
+            for( ; mapit_particle!=particle_lepton_matched_gamma_p4_drX.end(); mapit_particle++, mapit_antiparticle++){
+                if( (((mapit_particle->second).Pt() > 25. && (mapit_antiparticle->second).Pt() > 15) || ((mapit_particle->second).Pt() > 15. && (mapit_antiparticle->second).Pt() > 25))  &&  fabs((mapit_particle->second).Eta()) < 2.5 && fabs((mapit_antiparticle->second).Eta()) < 2.5 ){
+                    evt_tag_dielectron_fiducial_lepton_matched_dressed_drX.push_back(true);
+                }
+                else evt_tag_dielectron_fiducial_lepton_matched_dressed_drX.push_back(false); 
+
+                if( (((mapit_particle->second).Pt() > 20. && (mapit_antiparticle->second).Pt() > 10) || ((mapit_particle->second).Pt() > 10. && (mapit_antiparticle->second).Pt() > 20))  &&  fabs((mapit_particle->second).Eta()) < 2.4 && fabs((mapit_antiparticle->second).Eta()) < 2.4 ){
+                    evt_tag_dimuon_fiducial_lepton_matched_dressed_drX.push_back(true);
+                }
+                else evt_tag_dimuon_fiducial_lepton_matched_dressed_drX.push_back(false); 
+            }// loop for particle_lepton_matched_gamma_p4_drX and antiparticle_lepton_matched_gamma_p4_drXX
+
+            for(std::map<Double_t, TLorentzVector>::iterator mapit = photon_p4_drX.begin(); mapit!=photon_p4_drX.end(); mapit++){
+                lepton_matched_photon_et_gen_drX.push_back((mapit->second).Pt());
+            }// loop for dilepton_lepton_matched_gamma_p4_drX
+
 
         }
          
@@ -502,10 +581,10 @@ void Skim_ISR::executeEvent(){
     if(PassMETFilter() && save_detector_info){ 
 
         // TODO need to rearange...
-        if( !evt->PassTrigger(DiMuTrgs) ){
-            delete evt;
-            return;
-        }
+        //if( !evt->PassTrigger(DiMuTrgs) ){
+        //    delete evt;
+        //    return;
+        //}
 
         FillHist("CutFlow",6,1,30,0,30);
 

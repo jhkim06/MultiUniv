@@ -169,6 +169,15 @@ private:
     bool evt_tag_oppositecharge_sel_rec;
     bool evt_tag_analysisevnt_sel_rec;
 
+    int  photon_n_gen;
+    int  lepton_matched_photon_n_gen;
+    std::vector<double>  lepton_matched_photon_et_gen_drX;
+    bool evt_tag_dielectron_fiducial_post_fsr;
+    bool evt_tag_dimuon_fiducial_post_fsr;
+
+    std::vector<bool> evt_tag_dielectron_fiducial_lepton_matched_dressed_drX;
+    std::vector<bool> evt_tag_dimuon_fiducial_lepton_matched_dressed_drX;
+
     bool evt_tag_ditau_gen;
     bool evt_tag_dielectron_gen;
     bool evt_tag_dimuon_gen;
