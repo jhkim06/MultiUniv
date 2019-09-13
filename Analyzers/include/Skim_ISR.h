@@ -99,6 +99,11 @@ private:
     std::vector<Photon>   photons;
     std::vector<Lepton*>  leps;
 
+    std::vector<Gen> leptons_postfsr;
+
+    bool gen_rec_evt_matched;
+    vector<double> gen_rec_lepton_dR;
+
     Gen gen_particle_ME, gen_antiparticle_ME;
     Gen gen_particle_status1, gen_antiparticle_status1;
     int gen_particle_index_ME, gen_antiparticle_index_ME;

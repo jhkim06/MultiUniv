@@ -78,6 +78,9 @@ void Skim_ISR::initializeAnalyzer(){
 
         newtree->Branch("evt_tag_bvetoed_rec", &evt_tag_bvetoed_rec,"evt_tag_bvetoed_rec/O");
 
+        newtree->Branch("gen_rec_evt_matched", &gen_rec_evt_matched,"gen_rec_evt_matched/O");
+        newtree->Branch("gen_rec_lepton_dR", &gen_rec_lepton_dR);
+
         Dimu_map["POGTight"] = new Dimu_variables("POGTight");
         Dimu_map["POGTight"]->setBranch(newtree);
 
@@ -188,6 +191,10 @@ void Skim_ISR::executeEvent(){
     electrons.clear();
     photons.clear();
     leps.clear();
+    leptons_postfsr.clear();
+
+    gen_rec_lepton_dR.clear();
+    gen_rec_evt_matched = false;
 
     dilep_pt_rec          = -999.;
     dilep_mass_rec        = -999.;
@@ -419,6 +426,10 @@ void Skim_ISR::executeEvent(){
             particle_eta_gen_postfsr     = gen_particles.at(gen_particle_index_status1).Eta();
             antiparticle_eta_gen_postfsr     = gen_particles.at(gen_antiparticle_index_status1).Eta();
 
+            // save pre FSR leptons to check dR matching between gen and rec leptons
+            leptons_postfsr.push_back(gen_particles.at(gen_particle_index_status1));
+            leptons_postfsr.push_back(gen_particles.at(gen_antiparticle_index_status1));
+
             if( ((particle_pt_gen_postfsr > 25. && antiparticle_pt_gen_postfsr > 15.) || (particle_pt_gen_postfsr > 15. && antiparticle_pt_gen_postfsr > 25.)) && fabs(particle_eta_gen_postfsr) < 2.5 && fabs(antiparticle_eta_gen_postfsr) < 2.5 )
                 evt_tag_dielectron_fiducial_post_fsr = true;
             else evt_tag_dielectron_fiducial_post_fsr = false;
@@ -648,6 +659,7 @@ void Skim_ISR::executeEvent(){
         ///////////////////////////////////////////////////////////////////////////// 
         //
 
+        // for quick study for FSR with various Muon isolation definition
         AllMuons = GetAllMuons();
 
         // Lepton ID
@@ -735,6 +747,22 @@ void Skim_ISR::executeEvent(){
                 dilep_mass_rec = (*(leps.at(0))+*(leps.at(1))).M();
                 leadingmuon_reliso_rec = leps.at(0)->RelIso();
                 subleadingmuon_reliso_rec = leps.at(0)->RelIso();
+
+                double dR_for_gen_rec_matching = 0.1;
+                unsigned int n_matched_lepton = 0;
+                for(unsigned int gen_size = 0; gen_size < leptons_postfsr.size(); gen_size++){
+                    double temp_dr1 = leps.at(0)->DeltaR(leptons_postfsr.at(gen_size));
+                    double temp_dr2 = leps.at(1)->DeltaR(leptons_postfsr.at(gen_size));
+
+                    if( temp_dr1 < dR_for_gen_rec_matching ) n_matched_lepton++;
+                    if( temp_dr2 < dR_for_gen_rec_matching ) n_matched_lepton++;
+
+                    temp_dr1 < temp_dr2 ? gen_rec_lepton_dR.push_back(temp_dr1) : gen_rec_lepton_dR.push_back(temp_dr2);
+
+                    // don't care charge flip, just count matched leptons to gen leptons 
+                    if(n_matched_lepton == 2 && gen_size == 1)
+                        gen_rec_evt_matched = true;
+                } 
 
                 // check if there are photons passing required ID
                 int photon_size = photons.size();
