@@ -20,6 +20,7 @@ variables['hist_ptll'] = {
     'xaxis': 'Mass p_{T} [GeV]', 
     'yaxis': 'Events',
     'useTUnfoldBin': True,
+    'unfoldBinDefinition': "muon",
     'go1D': True
 }
 
@@ -32,6 +33,7 @@ variables['hist_mll'] = {
     'xaxis': 'Mass [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
+    'unfoldBinDefinition': "muon",
     'go1D': False
 }
 
@@ -43,6 +45,7 @@ variables['mll_rec_gen_dressed_dRp1_response_matrix'] = {
     'name': 'Get1DMassRecBinIndex(dilep_mass_rec):Get1DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[1])',
     'xaxis': 'Pre FSR',
     'useTUnfoldBin': True,
+    'unfoldBinDefinition': "muon",
     'go1D': False,
     'isResMatrix':True
 }
@@ -55,6 +58,7 @@ variables['ptll_rec_gen_dressed_dRp1_response_matrix'] = {
     'name': 'Get2DPtRecBinIndex(dilep_pt_rec, dilep_mass_rec):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[1], dilep_mass_gen_lepton_matched_dressed_drX[1])',
     'xaxis': 'Pre FSR',
     'useTUnfoldBin': True,
+    'unfoldBinDefinition': "muon",
     'go1D': False,
     'isResMatrix':True
 }
@@ -67,6 +71,7 @@ variables['mll_rec_gen_dressed_dR10_response_matrix'] = {
     'name': 'Get1DMassRecBinIndex(dilep_mass_rec):Get1DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[9])', 
     'xaxis': 'Pre FSR',
     'useTUnfoldBin': True,
+    'unfoldBinDefinition': "muon",
     'go1D': False,
     'isResMatrix':True
 }
@@ -79,6 +84,7 @@ variables['ptll_rec_gen_dressed_dR10_response_matrix'] = {
     'name': 'Get2DPtRecBinIndex(dilep_pt_rec, dilep_mass_rec):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[9], dilep_mass_gen_lepton_matched_dressed_drX[9])',
     'xaxis': 'Pre FSR',
     'useTUnfoldBin': True,
+    'unfoldBinDefinition': "muon",
     'go1D': False,
     'isResMatrix':True
 }

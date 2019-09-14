@@ -398,7 +398,7 @@ for InputSample in InputSamples:
 
     # check if this is the first job and if so save TUnfoldBinning object in the output file of the first job (JUST for histograms using TUnfold package)
     isFirstJob = "False"
-    if it_job == 0 && isFirstSample == True:
+    if it_job == 0 and isFirstSample == True:
         isFirstJob = "True"
 
     CheckTotalNFile = CheckTotalNFile+len(FileRanges[it_job])

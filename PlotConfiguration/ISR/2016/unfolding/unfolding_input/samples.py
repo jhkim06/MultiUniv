@@ -7,33 +7,34 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec * electron_double_recoSF_passMediumID * electron_double_idSF_passMediumID * electron_double_recoSF_passMediumID * electron_double_trigSF_DoubleElectron_passMediumID'
+#McWeight = 'evt_weight_total_gen * evt_weight_total_rec * electron_double_recoSF_passMediumID * electron_double_idSF_passMediumID * electron_double_recoSF_passMediumID * electron_double_trigSF_DoubleElectron_passMediumID'
+McWeight = 'evt_weight_total_gen * evt_weight_total_rec * muon_double_idSF_POGTightWithTightIso * muon_double_isoSF_POGTightWithTightIso * muon_double_trigSF_DoubleMuon_POGTightWithTightIso'
 #McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
 
 #--------------------    
 # MC
 #--------------------    
 
-samples['DYJets@DYJetsToEE'] = {
-    'skim'   :'', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_dielectron_gen == 1',
+samples['DYJets@DYJetsToMuMu'] = {
+    'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
+    'cut'    :'evt_tag_dimuon_gen == 1',
     'weight' :McWeight,
     }
 
-samples['DYJets10to50@DYJets10to50ToEE'] = {
-    'skim'   :'', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_dielectron_gen == 1',
+samples['DYJets10to50@DYJets10to50ToMuMu'] = {
+    'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
+    'cut'    :'evt_tag_dimuon_gen == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {
-    'skim'   :'', # use default skim defined in configuration.py
+    'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_ditau_gen == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets10to50@DYJets10to50ToTauTau'] = {
-    'skim'   :'', # use default skim defined in configuration.py
+    'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_ditau_gen == 1',
     'weight' :McWeight,
     }
@@ -68,16 +69,17 @@ samples['ZZ_pythia'] = {
     'weight' :McWeight,
     }
 
-samples['DoubleEG'] = {
+#samples['DoubleEG'] = {
+#    'skim'   :'',
+#    'cut'    :'',
+#    'weight' :'1',
+#    }
+
+samples['DoubleMuon'] = {
     'skim'   :'',
     'cut'    :'',
     'weight' :'1',
     }
-
-#samples['DoubleMuon'] = {
-#    'skim'   :'',
-#    'weight' :'1',
-#    }
 #--------------------    
 # DATA driven QCD
 #--------------------

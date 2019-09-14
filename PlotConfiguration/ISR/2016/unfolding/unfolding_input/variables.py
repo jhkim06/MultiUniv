@@ -20,6 +20,7 @@ variables['hist_ptll'] = {
     'xaxis': 'Mass p_{T} [GeV]', 
     'yaxis': 'Events',
     'useTUnfoldBin': True,
+    'unfoldBinDefinition': "muon",
     'go1D': True
 }
 
@@ -32,5 +33,6 @@ variables['hist_mll'] = {
     'xaxis': 'Mass [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
+    'unfoldBinDefinition': "muon",
     'go1D': False
 }
