@@ -11,7 +11,7 @@ const int nptbin_fine=17;
 double ptbin_fine[nptbin_fine+1]={0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 35., 45., 55., 65., 75., 85., 100.};
 
 const int nptbin_wide=9;
-double ptbin_wide[nptbin_wide+1]={0., 4., 8., 12., 18., 28., 40., 55., 80., 100.};
+double ptbin_wide[nptbin_wide+1]={0., 4., 8., 12., 18., 28., 40., 55., 75., 100.};
 
 const int nmassbin_forPt = 5;
 const Double_t massbin_forPt_muon[nmassbin_forPt+1] =     {40,60,80,100,200,350};
