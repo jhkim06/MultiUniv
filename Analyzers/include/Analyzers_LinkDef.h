@@ -28,5 +28,7 @@
 #pragma link C++ class Skim_K2+;
 
 #pragma link C++ class Skim_bTagEfficiency+;
+#pragma link C++ class Skim_PUreweight+;
+#pragma link C++ class Skim_Cutflow+;
 
 #endif
