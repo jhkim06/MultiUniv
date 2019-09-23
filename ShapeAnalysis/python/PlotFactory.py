@@ -831,7 +831,13 @@ class PlotFactory:
 	      frame.GetYaxis().SetTitle(variable['yaxis'])
 	    else:
 	      frame.GetYaxis().SetTitle("Events")
-
+	# setup xbin labels
+	if 'xlabels' in variable.keys() :
+	  for i, label in enumerate(variable['xlabels']['labels']):
+	    frame.GetXaxis().ChangeLabel(i+1,20,0.03,-1,-1,-1 ,label)
+          frame.GetXaxis().LabelsOption(variable['xlabels']['option'])
+	  frame.GetXaxis().CenterLabels(True)
+	  xAxis.SetNdivisions(len(variable['xlabels']['labels']),5,0)
 	#
 	# - now Draw
 	#     - first the MC  
@@ -1047,6 +1053,12 @@ class PlotFactory:
 	  # setup axis names
 	  if 'xaxis' in variable.keys() : 
 	    frameNorm.GetXaxis().SetTitle(variable['xaxis'])
+ 	  # setup xbin labels
+	  if 'xlabels' in variable.keys() :
+	    for i, label in enumerate(variable['xlabels']['labels']):
+	      frameNorm.GetXaxis().ChangeLabel(i+1,20,0.03,-1,-1,-1 ,label)
+            frameNorm.GetXaxis().LabelsOption(variable['xlabels']['option'])
+	    frameNorm.GetXaxis().CenterLabels(True)
 	  tcanvasSigVsBkg.RedrawAxis()
 
 	  maxY_normalized=0.0
@@ -1121,6 +1133,14 @@ class PlotFactory:
 	      frameDistro.GetYaxis().SetTitle(variable['yaxis'])
 	    else :
 	      frameDistro.GetYaxis().SetTitle("Events")
+
+	if 'xlabels' in variable.keys() :
+	  for i, label in enumerate(variable['xlabels']['labels']):
+	    frameDistro.GetXaxis().ChangeLabel(i+1,20,0.03,-1,-1,-1 ,label)
+          frameDistro.GetXaxis().LabelsOption(variable['xlabels']['option'])
+	  frameDistro.GetXaxis().CenterLabels(True)
+	  xAxisDistro.SetNdivisions(len(variable['xlabels']['labels']),5,0)
+
 	frameDistro.GetYaxis().SetRangeUser( min(0.001, minYused), maxYused )
 
 	if len(groupPlot.keys()) == 0:
@@ -1178,9 +1198,18 @@ class PlotFactory:
 	  frameRatio.GetXaxis().SetTitle(variable['xaxis'])
 	else :
 	  frameRatio.GetXaxis().SetTitle(variableName)
+
 	frameRatio.GetYaxis().SetTitle("Data/Expected")
 	frameRatio.GetYaxis().SetRangeUser( 0.5, 1.5 )
 	self.Pad2TAxis(frameRatio)
+
+	if 'xlabels' in variable.keys() :
+	  for i, label in enumerate(variable['xlabels']['labels']):
+	    frameRatio.GetXaxis().ChangeLabel(i+1,20,0.06,-1,-1,-1 ,label)
+	    frameRatio.GetXaxis().SetNdivisions(len(variable['xlabels']['labels']),5,0)
+          frameRatio.GetXaxis().LabelsOption(variable['xlabels']['option'])
+	  frameRatio.GetXaxis().CenterLabels(True)
+
 	if (len(mynuisances.keys())!=0):
 	  tgrMCOverMC.Draw("2") 
 
