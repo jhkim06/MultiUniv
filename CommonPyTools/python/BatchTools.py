@@ -86,7 +86,7 @@ class batchJobs:
     else:
       print HOSTNAME, 'is not ready for batchJob'
 
-  def mkJds(self, nQueue = 1):
+  def mkJds(self, concLimit=-1, nQueue = 1):
     jdsFile = open(self.condoJdsName, 'w')
 
     if IsUI10:
@@ -155,6 +155,11 @@ error = {1}/job_$(Process)/job_$(Process).err
 accounting_group=group_cms
 queue {0}
 '''.format(str(nQueue), "/".join((self.jobDir).split("/")[:-2]))
+      # set concurrency limit
+      if concLimit > 0:
+        print>>jdsFile, '''
+concurrency_limits = n{0}.{1}
+'''.format(str(concLimit),os.getenv('USER'))
 
     else:
       print "This host", HOSTNAME, "is not ready for batch job, exiting..........."
