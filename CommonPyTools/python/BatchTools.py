@@ -141,6 +141,12 @@ getenv     = True
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT '''
 
+      # set concurrency limit
+      if concLimit > 0:
+        print>>jdsFile, '''
+concurrency_limits = n{0}.{1}
+'''.format(str(concLimit),os.getenv('USER'))
+
       if not self.multiQueue:
         print>>jdsFile, '''
 output = job_$(Process).log
@@ -155,11 +161,6 @@ error = {1}/job_$(Process)/job_$(Process).err
 accounting_group=group_cms
 queue {0}
 '''.format(str(nQueue), "/".join((self.jobDir).split("/")[:-2]))
-      # set concurrency limit
-      if concLimit > 0:
-        print>>jdsFile, '''
-concurrency_limits = n{0}.{1}
-'''.format(str(concLimit),os.getenv('USER'))
 
     else:
       print "This host", HOSTNAME, "is not ready for batch job, exiting..........."
