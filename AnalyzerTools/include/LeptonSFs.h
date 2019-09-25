@@ -72,11 +72,11 @@ class LeptonSFs {
 
     TString leptonName;
     TString strLeptonN;
-    TString outIdBranchName;
-    TString outRecoBranchName;
-    TString outIsoBranchName;
-    TString outTrigBranchName;
-    TString outExtraBranchName;
+    TString outIdBranchName, outIdBranchName_up, outIdBranchName_down;
+    TString outRecoBranchName, outRecoBranchName_up, outRecoBranchName_down;
+    TString outIsoBranchName, outIsoBranchName_up, outIsoBranchName_down;
+    TString outTrigBranchName, outTrigBranchName_up, outTrigBranchName_down;
+    TString outExtraBranchName, outExtraBranchName_up, outExtraBranchName_down;
 
     Double_t recoSF, recoSFUp, recoSFDown;
     Double_t idSF, idSFUp, idSFDown;

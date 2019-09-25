@@ -15,25 +15,25 @@ McWeight = 'evt_weight_total_gen * evt_weight_total_rec * muon_double_idSF_POGTi
 #--------------------    
 
 samples['DYJets@DYJetsToMuMu'] = {
-    'skim'   :'', # use default skim defined in configuration.py
+    'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_dimuon_gen == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets10to50@DYJets10to50ToMuMu'] = {
-    'skim'   :'', # use default skim defined in configuration.py
+    'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_dimuon_gen == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {
-    'skim'   :'', # use default skim defined in configuration.py
+    'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_ditau_gen == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets10to50@DYJets10to50ToTauTau'] = {
-    'skim'   :'', # use default skim defined in configuration.py
+    'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_ditau_gen == 1',
     'weight' :McWeight,
     }

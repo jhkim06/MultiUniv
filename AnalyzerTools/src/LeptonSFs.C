@@ -55,7 +55,8 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
 
     extraTrigName_ = extraTrigName;
     outExtraBranchName = leptonName + "_" + strLeptonN + "_extraTrigSF_" + fullIdIsoName;
-    cout << "long constructor: " << extraTrigName_ << endl;
+    outExtraBranchName_up = leptonName + "_" + strLeptonN + "_extraTrigSFUp_" + fullIdIsoName;
+    outExtraBranchName_down = leptonName + "_" + strLeptonN + "_extraTrigSFDn_" + fullIdIsoName;
 
     if( leptonType_ == LeptonType::electron ){
 
@@ -70,7 +71,6 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
 // constructor
 LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TString idName, const TString isoName, const TString trigName, unsigned int dataYear): extraTrigName_("") {
 
-    cout << "short constructor: " << extraTrigName_ << endl;
     dataYear_ = dataYear;
     // set lepton type
     if( leptonType == LeptonType::electron || leptonType == LeptonType::muon ){
@@ -152,22 +152,41 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
 
     // make branch names
     outRecoBranchName   = leptonName + "_" + strLeptonN + "_recoSF_" + fullIdIsoName;
+    outRecoBranchName_up   = leptonName + "_" + strLeptonN + "_recoSFUp_" + fullIdIsoName;
+    outRecoBranchName_down   = leptonName + "_" + strLeptonN + "_recoSFDn_" + fullIdIsoName;
+
     outIdBranchName   = leptonName + "_" + strLeptonN + "_idSF_" + fullIdIsoName;
+    outIdBranchName_up   = leptonName + "_" + strLeptonN + "_idSFUp_" + fullIdIsoName;
+    outIdBranchName_down   = leptonName + "_" + strLeptonN + "_idSFDn_" + fullIdIsoName;
+
     outIsoBranchName   = leptonName + "_" + strLeptonN + "_isoSF_" + fullIdIsoName;
+    outIsoBranchName_up   = leptonName + "_" + strLeptonN + "_isoSFUp_" + fullIdIsoName;
+    outIsoBranchName_down   = leptonName + "_" + strLeptonN + "_isoSFDn_" + fullIdIsoName;
+
     outTrigBranchName = leptonName + "_" + strLeptonN + "_trigSF_" + trigName_ + "_" + fullIdIsoName;
+    outTrigBranchName_up = leptonName + "_" + strLeptonN + "_trigSFUp_" + trigName_ + "_" + fullIdIsoName;
+    outTrigBranchName_down = leptonName + "_" + strLeptonN + "_trigSFDn_" + trigName_ + "_" + fullIdIsoName;
 
     cout << "name check id: " << outIdBranchName << endl;
     cout << "name check trig: " << outTrigBranchName << endl;
-
-
 }
 
 void LeptonSFs::resetSFs(){
     recoSF = 1.;
+    recoSFUp = 1.;
+    recoSFDown = 1.;
     idSF = 1.;
+    idSFUp = 1.;
+    idSFDown = 1.;
     isoSF = 1.;
+    isoSFUp = 1.;
+    isoSFDown = 1.;
     trigSF = 1.;
+    trigSFUp = 1.;
+    trigSFDown = 1.;
     extraTrigSF = 1.;
+    extraTrigSFUp = 1.;
+    extraTrigSFDown = 1.;
 }
 
 void LeptonSFs::setAnalyzerParameter(AnalyzerParameter & param){
@@ -191,10 +210,26 @@ void LeptonSFs::setAnalyzerParameter(AnalyzerParameter & param){
 void LeptonSFs::setBranchForSFs(TTree *tree){
 
     tree->Branch(outRecoBranchName, &recoSF);
+    tree->Branch(outRecoBranchName_up, &recoSFUp);
+    tree->Branch(outRecoBranchName_down, &recoSFDown);
+
     tree->Branch(outIdBranchName, &idSF);
+    tree->Branch(outIdBranchName_up, &idSFUp);
+    tree->Branch(outIdBranchName_down, &idSFDown);
+
     tree->Branch(outIsoBranchName, &isoSF);
+    tree->Branch(outIsoBranchName_up, &isoSFUp);
+    tree->Branch(outIsoBranchName_down, &isoSFDown);
+
     tree->Branch(outTrigBranchName, &trigSF);
-    if(extraTrigName_ != "") tree->Branch(outExtraBranchName, &extraTrigSF);
+    tree->Branch(outTrigBranchName_up, &trigSFUp);
+    tree->Branch(outTrigBranchName_down, &trigSFDown);
+
+    if(extraTrigName_ != ""){
+        tree->Branch(outExtraBranchName, &extraTrigSF);
+        tree->Branch(outExtraBranchName_up, &extraTrigSFUp);
+        tree->Branch(outExtraBranchName_down, &extraTrigSFDown);
+    }
 
 }
 
@@ -202,7 +237,17 @@ void LeptonSFs::setRECOSF(Double_t sf, SysUpDown sys){
 
     if(sys == SysUpDown::Central){
         recoSF = sf; 
-    }   
+    }
+    else if (sys == SysUpDown::Up){
+        recoSFUp = sf; 
+    }
+    else if (sys == SysUpDown::Down){
+        recoSFDown = sf; 
+    }
+    else{
+        cout << "LeptonSFs::setRECOSF only central, up, down allowed" << endl;
+        exit (EXIT_FAILURE);
+    } 
 }
 
 void LeptonSFs::setIDSF(Double_t sf, SysUpDown sys){
@@ -210,12 +255,32 @@ void LeptonSFs::setIDSF(Double_t sf, SysUpDown sys){
     if(sys == SysUpDown::Central){
         idSF = sf;
     } 
+    else if (sys == SysUpDown::Up){
+        idSFUp = sf;
+    }
+    else if (sys == SysUpDown::Down){
+        idSFDown = sf;
+    }
+    else{
+        cout << "LeptonSFs::setIDSF only central, up, down allowed" << endl;
+        exit (EXIT_FAILURE);
+    }
 }
 
 void LeptonSFs::setISOSF(Double_t sf, SysUpDown sys){
 
     if(sys == SysUpDown::Central){
         isoSF = sf;
+    }
+    else if (sys == SysUpDown::Up){
+        isoSFUp = sf;
+    }
+    else if (sys == SysUpDown::Down){
+        isoSFDown = sf;
+    }
+    else{
+        cout << "LeptonSFs::setISOSF only central, up, down allowed" << endl;
+        exit (EXIT_FAILURE);
     }
 }
 
@@ -224,12 +289,32 @@ void LeptonSFs::setTriggerSF(Double_t sf, SysUpDown sys){
     if(sys == SysUpDown::Central){
         trigSF = sf;
     }
+    else if (sys == SysUpDown::Up){
+        trigSFUp = sf;
+    }
+    else if (sys == SysUpDown::Down){
+        trigSFDown = sf;
+    }
+    else{
+        cout << "LeptonSFs::setTriggerSF only central, up, down allowed" << endl;
+        exit (EXIT_FAILURE);
+    }
 }
 
 void LeptonSFs::setExtraTrigSF(Double_t sf, SysUpDown sys){
 
     if(sys == SysUpDown::Central){
         extraTrigSF = sf;
+    }
+    else if (sys == SysUpDown::Up){
+        extraTrigSFUp = sf;
+    }
+    else if (sys == SysUpDown::Down){
+        extraTrigSFDown = sf;
+    }
+    else{
+        cout << "LeptonSFs::setExtraTrigSF only central, up, down allowed" << endl;
+        exit (EXIT_FAILURE);
     }
 }
 
