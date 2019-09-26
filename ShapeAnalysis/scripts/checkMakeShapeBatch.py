@@ -35,9 +35,9 @@ ProductionKey = SKFlatV+'_'+opt.Year
 
 samples = {}
 
-if opt.sampleCfg != '':
-  if os.path.exists(opt.sampleCfg):
-    handle = open(opt.sampleCfg,'r')
+if opt.samplesFile != '':
+  if os.path.exists(opt.samplesFile):
+    handle = open(opt.samplesFile,'r')
     exec(handle)
     handle.close()
   else:

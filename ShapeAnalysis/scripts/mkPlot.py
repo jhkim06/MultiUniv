@@ -141,8 +141,8 @@ factory._invertXY = opt.invertXY
 factory._postFit = opt.postFit
 
 samples = OrderedDict()
-if os.path.exists(opt.sampleCfg):
-  handle = open(opt.sampleCfg,'r')
+if os.path.exists(opt.samplesFile):
+  handle = open(opt.samplesFile,'r')
   exec(handle)
   handle.close()
 else:
@@ -151,8 +151,8 @@ else:
 
 supercut = '1'
 cuts = {}
-if os.path.exists(opt.cutCfg):
-  handle = open(opt.cutCfg,'r')
+if os.path.exists(opt.cutsFile):
+  handle = open(opt.cutsFile,'r')
   exec(handle)
   handle.close()
 else:
@@ -162,8 +162,8 @@ else:
 
 variables = {}
 columns = []
-if os.path.exists(opt.variableCfg):
-  handle = open(opt.variableCfg,'r')
+if os.path.exists(opt.variablesFile):
+  handle = open(opt.variablesFile,'r')
   exec(handle)
   #exec(handle,globals())
   handle.close()
@@ -174,8 +174,8 @@ else:
 groupPlot = OrderedDict()
 plot = {}
 legend = {}
-if os.path.exists(opt.plotCfg) :
-  handle = open(opt.plotCfg,'r')
+if os.path.exists(opt.plotFile) :
+  handle = open(opt.plotFile,'r')
   exec(handle)
   handle.close()
 else:
@@ -185,13 +185,13 @@ else:
 
 
 nuisances = {}
-if os.path.exists(opt.nuisancesCfg):
-  handle = open(opt.nuisancesCfg,'r')
+if os.path.exists(opt.nuisancesFile):
+  handle = open(opt.nuisancesFile,'r')
   exec(handle)
   #exec(handle,globals())
   handle.close()
 else:
-  print 'Warning: there is no nuisancesCfg.'
+  print 'Warning: there is no nuisancesFile.'
 
 
 

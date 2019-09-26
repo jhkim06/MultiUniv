@@ -6,7 +6,6 @@ from CommonPyTools.DataSample.SampleDef import *
 import CommonPyTools.python.CommonTools as Tools
 
 SKFlatV = os.getenv("SKFlatV")
-SkimBaseDir = os.getenv("")
 
 class CutFlowShapes():
 
@@ -154,8 +153,8 @@ class CutFlowShapes():
 
 if __name__ == "__main__":
   c = CutFlowShapes()
-  #c.loadCfg("configuration_El.py")
-  c.loadCfg("configuration_Mu.py")
+  c.loadCfg("configuration_El.py")
+  #c.loadCfg("configuration_Mu.py")
   c.cpShapes()
   c.haddShapes()
 
