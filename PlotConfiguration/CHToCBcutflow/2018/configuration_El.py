@@ -10,8 +10,8 @@ Userflags   = 'CHToCBcutflow_El' # flag appends to ouput directory name
 treeName    = 'recoTree/SKFlat'
 
 
-sampleCfg   = 'samples.py'
-plotCfg     = 'plot_El.py'
-variableCfg = 'variables.py'
-cutCfg      = 'cuts_El.py'
-nuisancesCfg= 'nuisances.py'
+samplesFile   = 'samples.py'
+plotFile      = 'plot_El.py'
+variablesFile = 'variables.py'
+cutsFile      = 'cuts_El.py'
+nuisancesFile = 'nuisances.py'

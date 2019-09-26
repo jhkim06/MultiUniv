@@ -55,9 +55,9 @@ sys.path.append(os.getcwd())
 variables = {}
 columns = []
 definitions = {}
-if opt.variableCfg != '':
-  if os.path.exists(opt.variableCfg):
-    handle = open(opt.variableCfg,'r')
+if opt.variablesFile != '':
+  if os.path.exists(opt.variablesFile):
+    handle = open(opt.variablesFile,'r')
     exec(handle)
     #exec(handle,globals())
     handle.close()
@@ -70,9 +70,9 @@ else:
 
 supercut = '1'
 cuts = {}
-if opt.cutCfg != '':
-  if os.path.exists(opt.cutCfg):
-    handle = open(opt.cutCfg,'r')
+if opt.cutsFile != '':
+  if os.path.exists(opt.cutsFile):
+    handle = open(opt.cutsFile,'r')
     exec(handle)
     handle.close()
   else:
@@ -83,10 +83,10 @@ else:
   exit()
 
 samples = OrderedDict()
-#print 'sample cfg',opt.sampleCfg
-if opt.sampleCfg != '':
-  if os.path.exists(opt.sampleCfg):
-    handle = open(opt.sampleCfg,'r')
+#print 'sample cfg',opt.samplesFile
+if opt.samplesFile != '':
+  if os.path.exists(opt.samplesFile):
+    handle = open(opt.samplesFile,'r')
     exec(handle)
     handle.close()
   else:
@@ -97,9 +97,9 @@ else:
   exit()
 
 nuisances = {}
-if opt.nuisancesCfg != '':
-  if os.path.exists(opt.nuisancesCfg):
-    handle = open(opt.nuisancesCfg,'r')
+if opt.nuisancesFile != '':
+  if os.path.exists(opt.nuisancesFile):
+    handle = open(opt.nuisancesFile,'r')
     exec(handle)
     handle.close()
   else:
