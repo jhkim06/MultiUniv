@@ -21,6 +21,6 @@ class ISRUnfold:
     PtRec2DHist = 0
     PtGen2DHist = 1
     PtMigrationM = 2
-    MassRec1DHist = 3
-    MassGen1DHist = 4
+    MassRec2DHist = 3
+    MassGen2DHist = 4
     MassMigrationM = 5

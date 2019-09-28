@@ -17,6 +17,9 @@ const int nmassbin_forPt = 5;
 const Double_t massbin_forPt_muon[nmassbin_forPt+1] =     {40,60,80,100,200,350};
 const Double_t massbin_forPt_electron[nmassbin_forPt+1] = {50,65,80,100,200,350};
 
+const int nptbin_forMass = 1;
+const Double_t ptbin_forMass[nptbin_forMass+1] =     {0,100};
+
 // for mass 1D histogram bins
 const int nmassbin_fine_muon = 58;
 const int nmassbin_wide_muon = 29;
@@ -44,14 +47,14 @@ void SetPtBinningGen(TString channel = "electron"){
  ptBinningGen->AddAxis("pt",nptbin_wide,ptbin_wide,false,true);
  if( channel.CompareTo("electron") == 0 ) ptBinningGen->AddAxis("mass", nmassbin_forPt, massbin_forPt_electron, true, true);
  if( channel.CompareTo("muon") == 0 )     ptBinningGen->AddAxis("mass", nmassbin_forPt, massbin_forPt_muon, true, true);
-
 }
 
 void SetMassBinningRec(TString channel = "electron"){
 
  massBinningRec=(new TUnfoldBinning("Rec_Mass"));
- if( channel.CompareTo("electron") == 0 ) massBinningRec->AddAxis("reco mass", nmassbin_fine_electron, massbin_fine_electron, false, false);
- if( channel.CompareTo("muon") == 0 )     massBinningRec->AddAxis("reco mass", nmassbin_fine_muon,     massbin_fine_muon, false, false);
+ if( channel.CompareTo("electron") == 0 ) massBinningRec->AddAxis("reco mass", nmassbin_fine_electron, massbin_fine_electron, true, true);
+ if( channel.CompareTo("muon") == 0 )     massBinningRec->AddAxis("reco mass", nmassbin_fine_muon,     massbin_fine_muon, true, true);
+ massBinningRec->AddAxis("reco pt", nptbin_forMass,  ptbin_forMass, false, true);
 }
 
 void SetMassBinningGen(TString channel = "electron"){
@@ -59,8 +62,8 @@ void SetMassBinningGen(TString channel = "electron"){
  massBinningGen=(new TUnfoldBinning("Gen_Mass"));
  if( channel.CompareTo("electron") == 0 ) massBinningGen->AddAxis("gen mass", nmassbin_wide_electron, massbin_wide_electron, true, true);
  if( channel.CompareTo("muon") == 0 )     massBinningGen->AddAxis("gen mass", nmassbin_wide_muon,     massbin_wide_muon,     true, true);
+ massBinningGen->AddAxis("gen mass", nptbin_forMass,  ptbin_forMass, false, true);
 }
-
 
                                                                /////////////////// functions to be used in the TTree::Draw() ////////////////////////////////////
 // create histograms 
@@ -74,7 +77,7 @@ TH2* getMigrationMforPt(TString hname){
     return TUnfoldBinning::CreateHistogramOfMigrations(ptBinningGen, ptBinningRec, hname);
 }
 
-TH1* get1DHistogramMassRec(TString hname){
+TH1* get2DHistogramMassRec(TString hname){
 
     return massBinningRec->CreateHistogram(hname);
 }
@@ -90,9 +93,9 @@ double Get2DPtGenBinIndex(double pt = -999, double mass = -999.){
     return ptBinningGen->GetGlobalBinNumber(pt,mass);
 }
 
-double Get1DMassGenBinIndex(double mass = -999.){
+double Get2DMassGenBinIndex(double mass = -999., double pt = -999){
 
-    return massBinningGen->GetGlobalBinNumber(mass);
+    return massBinningGen->GetGlobalBinNumber(mass, pt);
 }
 
 double Get2DPtRecBinIndex(double pt = -999, double mass = -999.){
@@ -100,9 +103,9 @@ double Get2DPtRecBinIndex(double pt = -999, double mass = -999.){
     return ptBinningRec->GetGlobalBinNumber(pt,mass);
 }
 
-double Get1DMassRecBinIndex(double mass = -999.){
+double Get2DMassRecBinIndex(double mass = -999., double pt = -999){
 
-    return massBinningRec->GetGlobalBinNumber(mass);
+    return massBinningRec->GetGlobalBinNumber(mass, pt);
 }
 
 void ClearUnfoldBins(){

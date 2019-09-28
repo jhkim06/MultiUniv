@@ -825,8 +825,8 @@ class ShapeFactory:
         if unfoldBinType == ISRUnfold.PtRec2DHist:     return rt.get2DHistogramPtRec(name) 
         if unfoldBinType == ISRUnfold.PtGen2DHist:     return rt.get2DHistogramPtGen(name) 
         if unfoldBinType == ISRUnfold.PtMigrationM:    return rt.getMigrationMforPt(name) 
-        if unfoldBinType == ISRUnfold.MassRec1DHist:   return rt.get1DHistogramMassRec(name) 
-        if unfoldBinType == ISRUnfold.MassGen1DHist:   return rt.get1DHistogramMassGen(name) 
+        if unfoldBinType == ISRUnfold.MassRec2DHist:   return rt.get2DHistogramMassRec(name) 
+        if unfoldBinType == ISRUnfold.MassGen2DHist:   return rt.get2DHistogramMassGen(name) 
         if unfoldBinType == ISRUnfold.MassMigrationM:  return rt.getMigrationMforMass(name) 
 
   def _connectInputs(self, samples, inputDir, skipMissingFiles, friendsDir = None, skimListDir = None):
