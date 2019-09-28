@@ -15,11 +15,11 @@
 
 rm JobCheck.log
 
-for sample in  DYJets10to50 DYJets 
+for sample in  DYJets10to50 
 #for sample in DoubleEG DoubleMuon DYJets10to50 DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
 do
   echo $sample
-  mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 100 --skimV 1 --userflags ISR --multiQueue 
+  mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 100 --skimV 1 --userflags ISR_detector_only --InSkim  MetFt_L_v2_LL_v1 --multiQueue 
   #mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 100 --skimV 1 --userflags ISR_detector_only --multiQueue 
 done
 

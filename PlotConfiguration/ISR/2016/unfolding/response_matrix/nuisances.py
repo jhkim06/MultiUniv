@@ -1,14 +1,3 @@
-
-#nuisances['pileup'] = {
-#    'name' :'pileup',
-#    'kind' : 'weight',
-#    'type' : 'shape',
-#    'samples' : {
-#      'DYJet'       : ['puWup/puW', 'puWdown/puW'],
-#      'TTLL_powheg' : ['puWup/puW', 'puWdown/puW'],
-#      }
-#    }
-
 #nuisances['lumi'] = {
 #    'name' : 'lumi_13TeV',
 #    'samples' : {
@@ -17,43 +6,66 @@
 #    'type' : 'lnN',
 #    }
 
-
 ########## Efficiency and Energy Scale
-trg_syst = ['trgSF_Up/trgSF', 'trgSF_Dn/trgSF']
-id_syst  = ['IdSF_Q_Up/IdSF_Q', 'IdSF_Q_Do/IdSF_Q']
+trg_syst = ['muon_double_trigSFUp_DoubleMuon_POGTightWithTightIso/muon_double_trigSF_DoubleMuon_POGTightWithTightIso', 'muon_double_trigSFDn_DoubleMuon_POGTightWithTightIso/muon_double_trigSF_DoubleMuon_POGTightWithTightIso']
+id_syst  = ['muon_double_idSFUp_POGTightWithTightIso/muon_double_idSF_POGTightWithTightIso', 'muon_double_idSFDn_POGTightWithTightIso/muon_double_idSF_POGTightWithTightIso']
+iso_syst = ['muon_double_isoSFUp_POGTightWithTightIso/muon_double_isoSF_POGTightWithTightIso','muon_double_isoSFDn_POGTightWithTightIso/muon_double_isoSF_POGTightWithTightIso']
+l1prefire_syst = ['evt_weight_l1prefire_up/evt_weight_l1prefire','evt_weight_l1prefire_down/evt_weight_l1prefire']
+pileup_syst = ['evt_weight_pureweight_up/evt_weight_pureweight','evt_weight_pureweight_down/evt_weight_pureweight']
 alphaS_syst  = ['PDFWeights_AlphaS']
 pdfScale_syst  = ['PDFWeights_Scale']
 pdfErr_syst  = ['PDFWeights_Error']
 #id_syst_ele = ['LepSF'+Nlep+'l_ele_'+eleWP+'_Up', 'LepSF'+Nlep+'l_ele_'+eleWP+'_Do']
 
-#nuisances['trigg'] = {
-#    'name'	: 'trg_2016',
-#    'kind'	: 'weight',
-#    'type'	: 'shape',
-#    'samples'	: {
-#      	'DYJets'	: trg_syst ,
-#	'TT_powheg'	: trg_syst ,
-#	'WJets_MG'	: trg_syst ,
-#	'WW_pythia'	: trg_syst ,
-#	'WZ_pythia'	: trg_syst ,
-#	'ZZ_pythia'	: trg_syst ,
-#	},
-#}
+nuisances['trig_sf'] = {
+    'name'	: 'trg_2016',
+    'kind'	: 'weight',
+    'type'	: 'shape',
+    'samples'	: {
+      	'DYJets'	: trg_syst ,
+      	'DYJets10to50'	: trg_syst ,
+	},
+}
 
+nuisances['id_sf'] = {
+    'name'      : 'id_2016',
+    'kind'      : 'weight',
+    'type'      : 'shape',
+    'samples'   : {
+        'DYJets'        : id_syst ,
+        'DYJets10to50'  : id_syst ,
+        },
+}
 
-#nuisances['eff'] = {
-#    'name'	: 'eff_2017',
-#    'kind'	: 'weight',
-#    'type'	: 'shape',
-#    'samples'	: {
-#      	'DYJets'	: id_syst ,
-#	'TTLL_powheg'	: id_syst ,
-#	'WJets_MG'	: id_syst ,
-#	'WW_pythia'	: id_syst ,
-#	'WZ_pythia'	: id_syst ,
-#	'ZZ_pythia'	: id_syst ,
-#	},
-#}
+nuisances['iso_sf'] = {
+    'name'      : 'iso_2016',
+    'kind'      : 'weight',
+    'type'      : 'shape',
+    'samples'   : {
+        'DYJets'        : iso_syst ,
+        'DYJets10to50'  : iso_syst ,
+        },
+}
+
+nuisances['l1prefire'] = {
+    'name'      : 'l1prefire_2016',
+    'kind'      : 'weight',
+    'type'      : 'shape',
+    'samples'   : {
+        'DYJets'        : l1prefire_syst ,
+        'DYJets10to50'  : l1prefire_syst ,
+        },
+}
+
+nuisances['pileup'] = {
+    'name'      : 'pileup_2016',
+    'kind'      : 'weight',
+    'type'      : 'shape',
+    'samples'   : {
+        'DYJets'        : pileup_syst ,
+        'DYJets10to50'  : pileup_syst ,
+        },
+}
 
 #nuisances['alphaS'] = {
 #    'name'	: 'alphaS',
