@@ -52,17 +52,17 @@ void SetPtBinningGen(TString channel = "electron"){
 void SetMassBinningRec(TString channel = "electron"){
 
  massBinningRec=(new TUnfoldBinning("Rec_Mass"));
- if( channel.CompareTo("electron") == 0 ) massBinningRec->AddAxis("reco mass", nmassbin_fine_electron, massbin_fine_electron, true, true);
- if( channel.CompareTo("muon") == 0 )     massBinningRec->AddAxis("reco mass", nmassbin_fine_muon,     massbin_fine_muon, true, true);
- massBinningRec->AddAxis("reco pt", nptbin_forMass,  ptbin_forMass, false, true);
+ if( channel.CompareTo("electron") == 0 ) massBinningRec->AddAxis("mass", nmassbin_fine_electron, massbin_fine_electron, true, true);
+ if( channel.CompareTo("muon") == 0 )     massBinningRec->AddAxis("mass", nmassbin_fine_muon,     massbin_fine_muon, true, true);
+ massBinningRec->AddAxis("pt", nptbin_forMass,  ptbin_forMass, false, true);
 }
 
 void SetMassBinningGen(TString channel = "electron"){
 
  massBinningGen=(new TUnfoldBinning("Gen_Mass"));
- if( channel.CompareTo("electron") == 0 ) massBinningGen->AddAxis("gen mass", nmassbin_wide_electron, massbin_wide_electron, true, true);
- if( channel.CompareTo("muon") == 0 )     massBinningGen->AddAxis("gen mass", nmassbin_wide_muon,     massbin_wide_muon,     true, true);
- massBinningGen->AddAxis("gen mass", nptbin_forMass,  ptbin_forMass, false, true);
+ if( channel.CompareTo("electron") == 0 ) massBinningGen->AddAxis("mass", nmassbin_wide_electron, massbin_wide_electron, true, true);
+ if( channel.CompareTo("muon") == 0 )     massBinningGen->AddAxis("mass", nmassbin_wide_muon,     massbin_wide_muon,     true, true);
+ massBinningGen->AddAxis("pt", nptbin_forMass,  ptbin_forMass, false, true);
 }
 
                                                                /////////////////// functions to be used in the TTree::Draw() ////////////////////////////////////

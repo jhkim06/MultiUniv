@@ -20,19 +20,19 @@ variables['hist_ptll'] = {
     'xaxis': 'Mass p_{T} [GeV]', 
     'yaxis': 'Events',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
+    'unfoldBinDefinition': "electron",
     'go1D': True
 }
 
 variables['hist_mll'] = {
 
-    'unfoldBinType': ISRUnfold.MassRec1DHist,
+    'unfoldBinType': ISRUnfold.MassRec2DHist,
     'fold':   0,
     'range':  None,
-    'name':  'Get1DMassRecBinIndex(dilep_mass_rec)',
+    'name':  'Get2DMassRecBinIndex(dilep_mass_rec, dilep_pt_rec)',
     'xaxis': 'Mass [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
+    'unfoldBinDefinition': "electron",
     'go1D': False
 }
