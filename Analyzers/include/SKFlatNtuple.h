@@ -42,6 +42,7 @@ public :
    bool IsDATA;
    TString DataStream;
    TString MCSample;
+   bool OnlyGenLevel;
    bool IsFastSim;
    int DataYear;
    double xsec, sumW, weight_norm_1invpb;
