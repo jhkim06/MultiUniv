@@ -15,7 +15,7 @@
 
 rm JobCheck.log
 
-for sample in  DYJets10to50 
+for sample in  DYJets10to50 DYJets 
 #for sample in DoubleEG DoubleMuon DYJets10to50 DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
 do
   echo $sample

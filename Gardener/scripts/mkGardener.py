@@ -520,7 +520,7 @@ void {0}(){{
     # make ONE shell script and ONE submit.jds here for MULTIPLE queue case
     if opt.multiQueue and it_job == len(FileRanges)-1: 
       jobs.mkShCommand()
-      jobs.mkJds(it_job+1)
+      jobs.mkJds(opt.ConcurrencyLimit, it_job+1)
       jobs.Sub()
 
 
