@@ -35,6 +35,8 @@ parser.add_argument('--MonitJob', dest='MonitJob', default=False, type=bool)
 parser.add_argument('--Category', dest='Category', default="SMP")
 parser.add_argument('--FastSim', action='store_true')
 parser.add_argument('--resubmit', action='store_true')
+parser.add_argument('--OnlyGenLevel', action='store_true', default=False)
+parser.add_argument('--treeDir', default='recoTree')
 
 opt = parser.parse_args()
 InSkimString = opt.InSkim
@@ -76,6 +78,7 @@ if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
 IsSKim = "Skim" in opt.Analyzer
 IsHadd = "hadd" in opt.Analyzer
 
+IsSKim = True
 
 if IsSKim:
   print "skimskimskimskimskimskimskim"
@@ -426,15 +429,17 @@ R__LOAD_LIBRARY({1}libAnalyzers.so)
 R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc6_amd64_gcc630/external/lhapdf/6.2.1-fmblme/lib/libLHAPDF.so)
 void {0}(){{
   {2} m;
-  m.SetTreeName("recoTree/SKFlat");
 '''.format(jobName, libDir, opt.Analyzer)
       #IncludeLine = 'R__LOAD_LIBRARY({1}/{0}_C.so)'.format(opt.Analyzer, libdir)
+      IncludeLine+= '  m.SetTreeName("' + opt.treeDir+'/SKFlat");\n'
       if IsDATA:
         IncludeLine+='  m.IsDATA = true;\n'
         IncludeLine+='  m.DataStream = "'+InputSample.split(":")[0]+'";\n'
       else:
         IncludeLine+='  m.MCSample = "'+InputSample+'";\n';
         IncludeLine+='  m.IsDATA = false;\n'
+        if opt.OnlyGenLevel: IncludeLine+='  m.OnlyGenLevel = true;\n'
+	else : IncludeLine+='  m.OnlyGenLevel = false;\n'
         IncludeLine+='  m.xsec = '+str(this_xsec)+';\n'
         IncludeLine+='  m.sumW = '+str(this_sumw)+';\n'
         if opt.FastSim:

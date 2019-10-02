@@ -87,6 +87,26 @@ TH2* getMigrationMforMass(TString hname){
     return TUnfoldBinning::CreateHistogramOfMigrations(massBinningGen, massBinningRec, hname);
 }
 
+TH1* get2DHistogramPtGen(TString hname){
+
+    return ptBinningGen->CreateHistogram(hname);
+}
+
+TH2* getFSRMigrationMforPt(TString hname){
+
+    return TUnfoldBinning::CreateHistogramOfMigrations(ptBinningGen, ptBinningGen, hname);
+}
+
+TH1* get2DHistogramMassGen(TString hname){
+
+    return massBinningGen->CreateHistogram(hname);
+}
+
+TH2* getFSRMigrationMforMass(TString hname){
+
+    return TUnfoldBinning::CreateHistogramOfMigrations(massBinningGen, massBinningGen, hname);
+}
+
 // get bin index
 double Get2DPtGenBinIndex(double pt = -999, double mass = -999.){
 

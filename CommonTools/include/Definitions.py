@@ -24,3 +24,5 @@ class ISRUnfold:
     MassRec2DHist = 3
     MassGen2DHist = 4
     MassMigrationM = 5
+    PtFSRMigrationM = 6
+    MassFSRMigrationM = 7

@@ -278,18 +278,21 @@ class ShapeFactory:
 
       if useTUnfoldBin: 
         if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.PtMigrationM:
-
             # Fill bin zero
             # Caution: if the vector size of branch in an event is zero, the event is just skipped  
 
-            # Fill not selected but generated events, for the case the size of PtRec is not zero
+            # Fill not selected but generated events, for the case the size of PtRec is not zero: i.e., acceptance correction
             tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& !(" + "&&".join(totCut.split("&&")[1:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') 
+
             # Fill not selected but generated events, for the case the size of PtRec is zero
             #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + global_weight.split("*")[0]+")", 'goff')
+	    #
 
-            # Fill bin zero for efficiency correction: gen_weight * ( 1 - ( rec_weight) )
+            # Fill bin zero for efficiency correction: gen_weight * ( 1 - ( rec_weight) ): i.e., efficiency correction
             tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut + ")*(" + global_weight.split("*")[0] + "*(1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
 
+        if unfoldBinType == ISRUnfold.MassFSRMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM:
+            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& !(" + "&&".join(totCut.split("&&")[1:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') 
 
       nTries = shape.Integral()
       #print ' entries after cut    >> ',entries,' integral:', nTries
@@ -319,10 +322,10 @@ class ShapeFactory:
     if sysName != None: hTotalFinalName = hTotalFinalName + sysName
 
     if useTUnfoldBin:
-        if unfoldBinType == ISRUnfold.PtMigrationM: # 
+        if unfoldBinType == ISRUnfold.PtMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM: # 
             hTotalFinalName = 'hmcPtGenRec'
 
-        if unfoldBinType == ISRUnfold.MassMigrationM: # 
+        if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.MassFSRMigrationM: # 
             hTotalFinalName = 'hmcMassGenRec'
     
         if sysName != None:
@@ -828,6 +831,8 @@ class ShapeFactory:
         if unfoldBinType == ISRUnfold.MassRec2DHist:   return rt.get2DHistogramMassRec(name) 
         if unfoldBinType == ISRUnfold.MassGen2DHist:   return rt.get2DHistogramMassGen(name) 
         if unfoldBinType == ISRUnfold.MassMigrationM:  return rt.getMigrationMforMass(name) 
+        if unfoldBinType == ISRUnfold.PtFSRMigrationM:  return rt.getFSRMigrationMforPt(name) 
+        if unfoldBinType == ISRUnfold.MassFSRMigrationM:  return rt.getFSRMigrationMforMass(name) 
 
   def _connectInputs(self, samples, inputDir, skipMissingFiles, friendsDir = None, skimListDir = None):
     listTrees = []

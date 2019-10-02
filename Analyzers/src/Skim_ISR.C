@@ -288,7 +288,7 @@ void Skim_ISR::executeEvent(){
     }
 
     ///////////////////////////////////// generator level, only for Drell-Yan MC
-    if(MCSample.Contains("DYJets") && save_generator_info ){
+    if(MCSample.Contains("DY") && save_generator_info ){
         if(debug_) cout << "Generator information for " + MCSample << endl;
         gen_particles.clear();
         gen_photons.clear();
@@ -430,11 +430,11 @@ void Skim_ISR::executeEvent(){
             leptons_postfsr.push_back(gen_particles.at(gen_particle_index_status1));
             leptons_postfsr.push_back(gen_particles.at(gen_antiparticle_index_status1));
 
-            if( ((particle_pt_gen_postfsr > 25. && antiparticle_pt_gen_postfsr > 15.) || (particle_pt_gen_postfsr > 15. && antiparticle_pt_gen_postfsr > 25.)) && fabs(particle_eta_gen_postfsr) < 2.5 && fabs(antiparticle_eta_gen_postfsr) < 2.5 )
+            if( evt_tag_dielectron_gen == 1 && ((particle_pt_gen_postfsr > 25. && antiparticle_pt_gen_postfsr > 15.) || (particle_pt_gen_postfsr > 15. && antiparticle_pt_gen_postfsr > 25.)) && fabs(particle_eta_gen_postfsr) < 2.5 && fabs(antiparticle_eta_gen_postfsr) < 2.5 )
                 evt_tag_dielectron_fiducial_post_fsr = true;
             else evt_tag_dielectron_fiducial_post_fsr = false;
 
-            if( ((particle_pt_gen_postfsr > 20. && antiparticle_pt_gen_postfsr > 10.) || (particle_pt_gen_postfsr > 10. && antiparticle_pt_gen_postfsr > 20.)) && fabs(particle_eta_gen_postfsr) < 2.4 && fabs(antiparticle_eta_gen_postfsr) < 2.4 )
+            if( evt_tag_dimuon_gen == 1 && ((particle_pt_gen_postfsr > 20. && antiparticle_pt_gen_postfsr > 10.) || (particle_pt_gen_postfsr > 10. && antiparticle_pt_gen_postfsr > 20.)) && fabs(particle_eta_gen_postfsr) < 2.4 && fabs(antiparticle_eta_gen_postfsr) < 2.4 )
                 evt_tag_dimuon_fiducial_post_fsr = true;
             else evt_tag_dimuon_fiducial_post_fsr = false;
 
