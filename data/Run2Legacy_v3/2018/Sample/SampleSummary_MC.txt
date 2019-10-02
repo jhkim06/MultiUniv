@@ -3,8 +3,8 @@ DY1Jets_MG	DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8	1012.0	68898175	68
 DY2Jets_MG	DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8	334.7	20456037	20441071 ## From XSDB
 DY3Jets_MG	DY3JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8	102.3	5652357	5646595 ## From XSDB
 DY4Jets_MG	DY4JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8	54.52	2817812	2812482 ## From XSDB
-DYJets10to50_MG	DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8	18610	39392062	39360792
-DYJets_MG	DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8	6225.42	100106641	100026541
+DYJets10to50_MG	DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8	18610	39392062	39392062
+DYJets_MG	DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8	6225.42	100106641	100106641
 DYJets_MG_HT-100to200	DYJetsToLL_M-50_HT-100to200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8	147.40	11530510	11518130
 DYJets_MG_HT-1200to2500	DYJetsToLL_M-50_HT-1200to2500_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8	0.1514	536416	531762
 DYJets_MG_HT-200to400	DYJetsToLL_M-50_HT-200to400_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8	40.99	11225887	11206441
@@ -13,16 +13,16 @@ DYJets_MG_HT-400to600	DYJetsToLL_M-50_HT-400to600_TuneCP5_PSweights_13TeV-madgra
 DYJets_MG_HT-600to800	DYJetsToLL_M-50_HT-600to800_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8	1.367	8862104	8828622
 DYJets_MG_HT-70to100	DYJetsToLL_M-50_HT-70to100_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8	169.9	10019684	10011340
 DYJets_MG_HT-800to1200	DYJetsToLL_M-50_HT-800to1200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8	0.6304	3138129	3121975
-SingleTop_sch_Lep	ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-madgraph-pythia8	3.36	19952000	12447484
-SingleTop_tW_antitop_Incl	ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8	35.85	7623000	7588180
-SingleTop_tW_top_Incl	ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8	35.85	9598000	9553912
-SingleTop_tch_antitop_Incl	ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8	67.91	79056500	74194906
-SingleTop_tch_top_Incl	ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8	113.3	154307600	144094782
+SingleTop_sch_Lep	ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-madgraph-pythia8	3.36	19952000	19952000
+SingleTop_tW_antitop_Incl	ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8	35.85	7623000	7623000
+SingleTop_tW_top_Incl	ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8	35.85	9598000	9598000
+SingleTop_tch_antitop_Incl	ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8	67.91	79056500	79056500
+SingleTop_tch_top_Incl	ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8	113.3	154307600	154307600
 TTG	TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8	3.697	4691915	1842387
 TTJJ_powheg	TTToHadronic_TuneCP5_13TeV-powheg-pythia8	377.96	133808000	132725582
-TTLJ_powheg	TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8	365.34	101550000	100728756
-TTLL_powheg	TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8	88.29	64310000	63791484
-WJets_MG	WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8	61530	71026861	70966439
+TTLJ_powheg	TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8	365.34	101550000	101550000
+TTLL_powheg	TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8	88.29	64310000	64310000
+WJets_MG	WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8	61530	71026861	71026861
 WWW	WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8	0.2086	240000	210100
 WWZ	WWZ_TuneCP5_13TeV-amcatnlo-pythia8	0.1651	250000	219910
 WW_pythia	WW_TuneCP5_13TeV-pythia8	118.7	7735000	7735000
@@ -30,5 +30,5 @@ WZZ	WZZ_TuneCP5_13TeV-amcatnlo-pythia8	0.05565	250000	219250
 WZ_pythia	WZ_TuneCP5_13TeV-pythia8	47.13	3885000	3885000
 ZZZ	ZZZ_TuneCP5_13TeV-amcatnlo-pythia8	0.01398	250000	214282
 ZZ_pythia	ZZ_TuneCP5_13TeV-pythia8	16.523	1979000	1979000
-ttW	ttWJets_TuneCP5_13TeV_madgraphMLM_pythia8	0.4611	12816567	12771749	## From XSDB
-ttZ	ttZJets_TuneCP5_13TeV_madgraphMLM_pythia8	0.5407	22646257	22604395	## From XSDB
+ttW	ttWJets_TuneCP5_13TeV_madgraphMLM_pythia8	0.4611	12816567	12816567	## From XSDB
+ttZ	ttZJets_TuneCP5_13TeV_madgraphMLM_pythia8	0.5407	22646257	22646257	## From XSDB

@@ -25,6 +25,7 @@ import CommonPyTools.python.CommonTools as Tools
 from ShapeAnalysis.python.ShapeFactory import ShapeFactory
 
 parser = argparse.ArgumentParser(description='SKFlat Command')
+parser.add_argument('--concLimit', dest='ConcurrencyLimit', default=-1, type=int)
 parser.add_argument('--InSkim', dest='InSkim', default="")
 parser.add_argument('--dry_run', action='store_true')
 parser.add_argument('--doBatch', action='store_true')
@@ -54,9 +55,9 @@ sys.path.append(os.getcwd())
 variables = {}
 columns = []
 definitions = {}
-if opt.variableCfg != '':
-  if os.path.exists(opt.variableCfg):
-    handle = open(opt.variableCfg,'r')
+if opt.variablesFile != '':
+  if os.path.exists(opt.variablesFile):
+    handle = open(opt.variablesFile,'r')
     exec(handle)
     #exec(handle,globals())
     handle.close()
@@ -69,9 +70,9 @@ else:
 
 supercut = '1'
 cuts = {}
-if opt.cutCfg != '':
-  if os.path.exists(opt.cutCfg):
-    handle = open(opt.cutCfg,'r')
+if opt.cutsFile != '':
+  if os.path.exists(opt.cutsFile):
+    handle = open(opt.cutsFile,'r')
     exec(handle)
     handle.close()
   else:
@@ -82,10 +83,10 @@ else:
   exit()
 
 samples = OrderedDict()
-#print 'sample cfg',opt.sampleCfg
-if opt.sampleCfg != '':
-  if os.path.exists(opt.sampleCfg):
-    handle = open(opt.sampleCfg,'r')
+#print 'sample cfg',opt.samplesFile
+if opt.samplesFile != '':
+  if os.path.exists(opt.samplesFile):
+    handle = open(opt.samplesFile,'r')
     exec(handle)
     handle.close()
   else:
@@ -96,9 +97,9 @@ else:
   exit()
 
 nuisances = {}
-if opt.nuisancesCfg != '':
-  if os.path.exists(opt.nuisancesCfg):
-    handle = open(opt.nuisancesCfg,'r')
+if opt.nuisancesFile != '':
+  if os.path.exists(opt.nuisancesFile):
+    handle = open(opt.nuisancesFile,'r')
     exec(handle)
     handle.close()
   else:
@@ -441,7 +442,7 @@ for InputSample in InputSamples:
       # make submit.jds currently only SINGLE queue ###
       # this is INSIDE for loop of N jobs since N submit.jds are needed in case of SINGLE queue
       # make condor submit script when ONE queue
-      if not opt.multiQueue: jobs.mkJds() 
+      if not opt.multiQueue: jobs.mkJds(opt.ConcurrencyLimit) 
       ###################################################      
 
       #jobs.AddSh(shCmd)
@@ -471,7 +472,7 @@ for InputSample in InputSamples:
       # make ONE shell script and ONE submit.jds here for MULTIPLE queue case
       if opt.multiQueue and it_job == len(FileRanges)-1: 
         jobs.mkShCommand()
-        jobs.mkJds(it_job+1)
+        jobs.mkJds(opt.ConcurrencyLimit,it_job+1)
         jobs.Sub()
 
       #cmd = thisjob_dir+'commands.sh'

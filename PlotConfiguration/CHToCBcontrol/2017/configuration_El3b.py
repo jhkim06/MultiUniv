@@ -12,8 +12,8 @@ Userflags   = 'CHToCB_3b' # flag appends to ouput directory name
 treeName    = 'recoTree/SKFlat'
 
 
-sampleCfg   = 'samples_3b.py'
-plotCfg     = 'plot_El3b.py'
-variableCfg = 'variables.py'
-cutCfg      = 'cuts_El3b.py'
-nuisancesCfg= 'nuisances_3b.py'
+samplesFile   = 'samples_3b.py'
+plotFile      = 'plot_El3b.py'
+variablesFile = 'variables.py'
+cutsFile      = 'cuts_El3b.py'
+nuisancesFile = 'nuisances_3b.py'

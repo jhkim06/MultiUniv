@@ -25,6 +25,7 @@ parser.add_argument('-n', dest='NJobs', default=1, type=int)
 parser.add_argument('-o', dest='Outputdir', default="")
 parser.add_argument('-q', dest='Queue', default="")
 parser.add_argument('-y', dest='Year', default="2017")
+parser.add_argument('--concLimit', dest='ConcurrencyLimit', default=-1, type=int)
 parser.add_argument('--InSkim', dest='InSkim', default="")
 parser.add_argument('--dry_run', action='store_true')
 parser.add_argument('--multiQueue', action='store_true', default = False)
@@ -503,7 +504,7 @@ void {0}(){{
       jobs.AddRooMac(IncludeLine)
 
     if IsSNU or IsKISTI:
-      if not opt.multiQueue: jobs.mkJds()
+      if not opt.multiQueue: jobs.mkJds(opt.ConcurrencyLimit)
 
     if not opt.multiQueue: jobs.mkShCommand()
     if opt.resubmit:

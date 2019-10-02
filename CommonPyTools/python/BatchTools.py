@@ -90,7 +90,7 @@ class batchJobs:
     else:
       print HOSTNAME, 'is not ready for batchJob'
 
-  def mkJds(self, nQueue = 1):
+  def mkJds(self, concLimit=-1, nQueue = 1):
     jdsFile = open(self.condoJdsName, 'w')
 
     if IsUI10:
@@ -144,6 +144,12 @@ log = condor.log
 getenv     = True
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT '''
+
+      # set concurrency limit
+      if concLimit > 0:
+        print>>jdsFile, '''
+concurrency_limits = n{0}.{1}
+'''.format(str(concLimit),os.getenv('USER'))
 
       if not self.multiQueue:
         print>>jdsFile, '''

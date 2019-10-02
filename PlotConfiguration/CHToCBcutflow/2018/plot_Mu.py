@@ -10,21 +10,29 @@ groupPlot['TT'] = {
     'nameHR' : "TT",
     'isSignal' : 0,
     'color':  kRed,
-    'samples' : ['TTLL_powheg','TTLJ_powheg','TTJJ_powheg']
+    'samples' : ['TTLL_powheg','TTLJ_powheg']
+    #'samples' : ['TTLL_powheg','TTLJ_powheg','TTJJ_powheg']
     }
-
+'''
+groupPlot['ttbb'] = {
+    'nameHR' : "ttbb",
+    'isSignal' : 0,
+    'color':  kRed+2,
+    'samples' : ['ttbb']
+    }
+'''
 groupPlot['ST'] = {
     'nameHR' : "ST",
     'isSignal' : 0,
     'color':  kMagenta,
-    'samples' : ['SingleTop_sch_top','SingleTop_tch_top','SingleTop_tch_antitop','SingleTop_tW_top','SingleTop_tW_antitop']
+    'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_Incl','SingleTop_tW_antitop_Incl']
     }
 
 groupPlot['VJ'] = {
     'nameHR' : "VJ",
     'isSignal' : 0,
     'color':  kOrange,
-    'samples' : ['WJets_MG','DYJets','DYJets10to50_MG']
+    'samples' : ['WJets_MG','DYJets_MG','DYJets10to50_MG']
     }
 
 groupPlot['VV'] = {
@@ -39,6 +47,7 @@ groupPlot['TTX'] = {
     'isSignal' : 0,
     'color':  kYellow,
     'samples' : ['ttW','ttZ']
+    #'samples' : ['ttW','ttZ','ttH_bb']
     }
 
 '''
@@ -53,7 +62,7 @@ groupPlot['QCD'] = {
     }
 '''
 
-plot['DYJets'] = {
+plot['DYJets_MG'] = {
     'color': kYellow,
     'isSignal' :0,
     'isData': 0,
@@ -87,43 +96,49 @@ plot['TTLJ_powheg'] = {
     'isData': 0,
     'scale':1,
     }
-
+'''
 plot['TTJJ_powheg'] = {
     'color': 550,
     'isSignal' :0,
     'isData': 0,
     'scale':1,
     }
-
-plot['SingleTop_sch_top'] = {
+plot['ttbb'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+'''
+plot['SingleTop_sch_Lep'] = {
     'color': kMagenta,
     'isSignal' :0,
     'isData': 0,
     'scale':1,
     }
 
-plot['SingleTop_tch_top'] = {
+plot['SingleTop_tch_top_Incl'] = {
     'color': kMagenta,
     'isSignal' :0,
     'isData': 0,
     'scale':1,
     }
 
-plot['SingleTop_tch_antitop'] = {
+plot['SingleTop_tch_antitop_Incl'] = {
     'color': kMagenta,
     'isSignal' :0,
     'isData': 0,
     'scale':1,
     }
 
-plot['SingleTop_tW_top'] = {
+plot['SingleTop_tW_top_Incl'] = {
     'color': kMagenta,
     'isSignal' :0,
     'isData': 0,
     'scale':1,
     }
 
-plot['SingleTop_tW_antitop'] = {
+plot['SingleTop_tW_antitop_Incl'] = {
     'color': kMagenta,
     'isSignal' :0,
     'isData': 0,
@@ -162,17 +177,16 @@ plot['ttZ'] = {
     'isData': 0,
     'scale':1,
     }
-
-plot['SingleMuon'] = {
-    'nameHR' : "SingleMuon",
-    'color':kBlack,
-    'isSignal':0,
-    'isData':1,
+'''
+plot['ttH_bb'] = {
+    'color': kYellow,
+    'isSignal' :0,
+    'isData': 0,
     'scale':1,
     }
-
-plot['SingleElectron'] = {
-    'nameHR' : "SingleElectron",
+'''
+plot['SingleMuon'] = {
+    'nameHR' : "SingleMuon",
     'color':kBlack,
     'isSignal':0,
     'isData':1,
@@ -182,7 +196,7 @@ plot['SingleElectron'] = {
 legend['lumi'] = 'L = 41.5/fb'
 legend['sqrt'] = '#sqrt{s} = 13 TeV'
 # extraText default is Preliminary
-#legend['extraText'] = 'Preliminary'
+legend['extraText'] = ''
 # iPeriod = 1*(0/1 7 TeV) + 2*(0/1 8 TeV)  + 4*(0/1 13 TeV)
 # For instance: 
 #               iPeriod = 3 means: 7 TeV + 8 TeV
