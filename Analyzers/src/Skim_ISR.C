@@ -34,6 +34,8 @@ void Skim_ISR::initializeAnalyzer(){
     outfile->cd("recoTree");
     newtree = fChain->CloneTree(0);
 
+    newtree->Branch("evt_weight_total_gen", &evt_weight_total_gen,"evt_weight_total_gen/D");
+
     if(save_detector_info){
         // New Branch
         // branches below include which might be better to be handled in varialbe skim later
@@ -54,7 +56,6 @@ void Skim_ISR::initializeAnalyzer(){
         newtree->Branch("leadingphoton_eta_rec", &leadingphoton_eta_rec,"leadingphoton_eta_rec/D");
         newtree->Branch("leadingphoton_lepton_dr_rec", &leadingphoton_lepton_dr_rec,"leadingphoton_lepton_dr_rec/D");
 
-        newtree->Branch("evt_weight_total_gen", &evt_weight_total_gen,"evt_weight_total_gen/D");
         newtree->Branch("evt_weight_total_rec", &evt_weight_total_rec,"evt_weight_total_rec/D");
 
         newtree->Branch("evt_weight_pureweight", &evt_weight_pureweight,"evt_weight_pureweight/D");
@@ -289,6 +290,8 @@ void Skim_ISR::executeEvent(){
 
     ///////////////////////////////////// generator level, only for Drell-Yan MC
     if(MCSample.Contains("DY") && save_generator_info ){
+        bool photos_used = false;
+        if(MCSample.Contains("PHOTOS")) photos_used = true;
         if(debug_) cout << "Generator information for " + MCSample << endl;
         gen_particles.clear();
         gen_photons.clear();
@@ -498,9 +501,17 @@ void Skim_ISR::executeEvent(){
                     matched_to_particle = true; 
                 }
 
-                if( index_map.find(gen_photons.at(iph).MotherIndex()) != index_map.end() ){
-                    lepton_matched_photon_n_gen++;
-                    lepton_matched_photons_closest_dr_to_leptons_gen.push_back(dr_temp);
+                if(!photos_used){
+                    if( index_map.find(gen_photons.at(iph).MotherIndex()) != index_map.end() ){
+                        lepton_matched_photon_n_gen++;
+                        lepton_matched_photons_closest_dr_to_leptons_gen.push_back(dr_temp);
+                    }
+                }
+                else{
+                    if( gen_particles.at(gen_photons.at(iph).MotherIndex()).PID() == 23 ){
+                        lepton_matched_photon_n_gen++;
+                        lepton_matched_photons_closest_dr_to_leptons_gen.push_back(dr_temp);
+                    }
                 }
 
                 // 
@@ -511,17 +522,33 @@ void Skim_ISR::executeEvent(){
 
                         // only for photons sharing the same index with decaying lepton
                         // this is the current way to correct FSR in ISR analysis without delta R cut
-                        if( index_map.find(gen_photons.at(iph).MotherIndex()) != index_map.end() ){
-                            dilepton_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
-                            photon_p4_drX[mapit->first] += photon_temp;
+                        if(!photos_used){
+                            if( index_map.find(gen_photons.at(iph).MotherIndex()) != index_map.end() ){
+                                dilepton_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
+                                photon_p4_drX[mapit->first] += photon_temp;
 
-                            if(matched_to_particle){
-                                particle_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
-                            }
-                            else{
-                                antiparticle_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
+                                if(matched_to_particle){
+                                    particle_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
+                                }
+                                else{
+                                    antiparticle_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
+                                }
                             }
                         }
+                        else{
+
+                            if( gen_particles.at(gen_photons.at(iph).MotherIndex()).PID() == 23 ){
+                                dilepton_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
+                                photon_p4_drX[mapit->first] += photon_temp;
+
+                                if(matched_to_particle){
+                                    particle_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
+                                }
+                                else{
+                                    antiparticle_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
+                                }
+                            }
+                        }// for PHOTOS
                     }
                     else continue;
                 }// loop for dilepton_gamma_p4_drX

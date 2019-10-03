@@ -7,61 +7,30 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-#McWeight = 'evt_weight_total_gen * evt_weight_total_rec * electron_double_recoSF_passMediumID * electron_double_idSF_passMediumID * electron_double_recoSF_passMediumID * electron_double_trigSF_DoubleElectron_passMediumID'
 McWeight = 'evt_weight_total_gen'
-#McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
 
 #--------------------    
 # MC
 #--------------------    
 
-samples['DYJets'] = {
+samples['DYFSR_PHOTOS'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
     'weight' :McWeight,
     }
 
-samples['DYJets10to50'] = {
-    'skim'   :'', # use default skim defined in configuration.py
-    'cut'    :'',
-    'weight' :McWeight,
-    }
-
-
-#samples['TT_powheg'] = {
+#samples['DYJets'] = {
 #    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
 #    'weight' :McWeight,
 #    }
 #
-#samples['WJets_MG'] = {
-#    'skim'   :'',
+#samples['DYJets10to50'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
 #    'weight' :McWeight,
-#    }
-#
-#samples['WW_pythia'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['WZ_pythia'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['ZZ_pythia'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['DoubleEG'] = {
-#    'skim'   :'',
-#    'weight' :'1',
 #    }
 
-#samples['DoubleElectron'] = {
-#    'skim'   :'',
-#    'weight' :'1',
-#    }
 #--------------------    
 # DATA driven QCD
 #--------------------

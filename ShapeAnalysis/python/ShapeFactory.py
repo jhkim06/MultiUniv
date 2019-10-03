@@ -74,7 +74,7 @@ class ShapeFactory:
     #print 'inFiles', inFiles
     trees = self._connectInputs( inFiles, inputDir, False)
     for cutName, cut in self._cuts.iteritems():
-      totCut = cut+" && "+supercut # what is the purpose to use supercut?
+      totCut = supercut+" && "+cut 
       print 'cut',cutName,'::',cut
       self.outFile.mkdir(cutName)
       for variableName, variable in variables.iteritems():
@@ -282,7 +282,7 @@ class ShapeFactory:
             # Caution: if the vector size of branch in an event is zero, the event is just skipped  
 
             # Fill not selected but generated events, for the case the size of PtRec is not zero: i.e., acceptance correction
-            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& !(" + "&&".join(totCut.split("&&")[1:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') 
+            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') 
 
             # Fill not selected but generated events, for the case the size of PtRec is zero
             #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + global_weight.split("*")[0]+")", 'goff')
@@ -292,7 +292,8 @@ class ShapeFactory:
             tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut + ")*(" + global_weight.split("*")[0] + "*(1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
 
         if unfoldBinType == ISRUnfold.MassFSRMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM:
-            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& !(" + "&&".join(totCut.split("&&")[1:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') 
+            # for FSR response, consider only acceptance correction
+            tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') 
 
       nTries = shape.Integral()
       #print ' entries after cut    >> ',entries,' integral:', nTries
