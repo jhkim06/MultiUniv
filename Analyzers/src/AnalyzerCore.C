@@ -443,6 +443,66 @@ std::vector<Jet> AnalyzerCore::GetJets(TString id, double ptmin, double fetamax,
 }
 
 
+double AnalyzerCore::IsHEMJets(const std::vector<Jet> &jets, unsigned int upToNthLeadingJet){
+  if(DataYear!=2018){
+    return 1.;
+  }
+  double out_weight = 1.;
+  bool IsHEMRegion = false;
+  bool IsHEMJets = false;
+  // check if HEM region
+  if(IsDATA){
+    // for period C, D return true
+    if(DataPeriod=="C" || DataPeriod=="D"){
+      IsHEMRegion = true;
+    }
+  }
+  else{
+    IsHEMRegion = true;
+  }
+  // check if there're jets in HEM region
+  if(IsHEMRegion){
+    for(unsigned int i=0; i<jets.size(); i++){
+      if(i>=upToNthLeadingJet){
+        break;
+      }
+      auto jet = &jets.at(i);
+      double eta = jet->Eta();
+      double phi = jet->Phi();
+      if(eta > -3.0 && eta < -1.3 && phi > -1.57 && phi < -0.87 ){
+        IsHEMJets = true;
+	break;
+      }
+    }
+  }
+  // weight
+  // return 1. for not HEM jets
+  // return 0. for HEM jets for DATA
+  // return (lumi C+D)/(lumi A+B+C+D) for HEM jets for MC
+  if(IsDATA){
+    if(IsHEMRegion){
+      if(IsHEMJets){
+        out_weight = 0.;
+      }
+    }
+    else{
+      //pass
+    }
+  }
+  else{
+    if(IsHEMJets){
+      out_weight = 38.65/59.74;
+      //out_weight = 1. - 38.65/59.74;
+    }
+    else{
+      //pass
+    }
+  }
+
+  return out_weight;
+}
+
+
 std::vector<FatJet> AnalyzerCore::GetAllFatJets(){
 
   std::vector<FatJet> out;

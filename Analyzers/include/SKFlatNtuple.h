@@ -40,6 +40,7 @@ public :
    Long64_t MaxEvent, NSkipEvent;
    int LogEvery;
    bool IsDATA;
+   TString DataPeriod;
    TString DataStream;
    TString MCSample;
    bool IsFastSim;

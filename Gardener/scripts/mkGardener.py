@@ -417,6 +417,7 @@ void {0}(){{
       if IsDATA:
         IncludeLine+='  m.IsDATA = true;\n'
         IncludeLine+='  m.DataStream = "'+InputSamples[InputSample]['key']+'";\n'
+	IncludeLine+='  m.DataPeriod = "'+ DataPeriod+'";\n'
       else:
         IncludeLine+='  m.MCSample = "'+InputSamples[InputSample]['key']+'";\n';
         IncludeLine+='  m.IsDATA = false;\n'
