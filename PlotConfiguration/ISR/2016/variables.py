@@ -38,6 +38,27 @@ variables['mll_80_100'] = {
     'fold' : 0
     }
 
+variables['mllgamma_85_105'] = {
+    'name': 'dilep_photon_mass_rec',
+    'range':(20, 85, 105),
+    'xaxis': 'm_{ll#gamma} [GeV]',
+    'fold' : 0
+    }
+
+variables['dR_lep_gamma'] = {
+    'name': 'leadingphoton_lepton_dr_rec',
+    'range':(50, 0., 5.),
+    'xaxis': '#DeltaR',
+    'fold' : 0
+    }
+
+variables['leadingPhoton_Et'] = {
+    'name': 'leadingphoton_pt_rec',
+    'range':(100, 0., 100.),
+    'xaxis': '#gamma E_{T} [GeV]',
+    'fold' : 0
+    }
+
 variables['ptll'] = {
     'name': 'dilep_pt_rec',
     'range':(100,0,1000),

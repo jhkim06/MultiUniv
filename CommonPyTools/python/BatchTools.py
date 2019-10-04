@@ -21,7 +21,11 @@ class batchJobs:
     self.condoJdsName = self.jobDir + 'submit.jds'
 
     if multiQueue :
-        self.MacShell     = "/".join((self.jobDir).split("/")[:-2]) + "/" + (self.jobName).split('_')[0]+"_"+(self.jobName).split('_')[2] + '.sh'
+        if "mkShape" in self.jobName:
+            self.MacShell     = "/".join((self.jobDir).split("/")[:-2]) + "/" + ("_").join((self.jobName).split('_')[2:]) + '.sh'
+        if "mkGardn" in self.jobName:
+            self.MacShell     = "/".join((self.jobDir).split("/")[:-2]) + "/" + ("_").join((self.jobName).split('_')[:-1])+ '.sh'
+
         self.condoJdsName = "/".join((self.jobDir).split("/")[:-2]) + "/" + 'submit.jds'
 
     self.exCmd =""
@@ -217,10 +221,16 @@ while [ "$SumNoAuth" -ne 0 ]; do
   NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" err.log -R | wc -l`
   '''.format(self.exCmd)
         else :
-            print>>sFile, '''  cd ${{WORKDIR}} 
-  {0} ./job_${{SECTION}}/job_${{SECTION}}_mkShape.py 2> ./job_${{SECTION}}/err.log || echo "EXIT_FAILURE" >> ./job_${{SECTION}}/err.log
+            if "mkShape" in self.jobName:
+                print>>sFile, '''  cd ${{WORKDIR}} 
+  {0} ./job_${{SECTION}}/job_${{SECTION}}_{1}.py 2> ./job_${{SECTION}}/err.log || echo "EXIT_FAILURE" >> ./job_${{SECTION}}/err.log
   NoAuthError_Open=`grep "Error in <TNetXNGFile::Open>" ./job_${{SECTION}}/err.log -R | wc -l`
-  NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" ./job_${{SECTION}}/err.log -R | wc -l`'''.format(self.cmdType)  
+  NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" ./job_${{SECTION}}/err.log -R | wc -l`'''.format(self.cmdType, ("_").join((self.jobName).split('_')[2:]))  
+            if "mkGardn" in self.jobName:
+                print>>sFile, '''  cd ${{WORKDIR}} 
+  {0} -l -b -q ./job_${{SECTION}}/{1}_${{SECTION}}.C 2> ./job_${{SECTION}}/err.log || echo "EXIT_FAILURE" >> ./job_${{SECTION}}/err.log
+  NoAuthError_Open=`grep "Error in <TNetXNGFile::Open>" ./job_${{SECTION}}/err.log -R | wc -l`
+  NoAuthError_Close=`grep "Error in <TNetXNGFile::Close>" ./job_${{SECTION}}/err.log -R | wc -l`'''.format(self.cmdType, ("_").join((self.jobName).split('_')[:-1]))  
 
         print>>sFile, '''  SumNoAuth=$(($NoAuthError_Open + $NoAuthError_Close))
                         

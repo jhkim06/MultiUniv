@@ -158,11 +158,18 @@ StringForHash = ""
 InputSampleKeys = []
 InputSampleSkims = {}
 for key in samples:
+
   InputSampleKeys.append(key)
   tmp_skim_string = samples[key]['skim']
   if tmp_skim_string is '': # use default skim defined in configuration.py
     tmp_skim_string= InSkimString
-  InputSampleSkims[key]=tmp_skim_string
+
+  if len(key.split("@")) > 1 :
+    key_ =     key.split("@")[1]
+  else :
+    key_ = key
+
+  InputSampleSkims[key_]=tmp_skim_string
 InputSamples,StringForHash = GetInputSamples(InputSampleKeys,opt.DataPeriod,opt.Year,opt.Category,ProductionKey)
 print 'InputSamples', InputSamples  
 
@@ -180,6 +187,8 @@ if opt.doHadd:
   haddAllSample_cmd += '.root '
 
 
+# just to save TUnfoldBinning object only single time
+isFirstSample = True
 
 for InputSample in InputSamples:
 
@@ -191,6 +200,7 @@ for InputSample in InputSamples:
   IsDATA = False
   DataPeriod = ""
   print 'InputSample', InputSample
+  # for data
   if ":" in InputSample:
     IsDATA = True
     #tmp = InputSample
@@ -198,10 +208,21 @@ for InputSample in InputSamples:
     DataPeriod = InputSample.split(":")[1]
     print 'DataPeriod', DataPeriod
 
-  # variable 'InputSample' is full name of sample
-  sampleName = InputSamples[InputSample]['key']
-  SampleInSkimString = InputSampleSkims[sampleName]
-  sample     = samples[sampleName]
+    sampleName = InputSample.split(":")[0]
+    SampleInSkimString = InputSampleSkims[sampleName]
+  else :
+    # variable 'InputSample' is full name of sample
+    sampleName = InputSample
+    SampleInSkimString = InputSampleSkims[sampleName]
+
+  sampleName_set = False
+  for key in samples:
+    if sampleName in key:
+        sample     = samples[key]
+        sampleName_set = True
+
+  if not sampleName_set:
+    sample     = samples[sampleName]
 
 
 
@@ -274,7 +295,7 @@ for InputSample in InputSamples:
   if IsDATA:
     sampleBaseName = sampleName+'/'+'period'+DataPeriod
   else:
-    sampleBaseName = InputSample
+    sampleBaseName = InputSamples[InputSample]['full_name']
   if SampleInSkimString == "":
     if IsDATA:
       tmpfilepath = SAMPLE_INFO_DIR+'/For'+HostNickName+'/'+sampleName+'_'+DataPeriod+'.txt'
@@ -378,7 +399,7 @@ for InputSample in InputSamples:
 
     # check if this is the first job and if so save TUnfoldBinning object in the output file of the first job (JUST for histograms using TUnfold package)
     isFirstJob = "False"
-    if it_job == 0:
+    if it_job == 0 and isFirstSample == True:
         isFirstJob = "True"
 
     CheckTotalNFile = CheckTotalNFile+len(FileRanges[it_job])
@@ -406,7 +427,11 @@ for InputSample in InputSamples:
     if opt.doBatch and not opt.doHadd:
       #print 'batch making histo'
       #jobName = 'mkShape'
-      jobName = 'job_'+str(it_job)+'_mkShape'
+      if IsDATA:
+        jobName = 'job_'+str(it_job)+'_mkShape_' + sampleName + "_" + DataPeriod
+      else :
+        jobName = 'job_'+str(it_job)+'_mkShape_' + sampleName
+
       ########################################################################
       # 'jobName'.py is created when object (jobs) of batchJobs class is created
       jobs = batchJobs(jobName, opt.Queue, thisjob_dir,cmdType, opt.dry_run, opt.multiQueue) 
@@ -474,6 +499,8 @@ for InputSample in InputSamples:
   if CheckTotalNFile != NTotalFiles:
     print 'mkShapes: CheckTotalNFile is not the same to NTotalFiles, plz check, exitting...'
     exit()
+
+  isFirstSample = False
 
 
 if opt.doHadd:

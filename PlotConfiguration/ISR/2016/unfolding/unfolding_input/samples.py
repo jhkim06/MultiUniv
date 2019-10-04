@@ -7,22 +7,23 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec * muon_double_idSF_POGTightWithTightIso * muon_double_isoSF_POGTightWithTightIso * muon_double_trigSF_DoubleMuon_POGTightWithTightIso'
-#McWeight = 'evt_weight_total_gen * evt_weight_total_rec'
+McWeight = 'evt_weight_total_gen * evt_weight_total_rec * electron_double_recoSF_passMediumID * electron_double_idSF_passMediumID * electron_double_trigSF_DoubleElectron_passMediumID'
+#McWeight = 'evt_weight_total_gen * evt_weight_total_rec * muon_double_idSF_POGTightWithTightIso * muon_double_isoSF_POGTightWithTightIso * muon_double_trigSF_DoubleMuon_POGTightWithTightIso'
+#McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
 
 #--------------------    
 # MC
 #--------------------    
 
-samples['DYJets@DYJetsToMuMu'] = {
+samples['DYJets@DYJetsToEE'] = {
     'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_dimuon_gen == 1',
+    'cut'    :'evt_tag_dielectron_gen == 1',
     'weight' :McWeight,
     }
 
-samples['DYJets10to50@DYJets10to50ToMuMu'] = {
+samples['DYJets10to50@DYJets10to50ToEE'] = {
     'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_dimuon_gen == 1',
+    'cut'    :'evt_tag_dielectron_gen == 1',
     'weight' :McWeight,
     }
 
@@ -68,7 +69,7 @@ samples['ZZ_pythia'] = {
     'weight' :McWeight,
     }
 
-samples['DoubleMuon'] = {
+samples['DoubleEG'] = {
     'skim'   :'',
     'cut'    :'',
     'weight' :'1',
@@ -76,20 +77,20 @@ samples['DoubleMuon'] = {
 
 #samples['DoubleMuon'] = {
 #    'skim'   :'',
+#    'cut'    :'',
 #    'weight' :'1',
 #    }
-
 #--------------------    
 # DATA driven QCD
 #--------------------
 '''
 samples['DoubleEG_FakeElEl'] = {
-    'skim'   :'MetFt_L_v0_LL_v0_MuMuOrElElFake_v1', #TODO: this skim is not exist currently
+    'skim'   :'MetFt_L_v0_LL_v0_EEOrElElFake_v1', #TODO: this skim is not exist currently
     'weight' :'1',
     }
 
-samples['DobuleMuon_FakeMuMu'] = {
-    'skim'   :'MetFt_L_v0_LL_v0_MuMuOrElElFake_v1', #TODO: this skim is not exist currently
+samples['DobuleMuon_FakeEE'] = {
+    'skim'   :'MetFt_L_v0_LL_v0_EEOrElElFake_v1', #TODO: this skim is not exist currently
     'weight' :'1',
     }
 '''

@@ -28,6 +28,7 @@ parser.add_argument('-y', dest='Year', default="2017")
 parser.add_argument('--concLimit', dest='ConcurrencyLimit', default=-1, type=int)
 parser.add_argument('--InSkim', dest='InSkim', default="")
 parser.add_argument('--dry_run', action='store_true')
+parser.add_argument('--multiQueue', action='store_true', default = False)
 parser.add_argument('--userflags', dest='Userflags', default="")
 parser.add_argument('--skimV', dest='skimV', default="0")
 parser.add_argument('--nTotFiles', dest='nTotFiles', default=0, type=int)
@@ -35,6 +36,8 @@ parser.add_argument('--MonitJob', dest='MonitJob', default=False, type=bool)
 parser.add_argument('--Category', dest='Category', default="SMP")
 parser.add_argument('--FastSim', action='store_true')
 parser.add_argument('--resubmit', action='store_true')
+parser.add_argument('--OnlyGenLevel', action='store_true', default=False)
+parser.add_argument('--treeDir', default='recoTree')
 
 opt = parser.parse_args()
 InSkimString = opt.InSkim
@@ -76,6 +79,7 @@ if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
 IsSKim = "Skim" in opt.Analyzer
 IsHadd = "hadd" in opt.Analyzer
 
+IsSKim = True
 
 if IsSKim:
   print "skimskimskimskimskimskimskim"
@@ -192,9 +196,15 @@ for InputSample in InputSamples:
 
   ## Prepare RunDir
 
-  base_rundir = MasterJobDir +InputSamples[InputSample]['key']
+  #base_rundir = MasterJobDir +InputSamples[InputSample]['key']
   if IsDATA:
-    base_rundir = base_rundir + '_'+DataPeriod
+    #base_rundir = base_rundir + '_'+DataPeriod
+
+    base_rundir = MasterJobDir + InputSample.split(":")[0]
+    base_rundir = base_rundir + '_'+InputSample.split(":")[1]
+  else :
+    base_rundir = MasterJobDir + InputSample
+    
 
   base_rundir = base_rundir+"/"
   print "base_rundir: ", base_rundir
@@ -259,15 +269,18 @@ for InputSample in InputSamples:
 
   inputFileList = []
   if IsDATA:
-    sampleBaseName = InputSamples[InputSample]['key']+'/'+'period'+DataPeriod
+    #sampleBaseName = InputSamples[InputSample]['key']+'/'+'period'+DataPeriod
+    sampleBaseName = InputSample.split(":")[0] + '/'+'period'+DataPeriod
   else:
-    sampleBaseName = InputSample
+    sampleBaseName =  InputSamples[InputSample]['full_name']
 
   if InSkimString == "":
     if IsDATA:
-      tmpfilepath = SAMPLE_INFO_DIR+'/For'+HostNickName+'/'+InputSamples[InputSample]['key']+'_'+DataPeriod+'.txt'
+      #tmpfilepath = SAMPLE_INFO_DIR+'/For'+HostNickName+'/'+InputSamples[InputSample]['key']+'_'+DataPeriod+'.txt'
+      tmpfilepath = SAMPLE_INFO_DIR+'/For'+HostNickName+'/'+InputSample.split(":")[0]+'_'+DataPeriod+'.txt'
     else:
-      tmpfilepath = SAMPLE_INFO_DIR+'/For'+HostNickName+'/'+InputSamples[InputSample]['key']+'.txt'
+      #tmpfilepath = SAMPLE_INFO_DIR+'/For'+HostNickName+'/'+InputSamples[InputSample]['key']+'.txt'
+      tmpfilepath = SAMPLE_INFO_DIR+'/For'+HostNickName+'/'+InputSample+'.txt'
     inputFileList = open(tmpfilepath).readlines()
     if not opt.resubmit:
       os.system('cp '+tmpfilepath+' '+base_rundir+'/input_filelist.txt')
@@ -355,9 +368,10 @@ for InputSample in InputSamples:
   this_sumw = 1.;
   if not IsDATA:
     print 'Reading x-section and sumw'
-    this_xsec = sampleInfo[InputSamples[InputSample]['key']]['xsec']
-    this_sumw = sampleInfo[InputSamples[InputSample]['key']]['Nsum']
+    this_xsec = sampleInfo[InputSample]['xsec']
+    this_sumw = sampleInfo[InputSample]['Nsum']
     print this_xsec, this_sumw
+
 #### Old method
 #    lines_SamplePath = open(SAMPLE_INFO_DIR+'/CommonSampleInfo/'+InputSamples[InputSample]['key']+'.txt').readlines()
 #    for line in lines_SamplePath:
@@ -389,13 +403,18 @@ for InputSample in InputSamples:
     else:
       os.system('mkdir -p '+thisjob_dir)
 
-    jobName = opt.Analyzer+'_'+InputSamples[InputSample]['key']
+    if IsDATA: 
+        jobName = opt.Analyzer+'_'+InputSample.split(":")[0]
+    else : 
+        jobName = opt.Analyzer+'_'+InputSample
+
     if IsDATA:
       jobName += '_'+DataPeriod
     for flag in Userflags:
       jobName += '_'+flag
-    jobName += '_mkGardn_' + str(it_job).zfill(3)
-    jobs = batchJobs(jobName,opt.Queue, thisjob_dir,cmdType,opt.dry_run)
+    #jobName += '_mkGardn_' + str(it_job).zfill(3)
+    jobName += '_mkGardn_' + str(it_job)
+    jobs = batchJobs(jobName, opt.Queue, thisjob_dir, cmdType, opt.dry_run, opt.multiQueue)
 
     if not IsHadd:
       IncludeLine = '''
@@ -411,16 +430,18 @@ R__LOAD_LIBRARY({1}libAnalyzers.so)
 R__LOAD_LIBRARY(/cvmfs/cms.cern.ch/slc6_amd64_gcc630/external/lhapdf/6.2.1-fmblme/lib/libLHAPDF.so)
 void {0}(){{
   {2} m;
-  m.SetTreeName("recoTree/SKFlat");
 '''.format(jobName, libDir, opt.Analyzer)
       #IncludeLine = 'R__LOAD_LIBRARY({1}/{0}_C.so)'.format(opt.Analyzer, libdir)
+      IncludeLine+= '  m.SetTreeName("' + opt.treeDir+'/SKFlat");\n'
       if IsDATA:
         IncludeLine+='  m.IsDATA = true;\n'
-        IncludeLine+='  m.DataStream = "'+InputSamples[InputSample]['key']+'";\n'
+        IncludeLine+='  m.DataStream = "'+InputSample.split(":")[0]+'";\n'
 	IncludeLine+='  m.DataPeriod = "'+ DataPeriod+'";\n'
       else:
-        IncludeLine+='  m.MCSample = "'+InputSamples[InputSample]['key']+'";\n';
+        IncludeLine+='  m.MCSample = "'+InputSample+'";\n';
         IncludeLine+='  m.IsDATA = false;\n'
+        if opt.OnlyGenLevel: IncludeLine+='  m.OnlyGenLevel = true;\n'
+	else : IncludeLine+='  m.OnlyGenLevel = false;\n'
         IncludeLine+='  m.xsec = '+str(this_xsec)+';\n'
         IncludeLine+='  m.sumW = '+str(this_sumw)+';\n'
         if opt.FastSim:
@@ -445,9 +466,9 @@ void {0}(){{
       if IsSNU:
         tmp_inputFilename = inputFileList[ FileRanges[it_job][0] ].strip('\n')
 	if IsDATA:
-	  chunkedInputFileName = InputSamples[InputSample]['key']+tmp_inputFilename.split(InputSamples[InputSample]['key'])[1]
+	  chunkedInputFileName = InputSample.split(":")[0]+tmp_inputFilename.split(InputSample.split(":")[0])[1]
 	else:
-	  chunkedInputFileName = InputSample+tmp_inputFilename.split(InputSample)[-1]
+	  chunkedInputFileName = InputSamples[InputSample]['full_name']+tmp_inputFilename.split(InputSamples[InputSample]['full_name'])[-1]
 	out_Path_FileName = FinalOutputPath+'/'+chunkedInputFileName
 	#print 'out_Path_FileName',out_Path_FileName
 	out_FileName = out_Path_FileName.split('/')[-1]
@@ -473,7 +494,6 @@ void {0}(){{
       print "mkGardener: what kind of job is this?, exiting"
       exit()
 
-
     if not IsHadd:
       IncludeLine += '  m.Init();'+'\n'
       IncludeLine += '  m.initializeAnalyzerTools();'+'\n'
@@ -485,9 +505,9 @@ void {0}(){{
       jobs.AddRooMac(IncludeLine)
 
     if IsSNU or IsKISTI:
-      jobs.mkJds(opt.ConcurrencyLimit)
+      if not opt.multiQueue: jobs.mkJds(opt.ConcurrencyLimit)
 
-    jobs.mkShCommand()
+    if not opt.multiQueue: jobs.mkShCommand()
     if opt.resubmit:
       #print CheckJobStatus(base_rundir,"",it_job,"SNU",IsHadd)
       if "FINISHED" in CheckJobStatus(base_rundir,"",it_job,"SNU",IsHadd):
@@ -495,12 +515,17 @@ void {0}(){{
 	continue
       else:
         print 'lets resubmit!!      %s/job_%s '%(base_rundir,str(it_job))
-    jobs.Sub()
 
+    if not opt.multiQueue: jobs.Sub()
+
+    # make ONE shell script and ONE submit.jds here for MULTIPLE queue case
+    if opt.multiQueue and it_job == len(FileRanges)-1: 
+      jobs.mkShCommand()
+      jobs.mkJds(opt.ConcurrencyLimit, it_job+1)
+      jobs.Sub()
 
 
     ## Write Kill Command
-
     KillCommand = open(base_rundir+'/Script_JobKill.sh','w')
     for it_job in range(0,len(FileRanges)):
       thisjob_dir = base_rundir+'/job_'+str(it_job)+'/'

@@ -64,6 +64,10 @@ public:
   inline bool isPOGMedium() const {return PassSelector(CutBasedIdMedium);}
   inline bool isPOGLoose() const {return PassSelector(CutBasedIdLoose);}
 
+  inline double getRelIsoNoPH() { return j_relIsoNoPH;}
+  inline double getRelIsoNoPHCH() { return j_relIsoNoPHNoCH;}
+  void SetRelIsoFSRStudy();
+
   bool isPOGTightIso(); // for ABCD method
   bool isAntiIso(int syst=0); // for ABCD method
 
@@ -102,6 +106,8 @@ public:
   bool Pass_POGTightWithTightIso();
   bool Pass_POGLooseWithLooseIso();
   bool Pass_POGTightWithLooseIso();
+  bool Pass_isPOGTightWithRelIsoNoPH();
+  bool Pass_isPOGTightWithRelIsoNoPHCH();
   bool Pass_POGHighPtWithLooseTrkIso();
   bool Pass_POGMediumWithLooseTrkIso();
   bool Pass_TESTID();
@@ -115,6 +121,8 @@ private:
   double j_MiniAODPt, j_MiniAODTunePPt, j_rc, j_rc_err, j_MomentumUp, j_MomentumDown;
   Particle j_TuneP4;
   double j_TunePPtError;
+    
+  double j_relIsoNoPH, j_relIsoNoPHNoCH;
 
   ClassDef(Muon,1);
 };

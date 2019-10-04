@@ -7,7 +7,8 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-McWeight = 'evt_weight_total_gen*evt_weight_total_rec'
+#McWeight = 'evt_weight_total_gen * evt_weight_total_rec * electron_double_recoSF_passMediumID * electron_double_idSF_passMediumID * electron_double_recoSF_passMediumID * electron_double_trigSF_DoubleElectron_passMediumID'
+McWeight = 'evt_weight_total_gen * evt_weight_total_rec * electron_double_idSF_passMediumID * electron_double_recoSF_passMediumID * electron_double_trigSF_DoubleElectron_passMediumID'
 #McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
 
 #--------------------    
@@ -16,11 +17,13 @@ McWeight = 'evt_weight_total_gen*evt_weight_total_rec'
 
 samples['DYJets'] = {
     'skim'   :'', # use default skim defined in configuration.py
+    'cut'    :'',
     'weight' :McWeight,
     }
 
 samples['DYJets10to50'] = {
     'skim'   :'', # use default skim defined in configuration.py
+    'cut'    :'',
     'weight' :McWeight,
     }
 
@@ -55,20 +58,21 @@ samples['DYJets10to50'] = {
 #    'weight' :'1',
 #    }
 
-#samples['DoubleMuon'] = {
+#samples['DoubleElectron'] = {
 #    'skim'   :'',
 #    'weight' :'1',
 #    }
 #--------------------    
 # DATA driven QCD
 #--------------------
+
 '''
 samples['DoubleEG_FakeElEl'] = {
     'skim'   :'MetFt_L_v0_LL_v0_MuMuOrElElFake_v1', #TODO: this skim is not exist currently
     'weight' :'1',
     }
 
-samples['DobuleMuon_FakeMuMu'] = {
+samples['DobuleElectron_FakeMuMu'] = {
     'skim'   :'MetFt_L_v0_LL_v0_MuMuOrElElFake_v1', #TODO: this skim is not exist currently
     'weight' :'1',
     }

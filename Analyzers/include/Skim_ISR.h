@@ -4,6 +4,58 @@
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 
+// dimu variables for FSR photon study
+struct Dimu_variables {
+    TString muon_id;
+
+    bool evt_tag_analysisevnt_sel_rec_;
+    double dimu_pt_rec_;
+    double dimu_mass_rec_;
+    double dimu_photon_mass_rec_;
+    double leadingmuon_pt_rec_;
+    double subleadingmuon_pt_rec_;
+    double leadingmuon_eta_rec_;
+    double subleadingmuon_eta_rec_;
+    double leadingphoton_muon_dr_rec_;
+
+    TString  evt_tag_analysisevnt_sel_rec_brname;
+    TString  dimu_pt_rec_brname;
+    TString  dimu_mass_rec_brname;
+    TString  dimu_photon_mass_rec_brname;
+    TString  leadingmuon_pt_rec_brname;
+    TString  subleadingmuon_pt_rec_brname;
+    TString  leadingmuon_eta_rec_brname;
+    TString  subleadingmuon_eta_rec_brname;
+    TString  leadingphoton_muon_dr_rec_brname;
+
+    Dimu_variables(TString muon_id_="POGTightWithTightIso"): muon_id(muon_id_)
+    {
+        evt_tag_analysisevnt_sel_rec_ = false;
+        dimu_pt_rec_                = -999.;
+        dimu_mass_rec_              = -999.;
+        dimu_photon_mass_rec_       = -999.;
+        leadingmuon_pt_rec_         = -999.;
+        subleadingmuon_pt_rec_      = -999.;
+        leadingmuon_eta_rec_        = -999.;
+        subleadingmuon_eta_rec_     = -999.;
+        leadingphoton_muon_dr_rec_  = -999.;
+
+        evt_tag_analysisevnt_sel_rec_brname = "evt_tag_analysisevnt_sel_rec_" + muon_id;
+        dimu_pt_rec_brname                 = "dimu_pt_rec_" + muon_id;
+        dimu_mass_rec_brname               = "dimu_mass_rec_" + muon_id;
+        dimu_photon_mass_rec_brname        = "dimu_photon_mass_rec_" + muon_id;
+        leadingmuon_pt_rec_brname          = "leadingmuon_pt_rec_" + muon_id;
+        subleadingmuon_pt_rec_brname       = "subleadingmuon_pt_rec_" + muon_id;
+        leadingmuon_eta_rec_brname         = "leadingmuon_eta_rec_" + muon_id;
+        subleadingmuon_eta_rec_brname      = "subleadingmuon_eta_rec_" + muon_id;
+        leadingphoton_muon_dr_rec_brname   = "leadingphoton_muon_dr_rec_" + muon_id;
+    }
+
+    void setBranch(TTree *tree);
+    void resetVariables();
+    void setVariables(bool pass_sel, double dimu_pt, double dimu_mass, double dimu_gamma_mass, double lead_muon_pt, double sublead_muon_pt, double lead_muon_eta, double sublead_muon_eta, double dr_muon_gamma);
+};
+
 class Skim_ISR : public AnalyzerCore {
 
 public:
@@ -14,6 +66,7 @@ public:
     
     int findInitialMoterIndex(int mother_index, int current_index, bool same_flavor=true);
     void saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map);
+    void clearDimuVariables();
 
     Skim_ISR();
     ~Skim_ISR();
@@ -37,12 +90,19 @@ private:
     bool save_detector_info;
     bool save_generator_info;
 
+    vector<Muon> AllMuons;
+
     std::vector<Gen>      gen_particles;
     std::vector<Gen>      gen_photons;
     std::vector<Muon>     muons;
     std::vector<Electron> electrons;
     std::vector<Photon>   photons;
     std::vector<Lepton*>  leps;
+
+    std::vector<Gen> leptons_postfsr;
+
+    bool gen_rec_evt_matched;
+    vector<double> gen_rec_lepton_dR;
 
     Gen gen_particle_ME, gen_antiparticle_ME;
     Gen gen_particle_status1, gen_antiparticle_status1;
@@ -96,6 +156,11 @@ private:
     double leadingphoton_lepton_dr_rec;
     int photon_n_rec;
 
+    double leadingmuon_reliso_rec;
+    double subleadingmuon_reliso_rec;
+
+    std::map<TString, Dimu_variables*> Dimu_map;
+
     double evt_weight_total_gen;
     double evt_weight_total_rec;
     double evt_weight_btag_rec;
@@ -109,6 +174,15 @@ private:
     bool evt_tag_oppositecharge_sel_rec;
     bool evt_tag_analysisevnt_sel_rec;
 
+    int  photon_n_gen;
+    int  lepton_matched_photon_n_gen;
+    std::vector<double>  lepton_matched_photon_et_gen_drX;
+    bool evt_tag_dielectron_fiducial_post_fsr;
+    bool evt_tag_dimuon_fiducial_post_fsr;
+
+    std::vector<bool> evt_tag_dielectron_fiducial_lepton_matched_dressed_drX;
+    std::vector<bool> evt_tag_dimuon_fiducial_lepton_matched_dressed_drX;
+
     bool evt_tag_ditau_gen;
     bool evt_tag_dielectron_gen;
     bool evt_tag_dimuon_gen;
@@ -117,8 +191,6 @@ private:
     bool evt_tag_bvetoed_rec;
 
 };
-
-
 
 #endif
 

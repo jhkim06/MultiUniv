@@ -10,39 +10,29 @@ from Definitions import * # to use enumerate for unfolding histogram type
 
 # xaxis, yaxis to set title
 
-variables['ptll-mll TUnfold'] = {
+variables['hist_ptll'] = {
 
     'unfoldBinType': ISRUnfold.PtRec2DHist, 
     'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
-    'fold': 0, 
-    'range': None, 
-    'name': 'Get2DPtRecBinIndex(ptRec[2], mRec[2])', 
+    'fold':   0, 
+    'range':  None, 
+    'name':  'Get2DPtRecBinIndex(dilep_pt_rec, dilep_mass_rec)', 
     'xaxis': 'Mass p_{T} [GeV]', 
     'yaxis': 'Events',
     'useTUnfoldBin': True,
+    'unfoldBinDefinition': "electron",
     'go1D': True
 }
 
-variables['mll TUnfold matrix'] = {
+variables['hist_mll'] = {
 
-    'unfoldBinType': ISRUnfold.MassMigrationM,
-    'fold': 0, 
-    'range': None, 
-    'name': 'Get1DMassRecBinIndex(mRec[2]):Get1DMassGenBinIndex(mPreFSR[2])', 
-    'xaxis': 'Pre FSR',
+    'unfoldBinType': ISRUnfold.MassRec2DHist,
+    'fold':   0,
+    'range':  None,
+    'name':  'Get2DMassRecBinIndex(dilep_mass_rec, dilep_pt_rec)',
+    'xaxis': 'Mass [GeV]',
+    'yaxis': 'Events',
     'useTUnfoldBin': True,
-    'go1D': False,
-    'isResMatrix':True
-}
-
-variables['ptll TUnfold matrix'] = {
-
-    'unfoldBinType': ISRUnfold.PtMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DPtRecBinIndex(ptRec[2],mRec[2]):Get2DPtGenBinIndex(ptPreFSR[2],mPreFSR[2])',
-    'xaxis': 'Pre FSR',
-    'useTUnfoldBin': True,
-    'go1D': False,
-    'isResMatrix':True
+    'unfoldBinDefinition': "electron",
+    'go1D': False
 }

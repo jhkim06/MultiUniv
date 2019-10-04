@@ -27,28 +27,28 @@ groupPlot['VV'] = {
     'samples' : ['WW_pythia','WZ_pythia','ZZ_pythia']
     }
 
-groupPlot['DYtoTauTau'] = {
-    'nameHR' : "DYtoTauTau",
-    'isSignal' :0,
-    'color': kRed,
-    'style': 4050,
-    'lineColor':807,
-    'lineWidth':1,
-    'samples' : ['DYJetsToTauTau','DYJets10to50ToTauTau']
-    }
-
 # kOrange 800
-groupPlot['DY'] = {
+groupPlot['DYToEE'] = {
     'nameHR' : "DY",
     'isSignal' :0,
     'color': kOrange-2, 
     'style': 4050,
     'lineColor':807,
     'lineWidth':1,
-    'samples' : ['DYJetsToMuMu','DYJets10to50ToMuMu']
+    'samples' : ['DYJetsToEE', 'DYJets10to50ToEE']
     }
 
-plot['DYJets10to50ToMuMu'] = {
+groupPlot['DYToToTauTau'] = {
+    'nameHR' : "DY",
+    'isSignal' :0,
+    'color': kOrange-2,
+    'style': 4050,
+    'lineColor':807,
+    'lineWidth':1,
+    'samples' : ['DYJetsToTauTau', 'DYJets10to50ToTauTau']
+    }
+
+plot['DYJets10to50ToEE'] = {
     'color': 418,
     'isSignal' :1,
     'isData': 0,
@@ -56,7 +56,7 @@ plot['DYJets10to50ToMuMu'] = {
     'scale':1,
     }
 
-plot['DYJetsToMuMu'] = {
+plot['DYJetsToEE'] = {
     'color': kYellow,
     'isSignal' :0,
     'isData': 0,
@@ -77,6 +77,7 @@ plot['DYJetsToTauTau'] = {
     'isData': 0,
     'style': 4050,
     }
+
 
 plot['WZ_pythia'] = {
     'color': 450,
@@ -103,8 +104,8 @@ plot['WJets_MG'] = {
     'scale':1,
     }
 
-plot['DoubleMuon'] = {
-    'nameHR' : "DoubleMuon",
+plot['DoubleEG'] = {
+    'nameHR' : "DoubleEG",
     'color':kBlack,
     'isSignal':0,
     'isData':1,

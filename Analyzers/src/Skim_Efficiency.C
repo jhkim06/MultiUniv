@@ -91,11 +91,11 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
     LeptonISO_SF  = NULL;
   }
 
-  Double_t total_RECOSF = 1.;
-  Double_t total_IDSF = 1.;
-  Double_t total_ISOSF = 1.;
-  Double_t total_TRGSF = 1.;
-  Double_t total_EXTRATRGSF = 1.;
+  Double_t total_RECOSF = 1.,     total_RECOSFUp = 1.,     total_RECOSFDn = 1.;
+  Double_t total_IDSF = 1.,       total_IDSFUp = 1.,       total_IDSFDn = 1.;
+  Double_t total_ISOSF = 1.,      total_ISOSFUp = 1.,      total_ISOSFDn = 1.;
+  Double_t total_TRGSF = 1.,      total_TRGSFUp = 1.,      total_TRGSFDn = 1.;
+  Double_t total_EXTRATRGSF = 1., total_EXTRATRGSFUp = 1., total_EXTRATRGSFDn = 1.;
 
   if(!IsDATA){
 
@@ -123,9 +123,16 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
         // for double muon trigger 
         if(nKeys == 2){
             Double_t temp_trgSF = mcCorr->DiLeptonTrg_SF(param.Lepton_Trigger_map[param.Lepton_TRIGGER].at(0), param.Lepton_Trigger_map[param.Lepton_TRIGGER].at(1), leps, 0);
+            Double_t temp_trgSFUp = mcCorr->DiLeptonTrg_SF(param.Lepton_Trigger_map[param.Lepton_TRIGGER].at(0), param.Lepton_Trigger_map[param.Lepton_TRIGGER].at(1), leps, 1);
+            Double_t temp_trgSFDn = mcCorr->DiLeptonTrg_SF(param.Lepton_Trigger_map[param.Lepton_TRIGGER].at(0), param.Lepton_Trigger_map[param.Lepton_TRIGGER].at(1), leps, -1);
             if(!(temp_trgSF > 10.)) total_TRGSF *= temp_trgSF; // just to avoid saving meaninglessly huge numbers...
+            if(!(temp_trgSFUp > 10.)) total_TRGSFUp *= temp_trgSFUp; // just to avoid saving meaninglessly huge numbers...
+            if(!(temp_trgSFDn > 10.)) total_TRGSFDn *= temp_trgSFDn; // just to avoid saving meaninglessly huge numbers...
+
             if(param.Lepton_EXTRATRG_SF_Key != "" && !isMu){
                 total_EXTRATRGSF *= mcCorr->ElectronDZfilter_SF(param.Lepton_EXTRATRG_SF_Key, leps, nPV, 0);
+                total_EXTRATRGSFUp *= mcCorr->ElectronDZfilter_SF(param.Lepton_EXTRATRG_SF_Key, leps, nPV, 1);
+                total_EXTRATRGSFDn *= mcCorr->ElectronDZfilter_SF(param.Lepton_EXTRATRG_SF_Key, leps, nPV, -1);
             }
         }
       
@@ -135,20 +142,36 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
        	    if(isMu){
                 // ID SF
                 Double_t tempIDSF = LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.;
+                Double_t tempIDSFUp = LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  1) : 1.;
+                Double_t tempIDSFDn = LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  -1) : 1.;
                 total_IDSF *= tempIDSF;
+                total_IDSFUp *= tempIDSFUp;
+                total_IDSFDn *= tempIDSFDn;
                 
                 // Iso SF
                 Double_t tempISOSF = LeptonISO_SF?(mcCorr->*LeptonISO_SF)(param.Lepton_ISO_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  0) : 1.;
+                Double_t tempISOSFUp = LeptonISO_SF?(mcCorr->*LeptonISO_SF)(param.Lepton_ISO_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  1) : 1.;
+                Double_t tempISOSFDn = LeptonISO_SF?(mcCorr->*LeptonISO_SF)(param.Lepton_ISO_SF_Key, leps.at(i)->Eta(), ((Muon*)leps.at(i))->MiniAODPt(),  -1) : 1.;
                 total_ISOSF *= tempISOSF;
+                total_ISOSFUp *= tempISOSFUp;
+                total_ISOSFDn *= tempISOSFDn;
        	    }
 
             if(!isMu){
                 // ID SF
                 Double_t tempIDSF = LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, ( (Electron*)leps.at(i) )->scEta(), leps.at(i)->Pt(),  0) : 1.;
+                Double_t tempIDSFUp = LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, ( (Electron*)leps.at(i) )->scEta(), leps.at(i)->Pt(),  1) : 1.;
+                Double_t tempIDSFDn = LeptonID_SF?(mcCorr->*LeptonID_SF)(param.Lepton_ID_SF_Key, ( (Electron*)leps.at(i) )->scEta(), leps.at(i)->Pt(),  -1) : 1.;
                 total_IDSF *= tempIDSF;
+                total_IDSFUp *= tempIDSFUp;
+                total_IDSFDn *= tempIDSFDn;
 
                 Double_t tempRECOSF = LeptonReco_SF?(mcCorr->*LeptonReco_SF)( ( (Electron*)leps.at(i) )->scEta(), leps.at(i)->Pt(),  0) : 1.;
+                Double_t tempRECOSFUp = LeptonReco_SF?(mcCorr->*LeptonReco_SF)( ( (Electron*)leps.at(i) )->scEta(), leps.at(i)->Pt(),  1) : 1.;
+                Double_t tempRECOSFDn = LeptonReco_SF?(mcCorr->*LeptonReco_SF)( ( (Electron*)leps.at(i) )->scEta(), leps.at(i)->Pt(),  -1) : 1.;
                 total_RECOSF *= tempRECOSF;
+                total_RECOSFUp *= tempRECOSFUp;
+                total_RECOSFDn *= tempRECOSFDn;
 
             }
 
@@ -162,13 +185,38 @@ void Skim_Efficiency::executeEventFromParameter(AnalyzerParameter param, unsigne
     muonWPs.at(ithWP)->setRECOSF(total_RECOSF, SysUpDown::Central);
     muonWPs.at(ithWP)->setIDSF(total_IDSF, SysUpDown::Central);
     muonWPs.at(ithWP)->setISOSF(total_ISOSF, SysUpDown::Central);
+
+    muonWPs.at(ithWP)->setTriggerSF(total_TRGSFUp, SysUpDown::Up);
+    muonWPs.at(ithWP)->setRECOSF(total_RECOSFUp, SysUpDown::Up);
+    muonWPs.at(ithWP)->setIDSF(total_IDSFUp, SysUpDown::Up);
+    muonWPs.at(ithWP)->setISOSF(total_ISOSFUp, SysUpDown::Up);
+
+    muonWPs.at(ithWP)->setTriggerSF(total_TRGSFDn, SysUpDown::Down);
+    muonWPs.at(ithWP)->setRECOSF(total_RECOSFDn, SysUpDown::Down);
+    muonWPs.at(ithWP)->setIDSF(total_IDSFDn, SysUpDown::Down);
+    muonWPs.at(ithWP)->setISOSF(total_ISOSFDn, SysUpDown::Down);
   }
   else{
     electronWPs.at(ithWP)->setTriggerSF(total_TRGSF, SysUpDown::Central);
     electronWPs.at(ithWP)->setRECOSF(total_RECOSF, SysUpDown::Central);
     electronWPs.at(ithWP)->setIDSF(total_IDSF, SysUpDown::Central);
     electronWPs.at(ithWP)->setISOSF(total_ISOSF, SysUpDown::Central);
-    if(param.Lepton_EXTRATRG_SF_Key != "") electronWPs.at(ithWP)->setExtraTrigSF(total_EXTRATRGSF, SysUpDown::Central);
+
+    electronWPs.at(ithWP)->setTriggerSF(total_TRGSFUp, SysUpDown::Up);
+    electronWPs.at(ithWP)->setRECOSF(total_RECOSFUp, SysUpDown::Up);
+    electronWPs.at(ithWP)->setIDSF(total_IDSFUp, SysUpDown::Up);
+    electronWPs.at(ithWP)->setISOSF(total_ISOSFUp, SysUpDown::Up);
+
+    electronWPs.at(ithWP)->setTriggerSF(total_TRGSFDn, SysUpDown::Down);
+    electronWPs.at(ithWP)->setRECOSF(total_RECOSFDn, SysUpDown::Down);
+    electronWPs.at(ithWP)->setIDSF(total_IDSFDn, SysUpDown::Down);
+    electronWPs.at(ithWP)->setISOSF(total_ISOSFDn, SysUpDown::Down);
+
+    if(param.Lepton_EXTRATRG_SF_Key != ""){
+        electronWPs.at(ithWP)->setExtraTrigSF(total_EXTRATRGSF, SysUpDown::Central);
+        electronWPs.at(ithWP)->setExtraTrigSF(total_EXTRATRGSFUp, SysUpDown::Up);
+        electronWPs.at(ithWP)->setExtraTrigSF(total_EXTRATRGSFDn, SysUpDown::Down);
+    }
   }
 
   this_AllMuons.clear();
