@@ -18,7 +18,7 @@ pdfErr_syst  = ['PDFWeights_Error']
 #id_syst_ele = ['LepSF'+Nlep+'l_ele_'+eleWP+'_Up', 'LepSF'+Nlep+'l_ele_'+eleWP+'_Do']
 
 nuisances['trig_sf'] = {
-    'name'	: 'trg_2016',
+    'name'	: 'trgSF',
     'kind'	: 'weight',
     'type'	: 'shape',
     'samples'	: {
@@ -28,7 +28,7 @@ nuisances['trig_sf'] = {
 }
 
 nuisances['id_sf'] = {
-    'name'      : 'id_2016',
+    'name'      : 'IdSF',
     'kind'      : 'weight',
     'type'      : 'shape',
     'samples'   : {
@@ -38,7 +38,7 @@ nuisances['id_sf'] = {
 }
 
 nuisances['reco_sf'] = {
-    'name'      : 'reco_2016',
+    'name'      : 'recoSF',
     'kind'      : 'weight',
     'type'      : 'shape',
     'samples'   : {
@@ -48,7 +48,7 @@ nuisances['reco_sf'] = {
 }
 
 nuisances['l1prefire'] = {
-    'name'      : 'l1prefire_2016',
+    'name'      : 'L1Prefire',
     'kind'      : 'weight',
     'type'      : 'shape',
     'samples'   : {
@@ -58,7 +58,7 @@ nuisances['l1prefire'] = {
 }
 
 nuisances['pileup'] = {
-    'name'      : 'pileup_2016',
+    'name'      : 'PU',
     'kind'      : 'weight',
     'type'      : 'shape',
     'samples'   : {

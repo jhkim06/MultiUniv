@@ -320,7 +320,6 @@ class ShapeFactory:
 
     # decide the histogram name to be written in the output file
     hTotalFinalName = 'histo_' + sampleName
-    if sysName != None: hTotalFinalName = hTotalFinalName + sysName
 
     if useTUnfoldBin:
         if unfoldBinType == ISRUnfold.PtMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM: # 
@@ -329,11 +328,10 @@ class ShapeFactory:
         if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.MassFSRMigrationM: # 
             hTotalFinalName = 'hmcMassGenRec'
     
-        if sysName != None:
-            hTotalFinalName = hTotalFinalName + sysName
-        else : 
+        if sysName == None:
             hTotalFinalName = hTotalFinalName + "nominal"
 
+    if sysName != None: hTotalFinalName = hTotalFinalName + sysName
 
     hTotalFinal.SetTitle(hTotalFinalName)
     hTotalFinal.SetName(hTotalFinalName)

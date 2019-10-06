@@ -22,8 +22,15 @@ nuisances['trig_sf'] = {
     'kind'	: 'weight',
     'type'	: 'shape',
     'samples'	: {
-      	'DYJets'	: trg_syst ,
-      	'DYJets10to50'	: trg_syst ,
+      	'DYJetsToMuMu'	        : trg_syst ,
+      	'DYJets10to50ToMuMu'	: trg_syst ,
+      	'DYJetsToTauTau'	: trg_syst ,
+      	'DYJets10to50ToTauTau'	: trg_syst ,
+      	'TTLL_powheg'	        : trg_syst ,
+      	'WJets_MG'	        : trg_syst ,
+      	'WW_pythia'	        : trg_syst ,
+      	'WZ_pythia'	        : trg_syst ,
+      	'ZZ_pythia'	        : trg_syst ,
 	},
 }
 
@@ -32,8 +39,16 @@ nuisances['id_sf'] = {
     'kind'      : 'weight',
     'type'      : 'shape',
     'samples'   : {
-        'DYJets'        : id_syst ,
-        'DYJets10to50'  : id_syst ,
+        'DYJetsToMuMu'            : id_syst ,
+        'DYJets10to50ToMuMu'      : id_syst ,
+        'DYJetsToTauTau'        : id_syst ,
+        'DYJets10to50ToTauTau'  : id_syst ,
+        'TTLL_powheg'           : id_syst ,
+        'WJets_MG'              : id_syst ,
+        'WW_pythia'             : id_syst ,
+        'WZ_pythia'             : id_syst ,
+        'ZZ_pythia'             : id_syst ,
+
         },
 }
 
@@ -42,8 +57,15 @@ nuisances['iso_sf'] = {
     'kind'      : 'weight',
     'type'      : 'shape',
     'samples'   : {
-        'DYJets'        : iso_syst ,
-        'DYJets10to50'  : iso_syst ,
+        'DYJetsToMuMu'            : iso_syst ,
+        'DYJets10to50ToMuMu'      : iso_syst ,
+        'DYJetsToTauTau'          : iso_syst ,
+        'DYJets10to50ToTauTau'    : iso_syst ,
+        'TTLL_powheg'             : iso_syst ,
+        'WJets_MG'                : iso_syst ,
+        'WW_pythia'               : iso_syst ,
+        'WZ_pythia'               : iso_syst ,
+        'ZZ_pythia'               : iso_syst ,
         },
 }
 
@@ -52,8 +74,15 @@ nuisances['l1prefire'] = {
     'kind'      : 'weight',
     'type'      : 'shape',
     'samples'   : {
-        'DYJets'        : l1prefire_syst ,
-        'DYJets10to50'  : l1prefire_syst ,
+        'DYJetsToMuMu'            : l1prefire_syst ,
+        'DYJets10to50ToMuMu'      : l1prefire_syst ,
+        'DYJetsToTauTau'        : l1prefire_syst ,
+        'DYJets10to50ToTauTau'  : l1prefire_syst ,
+        'TTLL_powheg'           : l1prefire_syst ,
+        'WJets_MG'              : l1prefire_syst ,
+        'WW_pythia'             : l1prefire_syst ,
+        'WZ_pythia'             : l1prefire_syst ,
+        'ZZ_pythia'             : l1prefire_syst ,
         },
 }
 
@@ -62,8 +91,15 @@ nuisances['pileup'] = {
     'kind'      : 'weight',
     'type'      : 'shape',
     'samples'   : {
-        'DYJets'        : pileup_syst ,
-        'DYJets10to50'  : pileup_syst ,
+        'DYJetsToMuMu'            : pileup_syst ,
+        'DYJets10to50ToMuMu'      : pileup_syst ,
+        'DYJetsToTauTau'        : pileup_syst ,
+        'DYJets10to50ToTauTau'  : pileup_syst ,
+        'TTLL_powheg'           : pileup_syst ,
+        'WJets_MG'              : pileup_syst ,
+        'WW_pythia'             : pileup_syst ,
+        'WZ_pythia'             : pileup_syst ,
+        'ZZ_pythia'             : pileup_syst ,
         },
 }
 

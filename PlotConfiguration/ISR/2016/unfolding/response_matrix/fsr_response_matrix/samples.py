@@ -12,24 +12,29 @@ McWeight = 'evt_weight_total_gen'
 #--------------------    
 # MC
 #--------------------    
+#samples['DYFSR_PYTHIA'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
 
-samples['DYFSR_PHOTOS'] = {
+#samples['DYFSR_PHOTOS'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+
+samples['DYJets'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
     'weight' :McWeight,
     }
 
-#samples['DYJets'] = {
-#    'skim'   :'', # use default skim defined in configuration.py
-#    'cut'    :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['DYJets10to50'] = {
-#    'skim'   :'', # use default skim defined in configuration.py
-#    'cut'    :'',
-#    'weight' :McWeight,
-#    }
+samples['DYJets10to50'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'cut'    :'',
+    'weight' :McWeight,
+    }
 
 #--------------------    
 # DATA driven QCD
