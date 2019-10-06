@@ -57,6 +57,7 @@ void Skim_ISR::initializeAnalyzer(){
         newtree->Branch("leadingphoton_lepton_dr_rec", &leadingphoton_lepton_dr_rec,"leadingphoton_lepton_dr_rec/D");
 
         newtree->Branch("evt_weight_total_rec", &evt_weight_total_rec,"evt_weight_total_rec/D");
+        newtree->Branch("evt_weight_fake", &evt_weight_fake,"evt_weight_fake/D");
 
         newtree->Branch("evt_weight_pureweight", &evt_weight_pureweight,"evt_weight_pureweight/D");
         newtree->Branch("evt_weight_pureweight_up", &evt_weight_pureweight_up,"evt_weight_pureweight_up/D");
@@ -82,6 +83,7 @@ void Skim_ISR::initializeAnalyzer(){
         newtree->Branch("gen_rec_evt_matched", &gen_rec_evt_matched,"gen_rec_evt_matched/O");
         newtree->Branch("gen_rec_lepton_dR", &gen_rec_lepton_dR);
 
+        // temporary tree to study QED FSR at detector level
         Dimu_map["POGTight"] = new Dimu_variables("POGTight");
         Dimu_map["POGTight"]->setBranch(newtree);
 
@@ -90,6 +92,9 @@ void Skim_ISR::initializeAnalyzer(){
 
         Dimu_map["POGTightWithRelIsoNoPHCH"] = new Dimu_variables("POGTightWithRelIsoNoPHCH");
         Dimu_map["POGTightWithRelIsoNoPHCH"]->setBranch(newtree);
+
+        fake_estimation = new ISR_LeptonIDVariation("HNLoose", "ISRLoose", "Fake");
+        fake_estimation->setBranch(newtree);
     }
 
 
@@ -188,6 +193,7 @@ void Skim_ISR::initializeAnalyzer(){
 void Skim_ISR::executeEvent(){
 
     AllMuons.clear();        
+    AllElectrons.clear();        
     muons.clear();
     electrons.clear();
     photons.clear();
@@ -244,6 +250,8 @@ void Skim_ISR::executeEvent(){
     evt_weight_total_gen = 1.;
     evt_weight_total_rec = 1.;
     evt_weight_btag_rec = 1.;
+
+    evt_weight_fake = 1.;
 
     evt_weight_pureweight = 1.;
     evt_weight_pureweight_up = 1.;
@@ -688,6 +696,7 @@ void Skim_ISR::executeEvent(){
 
         // for quick study for FSR with various Muon isolation definition
         AllMuons = GetAllMuons();
+        AllElectrons = GetAllElectrons();
 
         // Lepton ID
         muons = GetMuons("POGTightWithTightIso", 7., 2.4);
@@ -702,19 +711,45 @@ void Skim_ISR::executeEvent(){
         Dimu_map["POGTight"]->resetVariables();
         executeEventFromParameter(param);
         param.Clear();
-        clearDimuVariables();
+        clearVariables();
 
         param.Muon_ID = "POGTightWithRelIsoNoPH";
         Dimu_map["POGTightWithRelIsoNoPH"]->resetVariables();
         executeEventFromParameter(param);
         param.Clear();
-        clearDimuVariables();
+        clearVariables();
 
         param.Muon_ID = "POGTightWithRelIsoNoPHCH";
         Dimu_map["POGTightWithRelIsoNoPHCH"]->resetVariables();
         executeEventFromParameter(param);
         param.Clear();
-        clearDimuVariables();
+        clearVariables();
+
+        // get fake weight
+        // Muon ID
+        param.Muon_Tight_ID = "HNTight";
+        param.Muon_ID = "HNLoose";
+        param.Muon_FR_ID = "HNtypeI_V1";     // ID name in histmap_Muon.txt
+        param.Muon_FR_Key = "AwayJetPt40"; // histname
+        param.Muon_UsePtCone = true;
+
+        // Electron Id
+        param.Electron_Tight_ID = "ISRTight";
+        param.Electron_ID = "ISRLoose";
+        param.Electron_FR_ID = "HNtypeI_V1";     // ID name in histmap_Electron.txt
+        param.Electron_FR_Key = "AwayJetPt40"; // histname
+        
+        param.Electron_UsePtCone = true;
+
+        // Jet ID
+        param.Jet_ID = "tight";
+        param.FatJet_ID = "tight";
+
+        if(IsDATA){
+            executeEventFromParameter(param, false);
+            param.Clear();
+            clearVariables();
+        }
 
         IsMuMu = 0;
         IsElEl = 0;
@@ -724,7 +759,7 @@ void Skim_ISR::executeEvent(){
 
         if(muons.size() == 2) IsMuMu = 1;
         if(electrons.size() == 2) IsElEl = 1;
-         
+        if(debug_) cout << "muon size: " << muons.size() << " electron size: " << electrons.size() << endl; 
         if(IsMuMu || IsElEl){
             if(IsMuMu == 1){ 
                 
@@ -738,7 +773,9 @@ void Skim_ISR::executeEvent(){
             } 
             if(IsElEl == 1){ 
 
+                if(debug_) cout << "check trigger ..." << endl;
                 if(evt->PassTrigger(DiElTrgs) ){
+                    if(debug_) cout << "dielectron trigger passed! " << endl;
                     leps=MakeLeptonPointerVector(electrons);
                     evt_tag_dielectron_rec = 1;
                     Lep0PtCut = 25.;
@@ -813,6 +850,8 @@ void Skim_ISR::executeEvent(){
                 if(evt_tag_leptonpt_sel_rec && evt_tag_leptoneta_sel_rec && evt_tag_oppositecharge_sel_rec && evt_tag_bvetoed_rec) 
                     evt_tag_analysisevnt_sel_rec = 1;
 
+                if(debug_) cout << "evt_tag_analysisevnt_sel_rec: " << evt_tag_analysisevnt_sel_rec << endl;
+
                 //if(!save_generator_info && (evt_tag_dimuon_rec == 0 && evt_tag_dielectron_rec == 0)) return;
 
             } // passing dilepton trigger (dont need trigger matching?)
@@ -824,24 +863,13 @@ void Skim_ISR::executeEvent(){
     delete evt;
 }
 
-void Dimu_variables::resetVariables(){
-
-    evt_tag_analysisevnt_sel_rec_ = false;
-    dimu_pt_rec_                = -999.;
-    dimu_mass_rec_              = -999.;
-    dimu_photon_mass_rec_       = -999.;
-    leadingmuon_pt_rec_         = -999.;
-    subleadingmuon_pt_rec_      = -999.;
-    leadingmuon_eta_rec_        = -999.;
-    subleadingmuon_eta_rec_     = -999.;
-    leadingphoton_muon_dr_rec_  = -999.;
-}
-
-void Skim_ISR::clearDimuVariables(){
+void Skim_ISR::clearVariables(){
 
     IsMuMu = 0;
+    IsElEl = 0;
     leps.clear();
     evt_tag_dimuon_rec = 0;
+    evt_tag_dielectron_rec = 0;
     evt_tag_leptonpt_sel_rec = 0;
     evt_tag_leptoneta_sel_rec = 0;
     evt_tag_oppositecharge_sel_rec = 0;
@@ -855,17 +883,18 @@ void Skim_ISR::clearDimuVariables(){
     leadinglep_eta_rec    = -999.;
     subleadinglep_eta_rec = -999.;
 
-    evt_tag_dimuon_rec = 0;
-
     photon_n_rec = 0;
     leadingphoton_pt_rec = -999.;
     leadingphoton_eta_rec = -999.;
     leadingphoton_lepton_dr_rec = -999.;
 }
 
-void Skim_ISR::executeEventFromParameter(AnalyzerParameter param){
+void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, bool temp_FSR_study){
+        
+    vector<Muon> this_AllMuons = AllMuons;
+    vector<Electron> this_AllElectrons = AllElectrons;
 
-        vector<Muon> this_AllMuons = AllMuons;
+    if(temp_FSR_study){
         vector<Muon> muons_ = SelectMuons(this_AllMuons, param.Muon_ID, 7., 2.4);
         std::sort(muons_.begin(), muons_.end(), PtComparing); 
 
@@ -928,6 +957,96 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param){
 
             Dimu_map[param.Muon_ID]->setVariables(evt_tag_analysisevnt_sel_rec, dilep_pt_rec, dilep_mass_rec, dilep_photon_mass_rec, leadinglep_pt_rec, subleadinglep_pt_rec, leadinglep_eta_rec, subleadinglep_eta_rec, leadingphoton_lepton_dr_rec); 
         }
+    }
+    else{
+
+        vector<Muon> muons_ = SelectMuons(this_AllMuons, param.Muon_ID, 10., 2.4);
+        vector<Electron> electrons_ = SelectElectrons(this_AllElectrons, param.Electron_ID, 10., 2.5);
+        std::sort(muons_.begin(), muons_.end(), PtComparing);
+        std::sort(electrons_.begin(), electrons_.end(), PtComparing);
+
+        IsMuMu = 0;
+        IsElEl = 0;
+
+        if(muons_.size() == 2) IsMuMu = 1;
+        if(electrons_.size() == 2) IsElEl = 1;
+
+        // Set tight_iso cut & calculate pTcone
+        double mu_tight_iso = 0.15;
+        double el_tight_iso = 0.;
+
+        // Set pTcone
+
+        for(unsigned int i=0; i<muons_.size(); i++){
+          double this_ptcone = muons_.at(i).CalcPtCone(muons_.at(i).RelIso(), mu_tight_iso);
+          muons_.at(i).SetPtCone(this_ptcone);
+        }
+         
+        for(unsigned int i=0; i<electrons_.size(); i++){
+          el_tight_iso = 0.0287+0.506/electrons_.at(i).UncorrPt();
+          if(fabs(electrons_.at(i).scEta()) > 1.479) el_tight_iso = 0.0445+0.963/electrons_.at(i).UncorrPt();
+          double this_ptcone = electrons_.at(i).CalcPtCone(electrons_.at(i).RelIso(), el_tight_iso);
+          electrons_.at(i).SetPtCone(this_ptcone);
+        }
+
+        if(IsMuMu == 1){
+
+          if(evt->PassTrigger(DiMuTrgs) ){
+              leps=MakeLeptonPointerVector(muons_);
+              evt_tag_dimuon_rec = 1;
+              Lep0PtCut = 20.;
+              Lep1PtCut = 10.;
+              LepEtaCut = 2.4;
+           }
+        }
+
+        if(IsElEl == 1){
+    
+            if(evt->PassTrigger(DiElTrgs) ){
+                leps=MakeLeptonPointerVector(electrons_);
+                evt_tag_dielectron_rec = 1;
+                Lep0PtCut = 25.;
+                Lep1PtCut = 15.;
+                LepEtaCut = 2.5;
+            }
+        }
+
+
+        if( leps.size() == 2 ){ // leps have leptons passing ID and trigger passed
+
+            // lepton pt cut requirement
+            if(leps.at(0)->Pt() > Lep0PtCut && leps.at(1)->Pt() > Lep1PtCut)
+                evt_tag_leptonpt_sel_rec = 1;
+
+            // lepton eta cut requirement
+            if(fabs(leps.at(0)->Eta()) < LepEtaCut && fabs(leps.at(1)->Eta()) < LepEtaCut){
+                if(IsMuMu == 1)
+                    evt_tag_leptoneta_sel_rec = 1;
+                if(IsElEl == 1){
+                    if((fabs(leps.at(0)->Eta()) < 1.4442 || fabs(leps.at(0)->Eta()) > 1.566) && (fabs(leps.at(1)->Eta()) < 1.4442 || fabs(leps.at(1)->Eta()) > 1.566))
+                        evt_tag_leptoneta_sel_rec = 1;
+                }
+            }
+
+            // opposite charge requirements
+            if((leps.at(0)->Charge() + leps.at(1)->Charge()) == 0)
+                evt_tag_oppositecharge_sel_rec = 1;
+
+            leadinglep_pt_rec = leps.at(0)->Pt();
+            subleadinglep_pt_rec = leps.at(1)->Pt();
+            leadinglep_eta_rec = leps.at(0)->Eta();
+            subleadinglep_eta_rec = leps.at(1)->Eta();
+            dilep_pt_rec = (*(leps.at(0))+*(leps.at(1))).Pt();
+            dilep_mass_rec = (*(leps.at(0))+*(leps.at(1))).M();
+
+            if(evt_tag_leptonpt_sel_rec && evt_tag_leptoneta_sel_rec && evt_tag_oppositecharge_sel_rec && evt_tag_bvetoed_rec)
+                evt_tag_analysisevnt_sel_rec = 1;
+
+            evt_weight_fake = fakeEst->GetWeight(leps, param);
+            fake_estimation->setVariables(evt_tag_analysisevnt_sel_rec, evt_tag_dielectron_rec, evt_tag_dimuon_rec, dilep_pt_rec, dilep_mass_rec, leadinglep_pt_rec, subleadinglep_pt_rec, leadinglep_eta_rec, subleadinglep_eta_rec);
+        }
+
+    }
 }
 
 int Skim_ISR::findInitialMoterIndex(int mother_index, int current_index, bool same_flavor){
@@ -960,16 +1079,68 @@ void Skim_ISR::saveIndexToMap(int current_index, int mother_index, std::map<int,
     }
 }
 
+void ISR_LeptonIDVariation::resetVariables(){
+     
+    evt_tag_analysisevnt_sel_rec_ = false;
+    evt_tag_dielectron_rec_       = false;
+    evt_tag_dimuon_rec_           = false;
+    dilep_pt_rec_                 = -999.;
+    dilep_mass_rec_               = -999.;
+    leadinglep_pt_rec_            = -999.;
+    subleadinglep_pt_rec_         = -999.;
+    leadinglep_eta_rec_           = -999.;
+    subleadinglep_eta_rec_        = -999.;
+}
+
+void ISR_LeptonIDVariation::setBranch(TTree *tree){ 
+
+    tree->Branch(evt_tag_analysisevnt_sel_rec_brname,   &evt_tag_analysisevnt_sel_rec_);
+    tree->Branch(evt_tag_dielectron_rec_brname,   &evt_tag_dielectron_rec_);
+    tree->Branch(evt_tag_dimuon_rec_brname,   &evt_tag_dimuon_rec_);
+    tree->Branch(dilep_pt_rec_brname,   &dilep_pt_rec_);
+    tree->Branch(dilep_mass_rec_brname,   &dilep_mass_rec_);
+    tree->Branch(leadinglep_pt_rec_brname,   &leadinglep_pt_rec_);
+    tree->Branch(subleadinglep_pt_rec_brname,   &subleadinglep_pt_rec_);
+    tree->Branch(leadinglep_eta_rec_brname,   &leadinglep_eta_rec_);
+    tree->Branch(subleadinglep_eta_rec_brname,   &subleadinglep_eta_rec_);
+}
+
+void ISR_LeptonIDVariation::setVariables(bool pass_sel, bool pass_dielectron, bool pass_dimuon, double dilep_pt, double dilep_mass, double lead_lep_pt, double sublead_lep_pt, double lead_lep_eta, double sublead_lep_eta){
+
+    evt_tag_analysisevnt_sel_rec_ = pass_sel;
+    evt_tag_dielectron_rec_ = pass_dielectron;
+    evt_tag_dimuon_rec_ = pass_dimuon;
+    dilep_pt_rec_ = dilep_pt;
+    dilep_mass_rec_ = dilep_mass;
+    leadinglep_pt_rec_ = lead_lep_pt;
+    subleadinglep_pt_rec_ = sublead_lep_pt;
+    leadinglep_eta_rec_ = lead_lep_eta;
+    subleadinglep_eta_rec_ = sublead_lep_eta;
+}
+
+void Dimu_variables::resetVariables(){
+
+    evt_tag_analysisevnt_sel_rec_ = false;
+    dimu_pt_rec_                = -999.;
+    dimu_mass_rec_              = -999.;
+    dimu_photon_mass_rec_       = -999.;
+    leadingmuon_pt_rec_         = -999.;
+    subleadingmuon_pt_rec_      = -999.;
+    leadingmuon_eta_rec_        = -999.;
+    subleadingmuon_eta_rec_     = -999.;
+    leadingphoton_muon_dr_rec_  = -999.;
+}
+
 void Dimu_variables::setBranch(TTree *tree){
-    tree->Branch(evt_tag_analysisevnt_sel_rec_brname,               &evt_tag_analysisevnt_sel_rec_);
-    tree->Branch(dimu_pt_rec_brname,               &dimu_pt_rec_);
-    tree->Branch(dimu_mass_rec_brname,             &dimu_mass_rec_);
-    tree->Branch(dimu_photon_mass_rec_brname,      &dimu_photon_mass_rec_);
-    tree->Branch(leadingmuon_pt_rec_brname,        &leadingmuon_pt_rec_);
-    tree->Branch(subleadingmuon_pt_rec_brname,     &subleadingmuon_pt_rec_);
-    tree->Branch(leadingmuon_eta_rec_brname,       &leadingmuon_eta_rec_);
-    tree->Branch(subleadingmuon_eta_rec_brname,    &subleadingmuon_eta_rec_);
-    tree->Branch(leadingphoton_muon_dr_rec_brname, &leadingphoton_muon_dr_rec_);
+    tree->Branch(evt_tag_analysisevnt_sel_rec_brname,   &evt_tag_analysisevnt_sel_rec_);
+    tree->Branch(dimu_pt_rec_brname,                    &dimu_pt_rec_);
+    tree->Branch(dimu_mass_rec_brname,                  &dimu_mass_rec_);
+    tree->Branch(dimu_photon_mass_rec_brname,           &dimu_photon_mass_rec_);
+    tree->Branch(leadingmuon_pt_rec_brname,             &leadingmuon_pt_rec_);
+    tree->Branch(subleadingmuon_pt_rec_brname,          &subleadingmuon_pt_rec_);
+    tree->Branch(leadingmuon_eta_rec_brname,            &leadingmuon_eta_rec_);
+    tree->Branch(subleadingmuon_eta_rec_brname,         &subleadingmuon_eta_rec_);
+    tree->Branch(leadingphoton_muon_dr_rec_brname,      &leadingphoton_muon_dr_rec_);
 }
 
 void Dimu_variables::setVariables(bool pass_sel, double dimu_pt, double dimu_mass, double dimu_gamma_mass, double lead_muon_pt, double sublead_muon_pt, double lead_muon_eta, double sublead_muon_eta, double dr_muon_gamma){

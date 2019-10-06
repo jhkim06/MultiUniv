@@ -181,6 +181,3 @@ double FakeBackgroundEstimator::GetWeight(vector<Lepton *> lepptrs, AnalyzerPara
 
 }
 
-
-
-
