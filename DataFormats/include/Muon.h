@@ -112,6 +112,9 @@ public:
   bool Pass_POGMediumWithLooseTrkIso();
   bool Pass_TESTID();
 
+  bool Pass_HNLoose() const;
+  bool Pass_HNTight() const;
+
 private:
 
   int j_trackerLayers;
