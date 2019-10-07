@@ -25,7 +25,7 @@ public:
     Int_t truth_index;
     Int_t jet_index;
     Int_t parton_flavour;
-    Int_t jet_hadron_flavour;
+    Int_t jet_parton_flavour;
     TLorentzVector matched_parton;
     TLorentzVector matched_jet;
   };

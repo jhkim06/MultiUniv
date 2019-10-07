@@ -143,25 +143,17 @@ bool GenMatching_CHToCB::MatchJets(){
 
 bool GenMatching_CHToCB::CheckFlavour(){
 
-  if(abs(b_from_top.parton_flavour)>=4){
-   if( abs(b_from_top.parton_flavour) != abs(b_from_top.jet_hadron_flavour)){
-      return false;
-   }
+  if( b_from_top.parton_flavour != b_from_top.jet_parton_flavour ){
+    return false;
   }
-  if(abs(b_from_anti_top.parton_flavour)>=4){
-    if(abs(b_from_anti_top.parton_flavour) != abs(b_from_anti_top.jet_hadron_flavour)){
-      return false;
-    }
+  if( b_from_anti_top.parton_flavour != b_from_anti_top.jet_parton_flavour ){
+    return false;
   }
-  if(abs(down_type_quark.parton_flavour)>=4){
-    if(abs(down_type_quark.parton_flavour) != abs(down_type_quark.jet_hadron_flavour)){
-      return false;
-    }
+  if( down_type_quark.parton_flavour != down_type_quark.jet_parton_flavour ){
+    return false;
   }
-  if(abs(up_type_quark.parton_flavour)>=4){
-    if(abs(up_type_quark.parton_flavour) != abs(up_type_quark.jet_hadron_flavour)){
-      return false;
-    }
+  if( up_type_quark.parton_flavour != up_type_quark.jet_parton_flavour){
+    return false;
   }
 
   return true;
@@ -201,11 +193,11 @@ bool GenMatching_CHToCB::FindMinDeltaRMatching(matchedPartonJet &partonjet){
   }
   vector<double>::iterator min_deltaR = std::min_element(deltaR.begin(),deltaR.end());
   for(int i =0; i<njets; i++){
-    if(*min_deltaR>0.3) break;
+    if(*min_deltaR>0.4) break;
     if(*min_deltaR != deltaR[i]) continue;
     partonjet.matched_jet = jets->at(i);
     partonjet.jet_index = i;
-    partonjet.jet_hadron_flavour= jets->at(i).hadronFlavour();
+    partonjet.jet_parton_flavour= jets->at(i).partonFlavour();
     isfound = true;
     break;
   }

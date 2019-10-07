@@ -68,6 +68,9 @@ void Skim_TTSemiLep::initializeAnalyzer(){
   newtree->Branch("MisTagSF_Do", &MisTagSF_Do,"MisTagSF_Do/D");
 
   newtree->Branch("TopPtReweight", &TopPtReweight,"TopPtReweight/D");
+  if(DataYear==2018 && !IsDATA){
+    newtree->Branch("HEMweight", &HEMweight,"HEMweight/D");
+  }
 
   // clear vector residual
   SingleMuTrgs.clear();
@@ -136,16 +139,20 @@ void Skim_TTSemiLep::executeEvent(){
   gens.clear();
   leps.clear();
   this_AllJets.clear();
-  jets.clear();
-  jetsLveto.clear();
+  jets_pt20cut.clear();
+  jets_pt30cut.clear();
+  jetsLveto_pt20cut.clear();
+  jetsLveto_pt30cut.clear();
 
   muons.shrink_to_fit();
   electrons.shrink_to_fit();
   gens.shrink_to_fit();
   leps.shrink_to_fit();
   this_AllJets.shrink_to_fit();
-  jets.shrink_to_fit();
-  jetsLveto.shrink_to_fit();
+  jets_pt20cut.shrink_to_fit();
+  jets_pt30cut.shrink_to_fit();
+  jetsLveto_pt20cut.shrink_to_fit();
+  jetsLveto_pt30cut.shrink_to_fit();
 
   tmp_btagsf=1.;
   tmp_mistagsf.clear();
@@ -270,15 +277,23 @@ void Skim_TTSemiLep::executeEvent(){
     
   FillHist("CutFlow",7,1,30,0,30);
   this_AllJets = GetAllJets();
-  jets = SelectJets(this_AllJets, "tight", 20., 2.4);
-  jetsLveto = JetsVetoLeptonInside(jets, electrons, muons);
-  std::sort(jetsLveto.begin(), jetsLveto.end(), PtComparing);
-  if(jetsLveto.size()<4) return;
+  //HEM veto
+  HEMweight = IsHEMJets(this_AllJets,1000);
+  if(HEMweight==0.){
+    return;
+  }
+  jets_pt20cut = SelectJets(this_AllJets, "tight", 20., 2.4);
+  jets_pt30cut = SelectJets(jets_pt20cut, "tight", 30., 2.4);
+  jetsLveto_pt20cut = JetsVetoLeptonInside(jets_pt20cut, electrons, muons);
+  jetsLveto_pt30cut = JetsVetoLeptonInside(jets_pt30cut, electrons, muons);
+  std::sort(jetsLveto_pt20cut.begin(), jetsLveto_pt20cut.end(), PtComparing);
+  std::sort(jetsLveto_pt30cut.begin(), jetsLveto_pt30cut.end(), PtComparing);
+  if(jetsLveto_pt20cut.size()<4) return;
   FillHist("CutFlow",8,1,30,0,30);
 
 
-  for(unsigned int ij = 0 ; ij < jetsLveto.size(); ij++){
-    if(IsBTagged(jetsLveto.at(ij), Jet::DeepCSV, Jet::Medium,false,0)){
+  for(unsigned int ij = 0 ; ij < jetsLveto_pt20cut.size(); ij++){
+    if(IsBTagged(jetsLveto_pt20cut.at(ij), Jet::DeepCSV, Jet::Medium,false,0)){
       n_bjet_deepcsv_m_noSF++; // method for getting btag with no SF applied to MC
     }
     else{
@@ -323,20 +338,20 @@ void Skim_TTSemiLep::executeEvent(){
 
     }
   }
-
-  BtaggingSFEvtbyEvt(jetsLveto, Jet::DeepCSV, Jet::Medium, 0, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
+  //TODO: will be calculated by JES/JER variabtion
+  BtaggingSFEvtbyEvt(jetsLveto_pt30cut, Jet::DeepCSV, Jet::Medium, 0, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
   BTagSF = tmp_btagsf;
   MisTagSF =0;
   for(auto &x : tmp_mistagsf){
     MisTagSF += x;
   }
-  BtaggingSFEvtbyEvt(jetsLveto, Jet::DeepCSV, Jet::Medium, 1, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
+  BtaggingSFEvtbyEvt(jetsLveto_pt30cut, Jet::DeepCSV, Jet::Medium, 1, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
   BTagSF_Up = tmp_btagsf;
   MisTagSF_Up = 0;
   for(auto &x : tmp_mistagsf){
     MisTagSF_Up += x;
   }
-  BtaggingSFEvtbyEvt(jetsLveto, Jet::DeepCSV, Jet::Medium, -1, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
+  BtaggingSFEvtbyEvt(jetsLveto_pt30cut, Jet::DeepCSV, Jet::Medium, -1, tmp_btagsf, tmp_mistagsf); //@AnalyzerCore
   BTagSF_Do = tmp_btagsf;
   MisTagSF_Do = 0;
   for(auto &x : tmp_mistagsf){
