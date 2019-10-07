@@ -24,7 +24,7 @@ public:
 private:
 
   TKinFitterDriver *fitter_driver;
-
+  bool IsTest;
   int IsMu;
   int IsEl;
   std::vector<bool>* btag_vector_noSF;
@@ -93,6 +93,12 @@ private:
   int njets_JES_Do;
   int njets_JER_Up;
   int njets_JER_Do;
+  int nbtags; //number of b tags
+  int nbtags_JES_Up;
+  int nbtags_JES_Do;
+  int nbtags_JER_Up;
+  int nbtags_JER_Do;
+
   std::vector<double> selected_jet_pt;
   std::vector<double> selected_jet_pt_JES_Up;
   std::vector<double> selected_jet_pt_JES_Do;

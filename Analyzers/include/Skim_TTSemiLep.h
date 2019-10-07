@@ -34,6 +34,7 @@ private:
   int passAntiIso_Do; // for ABCD method
 
   double weight_Prefire;
+  double HEMweight;
 
   //RootHelper rootHelp;
   double DiLepTrg_SF(TString Leg0Key, TString Leg1Key, const vector<Lepton*>& leps, int sys);
@@ -93,8 +94,10 @@ private:
   double TopPtReweight;
 
   vector<Jet> this_AllJets ;
-  vector<Jet> jets;
-  vector<Jet> jetsLveto;
+  vector<Jet> jets_pt20cut;
+  vector<Jet> jets_pt30cut;
+  vector<Jet> jetsLveto_pt20cut;
+  vector<Jet> jetsLveto_pt30cut;
   float tmp_btagsf;
   std::vector<float> tmp_mistagsf;
   

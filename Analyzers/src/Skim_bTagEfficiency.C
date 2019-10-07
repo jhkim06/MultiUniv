@@ -17,12 +17,15 @@ void Skim_bTagEfficiency::initializeAnalyzer(){
   flavour["c"] = new TFormula("c", "abs(x[0])==4");
   flavour["l"] = new TFormula("l", "abs(x[0])<4");
 
-  ptBin["pt_20to40"] = new TFormula("pt_20to40","x[0]>=20&&x[0]<40");
-  ptBin["pt_40to60"] = new TFormula("pt_40to60","x[0]>=40&&x[0]<60");
-  ptBin["pt_60to80"] = new TFormula("pt_60to80","x[0]>=60&&x[0]<80");
-  ptBin["pt_80to100"] = new TFormula("pt_80to100","x[0]>=80&&x[0]<100");
-  ptBin["pt_100to120"] = new TFormula("pt_100to120","x[0]>=100&&x[0]<120");
-  ptBin["pt_120to3000"] = new TFormula("pt_120to3000","x[0]>=120&&x[0]<3000");
+  ptBin["pt_20to30"] = new TFormula("pt_20to30","x[0]>=20&&x[0]<30");
+  ptBin["pt_30to50"] = new TFormula("pt_30to50","x[0]>=30&&x[0]<50");
+  ptBin["pt_50to70"] = new TFormula("pt_50to70","x[0]>=50&&x[0]<70");
+  ptBin["pt_70to100"] = new TFormula("pt_70to100","x[0]>=70&&x[0]<100");
+  ptBin["pt_100to140"] = new TFormula("pt_100to140","x[0]>=100&&x[0]<140");
+  ptBin["pt_140to200"] = new TFormula("pt_140to200","x[0]>=140&&x[0]<200");
+  ptBin["pt_200to300"] = new TFormula("pt_200to300","x[0]>=200&&x[0]<300");
+  ptBin["pt_300to600"] = new TFormula("pt_300to600","x[0]>=300&&x[0]<600");
+  ptBin["pt_600to1000"] = new TFormula("pt_600to1000","x[0]>=600&&x[0]<1000");
 
   etaBin["eta_0.0to0.6"] = new TFormula("eta_0.0to0.6","x[0]>=0.0&&x[0]<0.6");
   etaBin["eta_0.6to1.2"] = new TFormula("eta_0.6to1.2","x[0]>=0.6&&x[0]<1.2");
@@ -50,8 +53,14 @@ Skim_bTagEfficiency::~Skim_bTagEfficiency(){
 
 void Skim_bTagEfficiency::executeEvent(){
 
-  std::vector<Jet> jets = GetAllJets();
   
+  auto jets = GetJets("tight", 20., 2.4);
+  auto muons=GetMuons("POGLooseWithLooseIso",15.,2.4);
+  auto electrons=GetElectrons("passVetoID",15.,2.5);
+  jets = JetsVetoLeptonInside(jets, electrons, muons);
+  // NOTE: below jet pT < 40 GeV. pileup contribution is significant
+  // but I didn't use any method to reject those.
+  // To remove puleup jet, we can require matching with genjet
 
   for(auto& jet: jets){ 
 

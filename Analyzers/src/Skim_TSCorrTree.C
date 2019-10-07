@@ -126,8 +126,10 @@ void Skim_TSCorrTree::executeEvent(){
   if(!gen_matcher->MatchJets()) return; // match parton-jet min-delta R
   FillHist("CutFlow",7,1,30,0,30);
 
-  if(!gen_matcher->CheckAmbiguity()) return; // check ambiguity matching
+  if(!gen_matcher->CheckFlavour()) return; // check flavour
   FillHist("CutFlow",8,1,30,0,30);
+  if(!gen_matcher->CheckAmbiguity()) return; // check ambiguity matching
+  FillHist("CutFlow",9,1,30,0,30);
 
   *b_jet_from_top = gen_matcher->Get_hadronic_top_b_jet()->matched_jet;
   *b_jet_from_anti_top = gen_matcher->Get_leptonic_top_b_jet()->matched_jet;
