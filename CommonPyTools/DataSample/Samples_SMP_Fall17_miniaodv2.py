@@ -23,4 +23,14 @@ sampleInfo = {
 'ZZ_pythia'		:{'name' :'ZZ_TuneCP5_13TeV-pythia8',	'xsec': 16.523,	'nMC':1925931,	'Nsum': 1925931 },
 'ttW'		:{'name' :'ttWJets_TuneCP5_13TeV_madgraphMLM_pythia8',	'xsec': 0.4611,	'nMC':9425384,	'Nsum': 9384328 },
 'ttZ'		:{'name' :'ttZJets_TuneCP5_13TeV_madgraphMLM_pythia8',	'xsec': 0.5407,	'nMC':9698473,	'Nsum': 9678691 },
+
+#ChargedHiggsToCB signal
+'CHToCB_M090'		:{'name' :'ChargedHiggsToCB_M090_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':300000,	'Nsum': 300000 },
+'CHToCB_M100'		:{'name' :'ChargedHiggsToCB_M100_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':292000,	'Nsum': 292000 },
+'CHToCB_M110'		:{'name' :'ChargedHiggsToCB_M110_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':300000,	'Nsum': 300000 },
+'CHToCB_M120'		:{'name' :'ChargedHiggsToCB_M120_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':292000,	'Nsum': 292000 },
+'CHToCB_M130'		:{'name' :'ChargedHiggsToCB_M130_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':300000,	'Nsum': 300000 },
+'CHToCB_M140'		:{'name' :'ChargedHiggsToCB_M140_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':292000,	'Nsum': 292000 },
+'CHToCB_M150'		:{'name' :'ChargedHiggsToCB_M150_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':272000,	'Nsum': 272000 },
+
 }
