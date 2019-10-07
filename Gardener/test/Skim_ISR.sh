@@ -20,7 +20,7 @@ for sample in  DoubleMuon
 do
   echo $sample
   #mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 50 --skimV 1 --userflags ISR_generator_only --multiQueue --treeDir GEN  --OnlyGenLevel
-  mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 20 --skimV 1 --userflags ISR_detector_only --multiQueue  --dry_run
+  mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 100 --skimV 1 --userflags ISR_detector_only --multiQueue 
   #mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 100 --skimV 1 --userflags ISR_detector_only --multiQueue 
 done
 
