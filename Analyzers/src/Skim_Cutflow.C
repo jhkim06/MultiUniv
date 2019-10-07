@@ -77,9 +77,12 @@ void Skim_Cutflow::executeEvent(){
     >> &Skim_Cutflow::MetFt
     >> &Skim_Cutflow::LooseSingleLepton
     >> &Skim_Cutflow::TightSingleLepton
+    >> &Skim_Cutflow::LeptonSF //
     >> &Skim_Cutflow::Trigger
+    >> &Skim_Cutflow::TriggerSF //
     >> &Skim_Cutflow::FourJets
     >> &Skim_Cutflow::OneBTags
+    >> &Skim_Cutflow::BTagSF //
     >> &Skim_Cutflow::TwoBTags
     >> &Skim_Cutflow::ThreeBTags
     |  &Skim_Cutflow::FillCutFlow;
@@ -148,7 +151,7 @@ FlowMonad<>& Skim_Cutflow::TightSingleLepton(FlowMonad<>& flowM){
   value->isTightMu = mu->size() == 1;
   value->isTightEl = el->size() == 1;
   bool isPass = value->isTightMu != value->isTightEl; // != behaves as XOR. pass if one lepton.
-  double addWeight;
+  double addWeight=1.;
   auto channel = Flow<>::Channel::NONE;
 
   if(value->isTightMu){
@@ -157,11 +160,22 @@ FlowMonad<>& Skim_Cutflow::TightSingleLepton(FlowMonad<>& flowM){
   else if(value->isTightEl){
     channel = Flow<>::Channel::SingleEl;
   }
+  value->updates(isPass,addWeight,channel);
+  return flowM;
+}
+
+
+FlowMonad<>& Skim_Cutflow::LeptonSF(FlowMonad<>& flowM){
+  auto value = &(flowM.value);
+  vectorM* mu = &(value->muons);
+  vectorE* el = &(value->electrons);
+  Flow<>::Channel channel = static_cast<Flow<>::Channel>(value->channels.back());
+  double addWeight = 1.;
   // apply SFs
   if(IsDATA){
-    addWeight = 1.;
+    //pass
   }
-  else if(isPass){
+  else{
 
     double (MCCorrection::*LeptonID_SF)(TString,double,double,int)=NULL;
     double (MCCorrection::*LeptonISO_SF)(TString,double,double,int)=NULL;
@@ -194,48 +208,55 @@ FlowMonad<>& Skim_Cutflow::TightSingleLepton(FlowMonad<>& flowM){
     //
     addWeight = recoSF*IdSF*IsoSF;
   }
-  else{
-    addWeight=0.;
-  }
-  value->updates(isPass,addWeight,channel);
+
+  value->updates(true,addWeight,channel);
   return flowM;
 }
+
 
 FlowMonad<>& Skim_Cutflow::Trigger(FlowMonad<>& flowM){
 
   auto value = &(flowM.value);
   bool isPass = false;
   double addWeight = 1.;
-  auto channel = Flow<>::Channel::NONE;
+  Flow<>::Channel channel = static_cast<Flow<>::Channel>(value->channels.back());
   if(value->isTightMu==true){
     isPass = evt->PassTrigger(SingleMuTrgs);
-    channel = Flow<>::Channel::SingleMu;
   }
   else if(value->isTightEl==true){
     isPass = evt->PassTrigger(SingleElTrgs);
-    channel = Flow<>::Channel::SingleEl;
   }
   else{
     std::cout << "[Skim_Cutflow::Trigger]" << " no single lepton exists" << std::endl;
     exit(EXIT_FAILURE);
   }
-  // apply SFs
-  if(IsDATA){
-    //pass
-  }
-  else if(isPass){
-    addWeight *= value->isTightMu ? mcCorr->MuonTrigger_SF("POGTight", trgSFkeyMu, value->muons, 0) : 1.;
-  }
   value->updates(isPass,addWeight,channel);
   return flowM;
 }
 
+FlowMonad<>& Skim_Cutflow::TriggerSF(FlowMonad<>& flowM){
+
+  auto value = &(flowM.value);
+  double addWeight = 1.;
+  Flow<>::Channel channel = static_cast<Flow<>::Channel>(value->channels.back());
+
+  // apply SFs
+  if(IsDATA){
+    //pass
+  }
+  else{
+    addWeight *= value->isTightMu ? mcCorr->MuonTrigger_SF("POGTight", trgSFkeyMu, value->muons, 0) : 1.;
+  }
+  value->updates(true,addWeight,channel);
+  return flowM;
+
+}
 
 FlowMonad<>& Skim_Cutflow::FourJets(FlowMonad<>& flowM){
   flowM.value.jets = GetJets("tight",30.,2.4);
   auto value = &(flowM.value);
   value->jets = JetsVetoLeptonInside(value->jets, value->electrons, value->muons);
-  auto channel = value->isTightMu ? Flow<>::Channel::SingleMu : Flow<>::Channel::SingleEl;
+  Flow<>::Channel channel = static_cast<Flow<>::Channel>(value->channels.back());
   if(value->jets.size()>=4){
     value->updates(true,1.,channel);
   }
@@ -248,32 +269,38 @@ FlowMonad<>& Skim_Cutflow::FourJets(FlowMonad<>& flowM){
 FlowMonad<>& Skim_Cutflow::OneBTags(FlowMonad<>& flowM){
 
   auto value = &(flowM.value);
-  auto channel = value->isTightMu ? Flow<>::Channel::SingleMu : Flow<>::Channel::SingleEl;
+  Flow<>::Channel channel = static_cast<Flow<>::Channel>(value->channels.back());
   int nbtags=0;
   for(auto &jet : value->jets){
     if(IsBTagged(jet, Jet::DeepCSV, Jet::Medium, false, 0))
     nbtags++;
   }
   value->nbtags = nbtags;
-  if(value->nbtags>=1){
-    float BTagSF = 1., MisTagSF = 0.;
-    if(!IsDATA){
-      BtaggingSFEvtbyEvt(value->jets, Jet::DeepCSV, Jet::Medium, 0, BTagSF, MisTagSF); //@AnalyzerCore
-    }
-    value->updates(true,(double)BTagSF,channel);
-  }
-  else{
-    value->updates(false,0.,Flow<>::Channel::NONE);
-  }
+  bool isPass = value->nbtags>=1;
+    value->updates(isPass,isPass?1.:0.,channel);
   return flowM;
 }
+
+
+FlowMonad<>& Skim_Cutflow::BTagSF(FlowMonad<>& flowM){
+
+  auto value = &(flowM.value);
+  Flow<>::Channel channel = static_cast<Flow<>::Channel>(value->channels.back());
+  float BTagSF = 1., MisTagSF = 0.;
+  if(!IsDATA){
+    BtaggingSFEvtbyEvt(value->jets, Jet::DeepCSV, Jet::Medium, 0, BTagSF, MisTagSF); //@AnalyzerCore
+  }
+  value->updates(true,BTagSF,channel);
+  return flowM;
+}
+
 
 FlowMonad<>& Skim_Cutflow::TwoBTags(FlowMonad<>& flowM){
 
   auto value = &(flowM.value);
-  auto channel = value->isTightMu ? Flow<>::Channel::SingleMu : Flow<>::Channel::SingleEl;
+  Flow<>::Channel channel = static_cast<Flow<>::Channel>(value->channels.back());
   bool isPass =value->nbtags>=2;
-  value->updates(isPass,isPass?1.:0.,isPass?channel : Flow<>::Channel::NONE);
+  value->updates(isPass,isPass?1.:0.,channel);
   return flowM;
 
 }
@@ -281,9 +308,9 @@ FlowMonad<>& Skim_Cutflow::TwoBTags(FlowMonad<>& flowM){
 FlowMonad<>& Skim_Cutflow::ThreeBTags(FlowMonad<>& flowM){
 
   auto value = &(flowM.value);
-  auto channel = value->isTightMu ? Flow<>::Channel::SingleMu : Flow<>::Channel::SingleEl;
+  Flow<>::Channel channel = static_cast<Flow<>::Channel>(value->channels.back());
   bool isPass =value->nbtags>=3;
-  value->updates(isPass,isPass?1.:0.,isPass?channel : Flow<>::Channel::NONE);
+  value->updates(isPass,isPass?1.:0.,channel);
   return flowM;
 
 }
@@ -390,7 +417,7 @@ void Flow<T>::updates(bool isPass_, double addWeight_, Flow<T>::Channel channel)
   else{ // if not pass cut
     isFlow = false;
     weights.push_back(0.);
-    channels.push_back(channel);
+    channels.push_back(Flow<T>::Channel::NONE);
   }
 
 }

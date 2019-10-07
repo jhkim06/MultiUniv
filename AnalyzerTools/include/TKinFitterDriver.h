@@ -176,10 +176,10 @@ private:
   TMatrixD error_lepton;
   TMatrixD error_neutrino_pxpy;
 
-  //TFitConstraintM *constrain_hadronic_top_M;
-  TFitConstraintMGaus *constrain_hadronic_top_MGaus;
-  //TFitConstraintM *constrain_leptonic_top_M;
-  TFitConstraintMGaus *constrain_leptonic_top_MGaus;
+  TFitConstraintM *constrain_hadronic_top_M;
+  //TFitConstraintMGaus *constrain_hadronic_top_MGaus;
+  TFitConstraintM *constrain_leptonic_top_M;
+  //TFitConstraintMGaus *constrain_leptonic_top_MGaus;
   TFitConstraintM *constrain_leptonic_W_M;
   //TFitConstraintMGaus *constrain_leptonic_W_MGaus;
 

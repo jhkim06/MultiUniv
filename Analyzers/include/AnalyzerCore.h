@@ -77,6 +77,7 @@ public:
   std::vector<Jet> GetAllJets();
   std::vector<Jet> GetJets(TString id, double ptmin, double fetamax);
   std::vector<Jet> GetJets(TString id, double ptmin, double fetamax, int en_up_down, int res_up_down);
+  double IsHEMJets(const std::vector<Jet> &jets, unsigned int upToNthLeadingJet);
 
   std::vector<FatJet> GetAllFatJets();
   std::vector<FatJet> GetFatJets(TString id, double ptmin, double fetamax);

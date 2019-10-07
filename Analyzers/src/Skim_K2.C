@@ -20,7 +20,11 @@ void Skim_K2::initializeAnalyzer(){
     cout<<endl;
     exit(EXIT_FAILURE);
   }
-
+  
+  if( HasFlag("Test") ){
+    IsTest = true;
+    cout<<"[Skim_K2::initializeAnalyzer] Test, do not run systematic"<<endl;
+  }
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");
   newtree = fChain->CloneTree(0); // JH : What relation does this outfile have with the fChain(created by SetTreeName)?
@@ -90,6 +94,13 @@ void Skim_K2::initializeAnalyzer(){
   newtree->Branch("njets_JES_Do", &njets_JES_Do,"njets_JES_Do/I");
   newtree->Branch("njets_JER_Up", &njets_JER_Up,"njets_JER_Up/I");
   newtree->Branch("njets_JER_Do", &njets_JER_Do,"njets_JER_Do/I");
+
+  newtree->Branch("nbtags", &nbtags,"nbtags/I");
+  newtree->Branch("nbtags_JES_Up", &nbtags_JES_Up,"nbtags_JES_Up/I");
+  newtree->Branch("nbtags_JES_Do", &nbtags_JES_Do,"nbtags_JES_Do/I");
+  newtree->Branch("nbtags_JER_Up", &nbtags_JER_Up,"nbtags_JER_Up/I");
+  newtree->Branch("nbtags_JER_Do", &nbtags_JER_Do,"nbtags_JER_Do/I");
+
   newtree->Branch("selected_jet_pt", "vector<double>" ,&selected_jet_pt);
   newtree->Branch("selected_jet_pt_JES_Up", "vector<double>" ,&selected_jet_pt_JES_Up);
   newtree->Branch("selected_jet_pt_JES_Do", "vector<double>" ,&selected_jet_pt_JES_Do);
@@ -131,7 +142,7 @@ void Skim_K2::executeEvent(){
   std::sort(electrons.begin(),electrons.end(),PtComparing);
 
   this->executeEventByJESJER(0,0);
-  if(!IsData){
+  if(!IsData && !IsTest ){
     this->executeEventByJESJER(1,0);
     this->executeEventByJESJER(-1,0);
     this->executeEventByJESJER(0,1);
@@ -146,9 +157,8 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
 
   //set pointers
   double *p_initial_dijet_m, *p_corrected_dijet_m, *p_fitted_dijet_m, *p_best_chi2, *p_MET;
-  int *p_fitter_status, *p_njets;
+  int *p_fitter_status, *p_njets, *p_nbtags;
   std::vector<double> *p_selected_jet_pt;
-
   if(em_shift_up_down==0 && res_shift_up_down==0){
     p_initial_dijet_m = &initial_dijet_m;
     p_corrected_dijet_m = &corrected_dijet_m;
@@ -157,6 +167,7 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
     p_fitter_status = &fitter_status;
     p_selected_jet_pt = &selected_jet_pt;
     p_njets = &njets;
+    p_nbtags = &nbtags;
     p_MET = &MET;
   }
   else if(em_shift_up_down==1 && res_shift_up_down==0){
@@ -167,6 +178,7 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
     p_fitter_status = &fitter_status_JES_Up;
     p_selected_jet_pt = &selected_jet_pt_JES_Up;
     p_njets = &njets_JES_Up;
+    p_nbtags = &nbtags_JES_Up;
     p_MET = &MET_JES_Up;
   }
   else if(em_shift_up_down==-1 && res_shift_up_down==0){
@@ -177,6 +189,7 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
     p_fitter_status = &fitter_status_JES_Do;
     p_selected_jet_pt = &selected_jet_pt_JES_Do;
     p_njets = &njets_JES_Do;
+    p_nbtags = &nbtags_JES_Do;
     p_MET = &MET_JES_Do;
   }
   else if(em_shift_up_down==0 && res_shift_up_down==1){
@@ -187,6 +200,7 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
     p_fitter_status = &fitter_status_JER_Up;
     p_selected_jet_pt = &selected_jet_pt_JER_Up;
     p_njets = &njets_JER_Up;
+    p_nbtags = &nbtags_JER_Up;
     p_MET = &MET_JER_Up;
   }
   else if(em_shift_up_down==0 && res_shift_up_down==-1){
@@ -197,6 +211,7 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
     p_fitter_status = &fitter_status_JER_Do;
     p_selected_jet_pt = &selected_jet_pt_JER_Do;
     p_njets = &njets_JER_Do;
+    p_nbtags = &nbtags_JER_Do;
     p_MET = &MET_JER_Do;
   }
   else{
@@ -214,9 +229,11 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
 
   // set btag vector
   std::vector<bool> btag_vector_noSF;
+  int nbtags_=0;
   for(unsigned int ij = 0 ; ij < jets.size(); ij++){
     if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)){
       btag_vector_noSF.push_back(true);
+      nbtags_ += 1;
     }
     else{
       btag_vector_noSF.push_back(false);
@@ -226,7 +243,10 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
     cout <<"[Skim_K2::executeEventByJETJER] check jet vector size" << endl;
     exit(EXIT_FAILURE);
   }
-
+  *p_nbtags = nbtags_;
+  if(*p_nbtags<2){
+    return;
+  }
     ///////////////////////////////////////////////////////////
    // !!!!!!!!!!!!!!!!!! execute fitter !!!!!!!!!!!!!!!!!!! //
   ///////////////////////////////////////////////////////////
@@ -259,61 +279,52 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
   //std::vector<TKinFitterDriver::ResultContatiner> fit_result_vector = fitter_driver->GetResults();
 
   *p_fitter_status = fitter_driver->GetBestStatus();
-  //if(*p_fitter_status!=-10){ //0 means fit converge
-    *p_initial_dijet_m = fitter_driver->GetBestInitialDijetMass();
-    *p_corrected_dijet_m = fitter_driver->GetBestCorrectedDijetMass();
-    *p_fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
-    *p_best_chi2 = fitter_driver->GetChi2();
-    // nominal only
-    if(em_shift_up_down==0 && res_shift_up_down==0){
-      hadronic_top_M = fitter_driver->GetBestHadronicTopMass();
-      leptonic_top_M = fitter_driver->GetBestLeptonicTopMass();
-      leptonic_W_M = fitter_driver->GetBestLeptonicWMass();
-      IsRealNeuPz = fitter_driver->GetBestIsRealNeuPz();
-      hadronic_top_M_F = fitter_driver->GetBestHadronicTopMassF();
-      leptonic_top_M_F = fitter_driver->GetBestLeptonicTopMassF();
-      leptonic_W_M_F = fitter_driver->GetBestLeptonicWMassF();
-      deltaS = fitter_driver->GetBestDeltaS();
-      hadronic_top_M_vector_success = fitter_driver->GetHadronicTopMassVector(true);
-      hadronic_top_M_vector_fail = fitter_driver->GetHadronicTopMassVector(false);
-      hadronic_top_b_pt_vector_success = fitter_driver->GetHadronicTopBPtVector(true);
-      hadronic_top_b_pt_vector_fail = fitter_driver->GetHadronicTopBPtVector(false);
-      leptonic_top_b_pt_vector_success = fitter_driver->GetLeptonicTopBPtVector(true);
-      leptonic_top_b_pt_vector_fail = fitter_driver->GetLeptonicTopBPtVector(false);
-      wch_up_type_pt_vector_success = fitter_driver->GetWCHUpTypePtVector(true);
-      wch_up_type_pt_vector_fail = fitter_driver->GetWCHUpTypePtVector(false);
-      wch_down_type_pt_vector_success = fitter_driver->GetWCHDownTypePtVector(true);
-      wch_down_type_pt_vector_fail = fitter_driver->GetWCHDownTypePtVector(false);
-    }
- // }
-  /*
-  else{
-    *p_initial_dijet_m = -1;
-    *p_corrected_dijet_m = -1;
-    *p_fitted_dijet_m = -1;
-    *p_best_chi2 = -1;
-  }
-  */
-  ///////////////////////////////////////////////
-  // add Kinematic Variables
-  ///////////////////////////////////////////////
+  *p_initial_dijet_m = fitter_driver->GetBestInitialDijetMass();
+  *p_corrected_dijet_m = fitter_driver->GetBestCorrectedDijetMass();
+  *p_fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
+  *p_best_chi2 = fitter_driver->GetChi2();
 
-  selected_lepton_pt  = lepton.Pt();
-  selected_lepton_eta = lepton.Eta();
-  selected_lepton_phi = lepton.Phi();
+  // nominal only
+  if(em_shift_up_down==0 && res_shift_up_down==0){
+    hadronic_top_M = fitter_driver->GetBestHadronicTopMass();
+    leptonic_top_M = fitter_driver->GetBestLeptonicTopMass();
+    leptonic_W_M = fitter_driver->GetBestLeptonicWMass();
+    IsRealNeuPz = fitter_driver->GetBestIsRealNeuPz();
+    hadronic_top_M_F = fitter_driver->GetBestHadronicTopMassF();
+    leptonic_top_M_F = fitter_driver->GetBestLeptonicTopMassF();
+    leptonic_W_M_F = fitter_driver->GetBestLeptonicWMassF();
+    deltaS = fitter_driver->GetBestDeltaS();
+    hadronic_top_M_vector_success = fitter_driver->GetHadronicTopMassVector(true);
+    hadronic_top_M_vector_fail = fitter_driver->GetHadronicTopMassVector(false);
+    hadronic_top_b_pt_vector_success = fitter_driver->GetHadronicTopBPtVector(true);
+    hadronic_top_b_pt_vector_fail = fitter_driver->GetHadronicTopBPtVector(false);
+    leptonic_top_b_pt_vector_success = fitter_driver->GetLeptonicTopBPtVector(true);
+    leptonic_top_b_pt_vector_fail = fitter_driver->GetLeptonicTopBPtVector(false);
+    wch_up_type_pt_vector_success = fitter_driver->GetWCHUpTypePtVector(true);
+    wch_up_type_pt_vector_fail = fitter_driver->GetWCHUpTypePtVector(false);
+    wch_down_type_pt_vector_success = fitter_driver->GetWCHDownTypePtVector(true);
+    wch_down_type_pt_vector_fail = fitter_driver->GetWCHDownTypePtVector(false);
+
+    selected_lepton_pt  = lepton.Pt();
+    selected_lepton_eta = lepton.Eta();
+    selected_lepton_phi = lepton.Phi();
+    for(auto& x : jets){
+      selected_jet_eta.push_back(x.Eta());
+      selected_jet_phi.push_back(x.Phi());
+    }
+  }
+    
   *p_njets= jets.size();
   *p_MET = METv.E();
   for(auto& x : jets){
     p_selected_jet_pt->push_back(x.Pt());
-    selected_jet_eta.push_back(x.Eta());
-    selected_jet_phi.push_back(x.Phi());
   }
 
 }
 
 
 Skim_K2::Skim_K2(){
-
+  IsTest = false;
 }
 
 
@@ -461,6 +472,12 @@ void Skim_K2::Clear(){
   njets_JES_Do=-1;
   njets_JER_Up=-1;
   njets_JER_Do=-1;
+
+  nbtags=-1; //number of jets
+  nbtags_JES_Up=-1;
+  nbtags_JES_Do=-1;
+  nbtags_JER_Up=-1;
+  nbtags_JER_Do=-1;
 
   MET=-1;
   MET_JES_Up=-1;
