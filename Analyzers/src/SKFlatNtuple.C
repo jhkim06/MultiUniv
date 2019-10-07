@@ -47,6 +47,7 @@ SKFlatNtuple::SKFlatNtuple(){
   NSkipEvent = 0;
   LogEvery = 5000;
   IsDATA = false;
+  OnlyGenLevel = false;
   DataStream = "";
   MCSample = "";
   IsFastSim = false;

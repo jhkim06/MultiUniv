@@ -51,9 +51,9 @@ Event AnalyzerCore::GetEvent(){
   Event ev;
   if(!IsDATA) ev.SetMCweight(gen_weight);
   if(!OnlyGenLevel){
-  	ev.SetTrigger(*HLT_TriggerName);
-  	ev.SetMET(pfMET_Type1_pt,pfMET_Type1_phi);
-  	ev.SetnPV(nPV);
+    ev.SetTrigger(*HLT_TriggerName);
+    ev.SetMET(pfMET_Type1_pt,pfMET_Type1_phi);
+    ev.SetnPV(nPV);
   }
   ev.SetDataYear(DataYear);
 

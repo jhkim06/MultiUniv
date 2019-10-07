@@ -7,9 +7,9 @@
 #    }
 
 ########## Efficiency and Energy Scale
-trg_syst = ['electron_double_trigSFUp_DoubleElectron_passMediumID/electron_double_trigSF_DoubleElectron_passMediumID', 'electron_double_trigSFDn_DoubleElectron_passMediumID/electron_double_trigSF_DoubleElectron_passMediumID']
-id_syst  = ['electron_double_idSFUp_passMediumID/electron_double_idSF_passMediumID', 'electron_double_idSFDn_passMediumID/electron_double_idSF_passMediumID']
-reco_syst = ['electron_double_recoSFUp_passMediumID/electron_double_recoSF_passMediumID','electron_double_recoSFDn_passMediumID/electron_double_recoSF_passMediumID']
+trg_syst = ['muon_double_trigSFUp_DoubleMuon_POGTightWithTightIso/muon_double_trigSF_DoubleMuon_POGTightWithTightIso', 'muon_double_trigSFDn_DoubleMuon_POGTightWithTightIso/muon_double_trigSF_DoubleMuon_POGTightWithTightIso']
+id_syst  = ['muon_double_idSFUp_POGTightWithTightIso/muon_double_idSF_POGTightWithTightIso', 'muon_double_idSFDn_POGTightWithTightIso/muon_double_idSF_POGTightWithTightIso']
+iso_syst = ['muon_double_isoSFUp_POGTightWithTightIso/muon_double_isoSF_POGTightWithTightIso','muon_double_isoSFDn_POGTightWithTightIso/muon_double_isoSF_POGTightWithTightIso']
 l1prefire_syst = ['evt_weight_l1prefire_up/evt_weight_l1prefire','evt_weight_l1prefire_down/evt_weight_l1prefire']
 pileup_syst = ['evt_weight_pureweight_up/evt_weight_pureweight','evt_weight_pureweight_down/evt_weight_pureweight']
 alphaS_syst  = ['PDFWeights_AlphaS']
@@ -37,13 +37,13 @@ nuisances['id_sf'] = {
         },
 }
 
-nuisances['reco_sf'] = {
-    'name'      : 'recoSF',
+nuisances['iso_sf'] = {
+    'name'      : 'IsoSF',
     'kind'      : 'weight',
     'type'      : 'shape',
     'samples'   : {
-        'DYJets'        : reco_syst ,
-        'DYJets10to50'  : reco_syst ,
+        'DYJets'        : iso_syst ,
+        'DYJets10to50'  : iso_syst ,
         },
 }
 

@@ -7,9 +7,9 @@
 #    }
 
 ########## Efficiency and Energy Scale
-trg_syst = ['electron_double_trigSFUp_DoubleElectron_passMediumID/electron_double_trigSF_DoubleElectron_passMediumID', 'electron_double_trigSFDn_DoubleElectron_passMediumID/electron_double_trigSF_DoubleElectron_passMediumID']
-id_syst  = ['electron_double_idSFUp_passMediumID/electron_double_idSF_passMediumID', 'electron_double_idSFDn_passMediumID/electron_double_idSF_passMediumID']
-reco_syst = ['electron_double_recoSFUp_passMediumID/electron_double_recoSF_passMediumID','electron_double_recoSFDn_passMediumID/electron_double_recoSF_passMediumID']
+trg_syst = ['muon_double_trigSFUp_DoubleMuon_POGTightWithTightIso/muon_double_trigSF_DoubleMuon_POGTightWithTightIso', 'muon_double_trigSFDn_DoubleMuon_POGTightWithTightIso/muon_double_trigSF_DoubleMuon_POGTightWithTightIso']
+id_syst  = ['muon_double_idSFUp_POGTightWithTightIso/muon_double_idSF_POGTightWithTightIso', 'muon_double_idSFDn_POGTightWithTightIso/muon_double_idSF_POGTightWithTightIso']
+iso_syst = ['muon_double_isoSFUp_POGTightWithTightIso/muon_double_isoSF_POGTightWithTightIso','muon_double_isoSFDn_POGTightWithTightIso/muon_double_isoSF_POGTightWithTightIso']
 l1prefire_syst = ['evt_weight_l1prefire_up/evt_weight_l1prefire','evt_weight_l1prefire_down/evt_weight_l1prefire']
 pileup_syst = ['evt_weight_pureweight_up/evt_weight_pureweight','evt_weight_pureweight_down/evt_weight_pureweight']
 alphaS_syst  = ['PDFWeights_AlphaS']
@@ -22,8 +22,8 @@ nuisances['trig_sf'] = {
     'kind'	: 'weight',
     'type'	: 'shape',
     'samples'	: {
-      	'DYJetsToEE'	        : trg_syst ,
-      	'DYJets10to50ToEE'	: trg_syst ,
+      	'DYJetsToMuMu'	        : trg_syst ,
+      	'DYJets10to50ToMuMu'	: trg_syst ,
       	'DYJetsToTauTau'	: trg_syst ,
       	'DYJets10to50ToTauTau'	: trg_syst ,
       	'TTLL_powheg'	        : trg_syst ,
@@ -39,8 +39,8 @@ nuisances['id_sf'] = {
     'kind'      : 'weight',
     'type'      : 'shape',
     'samples'   : {
-        'DYJetsToEE'            : id_syst ,
-        'DYJets10to50ToEE'      : id_syst ,
+        'DYJetsToMuMu'            : id_syst ,
+        'DYJets10to50ToMuMu'      : id_syst ,
         'DYJetsToTauTau'        : id_syst ,
         'DYJets10to50ToTauTau'  : id_syst ,
         'TTLL_powheg'           : id_syst ,
@@ -52,20 +52,20 @@ nuisances['id_sf'] = {
         },
 }
 
-nuisances['reco_sf'] = {
-    'name'      : 'recoSF',
+nuisances['iso_sf'] = {
+    'name'      : 'IsoSF',
     'kind'      : 'weight',
     'type'      : 'shape',
     'samples'   : {
-        'DYJetsToEE'            : reco_syst ,
-        'DYJets10to50ToEE'      : reco_syst ,
-        'DYJetsToTauTau'        : reco_syst ,
-        'DYJets10to50ToTauTau'  : reco_syst ,
-        'TTLL_powheg'           : reco_syst ,
-        'WJets_MG'              : reco_syst ,
-        'WW_pythia'             : reco_syst ,
-        'WZ_pythia'             : reco_syst ,
-        'ZZ_pythia'             : reco_syst ,
+        'DYJetsToMuMu'            : iso_syst ,
+        'DYJets10to50ToMuMu'      : iso_syst ,
+        'DYJetsToTauTau'          : iso_syst ,
+        'DYJets10to50ToTauTau'    : iso_syst ,
+        'TTLL_powheg'             : iso_syst ,
+        'WJets_MG'                : iso_syst ,
+        'WW_pythia'               : iso_syst ,
+        'WZ_pythia'               : iso_syst ,
+        'ZZ_pythia'               : iso_syst ,
         },
 }
 
@@ -74,8 +74,8 @@ nuisances['l1prefire'] = {
     'kind'      : 'weight',
     'type'      : 'shape',
     'samples'   : {
-        'DYJetsToEE'            : l1prefire_syst ,
-        'DYJets10to50ToEE'      : l1prefire_syst ,
+        'DYJetsToMuMu'            : l1prefire_syst ,
+        'DYJets10to50ToMuMu'      : l1prefire_syst ,
         'DYJetsToTauTau'        : l1prefire_syst ,
         'DYJets10to50ToTauTau'  : l1prefire_syst ,
         'TTLL_powheg'           : l1prefire_syst ,
@@ -91,8 +91,8 @@ nuisances['pileup'] = {
     'kind'      : 'weight',
     'type'      : 'shape',
     'samples'   : {
-        'DYJetsToEE'            : pileup_syst ,
-        'DYJets10to50ToEE'      : pileup_syst ,
+        'DYJetsToMuMu'            : pileup_syst ,
+        'DYJets10to50ToMuMu'      : pileup_syst ,
         'DYJetsToTauTau'        : pileup_syst ,
         'DYJets10to50ToTauTau'  : pileup_syst ,
         'TTLL_powheg'           : pileup_syst ,

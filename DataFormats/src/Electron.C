@@ -146,6 +146,8 @@ bool Electron::PassID(TString ID){
   if(ID=="passLooseID_noIso") return Pass_CutBasedLooseNoIso();
   if(ID=="SUSYTight") return Pass_SUSYTight();
   if(ID=="SUSYLoose") return Pass_SUSYLoose();
+  if(ID=="ISRLoose") return Pass_ISRLoose();
+  if(ID=="ISRTight") return Pass_ISRTight();
   if(ID=="NOCUT") return true;
   if(ID=="TEST") return Pass_TESTID();
 
@@ -202,6 +204,76 @@ bool Electron::Pass_SUSYLoose(){
 
   return true;
 }
+
+
+//https://github.com/helee/SKFlatAnalyzer/blob/HNtypeI/DataFormats/src/Electron.C#L475-L540
+bool Electron::Pass_ISRLoose() const{
+  if(! (RelIso()<0.6) ) return false;
+  if( fabs(scEta()) <= 1.479 ){                                                   // original values
+    if(! (Full5x5_sigmaIetaIeta() < 0.011) ) return false;                        // 0.0112
+    if(! (fabs(dEtaSeed()) < 0.00377) ) return false;
+    if(! (fabs(dPhiIn()) < 0.04) ) return false;                                  // 0.0884
+    if(! (HoverE() < 0.05 + 1.16/scE() + 0.0324*Rho()/scE()) ) return false;
+    if(! (HoverE() < 0.08) ) return false;
+    if(! (fabs(InvEminusInvP()) < 0.01) ) return false;                           // 0.193
+    if(! (NMissingHits() <= 1) ) return false;
+    if(! (PassConversionVeto()) ) return false;
+  }
+  else{
+    if(! (Full5x5_sigmaIetaIeta() < 0.031) ) return false;                        // 0.0425
+    if(! (fabs(dEtaSeed()) < 0.00674) ) return false;
+    if(! (fabs(dPhiIn()) <  0.08) ) return false;                                 // 0.169
+    if(! (HoverE() < 0.0441 + 2.54/scE() + 0.183*Rho()/scE()) ) return false;
+    if(! (HoverE() < 0.08) ) return false;
+    if(! (fabs(InvEminusInvP()) < 0.01) ) return false;                           // 0.111
+    if(! (NMissingHits() <= 1) ) return false;
+    if(! (PassConversionVeto()) ) return false;
+  }
+  return true;
+}
+
+/*bool Electron::Pass_ISRLoose() const{
+  if(!( passLooseID() )) return false;
+  if( fabs(scEta()) <= 1.479 ){
+//    if(! (fabs(dXY())<0.05 && fabs(dZ())<0.1) ) return false;
+    if(! (Full5x5_sigmaIetaIeta() < 0.012) ) return false;
+    if(! (fabs(dEtaSeed()) < 0.0095) ) return false;
+    if(! (fabs(dPhiIn()) < 0.065) ) return false;
+    if(! (HoverE() < 0.12) ) return false;
+  }
+  else{
+//    if(! (fabs(dXY())<0.1 && fabs(dZ())<0.2) ) return false;
+    if(! (Full5x5_sigmaIetaIeta() < 0.034) ) return false;
+    if(! (fabs(dEtaSeed()) < 0.0145) ) return false;
+    if(! (fabs(dPhiIn()) < 0.0095) ) return false;
+    if(! (HoverE() < 0.12) ) return false;
+  }
+//  if(! (IsGsfCtfScPixChargeConsistent()) ) return false;
+  return true;
+}*/
+
+bool Electron::Pass_ISRTight() const{
+  if(!( passMediumID() )) return false;
+  if( fabs(scEta()) <= 1.479 ){
+//    if(! (fabs(dXY())<0.05 && fabs(dZ())<0.1) ) return false;
+    if(! (Full5x5_sigmaIetaIeta() < 0.011) ) return false;     // < 0.013, 0.011
+    if(! (fabs(dEtaSeed()) < 0.005) ) return false;            // < 0.01 , 0.006
+    if(! (fabs(dPhiIn()) < 0.04) ) return false;               // < 0.07 , 0.15
+    if(! (HoverE() < 0.08) ) return false;                     // < 0.13 , 0.12 
+    if(! (fabs(InvEminusInvP()) < 0.01) ) return false;        // < 9999., 0.05
+  }
+  else{
+//    if(! (fabs(dXY())<0.1 && fabs(dZ())<0.2) ) return false;
+    if(! (Full5x5_sigmaIetaIeta() < 0.031) ) return false;     // < 0.035, 0.031
+    if(! (fabs(dEtaSeed()) < 0.007) ) return false;            // < 0.015, 0.0085
+    if(! (fabs(dPhiIn()) < 0.08) ) return false;               // < 0.1  , 0.1
+    if(! (HoverE() < 0.08) ) return false;                     // < 0.13 , 0.1
+    if(! (fabs(InvEminusInvP()) < 0.01) ) return false;        // < 9999., 0.05
+  }
+//  if(! (IsGsfCtfScPixChargeConsistent()) ) return false;
+  return true;
+}
+
 
 //==== TEST ID
 

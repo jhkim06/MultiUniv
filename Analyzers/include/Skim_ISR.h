@@ -56,17 +56,72 @@ struct Dimu_variables {
     void setVariables(bool pass_sel, double dimu_pt, double dimu_mass, double dimu_gamma_mass, double lead_muon_pt, double sublead_muon_pt, double lead_muon_eta, double sublead_muon_eta, double dr_muon_gamma);
 };
 
+struct ISR_LeptonIDVariation {
+    TString muon_id;
+    TString electron_id;
+    TString id_sel_name;
+
+    bool evt_tag_analysisevnt_sel_rec_;
+    bool evt_tag_dielectron_rec_;
+    bool evt_tag_dimuon_rec_;
+    double dilep_pt_rec_;
+    double dilep_mass_rec_;
+    double dilep_photon_mass_rec_;
+    double leadinglep_pt_rec_;
+    double subleadinglep_pt_rec_;
+    double leadinglep_eta_rec_;
+    double subleadinglep_eta_rec_;
+    double leadingphoton_lep_dr_rec_;
+
+    TString evt_tag_analysisevnt_sel_rec_brname;
+    TString evt_tag_dielectron_rec_brname;
+    TString evt_tag_dimuon_rec_brname;
+    TString dilep_pt_rec_brname;
+    TString dilep_mass_rec_brname;
+    TString leadinglep_pt_rec_brname;
+    TString subleadinglep_pt_rec_brname;
+    TString leadinglep_eta_rec_brname;
+    TString subleadinglep_eta_rec_brname;
+
+    ISR_LeptonIDVariation(TString muon_id_="POGTightWithTightIso", TString electron_id_ = "passMediumID", TString id_sel_name_ = "Fake"): muon_id(muon_id_), electron_id(electron_id_), id_sel_name(id_sel_name_) 
+    {
+        evt_tag_analysisevnt_sel_rec_ = false;
+        evt_tag_dielectron_rec_ = false;
+        evt_tag_dimuon_rec_ = false;
+        dilep_pt_rec_                = -999.;
+        dilep_mass_rec_              = -999.;
+        leadinglep_pt_rec_         = -999.;
+        subleadinglep_pt_rec_      = -999.;
+        leadinglep_eta_rec_        = -999.;
+        subleadinglep_eta_rec_     = -999.;
+
+        evt_tag_analysisevnt_sel_rec_brname = "evt_tag_analysisevnt_sel_rec_" + id_sel_name;
+        evt_tag_dielectron_rec_brname = "evt_tag_dielectron_rec_" + id_sel_name;
+        evt_tag_dimuon_rec_brname = "evt_tag_dimuon_rec_" + id_sel_name;
+        dilep_pt_rec_brname                 = "dilep_pt_rec_" + id_sel_name;
+        dilep_mass_rec_brname               = "dilep_mass_rec_" + id_sel_name;
+        leadinglep_pt_rec_brname          = "leadinglep_pt_rec_" + id_sel_name;
+        subleadinglep_pt_rec_brname       = "subleadinglep_pt_rec_" + id_sel_name;
+        leadinglep_eta_rec_brname         = "leadinglep_eta_rec_" + id_sel_name;
+        subleadinglep_eta_rec_brname      = "subleadinglep_eta_rec_" + id_sel_name;
+    }
+
+    void setBranch(TTree *tree);
+    void resetVariables();
+    void setVariables(bool pass_sel, bool pass_dielectron, bool pass_dimuon, double dilep_pt, double dilep_mass, double lead_lep_pt, double sublead_lep_pt, double lead_lep_eta, double sublead_lep_eta);
+};
+
 class Skim_ISR : public AnalyzerCore {
 
 public:
 
     void initializeAnalyzer();
-    void executeEventFromParameter(AnalyzerParameter param);
+    void executeEventFromParameter(AnalyzerParameter param, bool temp_FSR_study = true);
     void executeEvent();
     
     int findInitialMoterIndex(int mother_index, int current_index, bool same_flavor=true);
     void saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map);
-    void clearDimuVariables();
+    void clearVariables();
 
     Skim_ISR();
     ~Skim_ISR();
@@ -91,6 +146,7 @@ private:
     bool save_generator_info;
 
     vector<Muon> AllMuons;
+    vector<Electron> AllElectrons;
 
     std::vector<Gen>      gen_particles;
     std::vector<Gen>      gen_photons;
@@ -160,7 +216,9 @@ private:
     double subleadingmuon_reliso_rec;
 
     std::map<TString, Dimu_variables*> Dimu_map;
+    ISR_LeptonIDVariation* fake_estimation;
 
+    double evt_weight_fake;
     double evt_weight_total_gen;
     double evt_weight_total_rec;
     double evt_weight_btag_rec;

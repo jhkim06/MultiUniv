@@ -20,7 +20,7 @@ variables['hist_ptll_post_fsr'] = {
     'xaxis': 'Mass p_{T} [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
+    'unfoldBinDefinition': "muon",
     'go1D': True
 }
 
@@ -33,7 +33,7 @@ variables['hist_mll_post_fsr'] = {
     'xaxis': 'Mass [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
+    'unfoldBinDefinition': "muon",
     'go1D': False
 }
 
@@ -47,7 +47,7 @@ variables['hist_ptll_pre_fsr'] = {
     'xaxis': 'Mass p_{T} [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
+    'unfoldBinDefinition': "muon",
     'go1D': True
 }
 
@@ -60,7 +60,7 @@ variables['hist_mll_pre_fsr'] = {
     'xaxis': 'Mass [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
+    'unfoldBinDefinition': "muon",
     'go1D': False
 }
 
@@ -72,7 +72,7 @@ variables['mll_gen_post_fsr_pre_fsr_dRp1_response_matrix'] = {
     'name': 'Get2DMassGenBinIndex(dilep_mass_gen_postfsr, dilep_pt_gen_postfsr):Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[0], dilep_pt_gen_lepton_matched_dressed_drX[0])',
     'xaxis': 'Post FSR',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
+    'unfoldBinDefinition': "muon",
     'go1D': False,
     'isResMatrix':True
 }
@@ -85,7 +85,7 @@ variables['ptll_gen_post_fsr_pre_fsr_dRp1_response_matrix'] = {
     'name': 'Get2DPtGenBinIndex(dilep_pt_gen_postfsr, dilep_mass_gen_postfsr):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[0], dilep_mass_gen_lepton_matched_dressed_drX[0])',
     'xaxis': 'Post FSR',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
+    'unfoldBinDefinition': "muon",
     'go1D': False,
     'isResMatrix':True
 }
@@ -99,7 +99,7 @@ variables['mll_gen_post_fsr_pre_fsr_response_matrix'] = {
     'name': 'Get2DMassGenBinIndex(dilep_mass_gen_postfsr, dilep_pt_gen_postfsr):Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[9], dilep_pt_gen_lepton_matched_dressed_drX[9])',
     'xaxis': 'Post FSR',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
+    'unfoldBinDefinition': "muon",
     'go1D': False,
     'isResMatrix':True
 }
@@ -112,7 +112,7 @@ variables['ptll_gen_post_fsr_pre_fsr_response_matrix'] = {
     'name': 'Get2DPtGenBinIndex(dilep_pt_gen_postfsr, dilep_mass_gen_postfsr):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[9], dilep_mass_gen_lepton_matched_dressed_drX[9])',
     'xaxis': 'Post FSR',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
+    'unfoldBinDefinition': "muon",
     'go1D': False,
     'isResMatrix':True
 }
