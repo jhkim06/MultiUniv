@@ -7,8 +7,8 @@ from PyAnalyzers.python.TMVATools import TMVATools
 
 
 file_names = [
-  '/data8/DATA/SMP/Run2Legacy_v3/2018/MetFt_L_v2_TTSemiLep_v1_K2_v1/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/190412_205511/0000/SKFlatNtuple_2018_MC_638.root',
-  '/data8/DATA/SMP/Run2Legacy_v3/2018/MetFt_L_v2_TTSemiLep_v1_K2_v1/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/190412_205511/0000/SKFlatNtuple_2018_MC_607.root'
+  '/data8/DATA/SMP/Run2Legacy_v3/2018/MetFt_L_v2_TTSemiLep_v1_K2_v1/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/190412_205511/0000/*.root',
+  '/data8/DATA/SMP/Run2Legacy_v3/2018/MetFt_L_v2_TTSemiLep_v1_K2_v1/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/190412_205511/0001/*.root'
 ]
 
 
@@ -42,7 +42,9 @@ options = {
 		         ]),
   },
   'prepareTrees' : ":".join(["SplitMode=Random",
-			     "!V"
+			     "!V",
+			     "nTrain_Signal=50000",
+			     "nTrain_Background=50000",
              	            ]),
   'bookMethod' : {
      'type' : ROOT.TMVA.Types.kBDT,

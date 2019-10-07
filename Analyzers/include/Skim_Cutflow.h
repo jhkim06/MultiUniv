@@ -46,9 +46,12 @@ private:
   FlowMonad<>& MetFt(FlowMonad<>& flowM);
   FlowMonad<>& LooseSingleLepton(FlowMonad<>& flowM);
   FlowMonad<>& TightSingleLepton(FlowMonad<>& flowM);
+  FlowMonad<>& LeptonSF(FlowMonad<>& flowM);
   FlowMonad<>& Trigger(FlowMonad<>& flowM);
+  FlowMonad<>& TriggerSF(FlowMonad<>& flowM);
   FlowMonad<>& FourJets(FlowMonad<>& flowM);
   FlowMonad<>& OneBTags(FlowMonad<>& flowM);
+  FlowMonad<>& BTagSF(FlowMonad<>& flowM);
   FlowMonad<>& TwoBTags(FlowMonad<>& flowM);
   FlowMonad<>& ThreeBTags(FlowMonad<>& flowM);
   
