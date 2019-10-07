@@ -22,7 +22,8 @@ export SKFlatLogWebDir='' # leave if blank if you don't have webpage
 export CMS_PATH=/cvmfs/cms.cern.ch
 source $CMS_PATH/cmsset_default.sh
 export SCRAM_ARCH=slc7_amd64_gcc700
-export cmsswrel='cmssw-patch/CMSSW_10_4_0_patch1'
+export cmsswrel='cmssw/CMSSW_10_2_13'
+#export cmsswrel='cmssw-patch/CMSSW_10_4_0_patch1'
 cd /cvmfs/cms.cern.ch/$SCRAM_ARCH/cms/$cmsswrel/src
 echo "cmsenving..................................."
 eval `scramv1 runtime -sh`
