@@ -217,14 +217,18 @@ for InputSample in InputSamples:
 
   sampleName_set = False
   for key in samples:
-    if sampleName in key:
+
+    if len(key.split("@")) > 1 :
+      key_ =     key.split("@")[1]
+    else :
+      key_ = key
+
+    if sampleName == key_:
         sample     = samples[key]
         sampleName_set = True
 
   if not sampleName_set:
     sample     = samples[sampleName]
-
-
 
   ## Prepare RunDir
   base_rundir = SKFlatRunlogDir+'/'+opt.Analyzer+'_'+'Y'+opt.Year+'_'+sampleName
@@ -294,6 +298,7 @@ for InputSample in InputSamples:
   inputFileList = []
   if IsDATA:
     sampleBaseName = sampleName+'/'+'period'+DataPeriod
+    #sampleBaseName = InputSamples[InputSample]['full_name'] +'/'+'period'+DataPeriod TODO check this line
   else:
     sampleBaseName = InputSamples[InputSample]['full_name']
   if SampleInSkimString == "":
