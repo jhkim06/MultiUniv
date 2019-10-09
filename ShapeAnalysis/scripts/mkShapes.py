@@ -215,6 +215,7 @@ for InputSample in InputSamples:
     sampleName = InputSample
     SampleInSkimString = InputSampleSkims[sampleName]
 
+  ## set sample(value of samples of corresponding sampleName)
   sampleName_set = False
   for key in samples:
 
@@ -224,11 +225,13 @@ for InputSample in InputSamples:
       key_ = key
 
     if sampleName == key_:
-        sample     = samples[key]
-        sampleName_set = True
+      sample     = samples[key]
+      sampleName_set = True
+      break
 
   if not sampleName_set:
-    sample     = samples[sampleName]
+    raise RuntimeError("sampleName_set == False")
+    #sample     = samples[sampleName]
 
   ## Prepare RunDir
   base_rundir = SKFlatRunlogDir+'/'+opt.Analyzer+'_'+'Y'+opt.Year+'_'+sampleName
