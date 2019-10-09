@@ -56,13 +56,11 @@
 #mkPlot.py --pycfg configuration_El.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v1_K2_v3_CHToCB/CHToCB.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
 #scp -r Plot_DY lxplus.cern.ch:www/
 
-#mkShapes.py --pycfg  FakeConfig/configuration_Fake.py -n 50 --nTotFiles 0  --overWrite --doBatch
-#mkShapes.py --pycfg  FakeConfig/configuration_Fake.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp
 
 
 #------------------------------------
 #### ver. 2 (19. 06. 10)
-#mkShapes.py --pycfg  configuration_2b.py -n 300 --nTotFiles 0  --overWrite --doBatch --multiQueue --concLimit 200
+mkShapes.py --pycfg  configuration_2b.py -n 50 --nTotFiles 0  --overWrite --doBatch --multiQueue --concLimit 200
 #sleep 3h
 #mkShapes.py --pycfg  configuration_2b.py -n 20 --nTotFiles 0  --overWrite --doHadd --cleanUp
 #sleep 5s
@@ -73,8 +71,14 @@
 
 #mkShapes.py --pycfg  configuration_3b.py -n 50 --nTotFiles 0  --overWrite --doBatch --multiQueue --concLimit 200
 #sleep 5h
-mkShapes.py --pycfg  configuration_3b.py -n 20 --nTotFiles 0  --overWrite --doHadd --cleanUp
-sleep 5s
-mkPlot.py --pycfg configuration_Mu3b.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_3b/CHToCB_3b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
-sleep 5s
-mkPlot.py --pycfg configuration_El3b.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_3b/CHToCB_3b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+#mkShapes.py --pycfg  configuration_3b.py -n 20 --nTotFiles 0  --overWrite --doHadd --cleanUp
+#sleep 5s
+#mkPlot.py --pycfg configuration_Mu3b.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_3b/CHToCB_3b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+#sleep 5s
+#mkPlot.py --pycfg configuration_El3b.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_3b/CHToCB_3b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+
+#------------------------------------
+#### Fake
+#------------------------------------
+#mkShapes.py --pycfg  FakeConfig/configuration_Fake.py -n 50 --nTotFiles 0  --overWrite --doBatch --multiQueue --concLimit 200
+#mkShapes.py --pycfg  FakeConfig/configuration_Fake.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp

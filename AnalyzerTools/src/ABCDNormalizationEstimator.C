@@ -14,12 +14,14 @@ void ABCDNormalizationEstimator::ReadHistograms(){
 
   string elline;
   ifstream in(datapath+"/histmap_Electron.txt");
+  cout << "ABCDNormalizationEstimator, " << datapath+"/histmap_Electron.txt" << endl;
   while(getline(in,elline)){
     std::istringstream is( elline );
     TString a,b,c,d,e;
     is >> a; // <ID>
     is >> b; // <rootfilename>
     is >> c; // <histogram type> TH1D or TH2D
+    cout << "ABCDNormalizationEstimator, reading " << datapath+"/"+b << endl;
     TFile *file = new TFile(datapath+"/"+b);
     TList *histlist = file->GetListOfKeys();
     for(int i=0;i<histlist->Capacity();i++){
@@ -33,7 +35,7 @@ void ABCDNormalizationEstimator::ReadHistograms(){
         cout << "[ABCDNormalizationEstimator::ABCDNormalizationEstimator] map_hist_Electron_2D : " << a+"_"+this_frname << "   type:" << c  << endl;
         exit(EXIT_FAILURE);
       }
-      //cout << "[ABCDNormalizationEstimator::ABCDNormalizationEstimator] map_hist_Electron_2D : " << a+"_"+this_frname << endl;
+      cout << "[ABCDNormalizationEstimator::ABCDNormalizationEstimator] map_hist_Electron_2D : " << a+"_"+this_frname << endl;
     }
   }
 
@@ -58,7 +60,7 @@ void ABCDNormalizationEstimator::ReadHistograms(){
         cout << "[ABCDNormalizationEstimator::ABCDNormalizationEstimator] map_hist_Muon_2D : " << a+"_"+this_frname << "   type:" << c  << endl;
         exit(EXIT_FAILURE);
       }
-      //cout << "[ABCDNormalizationEstimator::ABCDNormalizationEstimator] map_hist_Muon_2D : " << a+"_"+this_frname << endl;
+      cout << "[ABCDNormalizationEstimator::ABCDNormalizationEstimator] map_hist_Muon_2D : " << a+"_"+this_frname << endl;
     }
   }
 
@@ -90,7 +92,7 @@ double ABCDNormalizationEstimator::GetElectronABCDNormalization_1D(TString ID, T
   if(mapit==map_hist_Electron_1D.end()){
     if(IgnoreNoHist) return 1.;
     else{
-      cout << "[ABCDNormalizationEstimator::GetElectronABCDNormalization_1D] No"<< ID+"_"+key <<endl;
+      cout << "[ABCDNormalizationEstimator::GetElectronABCDNormalization_1D] No "<< ID+"_"+key <<endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -123,7 +125,7 @@ double ABCDNormalizationEstimator::GetMuonABCDNormalization_1D(TString ID, TStri
   if(mapit==map_hist_Muon_1D.end()){
     if(IgnoreNoHist) return 1.;
     else{
-      cout << "[ABCDNormalizationEstimator::GetMuonABCDNormalization_1D] No"<< ID+"_"+key <<endl;
+      cout << "[ABCDNormalizationEstimator::GetMuonABCDNormalization_1D] No " << ID+"_"+key <<endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -159,7 +161,7 @@ double ABCDNormalizationEstimator::GetElectronABCDNormalization_2D(TString ID, T
   if(mapit==map_hist_Electron_2D.end()){
     if(IgnoreNoHist) return 1.;
     else{
-      cout << "[ABCDNormalizationEstimator::GetElectronABCDNormalization_2D] No"<< ID+"_"+key <<endl;
+      cout << "[ABCDNormalizationEstimator::GetElectronABCDNormalization_2D] No "<< ID+"_"+key <<endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -195,7 +197,7 @@ double ABCDNormalizationEstimator::GetMuonABCDNormalization_2D(TString ID, TStri
   if(mapit==map_hist_Muon_2D.end()){
     if(IgnoreNoHist) return 1.;
     else{
-      cout << "[ABCDNormalizationEstimator::GetMuonABCDNormalization_2D] No"<< ID+"_"+key <<endl;
+      cout << "[ABCDNormalizationEstimator::GetMuonABCDNormalization_2D] No "<< ID+"_"+key <<endl;
       exit(EXIT_FAILURE);
     }
   }

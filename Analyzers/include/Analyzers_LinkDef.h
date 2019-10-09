@@ -31,4 +31,6 @@
 #pragma link C++ class Skim_PUreweight+;
 #pragma link C++ class Skim_Cutflow+;
 
+#pragma link C++ class Skim_ABCD+;
+
 #endif
