@@ -34,31 +34,31 @@ samples['TTLJ_powheg'] = {
     'weight' :McWeight,
     }
 
-samples['TTLJ_powheg_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLJ_powheg_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLJ_powheg_hdamp_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLJ_powheg_hdamp_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLJ_powheg_mass_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
+#samples['TTLJ_powheg_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLJ_powheg_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLJ_powheg_hdamp_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLJ_powheg_hdamp_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLJ_powheg_mass_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
 #samples['TTLJ_powheg_mass_Do'] = {
 #    'skim'   :'',
 #    'weight' :McWeight,
@@ -69,106 +69,106 @@ samples['TTLL_powheg'] = {
     'weight' :McWeight,
     }
 
-samples['TTLL_powheg_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLL_powheg_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLL_powheg_hdamp_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLL_powheg_hdamp_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLL_powheg_mass_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLL_powheg_mass_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTJJ_powheg'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTJJ_powheg_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTJJ_powheg_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTJJ_powheg_hdamp_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTJJ_powheg_hdamp_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
+#samples['TTLL_powheg_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLL_powheg_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLL_powheg_hdamp_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLL_powheg_hdamp_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLL_powheg_mass_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLL_powheg_mass_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTJJ_powheg'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTJJ_powheg_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTJJ_powheg_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTJJ_powheg_hdamp_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTJJ_powheg_hdamp_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
 #samples['TTJJ_powheg_mass_Up'] = {
 #    'skim'   :'',
 #    'weight' :McWeight,
 #    }
 #
-samples['TTJJ_powheg_mass_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TT_MG'] = {
-    'skim'   :'',
-    'weight' :McWeight+'/PUweight', #XXX no PUweight
-    }
-
-samples['ttbb'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['SingleTop_sch_top'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['SingleTop_tch_top'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['SingleTop_tch_antitop'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['SingleTop_tW_top'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['SingleTop_tW_antitop'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
+#samples['TTJJ_powheg_mass_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TT_MG'] = {
+#    'skim'   :'',
+#    'weight' :McWeight+'/PUweight', #XXX no PUweight
+#    }
+#
+#samples['ttbb'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['SingleTop_sch_top'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['SingleTop_tch_top'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['SingleTop_tch_antitop'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['SingleTop_tW_top'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['SingleTop_tW_antitop'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
 samples['WW_pythia'] = {
     'skim'   :'',
     'weight' :McWeight,
@@ -194,10 +194,10 @@ samples['ttZ'] = {
     'weight' :McWeight,
     }
 
-samples['ttH_bb'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
+#samples['ttH_bb'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
 #--------------------    
 # DATA driven QCD
 #--------------------

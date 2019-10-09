@@ -6,6 +6,13 @@ from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed
 # style 0 : noFillColor
 # no nameHR --> using sample keyname intead
 
+groupPlot['QCD'] = {
+    'nameHR' : "QCD",
+    'isSignal' : 0,
+    'color':  kBlack,
+    'samples' : ['DoubleMuonQCDFakeRate']
+    }
+
 groupPlot['WJet'] = {
     'nameHR' : "WJet",
     'isSignal' : 0,
@@ -108,6 +115,14 @@ plot['DoubleMuon'] = {
     'color':kBlack,
     'isSignal':0,
     'isData':1,
+    'scale':1,
+    }
+
+plot['DoubleMuonQCDFakeRate'] = {
+    'nameHR' : "DoubleMuonQCDFakeRate",
+    'color':kRed,
+    'isSignal':0,
+    'isData':0,
     'scale':1,
     }
 
