@@ -19,232 +19,234 @@ McWeight += '*((HEMweight==1.)*1.+(HEMweight!=1.)*(1-HEMweight))'
 # MC
 #--------------------    
 
+IsoCut = 'passIso==1'
+
 samples['DYJets_MG'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['DYJets10to50_MG'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['WJets_MG'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTLJ_powheg'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 '''
 samples['TTLJ_powheg_Up'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTLJ_powheg_Do'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTLJ_powheg_hdamp_Up'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTLJ_powheg_hdamp_Do'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTLJ_powheg_mass_Up'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 #samples['TTLJ_powheg_mass_Do'] = {
 #    'skim'   :'',
 #    'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
 #    }
 '''
 samples['TTLL_powheg'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 '''
 samples['TTLL_powheg_Up'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTLL_powheg_Do'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTLL_powheg_hdamp_Up'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTLL_powheg_hdamp_Do'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTLL_powheg_mass_Up'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTLL_powheg_mass_Do'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 '''
 '''
 samples['TTJJ_powheg'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTJJ_powheg_Up'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTJJ_powheg_Do'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTJJ_powheg_hdamp_Up'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TTJJ_powheg_hdamp_Do'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 #samples['TTJJ_powheg_mass_Up'] = {
 #    'skim'   :'',
 #    'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
 #    }
 #
 samples['TTJJ_powheg_mass_Do'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['TT_MG'] = {
     'skim'   :'',
     'weight' :McWeight+'/PUweight', #XXX no PUweight
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['ttbb'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 '''
 samples['SingleTop_sch_Lep'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['SingleTop_tch_top_Incl'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['SingleTop_tch_antitop_Incl'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['SingleTop_tW_top_Incl'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['SingleTop_tW_antitop_Incl'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['WW_pythia'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['WZ_pythia'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['ZZ_pythia'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['ttW'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['ttZ'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 '''
 samples['ttH_bb'] = {
     'skim'   :'',
     'weight' :McWeight,
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 '''
 
 #--------------------    
-# DATA driven QCD
+# DATA driven QCD (Matrix Element method)
 #--------------------
 '''
 samples['SingleElectron_FakeEl'] = {
@@ -265,14 +267,30 @@ samples['SingleMuon_FakeMu'] = {
 samples['EGamma'] = {
     'skim'   :'',
     'weight' :'1',
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 
 samples['SingleMuon'] = {
     'skim'   :'',
     'weight' :'1',
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
+#-------------------
+# DATA driven QCD (ABCD Method)
+#-------------------
+AntiIsoCut = 'passAntiIso==1'
+samples_QCD ={}
+for key, val in samples.iteritems():
+  key_QCD = "%s@%s_QCD"%(key,key)
+  samples_QCD[key_QCD] = val
+  samples_QCD[key_QCD]['cut'] = AntiIsoCut
+  #XXX
+  if key == 'EGamma' or key == 'SingleMuon':
+    samples_QCD[key_QCD]['weight'] += '*ABCDweight' #normalization of iso/anti_iso
+  else:
+    samples_QCD[key_QCD]['weight'] += '*(-ABCDweight)'
+samples.update(samples_QCD)
+
 #--------------------    
 # Signal
 #--------------------
@@ -280,16 +298,16 @@ samples['SingleMuon'] = {
 samples['CHToCB_M090'] = {
     'skim'   :'',
     'weight' :McWeight+'/PUweight', #XXX no PUweight
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 samples['CHToCB_M120'] = {
     'skim'   :'',
     'weight' :McWeight+'/PUweight', #XXX no PUweight
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 samples['CHToCB_M140'] = {
     'skim'   :'',
     'weight' :McWeight+'/PUweight', #XXX no PUweight
-    'cut'    :'',
+    'cut'    :IsoCut,
     }
 '''

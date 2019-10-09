@@ -6,11 +6,12 @@ from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed
 # style 0 : noFillColor
 # no nameHR --> using sample keyname intead
 
+TT = ['TTLL_powheg','TTLJ_powheg']
 groupPlot['TT'] = {
     'nameHR' : "TT",
     'isSignal' : 0,
     'color':  kRed,
-    'samples' : ['TTLL_powheg','TTLJ_powheg']
+    'samples' : TT
     #'samples' : ['TTLL_powheg','TTLJ_powheg','TTJJ_powheg']
     }
 '''
@@ -21,32 +22,37 @@ groupPlot['ttbb'] = {
     'samples' : ['ttbb']
     }
 '''
+
+ST = ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_Incl','SingleTop_tW_antitop_Incl']
 groupPlot['ST'] = {
     'nameHR' : "ST",
     'isSignal' : 0,
     'color':  kMagenta,
-    'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_Incl','SingleTop_tW_antitop_Incl']
+    'samples' : ST
     }
 
+VJ = ['WJets_MG','DYJets_MG','DYJets10to50_MG']
 groupPlot['VJ'] = {
     'nameHR' : "VJ",
     'isSignal' : 0,
     'color':  kOrange,
-    'samples' : ['WJets_MG','DYJets_MG','DYJets10to50_MG']
+    'samples' : VJ
     }
 
+VV = ['WW_pythia','WZ_pythia','ZZ_pythia']
 groupPlot['VV'] = {
     'nameHR' : "VV",
     'isSignal' : 0,
     'color':  kCyan,
-    'samples' : ['WW_pythia','WZ_pythia','ZZ_pythia']
+    'samples' : VV
     }
 
+TTX = ['ttW','ttZ']
 groupPlot['TTX'] = {
     'nameHR' : "TTX",
     'isSignal' : 0,
     'color':  kYellow,
-    'samples' : ['ttW','ttZ']
+    'samples' : TTX
     #'samples' : ['ttW','ttZ','ttH_bb']
     }
 
@@ -192,6 +198,13 @@ plot['SingleMuon'] = {
     'isData':1,
     'scale':1,
     }
+
+plot_QCD = {}
+for key, val in plot.iteritems():
+  key_QCD = "%s@%s_QCD"%(key,key)
+  plot_QCD[key_QCD] = val
+  plot_QCD[key_QCD]['nameHR'] += "_QCD"
+plot.update(plot_QCD)
 
 legend['lumi'] = 'L = 41.5/fb'
 legend['sqrt'] = '#sqrt{s} = 13 TeV'
