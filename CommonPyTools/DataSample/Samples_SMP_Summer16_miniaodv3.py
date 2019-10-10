@@ -1,5 +1,7 @@
 # alias PD xsec nmc sumw
 sampleInfo = {
+'DY_MuMu_FSR_PHOTOS'		:{'name' :'photos_10KeV_Zmumu',	'xsec': 3205.6,	'nMC':9928000.0,	'Nsum': 9615170.0},
+'DY_MuMu_FSR_PYTHIA'		:{'name' :'pythia_10KeV_Zmumu',	'xsec': 3205.6,	'nMC':9944000.0,	'Nsum': 9630584.0},
 'DYFSR_PHOTOS'		:{'name' :'photos_10KeV',	'xsec': 3205.6,	'nMC':9842000.0,	'Nsum': 9532930.0 },
 'DYFSR_PYTHIA'		:{'name' :'pythia_10KeV',	'xsec': 3205.6,	'nMC':9838000.0,	'Nsum': 9528022.0},
 'DY0Jets'		:{'name' :'DYToLL_0J_13TeV-amcatnloFXFX-pythia8',	'xsec': 4620.519036,	'nMC':94035770.000000,	'Nsum': 76855402.000000 },

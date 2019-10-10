@@ -1261,11 +1261,6 @@ class PlotFactory:
 	pad1.SetLogy(0)
 
 
-
-
-
-
-
   # _______________________________________________
   # --- squared sum
   def Pad2TAxis(self, hist):

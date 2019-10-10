@@ -208,6 +208,7 @@ bool Electron::Pass_SUSYLoose(){
 
 //https://github.com/helee/SKFlatAnalyzer/blob/HNtypeI/DataFormats/src/Electron.C#L475-L540
 bool Electron::Pass_ISRLoose() const{
+  // Trigger emulation (See https://twiki.cern.ch/twiki/bin/viewauth/CMS/SUSLeptonSF#ID_IP_ISO_AN1)
   if(! (RelIso()<0.6) ) return false;
   if( fabs(scEta()) <= 1.479 ){                                                   // original values
     if(! (Full5x5_sigmaIetaIeta() < 0.011) ) return false;                        // 0.0112
