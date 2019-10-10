@@ -25,6 +25,8 @@ McWeight += '*((HEMweight==1.)*1.+(HEMweight!=1.)*(1-HEMweight))'
 # MC
 #--------------------    
 
+IsoCut = 'passIso==1'
+
 samples['DYJets_MG'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'weight' :McWeight,
@@ -278,6 +280,22 @@ samples['SingleMuon'] = {
     'weight' :'nbtags>=3',
     'cut'    :'',
     }
+#-------------------
+# DATA driven QCD (ABCD Method)
+#-------------------
+AntiIsoCut = 'passAntiIso==1'
+samples_QCD ={}
+for key, val in samples.iteritems():
+  key_QCD = "%s@%s_QCD"%(key,key)
+  samples_QCD[key_QCD] = val
+  samples_QCD[key_QCD]['cut'] = AntiIsoCut
+  #XXX
+  if key == 'EGamma' or key == 'SingleMuon':
+    samples_QCD[key_QCD]['weight'] += '*ABCDweight' #normalization of iso/anti_iso
+  else:
+    samples_QCD[key_QCD]['weight'] += '*(-ABCDweight)'
+samples.update(samples_QCD)
+
 #--------------------    
 # Signal
 #--------------------
