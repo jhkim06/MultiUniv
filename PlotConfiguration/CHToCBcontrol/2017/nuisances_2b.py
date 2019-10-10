@@ -33,193 +33,193 @@ nuisances['ttxsec'] = {
     }
 }
 
-nuisances['JES'] = {
-    'name' : 'JES',
-    'kind' : 'variableChange',
-    'type' : 'shape',
-    'samples' : { 
-      'DYJet'                 : ['1', '1'],
-      'DYJets10to50_MG'       : ['1', '1'],
-      'WJets_MG'              : ['1', '1'],
-      'TTLJ_powheg'	      : ['1', '1'],
-      'TTLL_powheg'	      : ['1', '1'],
-      'TTJJ_powheg'	      : ['1', '1'],
-      'SingleTop_sch_top'     : ['1', '1'],
-      'SingleTop_tch_top'     : ['1', '1'],
-      'SingleTop_tch_antitop' : ['1', '1'],
-      'SingleTop_tW_top'      : ['1', '1'],
-      'SingleTop_tW_antitop'  : ['1', '1'],
-      'WW_pythia'             : ['1', '1'],
-      'WZ_pythia'             : ['1', '1'],
-      'ZZ_pythia'             : ['1', '1'],
-      'ttW'                   : ['1', '1'],
-      'ttZ'                   : ['1', '1'],
-      'ttH_bb'                : ['1', '1'],
-      'ttbb'                  : ['1', '1'],
-    },
-    'variablesUp' : {
-	'fitted_dijet_mass' : [
-          'fitted_dijet_mass_JES_Up',
-	  'fitted_dijet_m_JES_Up'
-	],
-	'fitter_status' : [
-	  'fitter_status_JES_Up',
-	  'fitter_status_JES_Up'
-	],
-	'1st_leading_jet_pt' : [
-	  '1st_leading_jet_pt_JES_Up',
-	  'selected_jet_pt_JES_Up[0]'
-	],
-	'2nd_leading_jet_pt' : [
-	  '2nd_leading_jet_pt_JES_Up',
-	  'selected_jet_pt_JES_Up[1]'
-        ],
-	'3rd_leading_jet_pt' : [
-	  '3rd_leading_jet_pt_JES_Up',
-	  'selected_jet_pt_JES_Up[2]'
-        ],
-	'4th_leading_jet_pt' : [
-	  '4th_leading_jet_pt_JES_Up',
-	  'selected_jet_pt_JES_Up[3]',
-        ],
-	'njets' : [
-	  'njets_JES_Up',
-	  'njets_JES_Up'
-	],
-	'MET' : [
-	  'MET_JES_Up',
-	  'MET_JES_Up'
-	],
-    },
-    'variablesDo' : {
-	'fitted_dijet_mass' : [
-          'fitted_dijet_mass_JES_Do',
-	  'fitted_dijet_m_JES_Do'
-	],
-	'fitter_status' : [
-	  'fitter_status_JES_Do',
-	  'fitter_status_JES_Do'
-	],
-	'1st_leading_jet_pt' : [
-	  '1st_leading_jet_pt_JES_Do',
-	  'selected_jet_pt_JES_Do[0]'
-	],
-	'2nd_leading_jet_pt' : [
-	  '2nd_leading_jet_pt_JES_Do',
-	  'selected_jet_pt_JES_Do[1]'
-        ],
-	'3rd_leading_jet_pt' : [
-	  '3rd_leading_jet_pt_JES_Do',
-	  'selected_jet_pt_JES_Do[2]'
-        ],
-	'4th_leading_jet_pt' : [
-	  '4th_leading_jet_pt_JES_Do',
-	  'selected_jet_pt_JES_Do[3]',
-        ],
-	'njets' : [
-	  'njets_JES_Do',
-	  'njets_JES_Do'
-	],
-	'MET' : [
-	  'MET_JES_Do',
-	  'MET_JES_Do'
-	],
-    },
-}
+#nuisances['JES'] = {
+#    'name' : 'JES',
+#    'kind' : 'variableChange',
+#    'type' : 'shape',
+#    'samples' : { 
+#      'DYJet'                 : ['1', '1'],
+#      'DYJets10to50_MG'       : ['1', '1'],
+#      'WJets_MG'              : ['1', '1'],
+#      'TTLJ_powheg'	      : ['1', '1'],
+#      'TTLL_powheg'	      : ['1', '1'],
+#      'TTJJ_powheg'	      : ['1', '1'],
+#      'SingleTop_sch_top'     : ['1', '1'],
+#      'SingleTop_tch_top'     : ['1', '1'],
+#      'SingleTop_tch_antitop' : ['1', '1'],
+#      'SingleTop_tW_top'      : ['1', '1'],
+#      'SingleTop_tW_antitop'  : ['1', '1'],
+#      'WW_pythia'             : ['1', '1'],
+#      'WZ_pythia'             : ['1', '1'],
+#      'ZZ_pythia'             : ['1', '1'],
+#      'ttW'                   : ['1', '1'],
+#      'ttZ'                   : ['1', '1'],
+#      'ttH_bb'                : ['1', '1'],
+#      'ttbb'                  : ['1', '1'],
+#    },
+#    'variablesUp' : {
+#	'fitted_dijet_mass' : [
+#          'fitted_dijet_mass_JES_Up',
+#	  'fitted_dijet_m_JES_Up'
+#	],
+#	#'fitter_status' : [
+#	#  'fitter_status_JES_Up',
+#	#  'fitter_status_JES_Up'
+#	#],
+#	#'1st_leading_jet_pt' : [
+#	#  '1st_leading_jet_pt_JES_Up',
+#	#  'selected_jet_pt_JES_Up[0]'
+#	#],
+#	#'2nd_leading_jet_pt' : [
+#	#  '2nd_leading_jet_pt_JES_Up',
+#	#  'selected_jet_pt_JES_Up[1]'
+#        #],
+#	#'3rd_leading_jet_pt' : [
+#	#  '3rd_leading_jet_pt_JES_Up',
+#	#  'selected_jet_pt_JES_Up[2]'
+#        #],
+#	#'4th_leading_jet_pt' : [
+#	#  '4th_leading_jet_pt_JES_Up',
+#	#  'selected_jet_pt_JES_Up[3]',
+#        #],
+#	#'njets' : [
+#	#  'njets_JES_Up',
+#	#  'njets_JES_Up'
+#	#],
+#	#'MET' : [
+#	#  'MET_JES_Up',
+#	#  'MET_JES_Up'
+#	#],
+#    },
+#    'variablesDo' : {
+#	'fitted_dijet_mass' : [
+#          'fitted_dijet_mass_JES_Do',
+#	  'fitted_dijet_m_JES_Do'
+#	],
+#	#'fitter_status' : [
+#	#  'fitter_status_JES_Do',
+#	#  'fitter_status_JES_Do'
+#	#],
+#	#'1st_leading_jet_pt' : [
+#	#  '1st_leading_jet_pt_JES_Do',
+#	#  'selected_jet_pt_JES_Do[0]'
+#	#],
+#	#'2nd_leading_jet_pt' : [
+#	#  '2nd_leading_jet_pt_JES_Do',
+#	#  'selected_jet_pt_JES_Do[1]'
+#        #],
+#	#'3rd_leading_jet_pt' : [
+#	#  '3rd_leading_jet_pt_JES_Do',
+#	#  'selected_jet_pt_JES_Do[2]'
+#        #],
+#	#'4th_leading_jet_pt' : [
+#	#  '4th_leading_jet_pt_JES_Do',
+#	#  'selected_jet_pt_JES_Do[3]',
+#        #],
+#	#'njets' : [
+#	#  'njets_JES_Do',
+#	#  'njets_JES_Do'
+#	#],
+#	#'MET' : [
+#	#  'MET_JES_Do',
+#	#  'MET_JES_Do'
+#	#],
+#    },
+#}
 
-nuisances['JER'] = {
-    'name' : 'JER',
-    'kind' : 'variableChange',
-    'type' : 'shape',
-    'samples' : {
-      'DYJet'                 : ['1', '1'],
-      'DYJets10to50_MG'       : ['1', '1'],
-      'WJets_MG'              : ['1', '1'],
-      'TTLJ_powheg'	      : ['1', '1'],
-      'TTLL_powheg'	      : ['1', '1'],
-      'TTJJ_powheg'	      : ['1', '1'],
-      'SingleTop_sch_top'     : ['1', '1'],
-      'SingleTop_tch_top'     : ['1', '1'],
-      'SingleTop_tch_antitop' : ['1', '1'],
-      'SingleTop_tW_top'      : ['1', '1'],
-      'SingleTop_tW_antitop'  : ['1', '1'],
-      'WW_pythia'             : ['1', '1'],
-      'WZ_pythia'             : ['1', '1'],
-      'ZZ_pythia'             : ['1', '1'],
-      'ttW'                   : ['1', '1'],
-      'ttZ'                   : ['1', '1'],
-      'ttH_bb'                : ['1', '1'],
-      'ttbb'                  : ['1', '1'],
-    },
-    'variablesUp' : {
-	'fitted_dijet_mass' : [
-          'fitted_dijet_mass_JER_Up',
-	  'fitted_dijet_m_JER_Up'
-	],
-	'fitter_status' : [
-	  'fitter_status_JER_Up',
-	  'fitter_status_JER_Up'
-	],
-	'1st_leading_jet_pt' : [
-	  '1st_leading_jet_pt_JER_Up',
-	  'selected_jet_pt_JER_Up[0]'
-	],
-	'2nd_leading_jet_pt' : [
-	  '2nd_leading_jet_pt_JER_Up',
-	  'selected_jet_pt_JER_Up[1]'
-        ],
-	'3rd_leading_jet_pt' : [
-	  '3rd_leading_jet_pt_JER_Up',
-	  'selected_jet_pt_JER_Up[2]'
-        ],
-	'4th_leading_jet_pt' : [
-	  '4th_leading_jet_pt_JER_Up',
-	  'selected_jet_pt_JER_Up[3]',
-        ],
-	'njets' : [
-	  'njets_JER_Up',
-	  'njets_JER_Up'
-	],
-	'MET' : [
-	  'MET_JER_Up',
-	  'MET_JER_Up'
-	],
-    },
-    'variablesDo' : {
-	'fitted_dijet_mass' : [
-          'fitted_dijet_mass_JER_Do',
-	  'fitted_dijet_m_JER_Do'
-	],
-	'fitter_status' : [
-	  'fitter_status_JER_Do',
-	  'fitter_status_JER_Do'
-	],
-	'1st_leading_jet_pt' : [
-	  '1st_leading_jet_pt_JER_Do',
-	  'selected_jet_pt_JER_Do[0]'
-	],
-	'2nd_leading_jet_pt' : [
-	  '2nd_leading_jet_pt_JER_Do',
-	  'selected_jet_pt_JER_Do[1]'
-        ],
-	'3rd_leading_jet_pt' : [
-	  '3rd_leading_jet_pt_JER_Do',
-	  'selected_jet_pt_JER_Do[2]'
-        ],
-	'4th_leading_jet_pt' : [
-	  '4th_leading_jet_pt_JER_Do',
-	  'selected_jet_pt_JER_Do[3]',
-        ],
-	'njets' : [
-	  'njets_JER_Do',
-	  'njets_JER_Do'
-	],
-	'MET' : [
-	  'MET_JER_Do',
-	  'MET_JER_Do'
-	],
-    },
-}
+#nuisances['JER'] = {
+#    'name' : 'JER',
+#    'kind' : 'variableChange',
+#    'type' : 'shape',
+#    'samples' : {
+#      'DYJet'                 : ['1', '1'],
+#      'DYJets10to50_MG'       : ['1', '1'],
+#      'WJets_MG'              : ['1', '1'],
+#      'TTLJ_powheg'	      : ['1', '1'],
+#      'TTLL_powheg'	      : ['1', '1'],
+#      'TTJJ_powheg'	      : ['1', '1'],
+#      'SingleTop_sch_top'     : ['1', '1'],
+#      'SingleTop_tch_top'     : ['1', '1'],
+#      'SingleTop_tch_antitop' : ['1', '1'],
+#      'SingleTop_tW_top'      : ['1', '1'],
+#      'SingleTop_tW_antitop'  : ['1', '1'],
+#      'WW_pythia'             : ['1', '1'],
+#      'WZ_pythia'             : ['1', '1'],
+#      'ZZ_pythia'             : ['1', '1'],
+#      'ttW'                   : ['1', '1'],
+#      'ttZ'                   : ['1', '1'],
+#      'ttH_bb'                : ['1', '1'],
+#      'ttbb'                  : ['1', '1'],
+#    },
+#    'variablesUp' : {
+#	'fitted_dijet_mass' : [
+#          'fitted_dijet_mass_JER_Up',
+#	  'fitted_dijet_m_JER_Up'
+#	],
+#	#'fitter_status' : [
+#	#  'fitter_status_JER_Up',
+#	#  'fitter_status_JER_Up'
+#	#],
+#	#'1st_leading_jet_pt' : [
+#	#  '1st_leading_jet_pt_JER_Up',
+#	#  'selected_jet_pt_JER_Up[0]'
+#	#],
+#	#'2nd_leading_jet_pt' : [
+#	#  '2nd_leading_jet_pt_JER_Up',
+#	#  'selected_jet_pt_JER_Up[1]'
+#        #],
+#	#'3rd_leading_jet_pt' : [
+#	#  '3rd_leading_jet_pt_JER_Up',
+#	#  'selected_jet_pt_JER_Up[2]'
+#        #],
+#	#'4th_leading_jet_pt' : [
+#	#  '4th_leading_jet_pt_JER_Up',
+#	#  'selected_jet_pt_JER_Up[3]',
+#        #],
+#	#'njets' : [
+#	#  'njets_JER_Up',
+#	#  'njets_JER_Up'
+#	#],
+#	#'MET' : [
+#	#  'MET_JER_Up',
+#	#  'MET_JER_Up'
+#	#],
+#    },
+#    'variablesDo' : {
+#	'fitted_dijet_mass' : [
+#          'fitted_dijet_mass_JER_Do',
+#	  'fitted_dijet_m_JER_Do'
+#	],
+#	#'fitter_status' : [
+#	#  'fitter_status_JER_Do',
+#	#  'fitter_status_JER_Do'
+#	#],
+#	#'1st_leading_jet_pt' : [
+#	#  '1st_leading_jet_pt_JER_Do',
+#	#  'selected_jet_pt_JER_Do[0]'
+#	#],
+#	#'2nd_leading_jet_pt' : [
+#	#  '2nd_leading_jet_pt_JER_Do',
+#	#  'selected_jet_pt_JER_Do[1]'
+#        #],
+#	#'3rd_leading_jet_pt' : [
+#	#  '3rd_leading_jet_pt_JER_Do',
+#	#  'selected_jet_pt_JER_Do[2]'
+#        #],
+#	#'4th_leading_jet_pt' : [
+#	#  '4th_leading_jet_pt_JER_Do',
+#	#  'selected_jet_pt_JER_Do[3]',
+#        #],
+#	#'njets' : [
+#	#  'njets_JER_Do',
+#	#  'njets_JER_Do'
+#	#],
+#	#'MET' : [
+#	#  'MET_JER_Do',
+#	#  'MET_JER_Do'
+#	#],
+#    },
+#}
 
 
 nuisances['top_mass'] = {
@@ -572,19 +572,46 @@ nuisances['gentoppt_reweight'] = {
 #	'ZZ_pythia'	: id_syst ,
 #	},
 #}
-'''
 nuisances['alphaS'] = {
     'name'	: 'alphaS',
-    'kind'	: 'weight',
+    'kind'	: 'PDF',
     'type'	: 'shape',
     'samples'	: {
-      	'DYJets'	: alphaS_syst ,
-	'TTLL_powheg'	: alphaS_syst ,
-	'WJets_MG'	: alphaS_syst ,
-	#'WW_pythia'	: alphaS_syst ,
-	#'WZ_pythia'	: alphaS_syst ,
-	#'ZZ_pythia'	: alphaS_syst ,
+      	'DYJets'	: 'PDFWeights_AlphaS' ,
+	'TTLJ_powheg'	: 'PDFWeights_AlphaS' ,
+	'TTLL_powheg'	: 'PDFWeights_AlphaS' ,
+	'WJets_MG'	: 'PDFWeights_AlphaS' ,
+	#'WW_pythia'	: 'PDFWeights_AlphaS' ,
+	#'WZ_pythia'	: 'PDFWeights_AlphaS' ,
+	#'ZZ_pythia'	: 'PDFWeights_AlphaS' ,
 	},
 }
-'''
 
+nuisances['PDFError'] = {
+    'name'	: 'pdfHESSIAN',
+    'kind'	: 'PDF',
+    'type'	: 'shape',
+    'samples'	: {
+      	'DYJets'	: 'PDFWeights_Error' ,
+	'TTLJ_powheg'	: 'PDFWeights_Error' ,
+	'TTLL_powheg'	: 'PDFWeights_Error' ,
+	'WJets_MG'	: 'PDFWeights_Error' ,
+	#'WW_pythia'	: 'PDFWeights_Error' ,
+	#'WZ_pythia'	: 'PDFWeights_Error' ,
+	#'ZZ_pythia'	: 'PDFWeights_Error' ,
+	},
+}
+nuisances['PDfScale'] = {
+    'name'	: 'pdfScle',
+    'kind'	: 'PDF',
+    'type'	: 'shape',
+    'samples'	: {
+      	'DYJets'	: 'PDFWeights_Scale' ,
+	'TTLJ_powheg'	: 'PDFWeights_Scale' ,
+	'TTLL_powheg'	: 'PDFWeights_Scale' ,
+	'WJets_MG'	: 'PDFWeights_Scale' ,
+	#'WW_pythia'	: 'PDFWeights_Scale' ,
+	#'WZ_pythia'	: 'PDFWeights_Scale' ,
+	#'ZZ_pythia'	: 'PDFWeights_Scale' ,
+	},
+}

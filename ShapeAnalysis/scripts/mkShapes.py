@@ -297,7 +297,7 @@ for InputSample in InputSamples:
 
   inputFileList = []
   if IsDATA:
-    sampleBaseName = sampleName+'/'+'period'+DataPeriod
+    sampleBaseName = InputSamples[InputSample]['full_name']+'/'+'period'+DataPeriod
     #sampleBaseName = InputSamples[InputSample]['full_name'] +'/'+'period'+DataPeriod TODO check this line
   else:
     sampleBaseName = InputSamples[InputSample]['full_name']

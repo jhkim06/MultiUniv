@@ -3,7 +3,7 @@ SKFlat_WD = os.getenv('SKFlat_WD')
 sys.path.insert(0,SKFlat_WD+'/CommonTools/include') 
 from Definitions import *
 
-supercut = 'passIso==1 && passTightID==1'
+supercut = 'passTightID==1'
 supercut += ' && selected_lepton_pt>0'
 supercut += ' && njets>0'
 
