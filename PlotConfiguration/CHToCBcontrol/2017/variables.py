@@ -4,10 +4,11 @@ from CommonPyTools.python.CommonTools import *
 
 variables['fitted_dijet_mass'] = {
     'name': 'fitted_dijet_m',
-    'range':(36,0,180),
+    'range':(40,20,150),
+    #'range':(36,0,180),
     'xaxis': 'm_{jj} [GeV]',
     'yaxis': 'Events / 5GeV',
-    'fold' : 3
+    'fold' : 0
     }
 
 #variables['fitter_status'] = {
