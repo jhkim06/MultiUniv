@@ -1,9 +1,10 @@
 
 Analyzer    = 'mkShape'
-Outputdir   = 'Output_Muon'
+Outputdir   = 'Output_Muon_PHOTOS'
 Category    = 'SMP'
 Year        = '2016'
-InSkim      = 'ISR_v1_Eff_SF_v1'
+#InSkim      = 'ISR_v1_Eff_SF_v1'
+InSkim      = 'ISR_generator_only_v1'
 Userflags   = 'ISR_response_FSR'
 treeName    = 'recoTree/SKFlat'
 
