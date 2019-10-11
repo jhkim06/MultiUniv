@@ -746,6 +746,7 @@ void Skim_ISR::executeEvent(){
         param.FatJet_ID = "tight";
 
         if(IsDATA){
+            fake_estimation->resetVariables();
             executeEventFromParameter(param, false);
             param.Clear();
             clearVariables();
