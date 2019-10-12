@@ -12,6 +12,7 @@ class TMVATools():
   def __init__(self):
     gROOT.SetBatch()
     TMVA.Tools.Instance()
+    TMVA.PyMethodBase.PyInitialize()
     self._trees = {}
     self._fout = None
     self._variables = {}
@@ -33,8 +34,8 @@ class TMVATools():
     self._options = options
 
 
-  def _setFactory(self):
-    self._fout = TFile(self._options['factory']['outfile'],"RECREATE")
+  def _setFactory(self,outFileName):
+    self._fout = TFile(outFileName,"RECREATE")
     self._factory = TMVA.Factory(self._options['factory']['name'],
 		                 self._fout,
 				 self._options['factory']['options']
@@ -46,6 +47,8 @@ class TMVATools():
     #----
     self._data_loader.AddSignalTree(self._trees[sigTreeName])
     self._data_loader.AddBackgroundTree(self._trees[bkgTreeName])
+    self._data_loader.SetSignalWeightExpression(self._options['factory']['weight'])
+    self._data_loader.SetBackgroundWeightExpression(self._options['factory']['weight'])
     #----
     self._data_loader.PrepareTrainingAndTestTree(TCut(self._cuts['sig']),
 		                                TCut(self._cuts['bkg']),
@@ -54,19 +57,21 @@ class TMVATools():
 
 
   def _bookMethod(self):
-    self._factory.BookMethod(self._data_loader,
-		             self._options['bookMethod']['type'],
-		             self._options['bookMethod']['name'],
-			     self._options['bookMethod']['options']
-			    )
+    for method in self._options['bookMethod']:
+      self._factory.BookMethod(self._data_loader,
+	  	               method['type'],
+		               method['name'],
+			       method['options']
+			       )
 
-  def doTrain(self,sigTreeName,bkgTreeName,epoch=1):
-    self._setFactory()
+  def doTrain(self,sigTreeName,bkgTreeName,outFileName,epoch=1):
+    self._setFactory(outFileName)
     self._dataLoader(sigTreeName,bkgTreeName)
     self._bookMethod()
     self._factory.TrainAllMethods()
     self._factory.TestAllMethods()
     self._factory.EvaluateAllMethods()
+
 
   def doTest(self):
     pass
