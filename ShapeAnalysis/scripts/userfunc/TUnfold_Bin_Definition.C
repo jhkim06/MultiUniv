@@ -17,6 +17,9 @@ const int nmassbin_forPt = 5;
 const Double_t massbin_forPt_muon[nmassbin_forPt+1] =     {40,60,80,100,200,350};
 const Double_t massbin_forPt_electron[nmassbin_forPt+1] = {50,65,80,100,200,350};
 
+const int nmassbin_forPt_preFSR = 10;
+const Double_t massbin_forPt_preFSR[nmassbin_forPt_preFSR+1] = {50,60,70,80,90,100,110,150,200,300,350};
+
 const int nptbin_forMass = 1;
 const Double_t ptbin_forMass[nptbin_forMass+1] =     {0,100};
 
@@ -47,6 +50,7 @@ void SetPtBinningGen(TString channel = "electron"){
  ptBinningGen->AddAxis("pt",nptbin_wide,ptbin_wide,false,true);
  if( channel.CompareTo("electron") == 0 ) ptBinningGen->AddAxis("mass", nmassbin_forPt, massbin_forPt_electron, true, true);
  if( channel.CompareTo("muon") == 0 )     ptBinningGen->AddAxis("mass", nmassbin_forPt, massbin_forPt_muon, true, true);
+ if( channel.CompareTo("preFSR") == 0 )     ptBinningGen->AddAxis("mass", nmassbin_forPt_preFSR, massbin_forPt_preFSR, true, true); // just to show more points 
 }
 
 void SetMassBinningRec(TString channel = "electron"){
