@@ -47,6 +47,7 @@ void SetPtBinningGen(TString channel = "electron"){
  ptBinningGen->AddAxis("pt",nptbin_wide,ptbin_wide,false,true);
  if( channel.CompareTo("electron") == 0 ) ptBinningGen->AddAxis("mass", nmassbin_forPt, massbin_forPt_electron, true, true);
  if( channel.CompareTo("muon") == 0 )     ptBinningGen->AddAxis("mass", nmassbin_forPt, massbin_forPt_muon, true, true);
+ if( channel.CompareTo("preFSR") == 0 )     ptBinningGen->AddAxis("mass", nmassbin_wide_electron, massbin_wide_electron, true, true); // just to show more points 
 }
 
 void SetMassBinningRec(TString channel = "electron"){

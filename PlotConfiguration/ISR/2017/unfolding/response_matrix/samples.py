@@ -7,36 +7,14 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-McWeight = 'evt_weight_total_gen'
+#McWeight = 'evt_weight_total_gen * evt_weight_total_rec * electron_double_idSF_passMediumID * electron_double_recoSF_passMediumID * electron_double_trigSF_DoubleElectron_passMediumID'
+
+McWeight = 'evt_weight_total_gen * evt_weight_total_rec'
+#McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
 
 #--------------------    
 # MC
 #--------------------    
-#samples['DY_MuMu_FSR_PYTHIA'] = {
-#    'skim'   :'', # use default skim defined in configuration.py
-#    'cut'    :'',
-#    'combine_cuts' : True,
-#    'weight' :McWeight,
-#    }
-
-#samples['DY_MuMu_FSR_PHOTOS'] = {
-#    'skim'   :'', # use default skim defined in configuration.py
-#    'cut'    :'',
-#    'combine_cuts' : True,
-#    'weight' :McWeight,
-#    }
-
-#samples['DYFSR_PYTHIA'] = {
-#    'skim'   :'', # use default skim defined in configuration.py
-#    'cut'    :'',
-#    'weight' :McWeight,
-#    }
-
-#samples['DYFSR_PHOTOS'] = {
-#    'skim'   :'', # use default skim defined in configuration.py
-#    'cut'    :'',
-#    'weight' :McWeight,
-#    }
 
 samples['DYJets'] = {
     'skim'   :'', # use default skim defined in configuration.py
@@ -44,7 +22,7 @@ samples['DYJets'] = {
     'weight' :McWeight,
     }
 
-samples['DYJets10to50'] = {
+samples['DYJets10to50_MG'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
     'weight' :McWeight,
