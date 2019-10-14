@@ -5,7 +5,7 @@
 #      }
 #    'type' : 'lnN',
 #    }
-
+#
 ########## Efficiency and Energy Scale
 trg_syst = ['electron_double_trigSFUp_DoubleElectron_passMediumID/electron_double_trigSF_DoubleElectron_passMediumID', 'electron_double_trigSFDn_DoubleElectron_passMediumID/electron_double_trigSF_DoubleElectron_passMediumID']
 id_syst  = ['electron_double_idSFUp_passMediumID/electron_double_idSF_passMediumID', 'electron_double_idSFDn_passMediumID/electron_double_idSF_passMediumID']
@@ -87,13 +87,13 @@ nuisances['pdfScale'] = {
 	},
 }
 
-nuisances['pdfErr'] = {
-    'name'	: 'PDFerror',
-    'kind'	: 'PDF',
-    'type'	: 'HESSIAN',
-    'samples'	: {
-      	'DYJets'	: pdfErr_syst ,
-      	'DYJets10to50'	: pdfErr_syst ,
-	},
-}
+#nuisances['pdfErr'] = {
+#    'name'	: 'PDFerror',
+#    'kind'	: 'PDF',
+#    'type'	: 'HESSIAN',
+#    'samples'	: {
+#      	'DYJets'	: pdfErr_syst ,
+#      	'DYJets10to50'	: pdfErr_syst ,
+#	},
+#}
 
