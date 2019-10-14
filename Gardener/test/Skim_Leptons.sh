@@ -24,8 +24,8 @@ do
   #mkGardener.py --Category SMP -a Skim_Leptons -y 2017 -i $sample  -n 500 --nTotFiles 1  --userflags MetFt,L --skimV 999 --dry_run 
   #mkGardener.py --Category SMP -a Skim_Leptons -y 2017 -i $sample  -n 200 --userflags LL --InSkim MetFt_L_v2 --skimV 1 --multiQueue
 
-  #mkGardener.py --Category SMP -a Skim_Leptons -y 2018 -i $sample -n 100 --InSkim MetFt_L_v2 --userflags MetFt,L --skimV 1 --multiQueue
-  mkGardener.py --Category SMP -a Skim_Leptons -y 2018 -i $sample -n 100 --userflags MetFt,L --skimV 2 --multiQueue
+  mkGardener.py --Category SMP -a Skim_Leptons -y 2018 -i $sample -n 100 --InSkim MetFt_L_v2 --userflags LL --skimV 1 --multiQueue
+  #mkGardener.py --Category SMP -a Skim_Leptons -y 2018 -i $sample -n 100 --userflags MetFt,L --skimV 2 --multiQueue
 done
 
 #for sample in DoubleEG DoubleMuon SingleElectron SingleMuon DYJets10to50_MG DYJets TT_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia

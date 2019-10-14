@@ -37,17 +37,26 @@ map<TString, map<TString, vector<TString>>> LeptonSFs::muon_2016_TRIGname_key_ma
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////// End of 2016 ///////////////////////////////////////////////////////////////////
 
+// 2017 electron
+map<TString, TString> LeptonSFs::electron_2017_IDname_key_map = {
+   {"passMediumID",             "passMediumID"},
+};
+
+map<TString, map<TString, vector<TString>>> LeptonSFs::electron_2017_TRIGname_key_map = {
+    {"DoubleElectron",  {{"passMediumID", {"LeadEle23_MediumID","TailEle12_MediumID"}}, } } ,
+};
+
 // 2017 muon
-map<TString, TString> LeptonSFs::muon_IDname_key_map = {
+map<TString, TString> LeptonSFs::muon_2017_IDname_key_map = {
    {"POGTight",             "NUM_TightID_DEN_genTracks"},
 };
 
-map<TString, map<TString, TString>> LeptonSFs::muon_ISOname_key_map = {
+map<TString, map<TString, TString>> LeptonSFs::muon_2017_ISOname_key_map = {
    {"TightIso", {{"POGTight", "NUM_TightRelIso_DEN_TightIDandIPCut"}, } },
 };
 
-map<TString, map<TString, vector<TString>>> LeptonSFs::muon_TRIGname_key_map = {
-    {"IsoMu24",  {{"POGTight", {"IsoMu24_POGTight"}}, } } ,
+map<TString, map<TString, vector<TString>>> LeptonSFs::muon_2017_TRIGname_key_map = {
+    {"DoubleMuon",  {{"POGTight", {"LeadMu17_POGTight","TailMu8_POGTight"}}, } } ,
 };
 
 
@@ -108,6 +117,14 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
             idName_key[idName_]= muon_2016_IDname_key_map[idName_];
             isoName_key[isoName_] = muon_2016_ISOname_key_map[isoName_][idName_];
         }
+        else if(dataYear == 2017){
+            idName_key[idName_]= muon_2017_IDname_key_map[idName_];
+            isoName_key[isoName_] = muon_2017_ISOname_key_map[isoName_][idName_];
+        }
+        else{
+            cout << "only 2016, 2017 currently" << endl;
+            exit (EXIT_FAILURE);
+        }
 
         trigName_ = trigName;
 
@@ -131,6 +148,13 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
         if(dataYear == 2016){
             idName_key[idName_]= electron_2016_IDname_key_map[idName_];
         }
+        else if(dataYear == 2017){
+            idName_key[idName_]= electron_2017_IDname_key_map[idName_];
+        }
+        else{
+            cout << "only 2016, 2017 currently" << endl;
+            exit (EXIT_FAILURE);
+        }
 
         trigName_ = trigName;
 
@@ -145,6 +169,12 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
                 trigName_key[trigName_].push_back(electron_2016_TRIGname_key_map[trigName_][idName_].at(ikey));
             }
             extraTrigName_key[extraTrigName_] = electron_2016_Extraname_key_map[extraTrigName_];
+        }
+        else if(dataYear == 2017){
+            unsigned int trig_key_size = electron_2017_TRIGname_key_map[trigName_][idName_].size();
+            for(unsigned int ikey = 0; ikey < trig_key_size; ikey++){
+                trigName_key[trigName_].push_back(electron_2017_TRIGname_key_map[trigName_][idName_].at(ikey));
+            }
         }
         
     }

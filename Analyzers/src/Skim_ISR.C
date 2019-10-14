@@ -661,6 +661,7 @@ void Skim_ISR::executeEvent(){
         std::vector<Jet::WP> v_wps;
         v_wps.push_back(Jet::Medium);
 
+                                //systematic, run dependent: set true for 2017
         SetupBTagger(vtaggers,v_wps, true, false);
 
         vector<Jet> this_AllJets = GetAllJets();
