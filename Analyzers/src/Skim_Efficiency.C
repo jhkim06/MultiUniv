@@ -10,12 +10,11 @@ void Skim_Efficiency::initializeAnalyzer(){
 
   if(DataYear==2016){
         muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "DoubleMuon", 2016, ""));
-        //muonWPs.push_back(new LeptonSFs(LeptonType::muon, 1, "POGTight", "TightIso", "IsoMu24", 2016, ""));
-
         electronWPs.push_back(new LeptonSFs(LeptonType::electron, 2, "passMediumID", "", "DoubleElectron", 2016, "DZfilter"));
   }
   else if(DataYear==2017){
-        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "IsoMu27", 2017));
+        muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "DoubleMuon", 2017));
+        electronWPs.push_back(new LeptonSFs(LeptonType::electron, 2, "passMediumID", "", "DoubleElectron", 2017, ""));
   }
   else if(DataYear==2018){
         muonWPs.push_back(new LeptonSFs(LeptonType::muon, 2, "POGTight", "TightIso", "IsoMu24", 2018));
