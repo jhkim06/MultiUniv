@@ -59,6 +59,30 @@ map<TString, map<TString, vector<TString>>> LeptonSFs::muon_2017_TRIGname_key_ma
     {"DoubleMuon",  {{"POGTight", {"LeadMu17_POGTight","TailMu8_POGTight"}}, } } ,
 };
 
+// 2018 electron
+map<TString, TString> LeptonSFs::electron_2018_IDname_key_map = {
+   {"passMediumID",             "passMediumID"},
+};
+
+map<TString, map<TString, vector<TString>>> LeptonSFs::electron_2018_TRIGname_key_map = {
+    {"DoubleElectron",  {{"passMediumID", {"",""}}, } } ,
+};
+
+// 2018 muon
+map<TString, TString> LeptonSFs::muon_2018_IDname_key_map = {
+   {"POGTight",             "NUM_TightID_DEN_genTracks"},
+};
+
+map<TString, map<TString, TString>> LeptonSFs::muon_2018_ISOname_key_map = {
+   {"TightIso", {{"POGTight", "NUM_TightRelIso_DEN_TightIDandIPCut"}, } },
+};
+
+map<TString, map<TString, vector<TString>>> LeptonSFs::muon_2018_TRIGname_key_map = {
+    {"DoubleMuon",  {{"POGTight", {"",""}}, } } ,
+};
+
+
+
 
 LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TString idName, const TString isoName, const TString trigName, unsigned int dataYear, const TString extraTrigName): LeptonSFs(leptonType, nLepton, idName, isoName, trigName, dataYear){
 
@@ -121,8 +145,12 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
             idName_key[idName_]= muon_2017_IDname_key_map[idName_];
             isoName_key[isoName_] = muon_2017_ISOname_key_map[isoName_][idName_];
         }
+        else if(dataYear == 2018){
+            idName_key[idName_]= muon_2018_IDname_key_map[idName_];
+            isoName_key[isoName_] = muon_2018_ISOname_key_map[isoName_][idName_];
+        }
         else{
-            cout << "only 2016, 2017 currently" << endl;
+            cout << "only 2016, 2017, 2018 currently" << endl;
             exit (EXIT_FAILURE);
         }
 
@@ -139,6 +167,22 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
                 trigName_key[trigName_].push_back(muon_2016_TRIGname_key_map[trigName_][idName_].at(ikey));
             }
         }
+        else if(dataYear == 2017){
+            unsigned int trig_key_size = muon_2017_TRIGname_key_map[trigName_][idName_].size();
+            for(unsigned int ikey = 0; ikey < trig_key_size; ikey++){
+                trigName_key[trigName_].push_back(muon_2017_TRIGname_key_map[trigName_][idName_].at(ikey));
+            }
+        }
+        else if(dataYear == 2018){
+            unsigned int trig_key_size = muon_2018_TRIGname_key_map[trigName_][idName_].size();
+            for(unsigned int ikey = 0; ikey < trig_key_size; ikey++){
+                trigName_key[trigName_].push_back(muon_2018_TRIGname_key_map[trigName_][idName_].at(ikey));
+            }
+        }
+        else{
+            cout << "only 2016, 2017 currently" << endl;
+            exit (EXIT_FAILURE);
+        }
     }
 
     if( leptonType_ == LeptonType::electron ){
@@ -151,8 +195,11 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
         else if(dataYear == 2017){
             idName_key[idName_]= electron_2017_IDname_key_map[idName_];
         }
+        else if(dataYear == 2018){
+            idName_key[idName_]= electron_2018_IDname_key_map[idName_];
+        }
         else{
-            cout << "only 2016, 2017 currently" << endl;
+            cout << "only 2016, 2017, 2018 currently" << endl;
             exit (EXIT_FAILURE);
         }
 
@@ -175,6 +222,17 @@ LeptonSFs::LeptonSFs(LeptonType leptonType, const unsigned int nLepton, const TS
             for(unsigned int ikey = 0; ikey < trig_key_size; ikey++){
                 trigName_key[trigName_].push_back(electron_2017_TRIGname_key_map[trigName_][idName_].at(ikey));
             }
+        }
+        else if(dataYear == 2018){
+            unsigned int trig_key_size = electron_2018_TRIGname_key_map[trigName_][idName_].size();
+            for(unsigned int ikey = 0; ikey < trig_key_size; ikey++){
+                trigName_key[trigName_].push_back(electron_2018_TRIGname_key_map[trigName_][idName_].at(ikey));
+            }
+        }
+        else{
+            cout << "only 2016, 2017, 2018 currently" << endl;
+            exit (EXIT_FAILURE);
+
         }
         
     }
