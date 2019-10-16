@@ -50,45 +50,10 @@
 
 
 
-#mkShapes.py --pycfg  configuration.py -n 50 --nTotFiles 0  --overWrite --doBatch
-#mkShapes.py --pycfg  configuration.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp
-#mkPlot.py --pycfg configuration_Mu.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v1_K2_v3_CHToCB/CHToCB.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
-#mkPlot.py --pycfg configuration_El.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v1_K2_v3_CHToCB/CHToCB.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
-#scp -r Plot_DY lxplus.cern.ch:www/
+#mkShapes.py --pycfg  configuration_muon.py -n 50 --nTotFiles 0  --overWrite --doBatch --multiQueue 
 
-#mkShapes.py --pycfg  FakeConfig/configuration_Fake.py -n 50 --nTotFiles 0  --overWrite --doBatch
-#mkShapes.py --pycfg  FakeConfig/configuration_Fake.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp
+#checkMakeShapeBatch.py -y 2017 -n 300 --nTotFiles 0 --RundirBase /data6/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0_LL_v0_MuMuOrElEl_v1_PDF
 
-
-#------------------------------------
-#### ver. 2 (19. 06. 10)
-#mkShapes.py --pycfg  configuration_2b.py -n 10 --nTotFiles 0  --overWrite --doBatch
-#checkMakeShapeBatch.py -y 2017 -n 10 --nTotFiles 0 --RundirBase $SKFlatRunlogDir --SkimName MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_2b
-
-#sleep 30m
-#mkShapes.py --pycfg  configuration_2b.py -n 10 --nTotFiles 0  --overWrite --doHadd --cleanUp
-#sleep 5s
-#mkPlot.py --pycfg configuration_Mu2b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_2b/CHToCB_2b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
-#sleep 5s
-#mkPlot.py --pycfg configuration_El2b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_2b/CHToCB_2b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
-#sleep 5s
-
-#mkShapes.py --pycfg  configuration_3b.py -n 10 --nTotFiles 0  --overWrite --doBatch
-#sleep 30m
-#mkShapes.py --pycfg  configuration_3b.py -n 10 --nTotFiles 0  --overWrite --doHadd --cleanUp
-#sleep 5s
-#mkPlot.py --pycfg configuration_Mu3b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_3b/CHToCB_3b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
-#sleep 5s
-#mkPlot.py --pycfg configuration_El3b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_3b/CHToCB_3b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
-
-#for massPoint in 'M090' 'M120' 'M140'
-for massPoint in 'M090'
-do
-  echo "mass point is "$massPoint
-  mkDatacards.py --pycfg=${massPoint}/configuration_2b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_2b/CHToCB_2b.root --outputDirDatacard=DataCards/${massPoint}
-
-done
-
-#scp DataCards/M090/Mu2b/fitted_dijet_mass/datacard.txt lxplus.cern.ch:www/dataCard/
-
-
+mkShapes.py --pycfg  configuration_muon.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp
+#mkPlot.py --pycfg configuration.py --inputFile=Output_MuMuOrElEl_v0_DY/DY.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+#scp -r Plot_AlPhaS lxplus.cern.ch:www/

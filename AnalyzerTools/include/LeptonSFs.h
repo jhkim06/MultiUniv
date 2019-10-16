@@ -51,9 +51,22 @@ class LeptonSFs {
     static map<TString, map<TString, TString>>         muon_2016_ISOname_key_map;
     static map<TString, map<TString, vector<TString>>> muon_2016_TRIGname_key_map;
 
-    static map<TString,TString> muon_IDname_key_map;
-    static map<TString, map<TString, TString>>  muon_ISOname_key_map;
-    static map<TString, map<TString, vector<TString>>> muon_TRIGname_key_map;
+    static map<TString,TString>                        electron_2017_IDname_key_map;
+    static map<TString, map<TString, vector<TString>>> electron_2017_TRIGname_key_map;
+    static map<TString,TString>                        electron_2017_Extraname_key_map;
+
+    static map<TString,TString>                         muon_2017_IDname_key_map;
+    static map<TString, map<TString, TString>>          muon_2017_ISOname_key_map;
+    static map<TString, map<TString, vector<TString>>>  muon_2017_TRIGname_key_map;
+
+    static map<TString,TString>                        electron_2018_IDname_key_map;
+    static map<TString, map<TString, vector<TString>>> electron_2018_TRIGname_key_map;
+    static map<TString,TString>                        electron_2018_Extraname_key_map;
+
+    static map<TString,TString>                         muon_2018_IDname_key_map;
+    static map<TString, map<TString, TString>>          muon_2018_ISOname_key_map;
+    static map<TString, map<TString, vector<TString>>>  muon_2018_TRIGname_key_map;
+
 
     TString fullIdIsoName;
     unsigned int dataYear_;
