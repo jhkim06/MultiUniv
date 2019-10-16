@@ -1,4 +1,5 @@
 # alias PD xsec nmc sumw
+DYJets          DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8      6225.42 187858882.000000 127307610.000000
 DY1Jets_MG	DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8	1012.0	68898175	68852433 ## From XSDB
 DY2Jets_MG	DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8	334.7	20456037	20441071 ## From XSDB
 DY3Jets_MG	DY3JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8	102.3	5652357	5646595 ## From XSDB

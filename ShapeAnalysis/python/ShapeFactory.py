@@ -201,26 +201,26 @@ class ShapeFactory:
 		    if 'weights' in sample.keys() :
 		      if not newVariableNameUp==None:
 			if 'cut' in sample.keys():
-		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinDefinition, unfoldBinType)
+		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
 			else:
-		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, []           , newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinDefinition, unfoldBinType)
+		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, []           , newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
 		      if not newVariableNameDo==None:
 			if 'cut' in sample.keys():
-		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinDefinition, unfoldBinType)
+		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
 			else:
-		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, [],            newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinDefinition, unfoldBinType)
+		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, [],            newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
 		    else :
 		      #print 'newSampleWeightUp', newSampleWeightUp
 		      if not newVariableNameUp==None:
 			if 'cut' in sample.keys():
-		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinDefinition, unfoldBinType)
+		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
 			else:
-		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, [],            newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinDefinition, unfoldBinType)
+		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, [],            newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
 		      if not newVariableNameDo==None:
 			if 'cut' in sample.keys():
-		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinDefinition, unfoldBinType)
+		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
 			else:
-		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, [],            newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinDefinition, unfoldBinType)
+		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, [],            newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
 
 		    if not newVariableNameUp==None:
 	              self.outFile.mkdir(cutName+"/"+newVariableNameUp[0])
@@ -239,10 +239,18 @@ class ShapeFactory:
 		    newSampleName = sampleName + '_' + nuisance['name'] 
 
 		    if 'weights' in sample.keys() :
-		      histoList = self._drawPDF(nuisance['type'], pdfW, variable['name'], variable['range'], sample['weight'], sample['weights'], totCut, newSampleName, trees, columns, doFold, cutName, variableName, sample, False)
+                      if 'cut' in sample.keys():
+		        histoList = self._drawPDF(nuisance['type'], pdfW, variable['name'], variable['range'], combine_cuts, sample['cut'], sample['weight'], sample['weights'], totCut, newSampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+                      else:
+		        histoList = self._drawPDF(nuisance['type'], pdfW, variable['name'], variable['range'], combine_cuts, [],            sample['weight'], sample['weights'], totCut, newSampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+        
 		    else :
 		      #print 'newSampleWeightUp', newSampleWeightUp
-		      histoList = self._drawPDF(nuisance['type'], pdfW, variable['name'], variable['range'], sample['weight'], [],                totCut, newSampleName, trees, columns, doFold, cutName, variableName, sample, False)
+                      if  'cut' in sample.keys():
+	       	        histoList = self._drawPDF(nuisance['type'], pdfW, variable['name'], variable['range'], combine_cuts, sample['cut'], sample['weight'], [],                totCut, newSampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+                      else :
+	       	        histoList = self._drawPDF(nuisance['type'], pdfW, variable['name'], variable['range'], combine_cuts, [],            sample['weight'], [],                totCut, newSampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+            
 
                     print 'length of histoList', len(histoList)
 		    for ahist in histoList :
@@ -311,6 +319,7 @@ class ShapeFactory:
       entries = tree.Draw( var+'>>'+shapeName, globalCut, 'goff')
 
       if useTUnfoldBin: 
+        # for migration matrix
         if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.PtMigrationM:
             # Fill bin zero
             # Caution: if the vector size of branch in an event is zero, the event is just skipped  
@@ -382,7 +391,7 @@ class ShapeFactory:
      
     return hTotalFinal
 
-  def _drawPDF(self, pdfType, pdfW, var, rng, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros) :
+  def _drawPDF(self, pdfType, pdfW, var, rng, combine_cuts, sample_cut, global_weight, weights, totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, fixZeros, go1D = True, useTUnfoldBin = False, unfoldBinType = None, unfoldBinDefinition = None) :
     '''
     pdfType       : alphaS,...
     pdfW          :  pdfW
@@ -401,8 +410,10 @@ class ShapeFactory:
     if pdfW is 'PDFWeights_AlphaS':
       bigNameUp = 'histo_' + sampleName + 'Up_' + cutName + '_' + variableName
       bigNameDo = 'histo_' + sampleName + 'Do_' + cutName + '_' + variableName
-      hTotalAlphaUp = self._makeshape(bigNameUp, rng)
-      hTotalAlphaDo = self._makeshape(bigNameDo, rng)
+
+      hTotalAlphaUp = self._makeshape(bigNameUp, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+      hTotalAlphaDo = self._makeshape(bigNameDo, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+
     elif pdfW is 'PDFWeights_Scale':
       bigNameAUp  = 'histo_' + sampleName + 'AUp_' + cutName + '_' + variableName
       bigNameADo  = 'histo_' + sampleName + 'ADo_' + cutName + '_' + variableName
@@ -410,18 +421,20 @@ class ShapeFactory:
       bigNameBDo  = 'histo_' + sampleName + 'BDo_' + cutName + '_' + variableName
       bigNameABUp = 'histo_' + sampleName + 'ABUp_' + cutName + '_' + variableName
       bigNameABDo = 'histo_' + sampleName + 'ABDo_' + cutName + '_' + variableName
-      hTotalAUp  = self._makeshape(bigNameAUp, rng)
-      hTotalADo  = self._makeshape(bigNameADo, rng)
-      hTotalBUp  = self._makeshape(bigNameBUp, rng)
-      hTotalBDo  = self._makeshape(bigNameBDo, rng)
-      hTotalABUp = self._makeshape(bigNameABUp, rng)
-      hTotalABDo = self._makeshape(bigNameABDo, rng)
+
+      hTotalAUp  = self._makeshape(bigNameAUp, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+      hTotalADo  = self._makeshape(bigNameADo, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+      hTotalBUp  = self._makeshape(bigNameBUp, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+      hTotalBDo  = self._makeshape(bigNameBDo, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+      hTotalABUp = self._makeshape(bigNameABUp, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+      hTotalABDo = self._makeshape(bigNameABDo, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
 
     elif pdfW is 'PDFWeights_Error':
       hTotal_Err = [None] * 101
       for idx in xrange(101):
         bigName = 'histo_' + sampleName + str(idx) +'_' + cutName + '_' + variableName
-        hTotal_Err[idx] = self._makeshape(bigName, rng)
+
+        hTotal_Err[idx] = self._makeshape(bigName, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
     else:
       print 'This pdfW', pdfW, 'is not ready, exiting...'
       exit()
@@ -437,6 +450,13 @@ class ShapeFactory:
         # if weight is not given for a given root file, '-', do not apply file dependent weight for that root file
         if weights[numTree] != '-' :
           globalCut = "(" + globalCut + ") * (" + weights[numTree] + ")" 
+
+      if len(sample_cut) != 0 :
+            if combine_cuts:
+                globalCut = "(" + totCut + " && " + sample_cut + ") * (" + global_weight + ")"
+            else :
+                globalCut = "(" + sample_cut + ") * (" + global_weight + ")"
+
       ################################################
       # PDFWeights_AlphaS
       ################################################
@@ -458,15 +478,40 @@ class ShapeFactory:
         # New histogram
         shapeNameDo = 'histo_' + sampleName + 'Do' + str(numTree)
         shapeNameUp = 'histo_' + sampleName + 'Up' + str(numTree)
-	shapeDo = self._makeshape(shapeNameDo, rng)
-	shapeUp = self._makeshape(shapeNameUp, rng)
+	shapeDo = self._makeshape(shapeNameDo, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+	shapeUp = self._makeshape(shapeNameUp, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
 
 	# fill
         entriesDo = tree.Draw( var+'>>'+shapeNameDo, globalCutDo, 'goff')
         entriesUp = tree.Draw( var+'>>'+shapeNameUp, globalCutUp, 'goff')
 
+        if useTUnfoldBin:
+          # for migration matrix
+          if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.PtMigrationM:
+              # Fill bin zero
+              # Caution: if the vector size of branch in an event is zero, the event is just skipped  
+
+              # Fill not selected but generated events, for the case the size of PtRec is not zero: i.e., acceptance correction
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameDo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_AlphaS[0]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_AlphaS[1]))", 'goff')
+
+              # Fill not selected but generated events, for the case the size of PtRec is zero
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + global_weight.split("*")[0]+")", 'goff')
+              #
+
+              # Fill bin zero for efficiency correction: gen_weight * ( 1 - ( rec_weight) ): i.e., efficiency correction
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameDo, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_AlphaS[0]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameUp, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_AlphaS[1]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
+
+          if unfoldBinType == ISRUnfold.MassFSRMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM:
+              # for FSR response, consider only acceptance correction
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameDo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_AlphaS[0]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_AlphaS[1]))", 'goff')
+
+
         nTriesUp = shapeUp.Integral()
         nTriesDo = shapeDo.Integral()
+
         #print 'entries, integral  Up and Do',entriesDo, entriesUp, nTriesDo, nTriesUp
         if nTriesDo == 0 :
           print 'Warning : entries is 0 for', shapeNameDo
@@ -524,12 +569,14 @@ class ShapeFactory:
         shapeNameBDo  = 'histo_' + sampleName + 'BDo' + str(numTree)
         shapeNameABUp = 'histo_' + sampleName + 'ABUp' + str(numTree)
         shapeNameABDo = 'histo_' + sampleName + 'ABDo' + str(numTree)
-        shapeAUp  = self._makeshape( shapeNameAUp, rng)
-        shapeADo  = self._makeshape( shapeNameADo, rng)
-        shapeBUp  = self._makeshape( shapeNameBUp, rng)
-        shapeBDo  = self._makeshape( shapeNameBDo, rng)
-        shapeABUp = self._makeshape( shapeNameABUp, rng)
-        shapeABDo = self._makeshape( shapeNameABDo, rng)
+
+        shapeAUp  = self._makeshape( shapeNameAUp, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+        shapeADo  = self._makeshape( shapeNameADo, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+        shapeBUp  = self._makeshape( shapeNameBUp, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+        shapeBDo  = self._makeshape( shapeNameBDo, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+        shapeABUp = self._makeshape( shapeNameABUp, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+        shapeABDo = self._makeshape( shapeNameABDo, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+
 	# fill
         entriesAUp=  tree.Draw( var+'>>'+shapeNameAUp,  globalCut_muAUp,  'goff' )
         entriesADo=  tree.Draw( var+'>>'+shapeNameADo,  globalCut_muADo,  'goff' )
@@ -537,6 +584,41 @@ class ShapeFactory:
         entriesBDo=  tree.Draw( var+'>>'+shapeNameBDo,  globalCut_muBDo,  'goff' )
         entriesABUp= tree.Draw( var+'>>'+shapeNameABUp, globalCut_muABUp, 'goff' )
         entriesABDo= tree.Draw( var+'>>'+shapeNameABDo, globalCut_muABDo, 'goff' )
+
+        if useTUnfoldBin:
+          # for migration matrix
+          if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.PtMigrationM:
+              # Fill bin zero
+              # Caution: if the vector size of branch in an event is zero, the event is just skipped  
+
+              # Fill not selected but generated events, for the case the size of PtRec is not zero: i.e., acceptance correction
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameAUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[1]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameADo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[2]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[3]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBDo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[6]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[4]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABDo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[8]))", 'goff')
+
+              # Fill not selected but generated events, for the case the size of PtRec is zero
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + global_weight.split("*")[0]+")", 'goff')
+              #
+              # Fill bin zero for efficiency correction: gen_weight * ( 1 - ( rec_weight) ): i.e., efficiency correction
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameAUp, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Scale[1]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameADo, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Scale[2]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBUp, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Scale[3]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBDo, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Scale[6]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABUp, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Scale[4]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABDo, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Scale[8]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
+
+          if unfoldBinType == ISRUnfold.MassFSRMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM:
+              # for FSR response, consider only acceptance correction
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameAUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[1]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameADo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[2]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[3]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBDo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[6]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[4]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABDo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[8]))", 'goff')
+
         
         nTriesAUp = shapeAUp.Integral()
         nTriesADo = shapeADo.Integral()
@@ -611,9 +693,29 @@ class ShapeFactory:
 	for idx in xrange(101):
 	  # new histogram
 	  shapeName = 'histo_' + sampleName + '_' + str(idx) + '_' + str(numTree)
-	  shape     = self._makeshape( shapeName, rng )
+	  shape     = self._makeshape( shapeName, rng, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
 	  #  fill
           entries = tree.Draw( var+'>>'+shapeName, globalCut_pdfErr[idx], 'goff')
+
+          if useTUnfoldBin:
+            # for migration matrix
+            if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.PtMigrationM:
+                # Fill bin zero
+                # Caution: if the vector size of branch in an event is zero, the event is just skipped  
+
+                # Fill not selected but generated events, for the case the size of PtRec is not zero: i.e., acceptance correction
+                tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Error[" + str(idx) + "]))", 'goff')
+
+                # Fill not selected but generated events, for the case the size of PtRec is zero
+                #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + global_weight.split("*")[0]+")", 'goff')
+                #
+
+                # Fill bin zero for efficiency correction: gen_weight * ( 1 - ( rec_weight) ): i.e., efficiency correction
+                tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Error[" + str(idx) + "]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
+
+            if unfoldBinType == ISRUnfold.MassFSRMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM:
+                # for FSR response, consider only acceptance correction
+                tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Error[" + str(idx) + "]))", 'goff')
 
           nTries = shape.Integral()
           if nTries == 0 :
@@ -662,42 +764,138 @@ class ShapeFactory:
     
     # go 1d
     if pdfW is 'PDFWeights_AlphaS':
-      hTotalFinalAlphaUp = self._h2toh1(hTotalAlphaUp)
-      hTotalFinalAlphaDo = self._h2toh1(hTotalAlphaDo)
-      hTotalFinalAlphaUp.SetTitle('histo_' + sampleName+ 'Up')
-      hTotalFinalAlphaDo.SetTitle('histo_' + sampleName+ 'Down')
-      hTotalFinalAlphaUp.SetName('histo_' + sampleName + 'Up')
-      hTotalFinalAlphaDo.SetName('histo_' + sampleName + 'Down')
+      hTotalFinalAlphaUp = hTotalAlphaUp
+      hTotalFinalAlphaDo = hTotalAlphaDo
+      if go1D: hTotalFinalAlphaUp = self._h2toh1(hTotalAlphaUp)
+      if go1D: hTotalFinalAlphaDo = self._h2toh1(hTotalAlphaDo)
+      
+      if useTUnfoldBin == False:
+        hTotalFinalAlphaUp.SetTitle('histo_' + sampleName+ 'Up')
+        hTotalFinalAlphaDo.SetTitle('histo_' + sampleName+ 'Down')
+        hTotalFinalAlphaUp.SetName('histo_' + sampleName + 'Up')
+        hTotalFinalAlphaDo.SetName('histo_' + sampleName + 'Down')
+      else :
+
+          hTotalFinalAlphaUp.SetTitle('histo_' + sampleName+ 'Up') # sampleName = sample name + AlphaS
+          hTotalFinalAlphaDo.SetTitle('histo_' + sampleName+ 'Down')
+          hTotalFinalAlphaUp.SetName('histo_' + sampleName + 'Up')
+          hTotalFinalAlphaDo.SetName('histo_' + sampleName + 'Down')
+
+          if unfoldBinType == ISRUnfold.PtMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM: # 
+            hTotalFinalAlphaUp.SetTitle('hmcPtGenRec_AlphaSUp')
+            hTotalFinalAlphaDo.SetTitle('hmcPtGenRec_AlphaSDown')
+            hTotalFinalAlphaUp.SetName('hmcPtGenRec_AlphaSUp')
+            hTotalFinalAlphaDo.SetName('hmcPtGenRec_AlphaSDown')
+
+          if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.MassFSRMigrationM: # 
+            hTotalFinalAlphaUp.SetTitle('hmcMassGenRec_AlphaSUp')
+            hTotalFinalAlphaDo.SetTitle('hmcMassGenRec_AlphaSDown')
+            hTotalFinalAlphaUp.SetName('hmcMassGenRec_AlphaSUp')
+            hTotalFinalAlphaDo.SetName('hmcMassGenRec_AlphaSDown')
 
     if pdfW is 'PDFWeights_Scale':
-      hTotalFinalAUp = self._h2toh1(hTotalAUp)
-      hTotalFinalADo = self._h2toh1(hTotalADo)
-      hTotalFinalAUp.SetTitle('histo_' + sampleName+ 'AUp')
-      hTotalFinalADo.SetTitle('histo_' + sampleName+ 'ADown')
-      hTotalFinalAUp.SetName('histo_' + sampleName + 'AUp')
-      hTotalFinalADo.SetName('histo_' + sampleName + 'ADown')
 
-      hTotalFinalBUp = self._h2toh1(hTotalBUp)
-      hTotalFinalBDo = self._h2toh1(hTotalBDo)
-      hTotalFinalBUp.SetTitle('histo_' + sampleName+ 'BUp')
-      hTotalFinalBDo.SetTitle('histo_' + sampleName+ 'BDown')
-      hTotalFinalBUp.SetName('histo_' + sampleName + 'BUp')
-      hTotalFinalBDo.SetName('histo_' + sampleName + 'BDown')
+      hTotalFinalAUp = hTotalAUp
+      hTotalFinalADo = hTotalADo
+      if go1D: hTotalFinalAUp = self._h2toh1(hTotalAUp)
+      if go1D: hTotalFinalADo = self._h2toh1(hTotalADo)
 
-      hTotalFinalABUp = self._h2toh1(hTotalABUp)
-      hTotalFinalABDo = self._h2toh1(hTotalABDo)
-      hTotalFinalABUp.SetTitle('histo_' + sampleName+ 'ABUp')
-      hTotalFinalABDo.SetTitle('histo_' + sampleName+ 'ABDown')
-      hTotalFinalABUp.SetName('histo_' + sampleName + 'ABUp')
-      hTotalFinalABDo.SetName('histo_' + sampleName + 'ABDown')
+      if useTUnfoldBin == False:
+        hTotalFinalAUp.SetTitle('histo_' + sampleName+ 'AUp')
+        hTotalFinalADo.SetTitle('histo_' + sampleName+ 'ADown')
+        hTotalFinalAUp.SetName('histo_' + sampleName + 'AUp')
+        hTotalFinalADo.SetName('histo_' + sampleName + 'ADown')
+      else :
+        hTotalFinalAUp.SetTitle('histo_' + sampleName+ 'AUp')
+        hTotalFinalADo.SetTitle('histo_' + sampleName+ 'ADown')
+        hTotalFinalAUp.SetName('histo_' + sampleName + 'AUp')
+        hTotalFinalADo.SetName('histo_' + sampleName + 'ADown')
 
+        if unfoldBinType == ISRUnfold.PtMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM: #
+            hTotalFinalAUp.SetTitle('hmcPtGenRec_ScaleAUp')
+            hTotalFinalADo.SetTitle('hmcPtGenRec_ScaleADown')
+            hTotalFinalAUp.SetName('hmcPtGenRec_ScaleAUp')
+            hTotalFinalADo.SetName('hmcPtGenRec_ScaleADown')
+        if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.MassFSRMigrationM: # 
+            hTotalFinalAUp.SetTitle('hmcMassGenRec_ScaleAUp')
+            hTotalFinalADo.SetTitle('hmcMassGenRec_ScaleADown')
+            hTotalFinalAUp.SetName('hmcMassGenRec_ScaleAUp')
+            hTotalFinalADo.SetName('hmcMassGenRec_ScaleADown')
+
+      hTotalFinalBUp = hTotalBUp
+      hTotalFinalBDo = hTotalBDo
+      if go1D: hTotalFinalBUp = self._h2toh1(hTotalBUp)
+      if go1D: hTotalFinalBDo = self._h2toh1(hTotalBDo)
+
+      if useTUnfoldBin == False:
+        hTotalFinalBUp.SetTitle('histo_' + sampleName+ 'BUp')
+        hTotalFinalBDo.SetTitle('histo_' + sampleName+ 'BDown')
+        hTotalFinalBUp.SetName('histo_' + sampleName + 'BUp')
+        hTotalFinalBDo.SetName('histo_' + sampleName + 'BDown')
+      else:
+        hTotalFinalBUp.SetTitle('histo_' + sampleName+ 'BUp')
+        hTotalFinalBDo.SetTitle('histo_' + sampleName+ 'BDown')
+        hTotalFinalBUp.SetName('histo_' + sampleName + 'BUp')
+        hTotalFinalBDo.SetName('histo_' + sampleName + 'BDown') 
+
+        if unfoldBinType == ISRUnfold.PtMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM: #
+            hTotalFinalBUp.SetTitle('hmcPtGenRec_ScaleBUp')
+            hTotalFinalBDo.SetTitle('hmcPtGenRec_ScaleBDown')
+            hTotalFinalBUp.SetName('hmcPtGenRec_ScaleBUp')
+            hTotalFinalBDo.SetName('hmcPtGenRec_ScaleBDown')
+        if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.MassFSRMigrationM: #
+            hTotalFinalBUp.SetTitle('hmcMassGenRec_ScaleBUp')
+            hTotalFinalBDo.SetTitle('hmcMassGenRec_ScaleBDown')
+            hTotalFinalBUp.SetName('hmcMassGenRec_ScaleBUp')
+            hTotalFinalBDo.SetName('hmcMassGenRec_ScaleBDown')
+
+      hTotalFinalABUp = hTotalABUp
+      hTotalFinalABDo = hTotalABDo
+      if go1D: hTotalFinalABUp = self._h2toh1(hTotalABUp)
+      if go1D: hTotalFinalABDo = self._h2toh1(hTotalABDo)
+
+      if useTUnfoldBin == False:
+        hTotalFinalABUp.SetTitle('histo_' + sampleName+ 'ABUp')
+        hTotalFinalABDo.SetTitle('histo_' + sampleName+ 'ABDown')
+        hTotalFinalABUp.SetName('histo_' + sampleName + 'ABUp')
+        hTotalFinalABDo.SetName('histo_' + sampleName + 'ABDown')
+      else:
+        hTotalFinalABUp.SetTitle('histo_' + sampleName+ 'ABUp')
+        hTotalFinalABDo.SetTitle('histo_' + sampleName+ 'ABDown')
+        hTotalFinalABUp.SetName('histo_' + sampleName + 'ABUp')
+        hTotalFinalABDo.SetName('histo_' + sampleName + 'ABDown')
+    
+        if unfoldBinType == ISRUnfold.PtMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM: #
+            hTotalFinalABUp.SetTitle('hmcPtGenRec_ScaleABUp')
+            hTotalFinalABDo.SetTitle('hmcPtGenRec_ScaleABDown')
+            hTotalFinalABUp.SetName('hmcPtGenRec_ScaleABUp')
+            hTotalFinalABDo.SetName('hmcPtGenRec_ScaleABDown')
+        if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.MassFSRMigrationM: #
+            hTotalFinalABUp.SetTitle('hmcMassGenRec_ScaleABUp')
+            hTotalFinalABDo.SetTitle('hmcMassGenRec_ScaleABDown')
+            hTotalFinalABUp.SetName('hmcMassGenRec_ScaleABUp')
+            hTotalFinalABDo.SetName('hmcMassGenRec_ScaleABDown')
 
     if pdfW is 'PDFWeights_Error':
       hTotalFinalErr = [None] * 101
       for idx in xrange(101):
-        hTotalFinalErr[idx] = self._h2toh1(hTotal_Err[idx])
-        hTotalFinalErr[idx].SetTitle('histo_' + sampleName+ str(idx).zfill(3))
-        hTotalFinalErr[idx].SetName('histo_' + sampleName + str(idx).zfill(3))
+        hTotalFinalErr[idx] = hTotal_Err[idx]
+        if go1D: hTotalFinalErr[idx] = self._h2toh1(hTotal_Err[idx])
+        
+        if useTUnfoldBin == False:
+            hTotalFinalErr[idx].SetTitle('histo_' + sampleName+ str(idx).zfill(3))
+            hTotalFinalErr[idx].SetName('histo_' + sampleName + str(idx).zfill(3))
+        else :
+            hTotalFinalErr[idx].SetTitle('histo_' + sampleName+ str(idx).zfill(3))
+            hTotalFinalErr[idx].SetName('histo_' + sampleName + str(idx).zfill(3))
+
+            if unfoldBinType == ISRUnfold.PtMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM: # 
+                hTotalFinalErr[idx].SetTitle('hmcPtGenRec_PDFerror' + str(idx).zfill(3))
+                hTotalFinalErr[idx].SetName('hmcPtGenRec_PDFerror' + str(idx).zfill(3))
+            if unfoldBinType == ISRUnfold.MassMigrationM or unfoldBinType == ISRUnfold.MassFSRMigrationM: #
+                hTotalFinalErr[idx].SetTitle('hmcMassGenRec_PDFerror' + str(idx).zfill(3))
+                hTotalFinalErr[idx].SetName('hmcMassGenRec_PDFerror' + str(idx).zfill(3))
+
 
     #fix negative (almost never happening)
     # don't do it here by default, because you may have interference that is actually negative!

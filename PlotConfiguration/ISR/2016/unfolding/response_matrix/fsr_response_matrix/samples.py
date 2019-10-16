@@ -19,12 +19,12 @@ McWeight = 'evt_weight_total_gen'
 #    'weight' :McWeight,
 #    }
 
-samples['DY_MuMu_FSR_PHOTOS'] = {
-    'skim'   :'', # use default skim defined in configuration.py
-    'cut'    :'',
-    'combine_cuts' : True,
-    'weight' :McWeight,
-    }
+#samples['DY_MuMu_FSR_PHOTOS'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'combine_cuts' : True,
+#    'weight' :McWeight,
+#    }
 
 #samples['DYFSR_PYTHIA'] = {
 #    'skim'   :'', # use default skim defined in configuration.py
@@ -38,17 +38,17 @@ samples['DY_MuMu_FSR_PHOTOS'] = {
 #    'weight' :McWeight,
 #    }
 
-#samples['DYJets'] = {
-#    'skim'   :'', # use default skim defined in configuration.py
-#    'cut'    :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['DYJets10to50'] = {
-#    'skim'   :'', # use default skim defined in configuration.py
-#    'cut'    :'',
-#    'weight' :McWeight,
-#    }
+samples['DYJets'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'cut'    :'',
+    'weight' :McWeight,
+    }
+
+samples['DYJets10to50'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'cut'    :'',
+    'weight' :McWeight,
+    }
 
 #--------------------    
 # DATA driven QCD

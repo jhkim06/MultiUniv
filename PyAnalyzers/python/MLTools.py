@@ -18,11 +18,11 @@ class MLTools():
   def SetMLTools(self,tools):
     self._tools = tools()
 
-  def SetTrees(self,sampleName,label,inFiles):
+  def SetTrees(self,sampleName,tree_name,inFiles):
     inputDir = ''
     # get chained ttree
-    self._treeName = "%s_%s"%(sampleName,label)
-    trees = self._connectInputs( inFiles, inputDir, False)
+    self._treeName = "%s_%s"%(sampleName,tree_name)
+    trees = self._connectInputs( inFiles, inputDir, tree_name,False)
     self._tools.SetTrees(self._treeName, trees)
 
   def SetVariables(self, variables):
@@ -34,25 +34,15 @@ class MLTools():
   def SetOptions(self,options):
     self._tools.SetOptions(options)
     
-  def doTrain(self,sigTreeName,bkgTreeName,epoch=1):
-    self._tools.doTrain(sigTreeName,bkgTreeName,epoch)
+  def doTrain(self,sigTreeName,bkgTreeName,outFileName,epoch=1):
+    self._tools.doTrain(sigTreeName,bkgTreeName,outFileName,epoch)
 
   def doTest(self):
     self._tools.doTest()
 
-  def _connectInputs(self, inFiles, inputDir, skipMissingFiles, friendsDir = None, skimListDir = None):
-    tree = TChain('recoTree/SKFlat')
+  def _connectInputs(self, inFiles, inputDir, tree_name, skipMissingFiles, friendsDir = None, skimListDir = None):
+    tree = TChain(tree_name)
     for aFile in inFiles:
       tree.Add(aFile)
     return tree
-    #listTrees = []
-    #for aFile in samples :
-    #  tree = TChain(self._treeName)
-    #  tree.AddFile(aFile)
-    #  listTrees.append(tree)
-
-    #return listTrees
-
-
-
 
