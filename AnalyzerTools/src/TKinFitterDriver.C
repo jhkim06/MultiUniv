@@ -5,10 +5,14 @@ TKinFitterDriver::TKinFitterDriver(){
 }
 
 
-TKinFitterDriver::TKinFitterDriver(int DataYear_){
+TKinFitterDriver::TKinFitterDriver(int DataYear_, bool useMLCut_, TString MCSample_){
 
   DataYear = DataYear_;
-
+  this->SetMLCut(useMLCut_);
+  if(useMLCut){
+    this->initML();
+  }
+  MCSample = MCSample_;
   fitter = new TKinFitter("fitter","fitter");
 
   error_hadronic_top_b_jet.ResizeTo(1,1); 
@@ -47,6 +51,45 @@ TKinFitterDriver::TKinFitterDriver(int DataYear_){
   //cout <<"TKinFitterDriver::TKinFitterDriver : initialized" << endl;
 }
 
+void TKinFitterDriver::initML(){
+  if(gSystem->Load("libTMVA.so")){
+    cout << "TKinFitterDriver::initML,   libTMVA.so is not loaded" << endl;
+    exit(EXIT_FAILURE);
+  }
+  TMVA::Tools::Instance();
+  //TMVA::PyMethodBase::PyInitialize();
+  tmva_reader = new TMVA::Reader();
+  tmva_reader->AddVariable((TString)"leptonic_top_mass",&leptonic_top_mass);
+  tmva_reader->AddVariable((TString)"tt_deltaR",&tt_deltaR);
+  tmva_reader->AddVariable((TString)"dijet_cosThetaTB",&dijet_cosThetaTB);
+  tmva_reader->AddVariable((TString)"dijet_cosThetaTC",&dijet_cosThetaTC);
+  tmva_reader->AddVariable((TString)"W_MT",&W_MT);
+  tmva_reader->AddVariable((TString)"up_type_jet_pt",&up_type_jet_pt);
+  tmva_reader->AddVariable((TString)"had_top_pt",&had_top_pt);
+  tmva_reader->AddVariable((TString)"hadronic_top_mass",&hadronic_top_mass);
+  tmva_reader->AddVariable((TString)"had_top_b_jet_pt",&had_top_b_jet_pt);
+  tmva_reader->AddVariable((TString)"dijet_deltaR",&dijet_deltaR);
+  tmva_reader->AddVariable((TString)"lep_top_pt",&lep_top_pt);
+  tmva_reader->AddVariable((TString)"tt_MT",&tt_MT);
+  tmva_reader->AddVariable((TString)"down_type_jet_pt",&down_type_jet_pt);
+  tmva_reader->AddVariable((TString)"lep_top_b_jet_pt",&lep_top_b_jet_pt);
+  tmva_reader->AddVariable((TString)"dijet_deltaEta",&dijet_deltaEta);
+
+  TString base_path= getenv("DATA_DIR"); 
+  base_path += "/" + TString::Itoa(DataYear,10) + "/TMVAClassification/";
+  std::map<TString, TString> methods;
+  TString MCSample_ = MCSample.Contains("CHToCB")?MCSample:"TTLJ_powheg";
+  methods["BDT_4j_2b"] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"4j","2b");
+  methods["BDT_5j_2b"] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"5j","2b");
+  methods["BDT_6j_2b"] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"6j","2b");
+  methods["BDT_4j_3b"] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"4j","3b");
+  methods["BDT_5j_3b"] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"5j","3b");
+  methods["BDT_6j_3b"] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"6j","3b");
+  for(auto &method : methods){
+    tmva_reader->BookMVA(method.first,method.second);
+  }
+}
+
 
 TKinFitterDriver::~TKinFitterDriver(){
   delete fitter;
@@ -67,6 +110,9 @@ TKinFitterDriver::~TKinFitterDriver(){
   delete constrain_leptonic_W_M;
   //delete constrain_leptonic_W_MGaus;
   delete ts_correction;
+  if(useMLCut){
+    delete tmva_reader;
+  }
 }
 
 
@@ -288,6 +334,89 @@ bool TKinFitterDriver::Kinematic_Cut(){
 }
 
 
+void TKinFitterDriver::updatesMLVariables(){
+
+  TLorentzVector h_top = hadronic_top_b_jet + hadronic_w_ch_jet1 + hadronic_w_ch_jet2;
+  TLorentzVector l_W = leptonic_top_b_jet + lepton; //XXX wrong
+  TLorentzVector l_top = l_W + METv;
+  TLorentzVector TT = h_top + l_top;
+
+  had_top_b_jet_pt = hadronic_top_b_jet.Pt();   //  1
+  lep_top_b_jet_pt = leptonic_top_b_jet.Pt();   //  2
+  up_type_jet_pt = hadronic_w_ch_jet1.Pt();     //  3
+  down_type_jet_pt = hadronic_w_ch_jet2.Pt();   //  4
+  dijet_deltaR = hadronic_w_ch_jet1.DeltaR(hadronic_w_ch_jet2);       //  5
+  dijet_deltaEta = fabs(hadronic_w_ch_jet1.Eta() - hadronic_w_ch_jet2.Eta());     //  6
+  dijet_cosThetaTC = cos(h_top.Theta()-hadronic_w_ch_jet1.Theta());   //  7 
+  dijet_cosThetaTB = cos(h_top.Theta()-hadronic_w_ch_jet2.Theta());   //  8
+  hadronic_top_mass = h_top.M();  //  9
+  leptonic_top_mass = l_top.M();  // 10
+  W_MT = l_W.Mt();               // 11
+  tt_MT = TT.Mt();              // 12
+  tt_deltaR = h_top.DeltaR(l_top);          // 13
+  had_top_pt = h_top.Pt();         // 14
+  lep_top_pt = l_top.Pt();         // 15
+}
+
+
+bool TKinFitterDriver::ML_Cut(){
+  if(useMLCut==false){
+    return true;
+  }
+  this->updatesMLVariables();
+  // XXX: let's hard code this time
+  TString method ="BDT";
+  method += njets==4?
+              "_4j":njets==5?
+                "_5j":njets>=6?
+	          "_6j":"_NULL";
+  method += nbtags==2?
+	      "_2b":nbtags>=3?
+	        "_3b":"_NULL";
+  double MLoutput = tmva_reader->EvaluateMVA(method);
+  //cout << MLoutput << endl;
+  double cut = 0.;
+  cut = this->GetMLCut(); //TODO add function to set cut and selecte MVA method
+  if(MLoutput>cut){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+double TKinFitterDriver::GetMLCut(){
+  double out=-999;
+  if(!MCSample.Contains("CHToCB")){
+    if(njets==4){
+      if(nbtags==2){
+        out=-0.0347;
+      }
+      else if(nbtags>=3){
+        out=-0.0998;
+      }
+    }
+    else if(njets==5){
+      if(nbtags==2){
+        out=-0.08;
+      }
+      else if(nbtags>=3){
+        out=-0.0548;
+      }
+    }
+    else if(njets>=6){
+      if(nbtags==2){
+        out=-0.0981;
+      }
+      else if(nbtags>=3){
+        out=-0.0967;
+      }
+    }
+  }
+  return out;
+}
+
+
 void TKinFitterDriver::SetConstraint(){
   //TODO: will update to be able to set top-mass
   // reset constrain
@@ -451,7 +580,7 @@ void TKinFitterDriver::FindBestChi2Fit(bool UseLeading4Jets, bool IsHighMassFitt
   do{
     if(this->Check_BJet_Assignment() == false) continue;
     this->SetCurrentPermutationJets();
-    //if(this->Kinematic_Cut() == false) continue;
+    if(this->ML_Cut() == false) continue;
       this->Sol_Neutrino_Pz();
       for(int i(0); i<2; i++){
 	//if(!IsRealNeuPz && i==1) break;

@@ -27,7 +27,6 @@ void Skim_K2::initializeAnalyzer(){
   }
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");
-  newtree = fChain->CloneTree(0); // JH : What relation does this outfile have with the fChain(created by SetTreeName)?
 
   // Existing Branch
   fChain->SetBranchAddress("IsMu",&IsMu, &b_IsMu);
@@ -35,10 +34,13 @@ void Skim_K2::initializeAnalyzer(){
 
   // disable branch
   if(fChain->GetEntries()>0){
+    newtree = fChain->CloneTree(0); // JH : What relation does this outfile have with the fChain(created by SetTreeName)?
     newtree->SetBranchStatus("fatjet*",0);
     newtree->SetBranchStatus("photon*",0);
   }
-
+  else{
+    newtree = fChain->CloneTree(-1); // JH : What relation does this outfile have with the fChain(created by SetTreeName)?
+  }
   // New Branch
   newtree->Branch("initial_dijet_m", &initial_dijet_m,"initial_dijet_m/D");
   newtree->Branch("initial_dijet_m_JES_Up", &initial_dijet_m_JES_Up,"initial_dijet_m_JES_Up/D");
@@ -121,7 +123,7 @@ void Skim_K2::initializeAnalyzer(){
 
   SetupBTagger(taggers, wps, true, true);
 
-  fitter_driver = new TKinFitterDriver(DataYear); 
+  fitter_driver = new TKinFitterDriver(DataYear,true,MCSample); // true means use ML cut
 }
 
 

@@ -84,6 +84,7 @@ void Skim_TTSemiLep::initializeAnalyzer(){
       "HLT_IsoTkMu24_v"
     };
     trgSFkeyMu = "IsoMu24";
+    trgSFkeyEl = "";
     TriggerSafePtCutMu=26.;
     SingleElTrgs = {
       "HLT_Ele27_WPTight_Gsf_v"
@@ -95,6 +96,7 @@ void Skim_TTSemiLep::initializeAnalyzer(){
       "HLT_IsoMu27_v"
     };
     trgSFkeyMu = "IsoMu27";
+    trgSFkeyEl = "Ele35_WPTight";
     TriggerSafePtCutMu=30.;
     SingleElTrgs = {
       "HLT_Ele35_WPTight_Gsf_v"
@@ -106,6 +108,7 @@ void Skim_TTSemiLep::initializeAnalyzer(){
       "HLT_IsoMu24_v"
     };
     trgSFkeyMu = "IsoMu24";
+    trgSFkeyEl = "";
     TriggerSafePtCutMu=26.;
     SingleElTrgs = {
       "HLT_Ele32_WPTight_Gsf_v"
@@ -332,9 +335,12 @@ void Skim_TTSemiLep::executeEvent(){
       IsoSF_Up	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key, Aod_eta[i], Aod_pt[i],  1) : 1.;
       IsoSF_Do	*= LeptonISO_SF?(mcCorr->*LeptonISO_SF)(LeptonISO_key, Aod_eta[i], Aod_pt[i], -1) : 1.;
 
-      trgSF *= IsMu?mcCorr->MuonTrigger_SF("POGTight", trgSFkeyMu, muons, 0) : 1.;
-      trgSF_Up *=IsMu?mcCorr->MuonTrigger_SF("POGTight", trgSFkeyMu, muons, 1) : 1.;
-      trgSF_Do *= IsMu?mcCorr->MuonTrigger_SF("POGTight", trgSFkeyMu, muons, -1) : 1.;
+      trgSF *= IsMu?mcCorr->MuonTrigger_SF("POGTight", trgSFkeyMu, muons, 0) :
+	            DataYear==2017?mcCorr->ElectronTrigger_SF("passTightID",trgSFkeyEl,electrons,0):1.;
+      trgSF_Up *=IsMu?mcCorr->MuonTrigger_SF("POGTight", trgSFkeyMu, muons, 1) :
+	            DataYear==2017?mcCorr->ElectronTrigger_SF("passTightID",trgSFkeyEl,electrons,1):1.;
+      trgSF_Do *= IsMu?mcCorr->MuonTrigger_SF("POGTight", trgSFkeyMu, muons, -1) :
+	            DataYear==2017?mcCorr->ElectronTrigger_SF("passTightID",trgSFkeyEl,electrons,-1):1.;
 
     }
   }

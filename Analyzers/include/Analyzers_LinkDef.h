@@ -32,5 +32,6 @@
 #pragma link C++ class Skim_Cutflow+;
 
 #pragma link C++ class Skim_ABCD+;
+#pragma link C++ class Skim_ML+;
 
 #endif

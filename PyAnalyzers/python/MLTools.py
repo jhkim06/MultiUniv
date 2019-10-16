@@ -34,8 +34,9 @@ class MLTools():
   def SetOptions(self,options):
     self._tools.SetOptions(options)
     
-  def doTrain(self,sigTreeName,bkgTreeName,outFileName,epoch=1):
+  def doTrain(self,sigTreeName,bkgTreeName,outWeightsSuffix,outFileName,epoch=1):
     self._tools.doTrain(sigTreeName,bkgTreeName,outFileName,epoch)
+    os.system('mv TMVAClassification/weights TMVAClassification/weights_%s'%(outWeightsSuffix))
 
   def doTest(self):
     self._tools.doTest()

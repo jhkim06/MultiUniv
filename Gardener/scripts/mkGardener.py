@@ -79,7 +79,7 @@ if SKFlatLogWeb=='' or SKFlatLogWebDir=='':
 IsSKim = "Skim" in opt.Analyzer
 IsHadd = "hadd" in opt.Analyzer
 
-IsSKim = True
+#IsSKim = True
 
 if IsSKim:
   print "skimskimskimskimskimskimskim"
