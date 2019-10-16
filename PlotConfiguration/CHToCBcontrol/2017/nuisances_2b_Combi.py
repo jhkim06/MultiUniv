@@ -1,27 +1,27 @@
-#nuisances['lumi'] = {
-#    'name' : 'lumi_13TeV',
-#    'type' : 'lnN',
-#    'samples' : {
-#      'DYJets'	              : '1.023',
-#      'DYJets10to50_MG'       : '1.023',
-#      'WJets_MG'              : '1.023',
-#      'TTLJ_powheg'	      : '1.023',
-#      'TTLL_powheg'	      : '1.023',
-#      'TTJJ_powheg'	      : '1.023',
-#      'SingleTop_sch_top'     : '1.023',
-#      'SingleTop_tch_top'     : '1.023',
-#      'SingleTop_tch_antitop' : '1.023',
-#      'SingleTop_tW_top'      : '1.023',
-#      'SingleTop_tW_antitop'  : '1.023',
-#      'WW_pythia'             : '1.023',
-#      'WZ_pythia'             : '1.023',
-#      'ZZ_pythia'             : '1.023',
-#      'ttW'                   : '1.023',
-#      'ttZ'                   : '1.023',
-#      'ttH_bb'                : '1.023',
-#      'ttbb'                  : '1.023',
-#    }
-#}
+nuisances['lumi'] = {
+    'name' : 'lumi_13TeV',
+    'type' : 'lnN',
+    'samples' : {
+      'DYJets'	              : '1.023',
+      'DYJets10to50_MG'       : '1.023',
+      'WJets_MG'              : '1.023',
+      'TTLJ_powheg'	      : '1.023',
+      'TTLL_powheg'	      : '1.023',
+      'TTJJ_powheg'	      : '1.023',
+      'SingleTop_sch_top'     : '1.023',
+      'SingleTop_tch_top'     : '1.023',
+      'SingleTop_tch_antitop' : '1.023',
+      'SingleTop_tW_top'      : '1.023',
+      'SingleTop_tW_antitop'  : '1.023',
+      'WW_pythia'             : '1.023',
+      'WZ_pythia'             : '1.023',
+      'ZZ_pythia'             : '1.023',
+      'ttW'                   : '1.023',
+      'ttZ'                   : '1.023',
+      'ttH_bb'                : '1.023',
+      'ttbb'                  : '1.023',
+    }
+}
 #
 #nuisances['ttxsec'] = {
 #    'name' : 'ttxsec',
