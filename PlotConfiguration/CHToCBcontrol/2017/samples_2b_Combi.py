@@ -64,11 +64,11 @@ samples['TTLJ_powheg'] = {
 #    'weight' :McWeight,
 #    }
 #
-#samples['TTLL_powheg'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
+samples['TTLL_powheg'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
 #samples['TTLL_powheg_Up'] = {
 #    'skim'   :'',
 #    'weight' :McWeight,
