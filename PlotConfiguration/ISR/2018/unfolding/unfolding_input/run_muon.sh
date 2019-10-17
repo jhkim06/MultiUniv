@@ -50,28 +50,10 @@
 
 
 
+#mkShapes.py --pycfg  configuration_muon.py -n 50 --nTotFiles 0  --overWrite --doBatch --multiQueue 
 
-#------------------------------------
-#### ver. 2 (19. 06. 10)
-#mkShapes.py --pycfg  configuration_2b_Combi.py -n 20 --nTotFiles 0  --overWrite --doBatch 
-#checkMakeShapeBatch.py -y 2017 -n 20 --nTotFiles 0 --RundirBase $SKFlatRunlogDir --SkimName MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_2b
+#checkMakeShapeBatch.py -y 2017 -n 300 --nTotFiles 0 --RundirBase /data6/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0_LL_v0_MuMuOrElEl_v1_PDF
 
-#sleep 30m
-#mkShapes.py --pycfg  configuration_2b_Combi.py -n 20 --nTotFiles 0  --overWrite --doHadd --cleanUp
-
-mkPDfUncert.py --pycfg  configuration_2b_Combi.py --overWrite --cleanUp
-
-#sleep 5s
-#mkPlot.py --pycfg configuration_2b_Combi.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_2b/CHToCB_2b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
-#mkPlot.py --pycfg configuration_Mu2b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_2b/CHToCB_2b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
-#sleep 5s
-#mkPlot.py --pycfg configuration_El2b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_2b/CHToCB_2b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
-#sleep 5s
-
-#mkShapes.py --pycfg  configuration_3b.py -n 10 --nTotFiles 0  --overWrite --doBatch
-#sleep 30m
-#mkShapes.py --pycfg  configuration_3b.py -n 10 --nTotFiles 0  --overWrite --doHadd --cleanUp
-#sleep 5s
-#mkPlot.py --pycfg configuration_Mu3b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_3b/CHToCB_3b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
-#sleep 5s
-#mkPlot.py --pycfg configuration_El3b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_3b/CHToCB_3b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+mkShapes.py --pycfg  configuration_muon.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp
+#mkPlot.py --pycfg configuration.py --inputFile=Output_MuMuOrElEl_v0_DY/DY.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+#scp -r Plot_AlPhaS lxplus.cern.ch:www/

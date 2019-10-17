@@ -46,13 +46,14 @@ groupPlot['TT'] = {
 #    'samples' : ['SingleTop_sch_top','SingleTop_tch_top','SingleTop_tch_antitop','SingleTop_tW_top','SingleTop_tW_antitop']
 #    }
 #
-#groupPlot['VJ'] = {
-#    'nameHR' : "VJ",
-#    'isSignal' : 0,
-#    'color':  kOrange,
-#    'samples' : ['WJets_MG','DYJets','DYJets10to50_MG']
-#    }
-#
+groupPlot['VJ'] = {
+    'nameHR' : "VJ",
+    'isSignal' : 0,
+    'color':  kOrange,
+    'samples' : ['WJets_MG']
+    #'samples' : ['WJets_MG','DYJets','DYJets10to50_MG']
+    }
+
 #groupPlot['VV'] = {
 #    'nameHR' : "VV",
 #    'isSignal' : 0,

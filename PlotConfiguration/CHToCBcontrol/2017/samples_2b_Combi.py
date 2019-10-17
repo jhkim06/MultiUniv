@@ -24,11 +24,11 @@ McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*recoSF*BTagSF'
 #    'weight' :McWeight,
 #    }
 #
-#samples['WJets_MG'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
+samples['WJets_MG'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
 samples['TTLJ_powheg'] = {
     'skim'   :'',
     'weight' :McWeight,
