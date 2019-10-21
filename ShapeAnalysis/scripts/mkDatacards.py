@@ -33,7 +33,7 @@ class DatacardFactory:
     # _____________________________________________________________________________
     # a datacard for each "cut" and each "variable" will be produced, in separate sub-folders, names after "cut/variable"
     # _____________________________________________________________________________
-    def makeDatacards( self, inputFile, outputDirDatacard, variables, cuts, samples, structureFile, nuisances):
+    def makeDatacards( self, inputFile, outputDirDatacard, variables, cuts, samples, structureFile, nuisances, groupPlot, plot):
     
         print "======================="
         print "==== makeDatacards ===="
@@ -60,59 +60,62 @@ class DatacardFactory:
         data = []
         background_ids = collections.OrderedDict()
         
-        # divide the list of samples among signal, background and data
-        isig = 0
-        ibkg = 1
-	#print self._samples
-        for sampleName in self._samples:
-	  if sampleName in structureFile:
-            if structureFile[sampleName]['isSignal'] != 0:
-              signal_ids[sampleName] = isig
-              isig -= 1
-            if structureFile[sampleName]['isSignal'] == 2 :
-              alternative_signals.append(sampleName)
-            if structureFile[sampleName]['isSignal'] == 1 :
-              cumulative_signals.append(sampleName)
-            if structureFile[sampleName]['isData'] == 1 :
-              data.append(sampleName)
-            if structureFile[sampleName]['isSignal'] == 0 and structureFile[sampleName]['isData'] == 0:
-              background_ids[sampleName] = ibkg
-              ibkg += 1
-
-        print "Number of Signals:             " + str(len(signal_ids))
-        print "Number of Alternative Signals: " + str(len(alternative_signals) - 1)
-        print "Number of Cumulative Signals:  " + str(len(cumulative_signals))
-        print "Number of Backgrounds:         " + str(len(background_ids))
-
-
-        if not os.path.isdir(outputDirDatacard + "/") :
-          os.system("mkdir -p "+outputDirDatacard + "/")
-          #os.mkdir(outputDirDatacard + "/")
-
-        # loop over cuts. One directory per cut will be created
-        for cutName in self._cuts:
-          print "cut = ", cutName
-          try:
-            shutil.rmtree(outputDirDatacard + "/" + cutName)
-          except OSError:
-            pass
-          os.mkdir(outputDirDatacard + "/" + cutName)
-          
-          #
-          # prepare the signals and background list of samples
-          # after removing the ones not to be used in this specific phase space
-          #
-          cut_signals = []
-          cut_backgrounds = []
-          for snameList, idmap in [(cut_signals, signal_ids), (cut_backgrounds, background_ids)]:
-            for sampleName in idmap:
-              if 'removeFromCuts' in structureFile[sampleName] and cutName in structureFile[sampleName]['removeFromCuts']:
-                # remove from the list
-                print ' remove ', sampleName, ' from ', cutName
-              else:
-                snameList.append(sampleName)
-
-          print "  sampleNames = ", cut_signals + cut_backgrounds
+	print 'plot', plot
+	print 'groupPlot', groupPlot
+        
+#        # divide the list of samples among signal, background and data
+#        isig = 0
+#        ibkg = 1
+#	#print self._samples
+#        for sampleName in self._samples:
+#	  if sampleName in structureFile:
+#            if structureFile[sampleName]['isSignal'] != 0:
+#              signal_ids[sampleName] = isig
+#              isig -= 1
+#            if structureFile[sampleName]['isSignal'] == 2 :
+#              alternative_signals.append(sampleName)
+#            if structureFile[sampleName]['isSignal'] == 1 :
+#              cumulative_signals.append(sampleName)
+#            if structureFile[sampleName]['isData'] == 1 :
+#              data.append(sampleName)
+#            if structureFile[sampleName]['isSignal'] == 0 and structureFile[sampleName]['isData'] == 0:
+#              background_ids[sampleName] = ibkg
+#              ibkg += 1
+#
+#        print "Number of Signals:             " + str(len(signal_ids))
+#        print "Number of Alternative Signals: " + str(len(alternative_signals) - 1)
+#        print "Number of Cumulative Signals:  " + str(len(cumulative_signals))
+#        print "Number of Backgrounds:         " + str(len(background_ids))
+#
+#
+#        if not os.path.isdir(outputDirDatacard + "/") :
+#          os.system("mkdir -p "+outputDirDatacard + "/")
+#          #os.mkdir(outputDirDatacard + "/")
+#
+#        # loop over cuts. One directory per cut will be created
+#        for cutName in self._cuts:
+#          print "cut = ", cutName
+#          try:
+#            shutil.rmtree(outputDirDatacard + "/" + cutName)
+#          except OSError:
+#            pass
+#          os.mkdir(outputDirDatacard + "/" + cutName)
+#          
+#          #
+#          # prepare the signals and background list of samples
+#          # after removing the ones not to be used in this specific phase space
+#          #
+#          cut_signals = []
+#          cut_backgrounds = []
+#          for snameList, idmap in [(cut_signals, signal_ids), (cut_backgrounds, background_ids)]:
+#            for sampleName in idmap:
+#              if 'removeFromCuts' in structureFile[sampleName] and cutName in structureFile[sampleName]['removeFromCuts']:
+#                # remove from the list
+#                print ' remove ', sampleName, ' from ', cutName
+#              else:
+#                snameList.append(sampleName)
+#
+#          print "  sampleNames = ", cut_signals + cut_backgrounds
 #          
 #          # loop over variables
 #          for variableName, variable in self._variables.iteritems():
@@ -569,6 +572,7 @@ if __name__ == '__main__':
     parser.add_option('--inputFile'          , dest='inputFile'         , help='input directory'                            , default='./input.root')
     parser.add_option('--structureFile'      , dest='structureFile'     , help='file with datacard configurations'          , default=None )
     parser.add_option('--nuisancesFile'      , dest='nuisancesFile'     , help='file with nuisances configurations'         , default=None )
+    parser.add_option('--plotFile'      , dest='plotFile'     , help='file with nuisances configurations'         , default=None )
     parser.add_option('--cardList'           , dest="cardList"          , help="List of cuts to produce datacards"          , default=[], type='string' , action='callback' , callback=Tools.list_maker('cardList',','))
     parser.add_option('--skipMissingNuisance', dest='skipMissingNuisance', help="Don't write nuisance lines when histograms are missing", default=False, action='store_true')
           
@@ -655,5 +659,10 @@ if __name__ == '__main__':
       exec(handle)
       handle.close()
     
-    factory.makeDatacards( opt.inputFile ,opt.outputDirDatacard, variables, cuts, samples, structure, nuisances)
+    if os.path.exists(opt.plotFile) :
+      handle = open(opt.plotFile,'r')
+      exec(handle)
+      handle.close()
+
+    factory.makeDatacards( opt.inputFile ,opt.outputDirDatacard, variables, cuts, samples, structure, nuisances, groupPlot, plot)
 
