@@ -20,6 +20,7 @@ def AddOptions (parser):
   parser.add_argument('--variablesFile', dest='variablesFile', default="")
   parser.add_argument('--cutsFile', dest='cutsFile', default="")
   parser.add_argument('--nuisancesFile', dest='nuisancesFile', default="")
+  parser.add_argument('--structureFile', dest='structureFile', default="structure.py")
   parser.add_argument('--lumi', dest='lumi', default=1, type=float)
 
 def findOptAndChange(parser, opt_name, opt_value):
