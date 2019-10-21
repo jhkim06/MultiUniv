@@ -17,25 +17,25 @@ McWeight = 'evt_weight_total_gen * evt_weight_total_rec * electron_double_recoSF
 #--------------------    
 
 samples['DYJets@DYJetsToEE'] = {
-    'skim'   :'ISR_v1_Eff_v1', # use default skim defined in configuration.py
+    'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_dielectron_gen == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets10to50_MG@DYJets10to50ToEE'] = {
-    'skim'   :'ISR_v1_Eff_v1', # use default skim defined in configuration.py
+    'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_dielectron_gen == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {
-    'skim'   :'ISR_v1_Eff_v1', # use default skim defined in configuration.py
+    'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_ditau_gen == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets10to50_MG@DYJets10to50ToTauTau'] = {
-    'skim'   :'ISR_v1_Eff_v1', # use default skim defined in configuration.py
+    'skim'   :'ISR_v1_Eff_SF_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_ditau_gen == 1',
     'weight' :McWeight,
     }
@@ -71,7 +71,7 @@ samples['ZZ_pythia'] = {
     }
 
 samples['DoubleEG'] = {
-    'skim'   :'',
+    'skim'   :'MetFt_L_v2_LL_v1_ISR_detector_only_v1',
     'cut'    :'',
     'weight' :'1',
     }
