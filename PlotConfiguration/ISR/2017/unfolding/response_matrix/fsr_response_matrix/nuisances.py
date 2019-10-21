@@ -12,9 +12,9 @@ id_syst  = ['electron_double_idSFUp_passMediumID/electron_double_idSF_passMedium
 reco_syst = ['electron_double_recoSFUp_passMediumID/electron_double_recoSF_passMediumID','electron_double_recoSFDn_passMediumID/electron_double_recoSF_passMediumID']
 l1prefire_syst = ['evt_weight_l1prefire_up/evt_weight_l1prefire','evt_weight_l1prefire_down/evt_weight_l1prefire']
 pileup_syst = ['evt_weight_pureweight_up/evt_weight_pureweight','evt_weight_pureweight_down/evt_weight_pureweight']
-alphaS_syst  = ['PDFWeights_AlphaS']
-pdfScale_syst  = ['PDFWeights_Scale']
-pdfErr_syst  = ['PDFWeights_Error']
+alphaS_syst  = 'PDFWeights_AlphaS'
+pdfScale_syst  = 'PDFWeights_Scale'
+pdfErr_syst  = 'PDFWeights_Error'
 #id_syst_ele = ['LepSF'+Nlep+'l_ele_'+eleWP+'_Up', 'LepSF'+Nlep+'l_ele_'+eleWP+'_Do']
 
 #nuisances['trig_sf'] = {
@@ -73,11 +73,6 @@ pdfErr_syst  = ['PDFWeights_Error']
 #    'type'	: 'alphaS',
 #    'samples'	: {
 #      	'DYJets'	: alphaS_syst ,
-#	'TTLL_powheg'	: alphaS_syst ,
-#	'WJets_MG'	: alphaS_syst ,
-#	'WW_pythia'	: alphaS_syst ,
-#	'WZ_pythia'	: alphaS_syst ,
-#	'ZZ_pythia'	: alphaS_syst ,
 #	},
 #}
 #
@@ -87,11 +82,6 @@ pdfErr_syst  = ['PDFWeights_Error']
 #    'type'	: 'Scale',
 #    'samples'	: {
 #      	'DYJets'	: pdfScale_syst ,
-#	'TTLL_powheg'	: pdfScale_syst ,
-#	'WJets_MG'	: pdfScale_syst ,
-#	'WW_pythia'	: pdfScale_syst ,
-#	'WZ_pythia'	: pdfScale_syst ,
-#	'ZZ_pythia'	: pdfScale_syst ,
 #	},
 #}
 #
@@ -101,11 +91,6 @@ pdfErr_syst  = ['PDFWeights_Error']
 #    'type'	: 'HESSIAN',
 #    'samples'	: {
 #      	'DYJets'	: pdfErr_syst ,
-#	'TTLL_powheg'	: pdfErr_syst ,
-#	'WJets_MG'	: pdfErr_syst ,
-#	'WW_pythia'	: pdfErr_syst ,
-#	'WZ_pythia'	: pdfErr_syst ,
-#	'ZZ_pythia'	: pdfErr_syst ,
 #	},
 #}
 

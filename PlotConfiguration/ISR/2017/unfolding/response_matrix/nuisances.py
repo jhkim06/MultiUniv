@@ -17,55 +17,55 @@ pdfScale_syst  = ['PDFWeights_Scale']
 pdfErr_syst  = ['PDFWeights_Error']
 #id_syst_ele = ['LepSF'+Nlep+'l_ele_'+eleWP+'_Up', 'LepSF'+Nlep+'l_ele_'+eleWP+'_Do']
 
-#nuisances['trig_sf'] = {
-#    'name'	: 'trgSF',
-#    'kind'	: 'weight',
-#    'type'	: 'shape',
-#    'samples'	: {
-#      	'DYJets'	: trg_syst ,
-#      	'DYJets10to50'	: trg_syst ,
-#	},
-#}
-#
-#nuisances['id_sf'] = {
-#    'name'      : 'IdSF',
-#    'kind'      : 'weight',
-#    'type'      : 'shape',
-#    'samples'   : {
-#        'DYJets'        : id_syst ,
-#        'DYJets10to50'  : id_syst ,
-#        },
-#}
-#
-#nuisances['reco_sf'] = {
-#    'name'      : 'recoSF',
-#    'kind'      : 'weight',
-#    'type'      : 'shape',
-#    'samples'   : {
-#        'DYJets'        : reco_syst ,
-#        'DYJets10to50'  : reco_syst ,
-#        },
-#}
-#
-#nuisances['l1prefire'] = {
-#    'name'      : 'L1Prefire',
-#    'kind'      : 'weight',
-#    'type'      : 'shape',
-#    'samples'   : {
-#        'DYJets'        : l1prefire_syst ,
-#        'DYJets10to50'  : l1prefire_syst ,
-#        },
-#}
-#
-#nuisances['pileup'] = {
-#    'name'      : 'PU',
-#    'kind'      : 'weight',
-#    'type'      : 'shape',
-#    'samples'   : {
-#        'DYJets'        : pileup_syst ,
-#        'DYJets10to50'  : pileup_syst ,
-#        },
-#}
+nuisances['trig_sf'] = {
+    'name'	: 'trgSF',
+    'kind'	: 'weight',
+    'type'	: 'shape',
+    'samples'	: {
+      	'DYJets'	: trg_syst ,
+      	'DYJets10to50'	: trg_syst ,
+	},
+}
+
+nuisances['id_sf'] = {
+    'name'      : 'IdSF',
+    'kind'      : 'weight',
+    'type'      : 'shape',
+    'samples'   : {
+        'DYJets'        : id_syst ,
+        'DYJets10to50'  : id_syst ,
+        },
+}
+
+nuisances['reco_sf'] = {
+    'name'      : 'recoSF',
+    'kind'      : 'weight',
+    'type'      : 'shape',
+    'samples'   : {
+        'DYJets'        : reco_syst ,
+        'DYJets10to50'  : reco_syst ,
+        },
+}
+
+nuisances['l1prefire'] = {
+    'name'      : 'L1Prefire',
+    'kind'      : 'weight',
+    'type'      : 'shape',
+    'samples'   : {
+        'DYJets'        : l1prefire_syst ,
+        'DYJets10to50'  : l1prefire_syst ,
+        },
+}
+
+nuisances['pileup'] = {
+    'name'      : 'PU',
+    'kind'      : 'weight',
+    'type'      : 'shape',
+    'samples'   : {
+        'DYJets'        : pileup_syst ,
+        'DYJets10to50'  : pileup_syst ,
+        },
+}
 
 #nuisances['alphaS'] = {
 #    'name'	: 'alphaS',
