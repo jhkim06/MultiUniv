@@ -161,8 +161,8 @@ options = {
       'options' : ":".join(["!H",
 	                    "!V",
 	           	    "NTrees=850",
-			    "nEventsMin=150",
-			    "MaxDepth=3",
+			    #"nEventsMin=150",
+			    "MaxDepth=2",
 			    "BoostType=AdaBoost",
 			    "AdaBoostBeta=0.5",
 			    "SeparationType=GiniIndex",
@@ -187,16 +187,16 @@ ml_tools =MLTools()
 ml_tools.SetMLTools(TMVATools)
 
 train_years = [
-  '2016',
-  #'2017',
-  '2018'
+  #'2016',
+  '2017',
+  #'2018'
 ]
 train_samples = [
-	'TTLJ_powheg',
+	#'TTLJ_powheg',
         #'CHToCB_M090',
         #'CHToCB_M100',
 	#'CHToCB_M110',
-	#'CHToCB_M120',
+	'CHToCB_M120',
 	#'CHToCB_M130',
 	#'CHToCB_M140',
 	#'CHToCB_M150'

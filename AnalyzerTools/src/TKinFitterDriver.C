@@ -78,13 +78,15 @@ void TKinFitterDriver::initML(){
   TString base_path= getenv("DATA_DIR"); 
   base_path += "/" + TString::Itoa(DataYear,10) + "/TMVAClassification/";
   std::map<TString, TString> methods;
-  TString MCSample_ = MCSample.Contains("CHToCB")?MCSample:"TTLJ_powheg";
-  methods["BDT_4j_2b"] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"4j","2b");
-  methods["BDT_5j_2b"] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"5j","2b");
-  methods["BDT_6j_2b"] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"6j","2b");
-  methods["BDT_4j_3b"] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"4j","3b");
-  methods["BDT_5j_3b"] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"5j","3b");
-  methods["BDT_6j_3b"] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"6j","3b");
+  //TString MCSample_ = MCSample.Contains("CHToCB")?MCSample:"TTLJ_powheg";
+  for(TString MCSample_ : {"TTLJ_powheg", "CHToCB_M120"}){
+    methods[Form("BDT_%s_4j_2b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"4j","2b");
+    methods[Form("BDT_%s_5j_2b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"5j","2b");
+    methods[Form("BDT_%s_6j_2b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"6j","2b");
+    methods[Form("BDT_%s_4j_3b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"4j","3b");
+    methods[Form("BDT_%s_5j_3b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"5j","3b");
+    methods[Form("BDT_%s_6j_3b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"6j","3b");
+  }
   for(auto &method : methods){
     tmva_reader->BookMVA(method.first,method.second);
   }
@@ -365,7 +367,7 @@ bool TKinFitterDriver::ML_Cut(){
   }
   this->updatesMLVariables();
   // XXX: let's hard code this time
-  TString method ="BDT";
+  TString method ="BDT_%s";
   method += njets==4?
               "_4j":njets==5?
                 "_5j":njets>=6?
@@ -373,11 +375,13 @@ bool TKinFitterDriver::ML_Cut(){
   method += nbtags==2?
 	      "_2b":nbtags>=3?
 	        "_3b":"_NULL";
-  double MLoutput = tmva_reader->EvaluateMVA(method);
+  double MLoutput1 = tmva_reader->EvaluateMVA(Form(method.Data(),"TTLJ_powheg"));
+  double MLoutput2 = tmva_reader->EvaluateMVA(Form(method,"CHToCB_M120"));
   //cout << MLoutput << endl;
-  double cut = 0.;
-  cut = this->GetMLCut(); //TODO add function to set cut and selecte MVA method
-  if(MLoutput>cut){
+  double cut1 = 0., cut2 = 0.;
+  cut1 = this->GetMLCut("TTLJ_powheg"); //TODO add function to set cut and selecte MVA method
+  cut2 = this->GetMLCut("CHToCB_M120"); //TODO add function to set cut and selecte MVA method
+  if(MLoutput1>cut1 || MLoutput2>cut2){
     return true;
   }
   else{
@@ -385,9 +389,9 @@ bool TKinFitterDriver::ML_Cut(){
   }
 }
 
-double TKinFitterDriver::GetMLCut(){
+double TKinFitterDriver::GetMLCut(TString sample){
   double out=-999;
-  if(!MCSample.Contains("CHToCB")){
+  if(sample.Contains("TTLJ_powheg")){
     if(njets==4){
       if(nbtags==2){
         out=-0.0347;
@@ -413,6 +417,58 @@ double TKinFitterDriver::GetMLCut(){
       }
     }
   }
+  else if(sample.Contains("CHToCB_M120")){
+    if(njets==4){
+      if(nbtags==2){
+        out=-0.4588;
+      }
+      else if(nbtags>=3){
+        out=-0.3195;
+      }
+    }
+    else if(njets==5){
+      if(nbtags==2){
+        out=-0.1210;
+      }
+      else if(nbtags>=3){
+        out=-0.0725;
+      }
+    }
+    else if(njets>=6){
+      if(nbtags==2){
+        out=-0.09;
+      }
+      else if(nbtags>=3){
+        out=-0.0518;
+      }
+    }
+  }
+  /*else if(sample.Contains("")){
+    if(njets==4){
+      if(nbtags==2){
+        out=;
+      }
+      else if(nbtags>=3){
+        out=;
+      }
+    }
+    else if(njets==5){
+      if(nbtags==2){
+        out=;
+      }
+      else if(nbtags>=3){
+        out=;
+      }
+    }
+    else if(njets>=6){
+      if(nbtags==2){
+        out=;
+      }
+      else if(nbtags>=3){
+        out=;
+      }
+    }
+  }*/
   return out;
 }
 

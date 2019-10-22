@@ -158,7 +158,7 @@ private:
   TString MCSample;
   void initML();
   bool ML_Cut();
-  double GetMLCut();
+  double GetMLCut(TString sample);
   void updatesMLVariables();
   bool Kinematic_Cut();
 
