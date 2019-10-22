@@ -65,7 +65,7 @@ map<TString, TString> LeptonSFs::electron_2018_IDname_key_map = {
 };
 
 map<TString, map<TString, vector<TString>>> LeptonSFs::electron_2018_TRIGname_key_map = {
-    {"DoubleElectron",  {{"passMediumID", {"",""}}, } } ,
+    {"DoubleElectron",  {{"passMediumID", {"Default","Default"}}, } } ,
 };
 
 // 2018 muon
@@ -78,7 +78,7 @@ map<TString, map<TString, TString>> LeptonSFs::muon_2018_ISOname_key_map = {
 };
 
 map<TString, map<TString, vector<TString>>> LeptonSFs::muon_2018_TRIGname_key_map = {
-    {"DoubleMuon",  {{"POGTight", {"",""}}, } } ,
+    {"DoubleMuon",  {{"POGTight", {"Default","Default"}}, } } ,
 };
 
 

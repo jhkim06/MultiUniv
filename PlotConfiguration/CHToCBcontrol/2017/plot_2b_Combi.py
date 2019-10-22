@@ -5,33 +5,33 @@ from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed, kViolet
 # lineWidth 2, this is another option
 # style 0 : noFillColor
 # no nameHR --> using sample keyname intead
-groupPlot['CHSignal_090'] = {
-    'nameHR' : "H+(090)",
-    'isSignal' : 2,
-    'color':  kViolet,
-    'samples' : ['CHToCB_M090']
-    }
-groupPlot['CHSignal_120'] = {
-    'nameHR' : "H+(120)",
-    'isSignal' : 2,
-    'color':  kViolet+1,
-    'samples' : ['CHToCB_M120']
-    }
-groupPlot['CHSignal_140'] = {
-    'nameHR' : "H+(140)",
-    'isSignal' : 2,
-    'color':  kViolet+2,
-    'samples' : ['CHToCB_M140']
-    }
-
+#groupPlot['CHSignal_090'] = {
+#    'nameHR' : "H+(090)",
+#    'isSignal' : 1,
+#    'color':  kViolet,
+#    'samples' : ['CHToCB_M090']
+#    }
+#groupPlot['CHSignal_120'] = {
+#    'nameHR' : "H+(120)",
+#    'isSignal' : 2,
+#    'color':  kViolet+1,
+#    'samples' : ['CHToCB_M120']
+#    }
+#groupPlot['CHSignal_140'] = {
+#    'nameHR' : "H+(140)",
+#    'isSignal' : 2,
+#    'color':  kViolet+2,
+#    'samples' : ['CHToCB_M140']
+#    }
+#
 groupPlot['TT'] = {
     'nameHR' : "TT",
     'isSignal' : 0,
     'color':  kRed,
-    'samples' : ['TTLJ_powheg']
+    'samples' : ['TTLL_powheg','TTLJ_powheg']
     #'samples' : ['TTLL_powheg','TTLJ_powheg','TTJJ_powheg']
     }
-
+#
 #groupPlot['ttbb'] = {
 #    'nameHR' : "ttbb",
 #    'isSignal' : 0,
@@ -46,14 +46,14 @@ groupPlot['TT'] = {
 #    'samples' : ['SingleTop_sch_top','SingleTop_tch_top','SingleTop_tch_antitop','SingleTop_tW_top','SingleTop_tW_antitop']
 #    }
 #
-groupPlot['VJ'] = {
-    'nameHR' : "VJ",
-    'isSignal' : 0,
-    'color':  kOrange,
-    'samples' : ['WJets_MG']
-    #'samples' : ['WJets_MG','DYJets','DYJets10to50_MG']
-    }
-
+#groupPlot['VJ'] = {
+#    'nameHR' : "VJ",
+#    'isSignal' : 0,
+#    'color':  kOrange,
+#    'samples' : ['WJets_MG']
+#    #'samples' : ['WJets_MG','DYJets','DYJets10to50_MG']
+#    }
+#
 #groupPlot['VV'] = {
 #    'nameHR' : "VV",
 #    'isSignal' : 0,
@@ -94,20 +94,20 @@ groupPlot['VJ'] = {
 #    'style': 4050,
 #    }
 #
-#plot['WJets_MG'] = {
-#    'color': kYellow,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'style': 4050,
-#    }
-#
-#plot['TTLL_powheg'] = {
-#    'color': 550,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
+plot['WJets_MG'] = {
+    'color': kYellow,
+    'isSignal' :0,
+    'isData': 0,
+    'style': 4050,
+    }
+
+plot['TTLL_powheg'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
 plot['TTLJ_powheg'] = {
     'color': 550,
     'isSignal' :0,
@@ -222,6 +222,8 @@ plot['SingleElectron'] = {
 plot['CHToCB_M090'] = {
     'nameHR' : "CH M090",
     'color':kViolet,
+    'style':0,
+    'lineWidth':2,
     'isSignal':2,
     'isData':0,
     'scale':1,
@@ -230,6 +232,8 @@ plot['CHToCB_M090'] = {
 plot['CHToCB_M120'] = {
     'nameHR' : "CH M120",
     'color':kViolet,
+    'style':0,
+    'lineWidth':2,
     'isSignal':2,
     'isData':0,
     'scale':1,
@@ -238,6 +242,8 @@ plot['CHToCB_M120'] = {
 plot['CHToCB_M140'] = {
     'nameHR' : "CH M140",
     'color':kViolet,
+    'style':0,
+    'lineWidth':2,
     'isSignal':2,
     'isData':0,
     'scale':1,

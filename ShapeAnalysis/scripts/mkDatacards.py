@@ -5,7 +5,8 @@ import sys
 argv = sys.argv
 sys.argv = argv[:1]
 import ROOT
-import optparse
+import argparse
+#import optparse
 import CommonPyTools.python.CommonTools as Tools
 import logging
 import collections
@@ -33,7 +34,7 @@ class DatacardFactory:
     # _____________________________________________________________________________
     # a datacard for each "cut" and each "variable" will be produced, in separate sub-folders, names after "cut/variable"
     # _____________________________________________________________________________
-    def makeDatacards( self, inputFile, outputDirDatacard, variables, cuts, samples, structureFile, nuisances):
+    def makeDatacards( self, inputFile, outputDirDatacard, variables, cuts, samples, structureFile, nuisances, groupPlot, plot):
     
         print "======================="
         print "==== makeDatacards ===="
@@ -55,20 +56,46 @@ class DatacardFactory:
 
         # categorize the sample names
         signal_ids = collections.OrderedDict() # id map of alternative_signals + cumulative_signals
+        sigGrid_ids = collections.OrderedDict() # id map of signal grid points
         alternative_signals = ['']
         cumulative_signals = []
         data = []
         background_ids = collections.OrderedDict()
         
+	#print 'plot', plot
+	#print 'groupPlot', groupPlot
+        
         # divide the list of samples among signal, background and data
         isig = 0
         ibkg = 1
 	#print self._samples
-        for sampleName in self._samples:
+        #for sampleName in self._samples:
+        for sampleName in plot:
 	  if sampleName in structureFile:
-            if structureFile[sampleName]['isSignal'] != 0:
+	    print 'sampleName in plot and structure',sampleName
+            if structureFile[sampleName]['isSignal'] != 0 and structureFile[sampleName]['isSignal'] != 3:
               signal_ids[sampleName] = isig
               isig -= 1
+            if structureFile[sampleName]['isSignal'] == 3:
+              sigGrid_ids[sampleName] = 0
+            if structureFile[sampleName]['isSignal'] == 2 :
+              alternative_signals.append(sampleName)
+            if structureFile[sampleName]['isSignal'] == 1 :
+              cumulative_signals.append(sampleName)
+            if structureFile[sampleName]['isData'] == 1 :
+              data.append(sampleName)
+            if structureFile[sampleName]['isSignal'] == 0 and structureFile[sampleName]['isData'] == 0:
+              background_ids[sampleName] = ibkg
+              ibkg += 1
+
+        for sampleName in groupPlot:
+	  if sampleName in structureFile:
+	    print 'sampleName in plot and structure',sampleName
+            if structureFile[sampleName]['isSignal'] != 0 and structureFile[sampleName]['isSignal'] != 3:
+              signal_ids[sampleName] = isig
+              isig -= 1
+            if structureFile[sampleName]['isSignal'] == 3:
+              sigGrid_ids[sampleName] = 0
             if structureFile[sampleName]['isSignal'] == 2 :
               alternative_signals.append(sampleName)
             if structureFile[sampleName]['isSignal'] == 1 :
@@ -80,6 +107,7 @@ class DatacardFactory:
               ibkg += 1
 
         print "Number of Signals:             " + str(len(signal_ids))
+        print "Number of Signal Grids:        " + str(len(sigGrid_ids))
         print "Number of Alternative Signals: " + str(len(alternative_signals) - 1)
         print "Number of Cumulative Signals:  " + str(len(cumulative_signals))
         print "Number of Backgrounds:         " + str(len(background_ids))
@@ -104,7 +132,7 @@ class DatacardFactory:
           #
           cut_signals = []
           cut_backgrounds = []
-          for snameList, idmap in [(cut_signals, signal_ids), (cut_backgrounds, background_ids)]:
+          for snameList, idmap in [(cut_signals, signal_ids), (cut_signals, sigGrid_ids), (cut_backgrounds, background_ids)]:
             for sampleName in idmap:
               if 'removeFromCuts' in structureFile[sampleName] and cutName in structureFile[sampleName]['removeFromCuts']:
                 # remove from the list
@@ -113,56 +141,74 @@ class DatacardFactory:
                 snameList.append(sampleName)
 
           print "  sampleNames = ", cut_signals + cut_backgrounds
-#          
-#          # loop over variables
-#          for variableName, variable in self._variables.iteritems():
-#            if 'cuts' in variable and cutName not in variable['cuts']:
-#              continue
-#              
-#            print "  variableName = ", variableName
-#            tagNameToAppearInDatacard = cutName
-#            # e.g.    hww2l2v_13TeV_of0j
-#            #         to be defined in cuts.py
-#
-#            os.mkdir(outputDirDatacard + "/" + cutName + "/" + variableName) 
-#            os.mkdir(outputDirDatacard + "/" + cutName + "/" + variableName + "/shapes/") # and the folder for the root files 
-#
-#            self._outFile = ROOT.TFile.Open(outputDirDatacard + "/" + cutName + "/" + variableName + "/shapes/histos_" + tagNameToAppearInDatacard + ".root", 'recreate')
-#                    
-#            # prepare yields
-#            yieldsSig  = {}
-#            yieldsBkg  = {}
-#            yieldsData = {}
-#
-#            # Bin to be killed
-#            #killBinSig = {}
-#            #killBinBkg = {}
-#
-#            for snameList, yields in [(cut_signals, yieldsSig), (cut_backgrounds, yieldsBkg), (data, yieldsData)]:
-#              for sampleName in snameList:
-#                histo = self._getHisto(cutName, variableName, sampleName)
-#                histo.SetDirectory(self._outFile)
-#  
-#                # get the integral == rate from histogram
-#                if structureFile[sampleName]['isData'] == 1:
-#                  yields['data'] = histo.Integral()
-#                  histo.SetName("histo_Data")
-#                else:
-##                  if 'removeNegNomVal' in structureFile[sampleName] and structureFile[sampleName]['removeNegNomVal'] :
-##                    for iBin in range(0,histo.GetNbinsX()+2) :
-##                      BinContent = histo.GetBinContent(iBin)
-##                      if BinContent < 0.1 and not BinContent == 0:
-##                        print 'Killing Bin :' , sampleName , iBin , BinContent
-##                        if not sampleName in killBinSig : killBinSig[sampleName] = []
-##                        killBinSig[sampleName].append(iBin)
-##                        histo.SetBinContent(iBin,0.)
-#                    
-#                  yields[sampleName] = histo.Integral()
-#  
-#                self._outFile.cd()
-#                histo.Write()
-#
-#            # Loop over alternative signal samples. One card per signal (there is always at least one entry (""))
+          
+          # loop over variables
+          for variableName, variable in self._variables.iteritems():
+            if 'cuts' in variable and cutName not in variable['cuts']:
+              continue
+              
+            print "  variableName = ", variableName
+            tagNameToAppearInDatacard = cutName
+            # e.g.    hww2l2v_13TeV_of0j
+            #         to be defined in cuts.py
+
+            os.mkdir(outputDirDatacard + "/" + cutName + "/" + variableName) 
+            os.mkdir(outputDirDatacard + "/" + cutName + "/" + variableName + "/shapes/") # and the folder for the root files 
+
+            self._outFile = ROOT.TFile.Open(outputDirDatacard + "/" + cutName + "/" + variableName + "/shapes/histos_" + tagNameToAppearInDatacard + ".root", 'recreate')
+                    
+            # prepare yields
+            yieldsSig  = {}
+            yieldsBkg  = {}
+            yieldsData = {}
+
+            # Bin to be killed
+            #killBinSig = {}
+            #killBinBkg = {}
+
+            for snameList, yields in [(cut_signals, yieldsSig), (cut_backgrounds, yieldsBkg), (data, yieldsData)]:
+              for sampleName in snameList:
+		if sampleName in groupPlot:
+		#if sampleName in groupPlot.keys():
+		  FlagIdx = 0
+		  for subSample in groupPlot[sampleName]['samples']:
+		    print 'for',subSample,'in groupPlot'
+		    if FlagIdx ==0:
+		      histo = self._getHisto(cutName, variableName, subSample)
+		      histo.SetNameTitle(sampleName,sampleName)
+		    else:
+		      histo_tmp = self._getHisto(cutName, variableName, subSample)
+		      print 'adding', subSample,'to',sampleName
+		      histo.Add(histo_tmp)
+		    FlagIdx +=1
+		else:
+                  histo = self._getHisto(cutName, variableName, sampleName)
+
+                histo.SetDirectory(self._outFile)
+  
+                # get the integral == rate from histogram
+		FlagIdx_data = 0
+                if structureFile[sampleName]['isData'] == 1:
+		  if FlagIdx_data == 0:
+                    yields['data'] = histo.Integral()
+                    histo.SetName("histo_Data")
+		  else:
+                else:
+#                  if 'removeNegNomVal' in structureFile[sampleName] and structureFile[sampleName]['removeNegNomVal'] :
+#                    for iBin in range(0,histo.GetNbinsX()+2) :
+#                      BinContent = histo.GetBinContent(iBin)
+#                      if BinContent < 0.1 and not BinContent == 0:
+#                        print 'Killing Bin :' , sampleName , iBin , BinContent
+#                        if not sampleName in killBinSig : killBinSig[sampleName] = []
+#                        killBinSig[sampleName].append(iBin)
+#                        histo.SetBinContent(iBin,0.)
+                    
+                  yields[sampleName] = histo.Integral()
+  
+                self._outFile.cd()
+                histo.Write()
+
+            # Loop over alternative signal samples. One card per signal (there is always at least one entry (""))
 #            for signalName in alternative_signals:
 #              if signalName == '':
 #                signals = [name for name in cumulative_signals if name in cut_signals]
@@ -484,15 +530,15 @@ class DatacardFactory:
 #
 #              print '      done.'
 #
-#            self._outFile.Close()
+            self._outFile.Close()
 #
-#        if type(self._fileIn) is dict:
-#          for source in self._fileIn.values():
-#            source.Close()
-#        else:
-#          self._fileIn.Close()
-#
-#
+        if type(self._fileIn) is dict:
+          for source in self._fileIn.values():
+            source.Close()
+        else:
+          self._fileIn.Close()
+
+
     # _____________________________________________________________________________
     def _saveNuisanceHistos(self, cutName, variableName, sampleName, suffixIn, suffixOut = None, symmetrize = False):
         histoUp = self._getHisto(cutName, variableName, sampleName, suffixIn + 'Up')
@@ -560,31 +606,26 @@ if __name__ == '__main__':
 --------------------------------------------------------------------------------------------------
 '''    
 
-    usage = 'usage: %prog [options]'
-    parser = optparse.OptionParser(usage)
+    parser = argparse.ArgumentParser(description='Joker')
+    parser.add_argument('--userflags', dest='Userflags', default="test")
+    parser.add_argument('--sigset'             , dest='sigset'            , help='Signal samples [SM]'                        , default='SM')
+    parser.add_argument('--outputDirDatacard'  , dest='outputDirDatacard' , help='output directory'                           , default='./')
+    parser.add_argument('--inputFile'          , dest='inputFile'         , help='input directory'                            , default='./input.root')
+    parser.add_argument('--cardList'           , dest="cardList"          , help="List of cuts to produce datacards"          , default=[])
+    parser.add_argument('--skipMissingNuisance', dest='skipMissingNuisance', help="Don't write nuisance lines when histograms are missing", default=False, action='store_true')
+        
 
-    parser.add_option('--tag'                , dest='tag'               , help='Tag used for the shape file name'           , default=None)
-    parser.add_option('--sigset'             , dest='sigset'            , help='Signal samples [SM]'                        , default='SM')
-    parser.add_option('--outputDirDatacard'  , dest='outputDirDatacard' , help='output directory'                           , default='./')
-    parser.add_option('--inputFile'          , dest='inputFile'         , help='input directory'                            , default='./input.root')
-    parser.add_option('--structureFile'      , dest='structureFile'     , help='file with datacard configurations'          , default=None )
-    parser.add_option('--nuisancesFile'      , dest='nuisancesFile'     , help='file with nuisances configurations'         , default=None )
-    parser.add_option('--cardList'           , dest="cardList"          , help="List of cuts to produce datacards"          , default=[], type='string' , action='callback' , callback=Tools.list_maker('cardList',','))
-    parser.add_option('--skipMissingNuisance', dest='skipMissingNuisance', help="Don't write nuisance lines when histograms are missing", default=False, action='store_true')
-          
+    ROOT.gROOT.SetBatch()
+    ROOT.TH1.SetDefaultSumw2(True)
+
     # read default parsing options as well
-    Tools.addOptions(parser)
-    Tools.loadOptDefaults(parser)
-    (opt, args) = parser.parse_args()
+    Tools.AddOptions(parser)
+    Tools.LoadOptDefaults(parser)
+    opt = parser.parse_args()
 
     sys.argv.append( '-b' )
-    ROOT.gROOT.SetBatch()
 
 
-    print " configuration file = 	", opt.pycfg
-    print " inputFile =                 ", opt.inputFile
-    print " outputDirDatacard =         ", opt.outputDirDatacard
-    print " cardList:			", opt.cardList
  
     if not opt.debug:
         pass
@@ -594,10 +635,32 @@ if __name__ == '__main__':
     elif opt.debug == 1:
         print 'Logging level set to INFO (%d)' % opt.debug
         logging.basicConfig( level=logging.INFO )
-    ROOT.TH1.SetDefaultSumw2(True)
+
+    Userflags = []
+    if opt.Userflags != "":
+      Userflags = (opt.Userflags).split(',')
+    
+    IsFirstFlag = True
+    tag=''
+    for flag in Userflags:
+      if IsFirstFlag:
+        tag = flag
+      else:
+        tag += '_'+flag 
+    print tag
+
+    if opt.outputDirDatacard == "./":
+      opt.outputDirDatacard = 'DataCard_'+tag
+    else:
+      opt.outputDirDatacard = opt.outputDirDatacard + '_' + tag
+
+    print " configuration file = 	", opt.pycfg
+    print " inputFile =                 ", opt.inputFile
+    print " outputDirDatacard =         ", opt.outputDirDatacard
+    print " cardList:			", opt.cardList
       
     factory = DatacardFactory()
-    factory._tag       = opt.tag
+    factory._tag       = tag
     factory._skipMissingNuisance = opt.skipMissingNuisance
     
     # ~~~~
@@ -655,5 +718,13 @@ if __name__ == '__main__':
       exec(handle)
       handle.close()
     
-    factory.makeDatacards( opt.inputFile ,opt.outputDirDatacard, variables, cuts, samples, structure, nuisances)
+    groupPlot = collections.OrderedDict()
+    plot = {}
+    legend = {}
+    if os.path.exists(opt.plotFile) :
+      handle = open(opt.plotFile,'r')
+      exec(handle)
+      handle.close()
+
+    factory.makeDatacards( opt.inputFile ,opt.outputDirDatacard, variables, cuts, samples, structure, nuisances, groupPlot, plot)
 
