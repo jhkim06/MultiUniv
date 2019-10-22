@@ -47,24 +47,24 @@ groupPlot['TTX'] = {
     'color':  kYellow,
     'samples' : ['ttW','ttZ','ttH_bb']
     }
-groupPlot['CHSignal_090'] = {
-    'nameHR' : "H+(090)x0.1",
-    'isSignal' : 2,
-    'color':  kViolet,
-    'samples' : ['CHToCB_M090']
-    }
+#groupPlot['CHSignal_090'] = {
+#    'nameHR' : "H+(090)x0.1",
+#    'isSignal' : 2,
+#    'color':  kViolet,
+#    'samples' : ['CHToCB_M090']
+#    }
 groupPlot['CHSignal_120'] = {
     'nameHR' : "H+(120)x0.1",
     'isSignal' : 2,
     'color':  kViolet+1,
     'samples' : ['CHToCB_M120']
     }
-groupPlot['CHSignal_140'] = {
-    'nameHR' : "H+(140)x0.1",
-    'isSignal' : 2,
-    'color':  kViolet+2,
-    'samples' : ['CHToCB_M140']
-    }
+#groupPlot['CHSignal_140'] = {
+#    'nameHR' : "H+(140)x0.1",
+#    'isSignal' : 2,
+#    'color':  kViolet+2,
+#   'samples' : ['CHToCB_M140']
+#    }
 
 '''
 groupPlot['QCD'] = {

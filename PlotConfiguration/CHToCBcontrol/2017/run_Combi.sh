@@ -53,7 +53,7 @@
 
 #------------------------------------
 #### ver. 2 (19. 06. 10)
-#mkShapes.py --pycfg  configuration_2b_Combi.py -n 20 --nTotFiles 0  --overWrite --doBatch 
+#mkShapes.py --pycfg  configuration_2b_Combi.py -n 20 --nTotFiles 0  --overWrite --doBatch --multiQueue --concLimit 200
 #checkMakeShapeBatch.py -y 2017 -n 20 --nTotFiles 0 --RundirBase $SKFlatRunlogDir --SkimName MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_2b
 
 #sleep 30m
@@ -66,5 +66,3 @@
 
 
 mkDatacards.py --pycfg configuration_2b_Combi.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_2b_Combi/CHToCB_2b_Combi.root 
-
-
