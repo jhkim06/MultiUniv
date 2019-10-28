@@ -7,7 +7,8 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec * muon_double_idSF_POGTightWithTightIso * muon_double_isoSF_POGTightWithTightIso * muon_double_trigSF_DoubleMuon_POGTightWithTightIso'
+#McWeight = 'evt_weight_total_gen * evt_weight_total_rec * muon_double_idSF_POGTightWithTightIso * muon_double_isoSF_POGTightWithTightIso * muon_double_trigSF_DoubleMuon_POGTightWithTightIso'
+McWeight = 'evt_weight_total_gen * evt_weight_total_rec * muon_double_idSF_POGTightWithTightIso * muon_double_isoSF_POGTightWithTightIso * muon_double_trigSF_DoubleMuon_POGTightWithTightIso / evt_weight_bveto'
 FakeRate = 'evt_weight_fake' 
 
 #--------------------    
@@ -84,12 +85,12 @@ samples['DoubleMuon'] = {
     'weight' :'1',
     }
 
-samples['DoubleMuon@DoubleMuonQCDFakeRate'] = {
-    'skim'   :'ISR_detector_only_v1',
-    'combine_cuts' : False,
-    'cut'    :'evt_tag_analysisevnt_sel_rec_Fake == 1 && evt_tag_dimuon_rec_Fake == 1 && evt_tag_dielectron_rec_Fake == 0 && dilep_pt_rec_Fake < 100. && dilep_mass_rec_Fake > 40. && dilep_mass_rec > 40.',
-    'weight' :FakeRate,
-    }
+#samples['DoubleMuon@DoubleMuonQCDFakeRate'] = {
+#    'skim'   :'ISR_detector_only_v1',
+#    'combine_cuts' : False,
+#    'cut'    :'evt_tag_analysisevnt_sel_rec_Fake == 1 && evt_tag_dimuon_rec_Fake == 1 && evt_tag_dielectron_rec_Fake == 0 && dilep_pt_rec_Fake < 100. && dilep_mass_rec_Fake > 40. && dilep_mass_rec > 40.',
+#    'weight' :FakeRate,
+#    }
 
 #samples['DoubleMuon'] = {
 #    'skim'   :'',

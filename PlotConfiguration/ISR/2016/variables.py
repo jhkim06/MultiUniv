@@ -10,30 +10,48 @@ from Definitions import * # to use enumerate for unfolding histogram type
 
 # xaxis, yaxis to set title
 
+variables['leading pt'] = {
+    'name': 'leadinglep_pt_rec',
+    'range':(20,0,100),
+    'xaxis': 'p_{T} [GeV]',
+    'yaxis': 'Events / bin',
+    'fold' : 0
+    }
+variables['sub-leading pt'] = {
+    'name': 'subleadinglep_pt_rec',
+    'range':(20,0,100),
+    'xaxis': 'p_{T} [GeV]',
+    'yaxis': 'Events / bin',
+    'fold' : 0
+    }
+variables['leading eta'] = {
+    'name': 'leadinglep_eta_rec',
+    'range':(50, -2.4, 2.4),
+    'xaxis': '|#eta|',
+    'yaxis': 'Events / bin',
+    'fold' : 0
+    }
+
+variables['subleading eta'] = {
+    'name': 'subleadinglep_eta_rec',
+    'range':(50, -2.4, 2.4),
+    'xaxis': '|#eta|',
+    'yaxis': 'Events / bin',
+    'fold' : 0
+    }
+variables['ptll-mll'] = {
+    'name': 'dilep_pt_rec:dilep_mass_rec',
+    #'range':(100,0,100),
+    'range':([40., 60., 80., 100., 200., 350.],[0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 35., 45., 55., 65., 75., 85., 100.]),
+    'xaxis': ' Mass p_{T} bin index',
+    'yaxis': 'Events/ bin',
+    'go1D': True,
+    'fold' : 0
+    }
+
 variables['mll'] = {
     'name': 'dilep_mass_rec',
     'range':(380, 20,400),
-    'xaxis': 'm_{ll} [GeV]',
-    'fold' : 0
-    }
-
-variables['mll_40_60'] = {
-    'name': 'dilep_mass_rec',
-    'range':(20, 40, 60),
-    'xaxis': 'm_{ll} [GeV]',
-    'fold' : 0
-    }
-
-variables['mll_60_80'] = {
-    'name': 'dilep_mass_rec',
-    'range':(20, 60, 80),
-    'xaxis': 'm_{ll} [GeV]',
-    'fold' : 0
-    }
-
-variables['mll_80_100'] = {
-    'name': 'dilep_mass_rec',
-    'range':(20, 80, 100),
     'xaxis': 'm_{ll} [GeV]',
     'fold' : 0
     }
@@ -58,20 +76,6 @@ variables['mll_80_100'] = {
 #    'xaxis': '#gamma E_{T} [GeV]',
 #    'fold' : 0
 #    }
-
-variables['ptll'] = {
-    'name': 'dilep_pt_rec',
-    'range':(100,0,1000),
-    'xaxis': 'pt_{ll} [GeV]',
-    'fold' : 0
-    }
-
-variables['ptll_100'] = {
-    'name': 'dilep_pt_rec',
-    'range':(100,0,100),
-    'xaxis': 'pt_{ll} [GeV]',
-    'fold' : 0
-    }
 
 variables['PU'] = {
     'name': 'nPV',

@@ -20,6 +20,7 @@ for sample in  DYJets10to50_MG DYJets_MG
 #for sample in DoubleEG DoubleMuon DYJets10to50 DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
 do
   echo $sample
+  mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 50 --skimV 1 --userflags ISR --multiQueue 
   #mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 50 --skimV 1 --userflags ISR_generator_only --multiQueue --treeDir GEN  --OnlyGenLevel
   mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 50 --skimV 1 --userflags ISR --multiQueue 
   #mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 100 --skimV 1 --userflags ISR_detector_only --multiQueue 
