@@ -2,6 +2,7 @@
 trg_syst = ['muon_double_trigSFUp_DoubleMuon_POGTightWithTightIso/muon_double_trigSF_DoubleMuon_POGTightWithTightIso', 'muon_double_trigSFDn_DoubleMuon_POGTightWithTightIso/muon_double_trigSF_DoubleMuon_POGTightWithTightIso']
 id_syst  = ['muon_double_idSFUp_POGTightWithTightIso/muon_double_idSF_POGTightWithTightIso', 'muon_double_idSFDn_POGTightWithTightIso/muon_double_idSF_POGTightWithTightIso']
 iso_syst = ['muon_double_isoSFUp_POGTightWithTightIso/muon_double_isoSF_POGTightWithTightIso','muon_double_isoSFDn_POGTightWithTightIso/muon_double_isoSF_POGTightWithTightIso']
+bveto_syst = ['evt_weight_bveto_up/evt_weight_bveto','evt_weight_bveto_down/evt_weight_bveto']
 l1prefire_syst = ['evt_weight_l1prefire_up/evt_weight_l1prefire','evt_weight_l1prefire_down/evt_weight_l1prefire']
 pileup_syst = ['evt_weight_pureweight_up/evt_weight_pureweight','evt_weight_pureweight_down/evt_weight_pureweight']
 alphaS_syst  = 'PDFWeights_AlphaS'
@@ -128,20 +129,20 @@ nuisances['pdfScale'] = {
         },
 }
 
-nuisances['pdfErr'] = {
-    'name'      : 'PDFerror',
-    'kind'      : 'PDF',
-    'type'      : 'shape',
-    'samples'   : {
-        'DYJetsToMuMu'  : pdfErr_syst ,
-        'DYJets10to50ToMuMu'    : pdfErr_syst ,
-        'DYJetsToTauTau'        : pdfErr_syst ,
-        'DYJets10to50ToTauTau'  : pdfErr_syst ,
-        'TTLL_powheg'   : pdfErr_syst ,
-        'WJets_MG'      : pdfErr_syst ,
-        #'WW_pythia'     : pdfErr_syst ,
-        #'WZ_pythia'     : pdfErr_syst ,
-        #'ZZ_pythia'     : pdfErr_syst ,
-        },
-}
+#nuisances['pdfErr'] = {
+#    'name'      : 'PDFerror',
+#    'kind'      : 'PDF',
+#    'type'      : 'shape',
+#    'samples'   : {
+#        'DYJetsToMuMu'  : pdfErr_syst ,
+#        'DYJets10to50ToMuMu'    : pdfErr_syst ,
+#        'DYJetsToTauTau'        : pdfErr_syst ,
+#        'DYJets10to50ToTauTau'  : pdfErr_syst ,
+#        'TTLL_powheg'   : pdfErr_syst ,
+#        'WJets_MG'      : pdfErr_syst ,
+#        #'WW_pythia'     : pdfErr_syst ,
+#        #'WZ_pythia'     : pdfErr_syst ,
+#        #'ZZ_pythia'     : pdfErr_syst ,
+#        },
+#}
 
