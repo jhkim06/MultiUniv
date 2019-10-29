@@ -44,6 +44,7 @@ class MLTools():
   def _connectInputs(self, inFiles, inputDir, tree_name, skipMissingFiles, friendsDir = None, skimListDir = None):
     tree = TChain(tree_name)
     for aFile in inFiles:
+      print(aFile)
       tree.Add(aFile)
     return tree
 

@@ -54,7 +54,7 @@ file_names = {
   ],
 }
 
-
+file_names['2017','CHToCB_M120to150'] = [ ele for mass in ['120','130','140','150'] for ele in file_names['2017','CHToCB_M%s'%mass] ]
 variables = {
   'had_top_b_jet_pt' : {
     'name' : 'had_top_b_jet_pt',
@@ -80,14 +80,14 @@ variables = {
     'name' : 'dijet_deltaEta',
     'type' : 'D'
   },
-  'dijet_cosThetaTC' : {
-    'name' : 'dijet_cosThetaTC',
-    'type' : 'D'
-  },
-  'dijet_cosThetaTB' : {
-    'name' : 'dijet_cosThetaTB',
-    'type' : 'D'
-  },
+  #'dijet_cosThetaTC' : {
+  #  'name' : 'dijet_cosThetaTC',
+  #  'type' : 'D'
+  #},
+  #'dijet_cosThetaTB' : {
+  #  'name' : 'dijet_cosThetaTB',
+  #  'type' : 'D'
+  #},
   'hadronic_top_mass' : {
     'name' : 'hadronic_top_mass',
     'type' : 'D'
@@ -100,24 +100,23 @@ variables = {
     'name' : 'W_MT',
     'type' : 'D'
   },
-  'tt_MT' : {
-    'name' : 'tt_MT',
-    'type' : 'D'
-  },
+  #'tt_MT' : {
+  #  'name' : 'tt_MT',
+  #  'type' : 'D'
+  #},
   'tt_deltaR' : {
     'name' : 'tt_deltaR',
     'type' : 'D'
   },
-  'had_top_pt' : {
-    'name' : 'had_top_pt',
-    'type' : 'D'
-  },
-  'lep_top_pt' : {
-    'name' : 'lep_top_pt',
-    'type' : 'D'
-  },
+  #'had_top_pt' : {
+  #  'name' : 'had_top_pt',
+  #  'type' : 'D'
+  #},
+  #'lep_top_pt' : {
+  #  'name' : 'lep_top_pt',
+  #  'type' : 'D'
+  #},
 }
-
 cuts = {
   'sig' : '',
   'bkg' : '',
@@ -143,18 +142,17 @@ options = {
 			     #"nTest_Background=1400000",
              	            ]),
   'bookMethod' : [
-     {
+    {
       'type' : ROOT.TMVA.Types.kPyKeras,
       'name' : "NN",
       'options' : ":".join(["H",
-	                    "!V",
-			    "VarTransform=D,G",
-			    "FilenameModel=model.h5",
-			    "NumEpochs=10",
-			    "BatchSize=100",
-		           ]),
+  	                    "!V",
+  			    "VarTransform=D,G",
+  			    "FilenameModel=model.h5",
+  			    "NumEpochs=20",
+  			    "BatchSize=100",
+  		           ]),
     },
-
     {
       'type' : ROOT.TMVA.Types.kBDT,
       'name' : "BDT",
@@ -178,7 +176,7 @@ for option in options['bookMethod']:
     IsKeras = True
 if IsKeras:
   m = KerasModel()
-  m.defineModel_3layer(len(variables))
+  m.defineModel_3layer(len(variables.keys()))
   m.compile()
   m.save("model.h5")
   m.summary()
@@ -196,10 +194,11 @@ train_samples = [
         #'CHToCB_M090',
         #'CHToCB_M100',
 	#'CHToCB_M110',
-	'CHToCB_M120',
+	#'CHToCB_M120',
 	#'CHToCB_M130',
 	#'CHToCB_M140',
-	#'CHToCB_M150'
+	#'CHToCB_M150',
+	'CHToCB_M120to150'
 ]
 
 for train_year in train_years:

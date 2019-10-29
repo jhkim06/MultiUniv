@@ -62,18 +62,19 @@
 
 #------------------------------------
 #### ver. 2 (19. 06. 10)
-#mkShapes.py --pycfg  configuration_2b.py -n 10 --nTotFiles 0  --overWrite --doBatch
+#mkShapes.py --pycfg  configuration_2b.py -n 50 --nTotFiles 0  --overWrite --doBatch --multiQueue --concLimit 200
 #checkMakeShapeBatch.py -y 2017 -n 10 --nTotFiles 0 --RundirBase $SKFlatRunlogDir --SkimName MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_2b
 
 #sleep 30m
 #mkShapes.py --pycfg  configuration_2b.py -n 10 --nTotFiles 0  --overWrite --doHadd --cleanUp
+#mkPDfUncert.py --pycfg  configuration_2b.py --overWrite --cleanUp
 #sleep 5s
-#mkPlot.py --pycfg configuration_Mu2b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_2b/CHToCB_2b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+mkPlot.py --pycfg configuration_Mu2b.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_2b/CHToCB_2b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
 #sleep 5s
-#mkPlot.py --pycfg configuration_El2b.py --inputFile=Output_MetFt_L_v1_TTSemiLep_v3_K2_v1_CHToCB_2b/CHToCB_2b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+mkPlot.py --pycfg configuration_El2b.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_2b/CHToCB_2b.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
 #sleep 5s
 
-mkShapes.py --pycfg  configuration_3b.py -n 50 --nTotFiles 0  --overWrite --doBatch --multiQueue --concLimit 200
+#mkShapes.py --pycfg  configuration_3b.py -n 50 --nTotFiles 0  --overWrite --doBatch --multiQueue --concLimit 200
 #sleep 30m
 #mkShapes.py --pycfg  configuration_3b.py -n 10 --nTotFiles 0  --overWrite --doHadd --cleanUp
 #sleep 5s

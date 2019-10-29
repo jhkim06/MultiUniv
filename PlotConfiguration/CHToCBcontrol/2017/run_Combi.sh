@@ -62,7 +62,7 @@
 #mkPDfUncert.py --pycfg  configuration_2b_Combi.py --overWrite --cleanUp
 
 #sleep 5s
-#mkPlot.py --pycfg configuration_2b_Combi.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_2b_Combi/CHToCB_2b_Combi.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+mkPlot.py --pycfg configuration_2b_Combi.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_2b_Combi/CHToCB_2b_Combi.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
 
 
-mkDatacards.py --pycfg configuration_2b_Combi.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_2b_Combi/CHToCB_2b_Combi.root 
+#mkDatacards.py --pycfg configuration_2b_Combi.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_2b_Combi/CHToCB_2b_Combi.root 
