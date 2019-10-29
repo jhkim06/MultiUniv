@@ -220,10 +220,10 @@ samples['SingleElectron'] = {
     'weight' :'1',
     }
 
-samples['SingleMuon'] = {
-    'skim'   :'',
-    'weight' :'1',
-    }
+#samples['SingleMuon'] = {
+#    'skim'   :'',
+#    'weight' :'1',
+#    }
 #--------------------    
 # Signal
 #--------------------    

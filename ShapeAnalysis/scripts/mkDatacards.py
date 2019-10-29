@@ -56,7 +56,6 @@ class DatacardFactory:
 
         # categorize the sample names
         signal_ids = collections.OrderedDict() # id map of alternative_signals + cumulative_signals
-        sigGrid_ids = collections.OrderedDict() # id map of signal grid points
         alternative_signals = ['']
         cumulative_signals = []
         data = []
@@ -72,12 +71,9 @@ class DatacardFactory:
         #for sampleName in self._samples:
         for sampleName in plot:
 	  if sampleName in structureFile:
-	    print 'sampleName in plot and structure',sampleName
-            if structureFile[sampleName]['isSignal'] != 0 and structureFile[sampleName]['isSignal'] != 3:
+            if structureFile[sampleName]['isSignal'] != 0:
               signal_ids[sampleName] = isig
               isig -= 1
-            if structureFile[sampleName]['isSignal'] == 3:
-              sigGrid_ids[sampleName] = 0
             if structureFile[sampleName]['isSignal'] == 2 :
               alternative_signals.append(sampleName)
             if structureFile[sampleName]['isSignal'] == 1 :
@@ -90,12 +86,10 @@ class DatacardFactory:
 
         for sampleName in groupPlot:
 	  if sampleName in structureFile:
-	    print 'sampleName in plot and structure',sampleName
-            if structureFile[sampleName]['isSignal'] != 0 and structureFile[sampleName]['isSignal'] != 3:
+	    #print 'sampleName in goupPlot and structure',sampleName
+            if structureFile[sampleName]['isSignal'] != 0:
               signal_ids[sampleName] = isig
               isig -= 1
-            if structureFile[sampleName]['isSignal'] == 3:
-              sigGrid_ids[sampleName] = 0
             if structureFile[sampleName]['isSignal'] == 2 :
               alternative_signals.append(sampleName)
             if structureFile[sampleName]['isSignal'] == 1 :
@@ -106,16 +100,14 @@ class DatacardFactory:
               background_ids[sampleName] = ibkg
               ibkg += 1
 
+
         print "Number of Signals:             " + str(len(signal_ids))
-        print "Number of Signal Grids:        " + str(len(sigGrid_ids))
         print "Number of Alternative Signals: " + str(len(alternative_signals) - 1)
         print "Number of Cumulative Signals:  " + str(len(cumulative_signals))
         print "Number of Backgrounds:         " + str(len(background_ids))
 
-
         if not os.path.isdir(outputDirDatacard + "/") :
-          os.system("mkdir -p "+outputDirDatacard + "/")
-          #os.mkdir(outputDirDatacard + "/")
+          os.mkdir(outputDirDatacard + "/")
 
         # loop over cuts. One directory per cut will be created
         for cutName in self._cuts:
@@ -132,7 +124,7 @@ class DatacardFactory:
           #
           cut_signals = []
           cut_backgrounds = []
-          for snameList, idmap in [(cut_signals, signal_ids), (cut_signals, sigGrid_ids), (cut_backgrounds, background_ids)]:
+          for snameList, idmap in [(cut_signals, signal_ids), (cut_backgrounds, background_ids)]:
             for sampleName in idmap:
               if 'removeFromCuts' in structureFile[sampleName] and cutName in structureFile[sampleName]['removeFromCuts']:
                 # remove from the list
@@ -141,7 +133,7 @@ class DatacardFactory:
                 snameList.append(sampleName)
 
           print "  sampleNames = ", cut_signals + cut_backgrounds
-          
+
           # loop over variables
           for variableName, variable in self._variables.iteritems():
             if 'cuts' in variable and cutName not in variable['cuts']:
@@ -167,9 +159,9 @@ class DatacardFactory:
             #killBinBkg = {}
 
             for snameList, yields in [(cut_signals, yieldsSig), (cut_backgrounds, yieldsBkg), (data, yieldsData)]:
+	      FlagIdx_data = 0
               for sampleName in snameList:
 		if sampleName in groupPlot:
-		#if sampleName in groupPlot.keys():
 		  FlagIdx = 0
 		  for subSample in groupPlot[sampleName]['samples']:
 		    print 'for',subSample,'in groupPlot'
@@ -183,16 +175,17 @@ class DatacardFactory:
 		    FlagIdx +=1
 		else:
                   histo = self._getHisto(cutName, variableName, sampleName)
-
                 histo.SetDirectory(self._outFile)
   
                 # get the integral == rate from histogram
-		FlagIdx_data = 0
                 if structureFile[sampleName]['isData'] == 1:
 		  if FlagIdx_data == 0:
                     yields['data'] = histo.Integral()
                     histo.SetName("histo_Data")
+		    FlagIdx_data += 1
 		  else:
+		    print 'There should be one data defined, exiting...................'
+		    exit()
                 else:
 #                  if 'removeNegNomVal' in structureFile[sampleName] and structureFile[sampleName]['removeNegNomVal'] :
 #                    for iBin in range(0,histo.GetNbinsX()+2) :
@@ -209,329 +202,329 @@ class DatacardFactory:
                 histo.Write()
 
             # Loop over alternative signal samples. One card per signal (there is always at least one entry (""))
-#            for signalName in alternative_signals:
-#              if signalName == '':
-#                signals = [name for name in cumulative_signals if name in cut_signals]
-#              else:
-#                if signalName not in cut_signals:
-#                  continue
-#                  
-#                signals = [signalName] + [name for name in cumulative_signals if name in cut_signals]
-#
-#              processes = signals + cut_backgrounds
-#             
-#              print "    Alternative signal: " + str(signalName)
-#              alternativeSignalName  = str(signalName)
-#              alternativeSignalTitle = ""
-#              if alternativeSignalName != "":
-#                alternativeSignalTitle = "_" + str(signalName)
-#
-#              # start creating the datacard 
-#              cardPath = outputDirDatacard + "/" + cutName + "/" + variableName  + "/datacard" + alternativeSignalTitle + ".txt"
-#              print '    Writing to ' + cardPath 
-#              card = open( cardPath ,"w")
-#
-#              print '      headers..'
-#              card.write('## Shape input card\n')
-#        
-#              card.write('imax 1 number of channels\n')
-#              card.write('jmax * number of background\n')
-#              card.write('kmax * number of nuisance parameters\n') 
-#              
-#              card.write('-'*100+'\n')
-#              card.write('bin         %s' % tagNameToAppearInDatacard+'\n')
-#              if len(data) == 0:
-#                self._logger.warning( 'no data, no fun! ')
-#                #raise RuntimeError('No Data found!')
-#                yieldsData['data'] = 0
-#
-#              card.write('observation %.0f\n' % yieldsData['data'])
-#            
-#              card.write('shapes  *           * '+
-#                         'shapes/histos_' + tagNameToAppearInDatacard + ".root" +
-#                         '     histo_$PROCESS histo_$PROCESS_$SYSTEMATIC' + '\n')
-#            
-#              card.write('shapes  data_obs           * '+
-#                         'shapes/histos_' + tagNameToAppearInDatacard + ".root" +
-#                         '     histo_Data' + '\n')
-#            
-#              #   shapes  *           * shapes/hww-19.36fb.mH125.of_vh2j_shape_mll.root     histo_$PROCESS histo_$PROCESS_$SYSTEMATIC
-#              #   shapes  data_obs    * shapes/hww-19.36fb.mH125.of_vh2j_shape_mll.root     histo_Data
-#
-#              columndef = 30
-#
-#              # adapt column length to long bin names            
-#              if len(tagNameToAppearInDatacard) >= (columndef - 5) :
-#                columndef = len(tagNameToAppearInDatacard) + 7
-#
-#              print '      processes and rates..'
-#            
-#              card.write('bin'.ljust(80))
-#              card.write(''.join([tagNameToAppearInDatacard.ljust(columndef)] * (len(signals) + len(cut_backgrounds)))+'\n')
-#            
-#              card.write('process'.ljust(80))
-#              card.write(''.join(name.ljust(columndef) for name in signals))
-#              card.write(''.join(name.ljust(columndef) for name in cut_backgrounds))
-#              card.write('\n')
-#
-#              card.write('process'.ljust(80))
-#              card.write(''.join(('%d' % signal_ids[name]).ljust(columndef) for name in signals))
-#              card.write(''.join(('%d' % background_ids[name]).ljust(columndef) for name in cut_backgrounds))
-#              card.write('\n')
-#
-#              card.write('rate'.ljust(80))
-#              card.write(''.join(('%-.4f' % yieldsSig[name]).ljust(columndef) for name in signals))
-#              card.write(''.join(('%-.4f' % yieldsBkg[name]).ljust(columndef) for name in cut_backgrounds))
-#              card.write('\n')
-#
-#              card.write('-'*100+'\n')
-#
-#              print '      nuisances..'
-#
-#              # add normalization and shape nuisances
-#              for nuisanceName, nuisance in nuisances.iteritems():
-#                if 'type' not in nuisance:
-#                  raise RuntimeError('Nuisance ' + nuisanceName + ' is missing the type specification')
-#
-#                if nuisanceName == 'stat' or nuisance['type'] == 'rateParam':
-#                  # will deal with these later
-#                  continue
-#
-#                # check if a nuisance can be skipped because not in this particular cut
-#                if 'cuts' in nuisance and cutName not in nuisance['cuts']:
-#                    if 'sampleCuts' not in nuisance or len(set((proc, cutName) for proc in processes) & set(nuisance['samplesCuts'])) == 0:
-#                        continue
-#
-#                if nuisance['type'] in ['lnN', 'lnU']:
-#                  card.write((nuisance['name']).ljust(80-20))
-#                  card.write((nuisance['type']).ljust(20))
-#                  if 'all' in nuisance and nuisance ['all'] == 1: # for all samples
-#                    card.write(''.join(('%-.4f' % nuisance['value']).ljust(columndef) for _ in processes))
-#                  else:
-#                    # apply only to selected samples
-#                    for sampleName in processes:
-#                      if sampleName in nuisance['samples'] or ('samplesCuts' in nuisance and (sampleName, cutName) in nuisance['samplesCuts']):
-#                        # in this case nuisance['samples'] is a dict mapping sample name to nuisance values in string
-#                        card.write(('%s' % nuisance['samples'][sampleName]).ljust(columndef))
-#                      else:
-#                        card.write(('-').ljust(columndef))
-#                
-#                elif nuisance['type'] == 'shape':
-#                  #
-#                  # 'skipCMS' is a flag not to introduce "CMS" automatically in the name
-#                  #      of the nuisance.
-#                  #      It may be needed for combination purposes with ATLAS
-#                  #      and agreed upon for all CMS analyses.
-#                  #      For example: theoretical uncertainties on ggH with migration scheme 2017
-#                  #
-#                  if 'skipCMS' in nuisance and nuisance['skipCMS'] == 1:
-#                    card.write(nuisance['name'].ljust(80-20))
-#                  else:
-#                    card.write(("CMS_" + nuisance['name']).ljust(80-20))
-#
-#                  if 'AsLnN' in nuisance and float(nuisance['AsLnN']) >= 1.:
-#                    print ">>>>>", nuisance['name'], " was derived as a shape uncertainty but is being treated as a lnN"
-#                    card.write(('lnN').ljust(20))
-#                    for sampleName in processes:
-#                      if ('all' in nuisance and nuisance['all'] == 1) or \
-#                              ('samples' in nuisance and sampleName in nuisance['samples']) or \
-#                              ('samplesCuts' in nuisance and (sampleName, cutName) in nuisance['samplesCuts']):
-#                        histo = self._getHisto(cutName, variableName, sampleName)
-#                        histoUp = self._getHisto(cutName, variableName, sampleName, '_' + nuisance['name'] + 'Up') 
-#                        histoDown = self._getHisto(cutName, variableName, sampleName, '_' + nuisance['name'] + 'Down')
-#
-#                        if (not histoUp or not histoDown):
-#                          print 'Histogram for nuisance', nuisance['name'], 'on sample', sampleName, 'missing'
-#
-#                          if self._skipMissingNuisance:
-#                            card.write(('-').ljust(columndef)) 
-#                            continue
-#
-#                        histoIntegral = histo.Integral()
-#                        histoUpIntegral = histoUp.Integral()
-#                        histoDownIntegral = histoDown.Integral()
-#                        if histoIntegral > 0. and histoUpIntegral > 0.:
-#                          diffUp = (histoUpIntegral - histoIntegral)/histoIntegral/float(nuisance['AsLnN'])
-#                        else: 
-#                          diffUp = 0.
-#
-#                        if histoIntegral > 0. and histoDownIntegral > 0.:
-#                          diffDo = (histoDownIntegral - histoIntegral)/histoIntegral/float(nuisance['AsLnN'])
-#                        else:
-#                          diffDo = 0.
-#
-#                        if 'symmetrize' in nuisance and nuisance['symmetrize']:
-#                          diff = (diffUp - diffDo) * 0.5
-#                          if diff >= 1.:
-#                              # can't symmetrize
-#                              diffUp = diff * 2. - 0.999
-#                              diffDo = -0.999
-#                          elif diff <= -1.:
-#                              diffUp = -0.999
-#                              diffDo = -diff * 2. - 0.999
-#                          else:
-#                              diffUp = diff
-#                              diffDo = -diff
-#        
-#                        lnNUp = 1. + diffUp
-#                        lnNDo = 1. + diffDo
-#
-#                        #  
-#                        # avoid 0.00/XXX and XXX/0.00 in the lnN --> ill defined nuisance
-#                        # if this happens put 0.00 ---> 1.00, meaning *no* effect of this nuisance
-#                        #              Done like this because it is very likely what you are experiencing 
-#                        #              is a MC fluctuation in the varied sample, that is the up/down histogram has 0 entries!
-#                        #
-#                        #              NB: with the requirement "histoUpIntegral > 0" and "histoDownIntegral > 0" this should never happen, 
-#                        #                  except for some strange coincidence of "AsLnN" ... 
-#                        #                  This fix is left, just for sake of safety
-#                        #
-#                        if lnNUp==0: lnNUp = 1
-#                        if lnNDo==0: lnNDo = 1
-#            
-#                        card.write((('%-.4f' % lnNUp)+"/"+('%-.4f' % lnNDo)).ljust(columndef))
-#                      else:
-#                        card.write(('-').ljust(columndef)) 
-#
-#                  else:  
-#                    card.write('shape'.ljust(20))
-#                    for sampleName in processes:
-#                      if ('all' in nuisance and nuisance ['all'] == 1) or \
-#                              ('samples' in nuisance and sampleName in nuisance['samples']) or \
-#                              ('samplesCuts' in nuisance and (sampleName, cutName) in nuisance['samplesCuts']):
-#                        # save the nuisance histograms in the root file
-#                        if ('skipCMS' in nuisance.keys()) and nuisance['skipCMS'] == 1:
-#                          suffixOut = None
-#                        else:
-#                          suffixOut = '_CMS_' + nuisance['name']
-#
-#                        symmetrize = 'symmetrize' in nuisance and nuisance['symmetrize']
-#
-#                        saved = self._saveNuisanceHistos(cutName, variableName, sampleName, '_' + nuisance['name'], suffixOut, symmetrize)
-#                        if saved:
-#                          card.write('1.000'.ljust(columndef))
-#                        else:
-#                          # saved can be false if skipMissingNuisance is true and histogram cannot be found
-#                          card.write(('-').ljust(columndef))
-#                      else:
-#                        card.write(('-').ljust(columndef))
-#
-#                card.write('\n')
-#                
-#              # done with normalization and shape nuisances.
-#              # now add the stat nuisances
-#              if 'stat' in nuisances:
-#                nuisance = nuisances['stat']
-#                
-#                if nuisance['type'] == 'auto':
-#                  # use autoMCStats feature of combine
-#                  card.write('* autoMCStats ' + nuisance['maxPoiss'] + '  ' + nuisance['includeSignal'])
-#                  #  nuisance ['maxPoiss'] =  Number of threshold events for Poisson modelling
-#                  #  nuisance ['includeSignal'] =  Include MC stat nuisances on signal processes (1=True, 0=False)
-#                  card.write('\n')
-#
-#                else:
-#                  # otherwise we process stat nuisances sample-by-sample
-#                  for sampleName in processes:
-#                    if sampleName not in nuisance['samples']:
-#                      continue
-#  
-#                    sampleNuisance = nuisance['samples'][sampleName]
-#                    sampleIndex = processes.index(sampleName)
-#  
-#                    if sampleNuisance['typeStat'] == 'uni' : # unified approach
-#                      # save the nuisance histograms in the root file
-#                      saved = self._saveNuisanceHistos(cutName, variableName, sampleName, 'stat', '_CMS_' + tagNameToAppearInDatacard + "_" + sampleName + "_stat")
-#  
-#                      if saved:
-#                        card.write(('CMS_' + tagNameToAppearInDatacard + "_" + sampleName + "_stat").ljust(80-20))
-#                        card.write((nuisance['type']).ljust(20))
-#    
-#                        # write the line in datacard. Only the column for this sample gets 1.000
-#                        for idx in range(len(processes)):
-#                          if idx == sampleIndex:
-#                            card.write(('1.000').ljust(columndef))
-#                          else:
-#                            card.write(('-').ljust(columndef))
-#    
-#                        card.write('\n')
-#  
-#                    elif sampleNuisance['typeStat'] == 'bbb': # bin-by-bin
-#                      histoTemplate = self._getHisto(cutName, variableName, sampleName)
-#                      for iBin in range(1, histoTemplate.GetNbinsX()+1):
-#                        if 'correlate' in sampleNuisance:
-#                          #specify the sample that is source of the variation
-#                          tag = "_ibin"+sampleName+"_"
-#                          correlate = list(sampleNuisance["correlate"]) # list of sample names to correlate bin-by-bin with this sample
-#                        else:
-#                          tag = "_ibin_"
-#                          correlate = []
-#  
-#                        # save the nuisance histograms in the root file
-#                        saved = self._saveNuisanceHistos(cutName, variableName, sampleName, tag + str(iBin) + '_stat',
-#                            '_CMS_' + tagNameToAppearInDatacard + "_" + sampleName + '_ibin_' + str(iBin) + '_stat')
-#  
-#                        if not saved:
-#                          continue
-#  
-#                        for other in list(correlate):
-#                          saved = self._saveNuisanceHistos(cutName, variableName, other, tag + str(iBin) + '_stat',
-#                              '_CMS_' + tagNameToAppearInDatacard + "_" + sampleName + '_ibin_' + str(iBin) + '_stat')
-#                          if not saved:
-#                            correlate.remove(other)
-#  
-#                        card.write(('CMS_' + tagNameToAppearInDatacard + "_" + sampleName + "_ibin_" + str(iBin) + "_stat").ljust(100-20))
-#                        card.write((nuisance['type']).ljust(20))
-#  
-#                        # write line in datacard. One line per sample per bin
-#                        for idx in range(len(processes)):
-#                          if idx == sampleIndex or processes[idx] in correlate:
-#                            card.write(('1.000').ljust(columndef))
-#                          else:
-#                            card.write(('-').ljust(columndef))
-#                      
-#                        card.write('\n')
-#
-#              # now add the "rateParam" for the normalization
-#              #  e.g.:            z_norm rateParam  htsearch zll 1 
-#              # see: https://twiki.cern.ch/twiki/bin/view/CMS/HiggsWG/SWGuideNonStandardCombineUses#Rate_Parameters
-#              # 'rateParam' has a separate treatment -> it's just a line at the end of the datacard. It defines "free floating" samples
-#              # I do it here and not before because I want the freee floating parameters at the end of the datacard
-#              for nuisance in nuisances.itervalues():
-#                if nuisance['type'] != 'rateParam':
-#                  continue
-#
-#                # check if a nuisance can be skipped because not in this particular cut
-#                if 'cuts' in nuisance and cutName not in nuisance['cuts']:
-#                  continue
-#
-#                card.write(nuisance['name'].ljust(80-20))
-#                card.write('rateParam'.ljust(20))
-#                card.write(tagNameToAppearInDatacard.ljust(columndef))   # the bin
-#                # there can be only 1 sample per rateParam
-#                if len(nuisance['samples']) != 1:
-#                  raise RuntimeError('Invalid rateParam: number of samples != 1')
-#
-#                sampleName, initialValue = nuisance['samples'].items()[0]
-#                if sampleName not in self._samples:
-#                  raise RuntimeError('Invalid rateParam: unknown sample %s' % sampleName)
-#
-#                card.write(sampleName.ljust(20))
-#                card.write(('%-.4f' % float(initialValue)).ljust(columndef))
-#                card.write('\n')
-#
-#              # now add other nuisances            
-#              # Are there other kind of nuisances I forgot?
-#            
-#              card.write('-'*100+'\n')
-#
-#              card.write('\n')
-#              card.close()
-#
-#              print '      done.'
-#
+            for signalName in alternative_signals:
+              if signalName == '':
+                signals = [name for name in cumulative_signals if name in cut_signals]
+              else:
+                if signalName not in cut_signals:
+                  continue
+                  
+                signals = [signalName] + [name for name in cumulative_signals if name in cut_signals]
+
+              processes = signals + cut_backgrounds
+             
+              print "    Alternative signal: " + str(signalName)
+              alternativeSignalName  = str(signalName)
+              alternativeSignalTitle = ""
+              if alternativeSignalName != "":
+                alternativeSignalTitle = "_" + str(signalName)
+
+              # start creating the datacard 
+              cardPath = outputDirDatacard + "/" + cutName + "/" + variableName  + "/datacard" + alternativeSignalTitle + ".txt"
+              print '    Writing to ' + cardPath 
+              card = open( cardPath ,"w")
+
+              print '      headers..'
+              card.write('## Shape input card\n')
+        
+              card.write('imax 1 number of channels\n')
+              card.write('jmax * number of background\n')
+              card.write('kmax * number of nuisance parameters\n') 
+              
+              card.write('-'*100+'\n')
+              card.write('bin         %s' % tagNameToAppearInDatacard+'\n')
+              if len(data) == 0:
+                self._logger.warning( 'no data, no fun! ')
+                #raise RuntimeError('No Data found!')
+                yieldsData['data'] = 0
+
+              card.write('observation %.0f\n' % yieldsData['data'])
+            
+              card.write('shapes  *           * '+
+                         'shapes/histos_' + tagNameToAppearInDatacard + ".root" +
+                         '     histo_$PROCESS histo_$PROCESS_$SYSTEMATIC' + '\n')
+            
+              card.write('shapes  data_obs           * '+
+                         'shapes/histos_' + tagNameToAppearInDatacard + ".root" +
+                         '     histo_Data' + '\n')
+            
+              #   shapes  *           * shapes/hww-19.36fb.mH125.of_vh2j_shape_mll.root     histo_$PROCESS histo_$PROCESS_$SYSTEMATIC
+              #   shapes  data_obs    * shapes/hww-19.36fb.mH125.of_vh2j_shape_mll.root     histo_Data
+
+              columndef = 30
+
+              # adapt column length to long bin names            
+              if len(tagNameToAppearInDatacard) >= (columndef - 5) :
+                columndef = len(tagNameToAppearInDatacard) + 7
+
+              print '      processes and rates..'
+            
+              card.write('bin'.ljust(40))
+              card.write(''.join([tagNameToAppearInDatacard.ljust(columndef)] * (len(signals) + len(cut_backgrounds)))+'\n')
+            
+              card.write('process'.ljust(40))
+              card.write(''.join(name.ljust(columndef) for name in signals))
+              card.write(''.join(name.ljust(columndef) for name in cut_backgrounds))
+              card.write('\n')
+
+              card.write('process'.ljust(40))
+              card.write(''.join(('%d' % signal_ids[name]).ljust(columndef) for name in signals))
+              card.write(''.join(('%d' % background_ids[name]).ljust(columndef) for name in cut_backgrounds))
+              card.write('\n')
+
+              card.write('rate'.ljust(40))
+              card.write(''.join(('%-.4f' % yieldsSig[name]).ljust(columndef) for name in signals))
+              card.write(''.join(('%-.4f' % yieldsBkg[name]).ljust(columndef) for name in cut_backgrounds))
+              card.write('\n')
+
+              card.write('-'*100+'\n')
+
+              print '      nuisances..'
+
+              # add normalization and shape nuisances
+              for nuisanceName, nuisance in nuisances.iteritems():
+                if 'type' not in nuisance:
+                  raise RuntimeError('Nuisance ' + nuisanceName + ' is missing the type specification')
+
+                if nuisanceName == 'stat' or nuisance['type'] == 'rateParam':
+                  # will deal with these later
+                  continue
+
+                # check if a nuisance can be skipped because not in this particular cut
+                if 'cuts' in nuisance and cutName not in nuisance['cuts']:
+                    if 'sampleCuts' not in nuisance or len(set((proc, cutName) for proc in processes) & set(nuisance['samplesCuts'])) == 0:
+                        continue
+
+                if nuisance['type'] in ['lnN', 'lnU']:
+                  card.write((nuisance['name']).ljust(40-20))
+                  card.write((nuisance['type']).ljust(20))
+                  if 'all' in nuisance and nuisance ['all'] == 1: # for all samples
+                    card.write(''.join(('%-.4f' % nuisance['value']).ljust(columndef) for _ in processes))
+                  else:
+                    # apply only to selected samples
+                    for sampleName in processes:
+                      if sampleName in nuisance['samples'] or ('samplesCuts' in nuisance and (sampleName, cutName) in nuisance['samplesCuts']):
+                        # in this case nuisance['samples'] is a dict mapping sample name to nuisance values in string
+                        card.write(('%s' % nuisance['samples'][sampleName]).ljust(columndef))
+                      else:
+                        card.write(('-').ljust(columndef))
+                
+                elif nuisance['type'] == 'shape':
+                  #
+                  # 'skipCMS' is a flag not to introduce "CMS" automatically in the name
+                  #      of the nuisance.
+                  #      It may be needed for combination purposes with ATLAS
+                  #      and agreed upon for all CMS analyses.
+                  #      For example: theoretical uncertainties on ggH with migration scheme 2017
+                  #
+                  if 'skipCMS' in nuisance and nuisance['skipCMS'] == 1:
+                    card.write(nuisance['name'].ljust(40-20))
+                  else:
+                    card.write(("CMS_" + nuisance['name']).ljust(40-20))
+
+                  if 'AsLnN' in nuisance and float(nuisance['AsLnN']) >= 1.:
+                    print ">>>>>", nuisance['name'], " was derived as a shape uncertainty but is being treated as a lnN"
+                    card.write(('lnN').ljust(20))
+                    for sampleName in processes:
+                      if ('all' in nuisance and nuisance['all'] == 1) or \
+                              ('samples' in nuisance and sampleName in nuisance['samples']) or \
+                              ('samplesCuts' in nuisance and (sampleName, cutName) in nuisance['samplesCuts']):
+                        histo = self._getHisto(cutName, variableName, sampleName)
+                        histoUp = self._getHisto(cutName, variableName, sampleName, '_' + nuisance['name'] + 'Up') 
+                        histoDown = self._getHisto(cutName, variableName, sampleName, '_' + nuisance['name'] + 'Down')
+
+                        if (not histoUp or not histoDown):
+                          print 'Histogram for nuisance', nuisance['name'], 'on sample', sampleName, 'missing'
+
+                          if self._skipMissingNuisance:
+                            card.write(('-').ljust(columndef)) 
+                            continue
+
+                        histoIntegral = histo.Integral()
+                        histoUpIntegral = histoUp.Integral()
+                        histoDownIntegral = histoDown.Integral()
+                        if histoIntegral > 0. and histoUpIntegral > 0.:
+                          diffUp = (histoUpIntegral - histoIntegral)/histoIntegral/float(nuisance['AsLnN'])
+                        else: 
+                          diffUp = 0.
+
+                        if histoIntegral > 0. and histoDownIntegral > 0.:
+                          diffDo = (histoDownIntegral - histoIntegral)/histoIntegral/float(nuisance['AsLnN'])
+                        else:
+                          diffDo = 0.
+
+                        if 'symmetrize' in nuisance and nuisance['symmetrize']:
+                          diff = (diffUp - diffDo) * 0.5
+                          if diff >= 1.:
+                              # can't symmetrize
+                              diffUp = diff * 2. - 0.999
+                              diffDo = -0.999
+                          elif diff <= -1.:
+                              diffUp = -0.999
+                              diffDo = -diff * 2. - 0.999
+                          else:
+                              diffUp = diff
+                              diffDo = -diff
+        
+                        lnNUp = 1. + diffUp
+                        lnNDo = 1. + diffDo
+
+                        #  
+                        # avoid 0.00/XXX and XXX/0.00 in the lnN --> ill defined nuisance
+                        # if this happens put 0.00 ---> 1.00, meaning *no* effect of this nuisance
+                        #              Done like this because it is very likely what you are experiencing 
+                        #              is a MC fluctuation in the varied sample, that is the up/down histogram has 0 entries!
+                        #
+                        #              NB: with the requirement "histoUpIntegral > 0" and "histoDownIntegral > 0" this should never happen, 
+                        #                  except for some strange coincidence of "AsLnN" ... 
+                        #                  This fix is left, just for sake of safety
+                        #
+                        if lnNUp==0: lnNUp = 1
+                        if lnNDo==0: lnNDo = 1
+            
+                        card.write((('%-.4f' % lnNUp)+"/"+('%-.4f' % lnNDo)).ljust(columndef))
+                      else:
+                        card.write(('-').ljust(columndef)) 
+
+                  else:  
+                    card.write('shape'.ljust(20))
+                    for sampleName in processes:
+                      if ('all' in nuisance and nuisance ['all'] == 1) or \
+                              ('samples' in nuisance and sampleName in nuisance['samples']) or \
+                              ('samplesCuts' in nuisance and (sampleName, cutName) in nuisance['samplesCuts']):
+                        # save the nuisance histograms in the root file
+                        if ('skipCMS' in nuisance.keys()) and nuisance['skipCMS'] == 1:
+                          suffixOut = None
+                        else:
+                          suffixOut = '_CMS_' + nuisance['name']
+
+                        symmetrize = 'symmetrize' in nuisance and nuisance['symmetrize']
+
+                        saved = self._saveNuisanceHistos(cutName, variableName, sampleName, '_' + nuisance['name'], suffixOut, symmetrize)
+                        if saved:
+                          card.write('1.000'.ljust(columndef))
+                        else:
+                          # saved can be false if skipMissingNuisance is true and histogram cannot be found
+                          card.write(('-').ljust(columndef))
+                      else:
+                        card.write(('-').ljust(columndef))
+
+                card.write('\n')
+                
+              # done with normalization and shape nuisances.
+              # now add the stat nuisances
+              if 'stat' in nuisances:
+                nuisance = nuisances['stat']
+                
+                if nuisance['type'] == 'auto':
+                  # use autoMCStats feature of combine
+                  card.write('* autoMCStats ' + nuisance['maxPoiss'] + '  ' + nuisance['includeSignal'])
+                  #  nuisance ['maxPoiss'] =  Number of threshold events for Poisson modelling
+                  #  nuisance ['includeSignal'] =  Include MC stat nuisances on signal processes (1=True, 0=False)
+                  card.write('\n')
+
+                else:
+                  # otherwise we process stat nuisances sample-by-sample
+                  for sampleName in processes:
+                    if sampleName not in nuisance['samples']:
+                      continue
+  
+                    sampleNuisance = nuisance['samples'][sampleName]
+                    sampleIndex = processes.index(sampleName)
+  
+                    if sampleNuisance['typeStat'] == 'uni' : # unified approach
+                      # save the nuisance histograms in the root file
+                      saved = self._saveNuisanceHistos(cutName, variableName, sampleName, 'stat', '_CMS_' + tagNameToAppearInDatacard + "_" + sampleName + "_stat")
+  
+                      if saved:
+                        card.write(('CMS_' + tagNameToAppearInDatacard + "_" + sampleName + "_stat").ljust(40-20))
+                        card.write((nuisance['type']).ljust(20))
+    
+                        # write the line in datacard. Only the column for this sample gets 1.000
+                        for idx in range(len(processes)):
+                          if idx == sampleIndex:
+                            card.write(('1.000').ljust(columndef))
+                          else:
+                            card.write(('-').ljust(columndef))
+    
+                        card.write('\n')
+  
+                    elif sampleNuisance['typeStat'] == 'bbb': # bin-by-bin
+                      histoTemplate = self._getHisto(cutName, variableName, sampleName)
+                      for iBin in range(1, histoTemplate.GetNbinsX()+1):
+                        if 'correlate' in sampleNuisance:
+                          #specify the sample that is source of the variation
+                          tag = "_ibin"+sampleName+"_"
+                          correlate = list(sampleNuisance["correlate"]) # list of sample names to correlate bin-by-bin with this sample
+                        else:
+                          tag = "_ibin_"
+                          correlate = []
+  
+                        # save the nuisance histograms in the root file
+                        saved = self._saveNuisanceHistos(cutName, variableName, sampleName, tag + str(iBin) + '_stat',
+                            '_CMS_' + tagNameToAppearInDatacard + "_" + sampleName + '_ibin_' + str(iBin) + '_stat')
+  
+                        if not saved:
+                          continue
+  
+                        for other in list(correlate):
+                          saved = self._saveNuisanceHistos(cutName, variableName, other, tag + str(iBin) + '_stat',
+                              '_CMS_' + tagNameToAppearInDatacard + "_" + sampleName + '_ibin_' + str(iBin) + '_stat')
+                          if not saved:
+                            correlate.remove(other)
+  
+                        card.write(('CMS_' + tagNameToAppearInDatacard + "_" + sampleName + "_ibin_" + str(iBin) + "_stat").ljust(100-20))
+                        card.write((nuisance['type']).ljust(20))
+  
+                        # write line in datacard. One line per sample per bin
+                        for idx in range(len(processes)):
+                          if idx == sampleIndex or processes[idx] in correlate:
+                            card.write(('1.000').ljust(columndef))
+                          else:
+                            card.write(('-').ljust(columndef))
+                      
+                        card.write('\n')
+
+              # now add the "rateParam" for the normalization
+              #  e.g.:            z_norm rateParam  htsearch zll 1 
+              # see: https://twiki.cern.ch/twiki/bin/view/CMS/HiggsWG/SWGuideNonStandardCombineUses#Rate_Parameters
+              # 'rateParam' has a separate treatment -> it's just a line at the end of the datacard. It defines "free floating" samples
+              # I do it here and not before because I want the freee floating parameters at the end of the datacard
+              for nuisance in nuisances.itervalues():
+                if nuisance['type'] != 'rateParam':
+                  continue
+
+                # check if a nuisance can be skipped because not in this particular cut
+                if 'cuts' in nuisance and cutName not in nuisance['cuts']:
+                  continue
+
+                card.write(nuisance['name'].ljust(40-20))
+                card.write('rateParam'.ljust(20))
+                card.write(tagNameToAppearInDatacard.ljust(columndef))   # the bin
+                # there can be only 1 sample per rateParam
+                if len(nuisance['samples']) != 1:
+                  raise RuntimeError('Invalid rateParam: number of samples != 1')
+
+                sampleName, initialValue = nuisance['samples'].items()[0]
+                if sampleName not in self._samples:
+                  raise RuntimeError('Invalid rateParam: unknown sample %s' % sampleName)
+
+                card.write(sampleName.ljust(20))
+                card.write(('%-.4f' % float(initialValue)).ljust(columndef))
+                card.write('\n')
+
+              # now add other nuisances            
+              # Are there other kind of nuisances I forgot?
+            
+              card.write('-'*100+'\n')
+
+              card.write('\n')
+              card.close()
+
+              print '      done.'
+
             self._outFile.Close()
-#
+
         if type(self._fileIn) is dict:
           for source in self._fileIn.values():
             source.Close()
@@ -697,15 +690,6 @@ if __name__ == '__main__':
         if not iCut in opt.cardList : cut2del.append(iCut)
       for iCut in cut2del : del cuts[iCut]   
   
-    # ~~~~
-    nuisances = collections.OrderedDict()
-    if opt.nuisancesFile == None :
-       print " Please provide the nuisances structure if you want to add nuisances "
-       
-    if os.path.exists(opt.nuisancesFile) :
-      handle = open(opt.nuisancesFile,'r')
-      exec(handle)
-      handle.close()
 
     # ~~~~
     structure = collections.OrderedDict()
@@ -717,7 +701,7 @@ if __name__ == '__main__':
       handle = open(opt.structureFile,'r')
       exec(handle)
       handle.close()
-    
+
     groupPlot = collections.OrderedDict()
     plot = {}
     legend = {}
@@ -725,6 +709,17 @@ if __name__ == '__main__':
       handle = open(opt.plotFile,'r')
       exec(handle)
       handle.close()
+
+    # ~~~~
+    nuisances = collections.OrderedDict()
+    if opt.nuisancesFile == None :
+       print " Please provide the nuisances structure if you want to add nuisances "
+       
+    if os.path.exists(opt.nuisancesFile) :
+      handle = open(opt.nuisancesFile,'r')
+      exec(handle)
+      handle.close()
+    
 
     factory.makeDatacards( opt.inputFile ,opt.outputDirDatacard, variables, cuts, samples, structure, nuisances, groupPlot, plot)
 

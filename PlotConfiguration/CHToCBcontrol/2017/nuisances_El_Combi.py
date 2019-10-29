@@ -1,26 +1,19 @@
+#sys.path.insert(0,'./')
+#structure={}
+#import  structure
+
+try:
+  mc =[skey for skey in samples if skey not in ['SingleMuon', 'SingleElectron'] and not skey.startswith('Fake')]
+#  mc =mc + [skey for skey in plot if skey != 'DATA' and not skey.startswith('Fake')]
+except NameError:
+  mc =[]
+
+print 'nuisances: mc:',mc
+
 nuisances['lumi'] = {
     'name' : 'lumi_13TeV',
     'type' : 'lnN',
-    'samples' : {
-      'DYJets'	              : '1.023',
-      'DYJets10to50_MG'       : '1.023',
-      'WJets_MG'              : '1.023',
-      'TTLJ_powheg'	      : '1.023',
-      'TTLL_powheg'	      : '1.023',
-      'TTJJ_powheg'	      : '1.023',
-      'SingleTop_sch_top'     : '1.023',
-      'SingleTop_tch_top'     : '1.023',
-      'SingleTop_tch_antitop' : '1.023',
-      'SingleTop_tW_top'      : '1.023',
-      'SingleTop_tW_antitop'  : '1.023',
-      'WW_pythia'             : '1.023',
-      'WZ_pythia'             : '1.023',
-      'ZZ_pythia'             : '1.023',
-      'ttW'                   : '1.023',
-      'ttZ'                   : '1.023',
-      'ttH_bb'                : '1.023',
-      'ttbb'                  : '1.023',
-    }
+    'samples' : dict((skey, '1.023') for skey in mc)
 }
 #
 #nuisances['ttxsec'] = {
@@ -576,42 +569,18 @@ nuisances['alphaS'] = {
     'name'	: 'alphaS',
     'kind'	: 'PDF',
     'type'	: 'shape',
-    'samples'	: {
-      	'DYJets'	: 'PDFWeights_AlphaS' ,
-	'TTLJ_powheg'	: 'PDFWeights_AlphaS' ,
-	'TTLL_powheg'	: 'PDFWeights_AlphaS' ,
-	'WJets_MG'	: 'PDFWeights_AlphaS' ,
-	#'WW_pythia'	: 'PDFWeights_AlphaS' ,
-	#'WZ_pythia'	: 'PDFWeights_AlphaS' ,
-	#'ZZ_pythia'	: 'PDFWeights_AlphaS' ,
-	},
+    'samples' : dict((skey, 'PDFWeights_AlphaS') for skey in mc)
 }
 
 nuisances['PDFError'] = {
     'name'	: 'pdfHESSIAN',
     'kind'	: 'PDF',
     'type'	: 'shape',
-    'samples'	: {
-      	'DYJets'	: 'PDFWeights_Error' ,
-	'TTLJ_powheg'	: 'PDFWeights_Error' ,
-	'TTLL_powheg'	: 'PDFWeights_Error' ,
-	'WJets_MG'	: 'PDFWeights_Error' ,
-	#'WW_pythia'	: 'PDFWeights_Error' ,
-	#'WZ_pythia'	: 'PDFWeights_Error' ,
-	#'ZZ_pythia'	: 'PDFWeights_Error' ,
-	},
+    'samples' : dict((skey, 'PDFWeights_Error') for skey in mc)
 }
 nuisances['PDfScale'] = {
     'name'	: 'pdfScale',
     'kind'	: 'PDF',
     'type'	: 'shape',
-    'samples'	: {
-      	'DYJets'	: 'PDFWeights_Scale' ,
-	'TTLJ_powheg'	: 'PDFWeights_Scale' ,
-	'TTLL_powheg'	: 'PDFWeights_Scale' ,
-	'WJets_MG'	: 'PDFWeights_Scale' ,
-	#'WW_pythia'	: 'PDFWeights_Scale' ,
-	#'WZ_pythia'	: 'PDFWeights_Scale' ,
-	#'ZZ_pythia'	: 'PDFWeights_Scale' ,
-	},
+    'samples' : dict((skey, 'PDFWeights_Scale') for skey in mc)
 }
