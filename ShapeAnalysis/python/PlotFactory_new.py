@@ -10,9 +10,10 @@ class PlotContainer:
 
   generalCounter = 0
 
-  def __init__(self, cutName, variableName, plotNormalizedDistributions):
+  def __init__(self, cutName, variableName, variable, plotNormalizedDistributions):
     self.cutName = cutName
     self.variableName = variableName
+    self.variable = variable
     self._plotNormalizedDistributions = plotNormalizedDistributions
 
     self.list_thsData       = {}
@@ -189,7 +190,7 @@ class PlotFactory:
 	if not "divideByBinWidth" in variable.keys():
 	  variable["divideByBinWidth"] = 0
 	########
-	plot_container = PlotContainer(cutName,variableName, self._plotNormalizedDistributions)
+	plot_container = PlotContainer(cutName,variableName, variable, self._plotNormalizedDistributions)
 	plot_container.makeCanvas()
 	plot_container.makeStack()
 	plot_container.updateCounter()
@@ -199,28 +200,30 @@ class PlotFactory:
 	for sampleName, plotdef in plot.iteritems():
 	  if 'samples' in variable and sampleName not in variable['samples']:
 	    continue
-          self.addShape(sampleName, plot_container, variable, plotdef)
-	  self.SetDataStyle(sampleName, plot_container, variable, plotdef)
-          self.SetMCStyle(sampleName, plot_container, variable, plotdef)
-	  self.HandleNuisanceShape(sampleName, plot_container, variable, plotdef)
+          self.addShape(sampleName, plot_container, plotdef)
+	  self.SetDataStyle(sampleName, plot_container, plotdef)
+          self.SetMCStyle(sampleName, plot_container, plotdef)
+	  self.HandleNuisanceShape(sampleName, plot_container, plotdef)
 	  self.FillGroupHisto(sampleName, plot_container)
 
         self.DecorateGroupHisto(plot_container)
 	self.SaveBkgSumErrCentral(plot_container)
-	self.addSigToBkg(sampleName, plot_container, variable, plotdef)
+	self.addSigToBkg(plot_container)
 	self.calcNuisanceErr(plot_container)
 	self.prepareHistoPF(plot_container)
-        self.prepareRatio(plot_container, variable)
-	self.prepareGroupedHistos(plot_container, variable)
-	self.setCanvasFrame(plot_container, variable)
-	self.draw(plot_container,variable)
+        self.prepareRatio(plot_container)
+	self.prepareGroupedHistos(plot_container)
+	self.setCanvasFrame(plot_container)
+	self.draw(plot_container)
 
 
-  def addShape(self, sampleName_, plot_container_, variable_, plotdef_):
+  def addShape(self, sampleName_, plot_container_, plotdef_):
     cutName = plot_container_.cutName
     variableName = plot_container_.variableName
+    variable = plot_container_.variable
     shapeName = cutName + '/' + variableName + '/histo_' + sampleName_
     histos = plot_container_.histos
+    
     print 'infile:',self.fileIn,'	-> shapeName = ', shapeName
     if type(self.fileIn) is dict:
       plot_container_.histo = self.fileIn[sampleName_].Get(shapeName)
@@ -242,18 +245,20 @@ class PlotFactory:
         histos[sampleName_].Scale( float( plotdef_['cuts'][cutName] ) )
 
     if plotdef_['isData'] == 1:
-      if variable_['divideByBinWidth'] == 1:
+      if variable['divideByBinWidth'] == 1:
         histos[sampleName_].Scale(1, "width")
         plot_container_.thsData.Add(histos[sampleName_])
       else:
         plot_container_.thsData.Add(histos[sampleName_])
 
-  def SetDataStyle(self, sampleName_, plot_container_, variable_, plotdef_):
+
+  def SetDataStyle(self, sampleName_, plot_container_, plotdef_):
     # data style ===================================================================================
 
     if not plotdef_['isData'] == 1:
       return
 
+    variable = plot_container_.variable
     histos = plot_container_.histos
     tgrData_vx = plot_container_.tgrData_vx 
     tgrData_evx = plot_container_.tgrData_evx
@@ -282,7 +287,7 @@ class PlotFactory:
         tgrData_evx.append( histos[sampleName_].GetBinWidth(iBin)/2.)
         tgrData_vy.append( histos[sampleName_].GetBinContent(iBin))
         if( 'isSignal' not in plotdef_.keys() or plotdef_['isSignal'] !=3) and not ('isBlind' in plotdef_.keys() and plotdef_['isBlind'] == 1):
-          if variable_['divideByBinWidth'] == 1:
+          if variable['divideByBinWidth'] == 1:
             tgrData_evy_up.append( self.GetPoissError(histos[sampleName_].GetBinContent(iBin) * histos[sampleName_].GetBinWidth(iBin),0,1)/histos[sampleName_].GetBinWidth(iBin) )
             tgrData_evy_do.append( self.GetPoissError(histos[sampleName_].GetBinContent(iBin) * histos[sampleName_].GetBinWidth(iBin),1,0)/histos[sampleName_].GetBinWidth(iBin) )
           else:
@@ -298,7 +303,7 @@ class PlotFactory:
         tgrData_evx.append( histos[sampleName_].GetBinWidth (iBin) / 2.) # do we need this after we did this for the first iteration, somehow we don't use for bin>GetNbinsX
         tgrData_vy[iBin-1] += histos[sampleName_].GetBinContent (iBin)
         if 'isSignal' not in plotdef_.keys() or plotdef_['isSignal'] == 3 :
-	  if variable_['divideByBinWidth'] == 1:
+	  if variable['divideByBinWidth'] == 1:
 	    tgrData_evy_up[iBin-1] = SumQ ( tgrData_evy_up[iBin-1], self.GetPoissError(histos[sampleName_].GetBinContent(iBin) * histos[sampleName_].GetBinWidth(iBin), 0, 1) / histos[sampleName_].GetBinWidth (iBin) )
 	    tgrData_evy_do[iBin-1] = SumQ ( tgrData_evy_up[iBin-1], self.GetPoissError(histos[sampleName_].GetBinContent(iBin) * histos[sampleName_].GetBinWidth(iBin), 1, 0) / histos[sampleName_].GetBinWidth (iBin) )
 	  else :
@@ -306,13 +311,14 @@ class PlotFactory:
 	    tgrData_evy_do[iBin-1] = SumQ ( tgrData_evy_up[iBin-1], self.GetPoissError(histos[sampleName_].GetBinContent(iBin), 1, 0) )
 
 
-  def SetMCStyle(self, sampleName_, plot_container_, variable_, plotdef_):
+  def SetMCStyle(self, sampleName_, plot_container_, plotdef_):
     
     if not plotdef_['isData'] == 0 :
       return
     # _____________________________________________________________________________
     # MC style
     # _____________________________________________________________________________
+    variable = plot_container_.variable
     histos = plot_container_.histos
     thsSignal = plot_container_.thsSignal
     sigSupList = plot_container_.sigSupList
@@ -337,13 +343,13 @@ class PlotFactory:
     histos[sampleName_].SetLineColor(plotdef_['color'])
 
     if plotdef_['isSignal'] == 1 :
-      if variable_['divideByBinWidth'] == 1:
+      if variable['divideByBinWidth'] == 1:
         histos[sampleName_].Scale(1, "width")
   	thsSignal.Add(histos[sampleName_])
       else:
         thsSignal.Add(histos[sampleName_])
     elif plotdef_['isSignal'] == 2  or plotdef_['isSignal'] == 3 :
-      if variable_['divideByBinWidth'] == 1:
+      if variable['divideByBinWidth'] == 1:
         histos[sampleName_].Scale(1,"width")
   	sigSupList.append(histos[sampleName_])
       else:
@@ -353,20 +359,22 @@ class PlotFactory:
   	sigForAdditionalDifferenceList[sampleName_] = histos[sampleName_]
     else:
       plot_container_.nexpected += histos[sampleName_].Integral(-1,-1)
-      if variable_['divideByBinWidth'] == 1:
+      if variable['divideByBinWidth'] == 1:
   	histos[sampleName_].Scale(1,"width")
   	thsBackground.Add(histos[sampleName_])
       else:
   	thsBackground.Add(histos[sampleName_])
     
 
-  def HandleNuisanceShape(self, sampleName_, plot_container_, variable_, plotdef_):
+  def HandleNuisanceShape(self, sampleName_, plot_container_, plotdef_):
 
     if not plotdef_['isData'] == 0 :
       return
 
     cutName = plot_container_.cutName
     variableName = plot_container_.variableName
+    variable     = plot_container_.variable
+
     sampleName = sampleName_
     histos = plot_container_.histos
     histo = plot_container_.histo
@@ -565,7 +573,7 @@ class PlotFactory:
 	  if histoUp   != None:
 	    histoUp.Scale( float(plotdef_['cuts'][cutName]) )
       
-      if variable_["divideByBinWidth"] == 1:
+      if variable["divideByBinWidth"] == 1:
 	if histoUp != None:
 	  histoUp.Scale(1,"width")
 	if histoDown != None:
@@ -663,19 +671,20 @@ class PlotFactory:
         tgrMC_evx.append(thsBackground.GetStack().Last().GetBinWidth(iBin)/2.)
 
 
-  def addSigToBkg(self, sampleName_, plot_container_, variable_, plotdef_):
+  def addSigToBkg(self, plot_container_):
     #NOTE##################################################################
     # and now  let's add the signal on top of the background stack
     # It is important to do this after setting (without signal) tgrMC_vy
     #######################################################################
-    for sampleName_, plotdef_ in self._plot.iteritems():
-      if 'samples' in variable_ and sampleName_ not in variable_['samples'] :
+    variable = plot_container_.variable
+    for sampleName, plotdef in self._plot.iteritems():
+      if 'samples' in variable and sampleName not in variable['samples'] :
         continue
 
       # MC style
-      if plotdef_['isData'] == 0 :
-        if plotdef_['isSignal'] == 1 :
-          plot_container_.thsBackground.Add(plot_container_.histos[sampleName_])
+      if plotdef['isData'] == 0 :
+        if plotdef['isSignal'] == 1 :
+          plot_container_.thsBackground.Add(plot_container_.histos[sampleName])
 
 
   def calcNuisanceErr(self, plot_container_):
@@ -743,9 +752,10 @@ class PlotFactory:
       plot_container_.histoPF = self.fileIn.Get(cutName+"/"+variableName+'/histo_total_postfit_b')
 
 
-  def prepareRatio(self, plot_container_, variable_):
+  def prepareRatio(self, plot_container_):
     cutName        = plot_container_.cutName      
     variableName   = plot_container_.variableName  
+    variable       = plot_container_.variable
 
     tgrData        = plot_container_.tgrData        
     tgrData_vx     = plot_container_.tgrData_vx      
@@ -826,7 +836,7 @@ class PlotFactory:
       histo_total = self.fileIn.Get(special_shapeName)
       print 'special_shapeName', special_shapeName
 	
-    if variable_['divideByBinWidth'] == 1:
+    if variable['divideByBinWidth'] == 1:
       if(histo_total) :
         histo_total.Scale(1,"width")
     if(histo_total) :
@@ -894,7 +904,8 @@ class PlotFactory:
         tgrDifferenceList[samplesToDifferenceName] = tgrDataMinusMCTemp
 
 
-  def prepareGroupedHistos(self, plot_container_, variable_):
+  def prepareGroupedHistos(self, plot_container_):
+    variable              = plot_container_.variable
     thsSignal_grouped     = plot_container_.thsSignal_grouped      
     histos_grouped        = plot_container_.histos_grouped         
     sigSupList_grouped    = plot_container_.sigSupList_grouped      
@@ -902,7 +913,7 @@ class PlotFactory:
     groupFlag = False
     #---- prepare the grouped histograms
     for sampleNameGroup, sampleConfiguration in self._groupPlot.iteritems():
-      if 'samples' in variable_ and len(set(sampleConfiguration['samples']) & set(variable_['samples'])) == 0:
+      if 'samples' in variable and len(set(sampleConfiguration['samples']) & set(variable['samples'])) == 0:
         continue
 
       if sampleConfiguration['isSignal'] == 1 :
@@ -920,8 +931,9 @@ class PlotFactory:
       groupFlag = False
 
 
-  def setCanvasFrame(self, plot_container_, variable_):
+  def setCanvasFrame(self, plot_container_):
 
+    variable      = plot_container_.variable
     thsBackground = plot_container_.thsBackground
     thsData       = plot_container_.thsData      
     histos        = plot_container_.histos       
@@ -945,7 +957,7 @@ class PlotFactory:
     minYused = 1.
     maxYused = 1.
     for sampleName, plotdef in self._plot.iteritems():
-      if 'samples' in variable_ and sampleName not in variable_['samples']:
+      if 'samples' in variable and sampleName not in variable['samples']:
         continue
 
       if plotdef['isData'] == 1 :
@@ -995,41 +1007,42 @@ class PlotFactory:
     xAxis.SetNdivisions(6,5,0)
 
     # setup axis names
-    if 'xaxis' in variable_.keys() :
-      frame.GetXaxis().SetTitle(variable_['xaxis'])
-      if variable_["divideByBinWidth"] == 1:
-        if "GeV" in variable_['xaxis']: 
-          frame.GetYaxis().SetTitle("dN/d"+variable_['xaxis'].replace("GeV","GeV^{-1}"))
+    if 'xaxis' in variable.keys() :
+      frame.GetXaxis().SetTitle(variable['xaxis'])
+      if variable["divideByBinWidth"] == 1:
+        if "GeV" in variable['xaxis']: 
+          frame.GetYaxis().SetTitle("dN/d"+variable['xaxis'].replace("GeV","GeV^{-1}"))
         else:
-          frame.GetYaxis().SetTitle("dN/d"+variable_['xaxis'])
+          frame.GetYaxis().SetTitle("dN/d"+variable['xaxis'])
       else:
-        if 'yaxis' in variable_.keys() : 
-          frame.GetYaxis().SetTitle(variable_['yaxis'])
+        if 'yaxis' in variable.keys() : 
+          frame.GetYaxis().SetTitle(variable['yaxis'])
         else:
           frame.GetYaxis().SetTitle("Events")
     else:
-      if variable_["divideByBinWidth"] == 1:
+      if variable["divideByBinWidth"] == 1:
         frame.GetYaxis().SetTitle("dN/d"+variableName)
       else:
-        if 'yaxis' in variable_.keys() :
-	  frame.GetYaxis().SetTitle(variable_['yaxis'])
+        if 'yaxis' in variable.keys() :
+	  frame.GetYaxis().SetTitle(variable['yaxis'])
 	else:
 	  frame.GetYaxis().SetTitle("Events")
     # setup xbin labels
-    if 'xlabels' in variable_.keys() :
-      for i, label in enumerate(variable_['xlabels']['labels']):
+    if 'xlabels' in variable.keys() :
+      for i, label in enumerate(variable['xlabels']['labels']):
         frame.GetXaxis().ChangeLabel(i+1,20,0.03,-1,-1,-1 ,label)
-      frame.GetXaxis().LabelsOption(variable_['xlabels']['option'])
+      frame.GetXaxis().LabelsOption(variable['xlabels']['option'])
       frame.GetXaxis().CenterLabels(True)
-      xAxis.SetNdivisions(len(variable_['xlabels']['labels']),5,0)
+      xAxis.SetNdivisions(len(variable['xlabels']['labels']),5,0)
 
 
 
 
-  def draw(self, plot_container_, variable_):
+  def draw(self, plot_container_):
 
     cutName               = plot_container_.cutName      
     variableName          = plot_container_.variableName
+    variable              = plot_container_.variable
 
     thsBackground         = plot_container_.thsBackground         
     thsSignal             = plot_container_.thsSignal            
@@ -1095,7 +1108,7 @@ class PlotFactory:
       tgrData.Draw("P0")
     else: # never happening if at least one data histogram is provided  -> modified for mc only case
       for sampleName, plotdef in self._plot.iteritems():
-        if 'samples' in variable_ and sampleName not in variable_['samples']:
+        if 'samples' in variable and sampleName not in variable['samples']:
           continue
         if plotdef['isData'] == 1 :
           histos[sampleName].Draw("p same")
@@ -1133,7 +1146,7 @@ class PlotFactory:
 	    if self._showIntegralLegend == 0 :
 	      tlegend.AddEntry(histos[sampleName], plotdef['nameHR'], legMarkStyle)
 	    else :
-	      if variable_["divideByBinWidth"] == 1:
+	      if variable["divideByBinWidth"] == 1:
 	        nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1,"width")
 	      else :
 	        nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1)
@@ -1142,7 +1155,7 @@ class PlotFactory:
 	    if self._showIntegralLegend == 0 :
 	      tlegend.AddEntry(histos[sampleName], sampleName, legMarkStyle)
 	    else :
-	      if variable_["divideByBinWidth"] == 1:
+	      if variable["divideByBinWidth"] == 1:
 	        nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1,"width")
 	      else :
 	        nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1)
@@ -1151,7 +1164,7 @@ class PlotFactory:
 	  if self._showIntegralLegend == 0 :
 	    tlegend.AddEntry(histos[sampleName], sampleName, legMarkStyle)
 	  else :
-	    if variable_["divideByBinWidth"] == 1:
+	    if variable["divideByBinWidth"] == 1:
 	      nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1,"width")
 	    else :
 	      nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1)
@@ -1159,19 +1172,19 @@ class PlotFactory:
 
     else : #If there are groupPlots
       for sampleNameGroup, sampleConfiguration in self._groupPlot.iteritems():
-        if 'samples' in variable_ and len(set(sampleConfiguration['samples']) & set(variable_['samples'])) == 0:
+        if 'samples' in variable and len(set(sampleConfiguration['samples']) & set(variable['samples'])) == 0:
           continue
 
         if self._showIntegralLegend == 0 :
           tlegend.AddEntry(histos_grouped[sampleNameGroup], sampleConfiguration['nameHR'], "F")
         else :
-          if variable_["divideByBinWidth"] == 1:
+          if variable["divideByBinWidth"] == 1:
             nevents = histos_grouped[sampleNameGroup].Integral(1,histos_grouped[sampleNameGroup].GetNbinsX()+1,"width")
 	  else :
 	    nevents = histos_grouped[sampleNameGroup].Integral(1,histos_grouped[sampleNameGroup].GetNbinsX()+1)
 	  tlegend.AddEntry(histos_grouped[sampleNameGroup], sampleConfiguration['nameHR'] + " [" + str(round(nevents,1)) + "]" , "F")
       for sampleName in reversedSampleNames:
-        if 'samples' in variable_ and sampleName not in variable_['samples']:
+        if 'samples' in variable and sampleName not in variable['samples']:
 	  continue
 
 	try :
@@ -1184,7 +1197,7 @@ class PlotFactory:
 	    if self._showIntegralLegend == 0 :
 	      tlegend.AddEntry(histos[sampleName], plotdef['nameHR'], "EPL")
 	    else:
-	      if variable_["divideByBinWidth"] == 1:
+	      if variable["divideByBinWidth"] == 1:
                 nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1,"width")
 	      else :
 	        nevents = histos[sampleName].Integral(1,histos[sampleName].GetNbinsX()+1)
@@ -1268,13 +1281,13 @@ class PlotFactory:
 
       frameNorm.GetYaxis().SetRangeUser( 0, 1.5 )
       # setup axis names
-      if 'xaxis' in variable_.keys() : 
-        frameNorm.GetXaxis().SetTitle(variable_['xaxis'])
+      if 'xaxis' in variable.keys() : 
+        frameNorm.GetXaxis().SetTitle(variable['xaxis'])
       # setup xbin labels
-      if 'xlabels' in variable_.keys() :
-        for i, label in enumerate(variable_['xlabels']['labels']):
+      if 'xlabels' in variable.keys() :
+        for i, label in enumerate(variable['xlabels']['labels']):
           frameNorm.GetXaxis().ChangeLabel(i+1,20,0.03,-1,-1,-1 ,label)
-        frameNorm.GetXaxis().LabelsOption(variable_['xlabels']['option'])
+        frameNorm.GetXaxis().LabelsOption(variable['xlabels']['option'])
         frameNorm.GetXaxis().CenterLabels(True)
       plot_container_.tcanvasSigVsBkg.RedrawAxis()
    
@@ -1329,34 +1342,34 @@ class PlotFactory:
     xAxisDistro = frameDistro.GetXaxis()
     xAxisDistro.SetNdivisions(6,5,0)
 
-    if 'xaxis' in variable_.keys() :
-      frameDistro.GetXaxis().SetTitle(variable_['xaxis'])
-      if variable_["divideByBinWidth"] == 1:
-        if "GeV" in variable_['xaxis']:
-          frameDistro.GetYaxis().SetTitle("dN/d"+variable_['xaxis'].replace("GeV","GeV^{-1}"))
+    if 'xaxis' in variable.keys() :
+      frameDistro.GetXaxis().SetTitle(variable['xaxis'])
+      if variable["divideByBinWidth"] == 1:
+        if "GeV" in variable['xaxis']:
+          frameDistro.GetYaxis().SetTitle("dN/d"+variable['xaxis'].replace("GeV","GeV^{-1}"))
         else:
-	  frameDistro.GetYaxis().SetTitle("dN/d"+variable_['xaxis'])
+	  frameDistro.GetYaxis().SetTitle("dN/d"+variable['xaxis'])
       else :
-	if 'yaxis' in variable_.keys() : 
-	  frameDistro.GetYaxis().SetTitle(variable_['yaxis'])
+	if 'yaxis' in variable.keys() : 
+	  frameDistro.GetYaxis().SetTitle(variable['yaxis'])
 	else :
 	  frameDistro.GetYaxis().SetTitle("Events")
     else :
       frameDistro.GetXaxis().SetTitle(variableName)
-      if variable_["divideByBinWidth"] == 1:
+      if variable["divideByBinWidth"] == 1:
 	frameDistro.GetYaxis().SetTitle("dN/d"+variableName)
       else :
-	if 'yaxis' in variable_.keys() : 
-	  frameDistro.GetYaxis().SetTitle(variable_['yaxis'])
+	if 'yaxis' in variable.keys() : 
+	  frameDistro.GetYaxis().SetTitle(variable['yaxis'])
 	else :
 	  frameDistro.GetYaxis().SetTitle("Events")
 
-    if 'xlabels' in variable_.keys() :
-      for i, label in enumerate(variable_['xlabels']['labels']):
+    if 'xlabels' in variable.keys() :
+      for i, label in enumerate(variable['xlabels']['labels']):
 	frameDistro.GetXaxis().ChangeLabel(i+1,20,0.03,-1,-1,-1 ,label)
-      frameDistro.GetXaxis().LabelsOption(variable_['xlabels']['option'])
+      frameDistro.GetXaxis().LabelsOption(variable['xlabels']['option'])
       frameDistro.GetXaxis().CenterLabels(True)
-      xAxisDistro.SetNdivisions(len(variable_['xlabels']['labels']),5,0)
+      xAxisDistro.SetNdivisions(len(variable['xlabels']['labels']),5,0)
 
     frameDistro.GetYaxis().SetRangeUser( min(0.001, minYused), maxYused )
 
@@ -1411,8 +1424,8 @@ class PlotFactory:
     xAxisDistro = frameRatio.GetXaxis()
     xAxisDistro.SetNdivisions(6,5,0)
 
-    if 'xaxis' in variable_.keys() : 
-      frameRatio.GetXaxis().SetTitle(variable_['xaxis'])
+    if 'xaxis' in variable.keys() : 
+      frameRatio.GetXaxis().SetTitle(variable['xaxis'])
     else :
       frameRatio.GetXaxis().SetTitle(variableName)
 
@@ -1420,11 +1433,11 @@ class PlotFactory:
     frameRatio.GetYaxis().SetRangeUser( 0.5, 1.5 )
     self.Pad2TAxis(frameRatio)
 
-    if 'xlabels' in variable_.keys() :
-      for i, label in enumerate(variable_['xlabels']['labels']):
+    if 'xlabels' in variable.keys() :
+      for i, label in enumerate(variable['xlabels']['labels']):
         frameRatio.GetXaxis().ChangeLabel(i+1,20,0.06,-1,-1,-1 ,label)
-        frameRatio.GetXaxis().SetNdivisions(len(variable_['xlabels']['labels']),5,0)
-      frameRatio.GetXaxis().LabelsOption(variable_['xlabels']['option'])
+        frameRatio.GetXaxis().SetNdivisions(len(variable['xlabels']['labels']),5,0)
+      frameRatio.GetXaxis().LabelsOption(variable['xlabels']['option'])
       frameRatio.GetXaxis().CenterLabels(True)
 
     if (len(mynuisances.keys())!=0):
