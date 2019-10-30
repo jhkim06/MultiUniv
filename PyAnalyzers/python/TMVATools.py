@@ -40,13 +40,15 @@ class TMVATools():
 		                 self._fout,
 				 self._options['factory']['options']
                                 )
-  def _dataLoader(self,sigTreeName,bkgTreeName):
+  def _dataLoader(self,sigTreeNames,bkgTreeNames):
     self._data_loader = TMVA.DataLoader(self._options['factory']['name'])
     for value in self._variables.values():
       self._data_loader.AddVariable(value['name'],value['type'])
     #----
-    self._data_loader.AddSignalTree(self._trees[sigTreeName])
-    self._data_loader.AddBackgroundTree(self._trees[bkgTreeName])
+    for sigTreeName in sigTreeNames:
+      self._data_loader.AddSignalTree(self._trees[sigTreeName])
+    for bkgTreeName in bkgTreeNames:
+      self._data_loader.AddBackgroundTree(self._trees[bkgTreeName])
     self._data_loader.SetSignalWeightExpression(self._options['factory']['weight'])
     self._data_loader.SetBackgroundWeightExpression(self._options['factory']['weight'])
     #----
@@ -64,9 +66,9 @@ class TMVATools():
 			       method['options']
 			       )
 
-  def doTrain(self,sigTreeName,bkgTreeName,outFileName,epoch=1):
+  def doTrain(self,sigTreeNameList,bkgTreeNameList,outFileName,epoch=1):
     self._setFactory(outFileName)
-    self._dataLoader(sigTreeName,bkgTreeName)
+    self._dataLoader(sigTreeNameList,bkgTreeNameList)
     self._bookMethod()
     self._factory.TrainAllMethods()
     self._factory.TestAllMethods()

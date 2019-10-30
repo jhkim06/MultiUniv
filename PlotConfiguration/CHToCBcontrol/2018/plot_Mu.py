@@ -1,5 +1,5 @@
 from CommonPyTools.python.CommonTools import *
-from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed
+from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed, kGreen
 
 # Signal only has the style, the other background has style 3001
 # lineWidth 2, this is another option
@@ -43,7 +43,7 @@ VV = ['WW_pythia','WZ_pythia','ZZ_pythia']
 groupPlot['VV'] = {
     'nameHR' : "VV",
     'isSignal' : 0,
-    'color':  kCyan,
+    'color':  kYellow,
     'samples' : VV
     }
 
@@ -51,22 +51,19 @@ TTX = ['ttW','ttZ']
 groupPlot['TTX'] = {
     'nameHR' : "TTX",
     'isSignal' : 0,
-    'color':  kYellow,
+    'color':  kGreen,
     'samples' : TTX
     #'samples' : ['ttW','ttZ','ttH_bb']
     }
 
-'''
 groupPlot['QCD'] = {
     'nameHR' : "QCD",
     'isSignal' :0,
-    'color': kYellow, #color is not defined yet
-    'style': 4050,
-    'lineColor':807,
-    'lineWidth':1,
-    'samples' : ['SingleMuon_QCD','SingleElectron_QCD','TTLL_powheg_QCD','WJets_MG_QCD','DYJets_QCD','WW_pythia_QCD','WZ_pythia_QCD','ZZ_pythia_QCD']
+    'color': kCyan, #color is not defined yet
+    'samples' : [ "%s_QCD"%(ele) for ele in TT+ST+VJ+VV+TTX+['SingleMuon'] ]
     }
-'''
+
+
 
 plot['DYJets_MG'] = {
     'color': kYellow,
@@ -201,9 +198,9 @@ plot['SingleMuon'] = {
 
 plot_QCD = {}
 for key, val in plot.iteritems():
-  key_QCD = "%s@%s_QCD"%(key,key)
-  plot_QCD[key_QCD] = val
-  plot_QCD[key_QCD]['nameHR'] += "_QCD"
+  key_QCD = "%s_QCD"%(key)
+  plot_QCD[key_QCD] = val.copy()
+  plot_QCD[key_QCD]['isData'] = 0
 plot.update(plot_QCD)
 
 legend['lumi'] = 'L = 41.5/fb'

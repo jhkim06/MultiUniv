@@ -5,25 +5,7 @@ from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed, kViolet
 # lineWidth 2, this is another option
 # style 0 : noFillColor
 # no nameHR --> using sample keyname intead
-#groupPlot['CHSignal_090'] = {
-#    'nameHR' : "H+(090)",
-#    'isSignal' : 1,
-#    'color':  kViolet,
-#    'samples' : ['CHToCB_M090']
-#    }
-#groupPlot['CHSignal_120'] = {
-#    'nameHR' : "H+(120)",
-#    'isSignal' : 2,
-#    'color':  kViolet+1,
-#    'samples' : ['CHToCB_M120']
-#    }
-#groupPlot['CHSignal_140'] = {
-#    'nameHR' : "H+(140)",
-#    'isSignal' : 2,
-#    'color':  kViolet+2,
-#    'samples' : ['CHToCB_M140']
-#    }
-#
+
 groupPlot['TT'] = {
     'nameHR' : "TT",
     'isSignal' : 0,
@@ -211,20 +193,20 @@ plot['SingleMuon'] = {
     'isData':1,
     'scale':1,
     }
-
-plot['SingleElectron'] = {
-    'nameHR' : "SingleElectron",
-    'color':kBlack,
-    'isSignal':0,
-    'isData':1,
-    'scale':1,
-    }
+#
+#plot['SingleElectron'] = {
+#    'nameHR' : "SingleElectron",
+#    'color':kBlack,
+#    'isSignal':0,
+#    'isData':1,
+#    'scale':1,
+#    }
 plot['CHToCB_M090'] = {
     'nameHR' : "CH M090",
     'color':kViolet,
     'style':0,
     'lineWidth':2,
-    'isSignal':2,
+    'isSignal':3,
     'isData':0,
     'scale':1,
     }
@@ -234,7 +216,7 @@ plot['CHToCB_M120'] = {
     'color':kViolet,
     'style':0,
     'lineWidth':2,
-    'isSignal':2,
+    'isSignal':3,
     'isData':0,
     'scale':1,
     }
@@ -244,7 +226,7 @@ plot['CHToCB_M140'] = {
     'color':kViolet,
     'style':0,
     'lineWidth':2,
-    'isSignal':2,
+    'isSignal':3,
     'isData':0,
     'scale':1,
     }

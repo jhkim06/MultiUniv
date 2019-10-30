@@ -34,8 +34,9 @@ class MLTools():
   def SetOptions(self,options):
     self._tools.SetOptions(options)
     
-  def doTrain(self,sigTreeName,bkgTreeName,outFileName,epoch=1):
+  def doTrain(self,sigTreeName,bkgTreeName,outWeightsSuffix,outFileName,epoch=1):
     self._tools.doTrain(sigTreeName,bkgTreeName,outFileName,epoch)
+    os.system('mv TMVAClassification/weights TMVAClassification/weights_%s'%(outWeightsSuffix))
 
   def doTest(self):
     self._tools.doTest()
@@ -43,6 +44,7 @@ class MLTools():
   def _connectInputs(self, inFiles, inputDir, tree_name, skipMissingFiles, friendsDir = None, skimListDir = None):
     tree = TChain(tree_name)
     for aFile in inFiles:
+      print(aFile)
       tree.Add(aFile)
     return tree
 
