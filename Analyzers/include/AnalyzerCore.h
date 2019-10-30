@@ -186,6 +186,7 @@ public:
   //==== GenMatching
 
   void PrintGen(std::vector<Gen> gens);
+  bool IsGenMatchedLepton(Lepton lep, std::vector<Gen> gens);
   Gen GetGenMatchedLepton(Lepton lep, std::vector<Gen> gens);
   Gen GetGenMatchedPhoton(Lepton lep, std::vector<Gen> gens);
   vector<int> TrackGenSelfHistory(Gen me, std::vector<Gen> gens);

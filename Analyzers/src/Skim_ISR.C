@@ -1,7 +1,7 @@
 #include "Skim_ISR.h"
 
 void Skim_ISR::initializeAnalyzer(){
-    
+        
     //=================================
     // Skim Types
     //=================================
@@ -82,6 +82,16 @@ void Skim_ISR::initializeAnalyzer(){
 
         newtree->Branch("gen_rec_evt_matched", &gen_rec_evt_matched,"gen_rec_evt_matched/O");
         newtree->Branch("gen_rec_lepton_dR", &gen_rec_lepton_dR);
+
+        // branches for Tag and Probe (only for DY MC)
+        // pair mass, probe_pt, probe_eta, probe_tight_tag
+        newtree->Branch("dielectron_tnp",&dielectron_tnp);
+        newtree->Branch("dimuon_tnp",&dimuon_tnp);
+        newtree->Branch("pair_mass_tnp",&pair_mass_tnp);
+        newtree->Branch("evt_weight_tnp",&evt_weight_tnp);
+        newtree->Branch("probe_pt_tnp",&probe_pt_tnp);
+        newtree->Branch("probe_eta_tnp",&probe_eta_tnp);
+        newtree->Branch("probe_tight_tag_tnp",&probe_tight_tag_tnp);
 
         // temporary tree to study QED FSR at detector level
         Dimu_map["POGTight"] = new Dimu_variables("POGTight");
@@ -200,6 +210,14 @@ void Skim_ISR::executeEvent(){
     leps.clear();
     leptons_postfsr.clear();
 
+    dimuon_tnp.clear();
+    dielectron_tnp.clear();
+    pair_mass_tnp.clear();
+    evt_weight_tnp.clear();
+    probe_pt_tnp.clear();
+    probe_eta_tnp.clear();
+    probe_tight_tag_tnp.clear();
+
     gen_rec_lepton_dR.clear();
     gen_rec_evt_matched = false;
 
@@ -288,7 +306,7 @@ void Skim_ISR::executeEvent(){
   
     evt = new Event;
     *evt = GetEvent();
-  
+
     FillHist("CutFlow",5,1,30,0,30);
 
     if(!IsDATA){
@@ -296,15 +314,17 @@ void Skim_ISR::executeEvent(){
         evt_weight_total_gen *= evt->MCweight();
     }
 
+    if(!IsDATA){
+        gen_particles.clear();
+        gen_particles = GetGens();
+    }
+
     ///////////////////////////////////// generator level, only for Drell-Yan MC
     if(MCSample.Contains("DY") && save_generator_info ){
         bool photos_used = false;
         if(MCSample.Contains("PHOTOS")) photos_used = true;
         if(debug_) cout << "Generator information for " + MCSample << endl;
-        gen_particles.clear();
         gen_photons.clear();
-
-        gen_particles = GetGens();
 
         bool gen_lepton_from_hardprocess_found = false;
         int first_lepton_id_found_in_ME = 0;
@@ -593,8 +613,6 @@ void Skim_ISR::executeEvent(){
             for(std::map<Double_t, TLorentzVector>::iterator mapit = photon_p4_drX.begin(); mapit!=photon_p4_drX.end(); mapit++){
                 lepton_matched_photon_et_gen_drX.push_back((mapit->second).Pt());
             }// loop for dilepton_lepton_matched_gamma_p4_drX
-
-
         }
          
         if(debug_){
@@ -637,6 +655,7 @@ void Skim_ISR::executeEvent(){
         ///////////////////////////////////////////////////////////////////////////// basic event weight
         PileUpWeight=(DataYear==2017) ? &MCCorrection::GetPileUpWeightBySampleName : &MCCorrection::GetPileUpWeight;
 
+        // PU
         if(!IsDATA){
           evt_weight_pureweight=(mcCorr->*PileUpWeight)(nPileUp,0);
           evt_weight_pureweight_up=(mcCorr->*PileUpWeight)(nPileUp,1);
@@ -645,6 +664,7 @@ void Skim_ISR::executeEvent(){
         }
 
 
+        // L1 prefire
         if(!IsDATA){
           if(DataYear<=2017){
             evt_weight_l1prefire = L1PrefireReweight_Central;
@@ -661,7 +681,7 @@ void Skim_ISR::executeEvent(){
         std::vector<Jet::WP> v_wps;
         v_wps.push_back(Jet::Medium);
 
-                                //systematic, run dependent: set true for 2017
+        //systematic, run dependent: set true for 2017
         SetupBTagger(vtaggers,v_wps, true, false);
 
         vector<Jet> this_AllJets = GetAllJets();
@@ -707,6 +727,98 @@ void Skim_ISR::executeEvent(){
         std::sort(electrons.begin(), electrons.end(), PtComparing);
         std::sort(photons.begin(), photons.end(), PtComparing);
 
+        std::vector<Muon>     muons_loose;
+        std::vector<Electron> electrons_loose;
+
+        vector<Muon> this_AllMuons = AllMuons;
+        vector<Electron> this_AllElectrons = AllElectrons;
+
+        muons_loose = SelectMuons(this_AllMuons, "HNLoose", 7., 2.4);
+        electrons_loose = SelectElectrons(this_AllElectrons, "ISRLoose", 7., 2.5);
+        std::sort(muons_loose.begin(), muons_loose.end(), PtComparing);
+        std::sort(electrons_loose.begin(), electrons_loose.end(), PtComparing);
+
+        //
+        //
+
+        IsMuMu = 0;
+        IsElEl = 0;
+        leps.clear();
+
+        if(!IsDATA && MCSample.Contains("DY")){
+            if(muons_loose.size() == 2)     IsMuMu = 1;
+            if(electrons_loose.size() == 2) IsElEl = 1;
+
+            if(IsMuMu || IsElEl){
+
+                double temp_weight =  weight_norm_1invpb*evt->GetTriggerLumi("Full");
+                temp_weight *= evt->MCweight();
+                temp_weight *= (mcCorr->*PileUpWeight)(nPileUp,0);
+
+                if(DataYear<=2017){
+                  temp_weight *= L1PrefireReweight_Central;
+                }
+
+                if(IsMuMu == 1){
+                    
+                    if(evt->PassTrigger(DiMuTrgs)){
+                        leps=MakeLeptonPointerVector(muons_loose);
+
+                        double dimu_mass = (muons_loose.at(0) + muons_loose.at(1)).M();  
+                        // found tag
+                        if(IsGenMatchedLepton(*leps.at(0), gen_particles) && IsGenMatchedLepton(*leps.at(1), gen_particles)){
+                        if(muons_loose.at(0).Pass_POGTightWithTightIso()){
+                            dimuon_tnp.push_back(true);
+                            pair_mass_tnp.push_back(dimu_mass);
+                            probe_pt_tnp.push_back(muons_loose.at(1).Pt());
+                            probe_eta_tnp.push_back(muons_loose.at(1).Eta());
+                            probe_tight_tag_tnp.push_back(muons_loose.at(1).Pass_POGTightWithTightIso());
+                            evt_weight_tnp.push_back(temp_weight);
+                        }
+
+                        if(muons_loose.at(1).Pass_POGTightWithTightIso()){
+                            dimuon_tnp.push_back(true);
+                            pair_mass_tnp.push_back(dimu_mass);
+                            probe_pt_tnp.push_back(muons_loose.at(0).Pt());
+                            probe_eta_tnp.push_back(muons_loose.at(0).Eta());
+                            probe_tight_tag_tnp.push_back(muons_loose.at(0).Pass_POGTightWithTightIso());
+                            evt_weight_tnp.push_back(temp_weight);
+                        }
+                        }
+                    }
+                }
+                if(IsElEl == 1){
+
+                    if(evt->PassTrigger(DiElTrgs) ){
+                        leps=MakeLeptonPointerVector(electrons_loose);
+
+                        double diel_mass = (electrons_loose.at(0) + electrons_loose.at(1)).M();
+                        // found tag
+                        if(IsGenMatchedLepton(*leps.at(0), gen_particles) && IsGenMatchedLepton(*leps.at(1), gen_particles)){
+                        if(electrons_loose.at(0).passMediumID()){
+                            dielectron_tnp.push_back(true);
+                            pair_mass_tnp.push_back(diel_mass);
+                            probe_pt_tnp.push_back(electrons_loose.at(1).Pt());
+                            probe_eta_tnp.push_back(electrons_loose.at(1).Eta());
+                            probe_tight_tag_tnp.push_back(electrons_loose.at(1).passMediumID());
+                            evt_weight_tnp.push_back(temp_weight);
+                        }
+
+                        if(electrons_loose.at(1).passMediumID()){
+                            dielectron_tnp.push_back(true);
+                            pair_mass_tnp.push_back(diel_mass);
+                            probe_pt_tnp.push_back(electrons_loose.at(0).Pt());
+                            probe_eta_tnp.push_back(electrons_loose.at(0).Eta());
+                            probe_tight_tag_tnp.push_back(electrons_loose.at(0).passMediumID());
+                            evt_weight_tnp.push_back(temp_weight);
+                        }
+                        }
+                    }
+                }
+            }
+        }
+        //
+
         AnalyzerParameter param;
         param.Muon_ID = "POGTight";
         Dimu_map["POGTight"]->resetVariables();
@@ -731,15 +843,14 @@ void Skim_ISR::executeEvent(){
         param.Muon_Tight_ID = "HNTight";
         param.Muon_ID = "HNLoose";
         param.Muon_FR_ID = "HNtypeI_V1";     // ID name in histmap_Muon.txt
-        param.Muon_FR_Key = "AwayJetPt40"; // histname
+        param.Muon_FR_Key = "AwayJetPt40";   // histname
         param.Muon_UsePtCone = true;
 
         // Electron Id
         param.Electron_Tight_ID = "ISRTight";
         param.Electron_ID = "ISRLoose";
         param.Electron_FR_ID = "HNtypeI_V1";     // ID name in histmap_Electron.txt
-        param.Electron_FR_Key = "AwayJetPt40"; // histname
-        
+        param.Electron_FR_Key = "AwayJetPt40";   // histname
         param.Electron_UsePtCone = true;
 
         // Jet ID
@@ -755,6 +866,7 @@ void Skim_ISR::executeEvent(){
 
         IsMuMu = 0;
         IsElEl = 0;
+        leps.clear();
 
         //if(muons.size() == 2) if(electrons.size() == 0) IsMuMu = 1;
         //if(muons.size() == 0) if(electrons.size() == 2) IsElEl = 1;

@@ -158,7 +158,7 @@ private:
     std::vector<Gen> leptons_postfsr;
 
     bool gen_rec_evt_matched;
-    vector<double> gen_rec_lepton_dR;
+    vector<Double_t> gen_rec_lepton_dR;
 
     Gen gen_particle_ME, gen_antiparticle_ME;
     Gen gen_particle_status1, gen_antiparticle_status1;
@@ -199,6 +199,14 @@ private:
     std::vector<Int_t> photons_mother_id_gen;
     std::vector<Double_t> photons_closest_dr_to_leptons_gen;
     std::vector<Double_t> lepton_matched_photons_closest_dr_to_leptons_gen;
+
+    std::vector<Bool_t> dielectron_tnp;
+    std::vector<Bool_t> dimuon_tnp;
+    std::vector<Double_t>  pair_mass_tnp;
+    std::vector<Double_t>  evt_weight_tnp;
+    std::vector<Double_t>  probe_pt_tnp;
+    std::vector<Double_t>  probe_eta_tnp;
+    std::vector<Bool_t>    probe_tight_tag_tnp;
 
     double dilep_pt_rec;
     double dilep_mass_rec;
