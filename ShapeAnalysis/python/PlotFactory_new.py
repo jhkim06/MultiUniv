@@ -179,42 +179,42 @@ class PlotFactory:
     for cutName in self._cuts:
       print 'cut =', cutName
       for variableName, variable in self._variables.iteritems():
-	if 'cuts' in variable and cutName not in variable['cuts']:
-	  continue
+        if 'cuts' in variable and cutName not in variable['cuts']:
+          continue
 
-	if type(self.fileIn) is not dict and not self.fileIn.GetDirectory(cutName+"/"+variableName):
-	  continue
+        if type(self.fileIn) is not dict and not self.fileIn.GetDirectory(cutName+"/"+variableName):
+          continue
 
-	print 'variableName = ', variableName
+        print 'variableName = ', variableName
 
-	if not "divideByBinWidth" in variable.keys():
+        if not "divideByBinWidth" in variable.keys():
 	  variable["divideByBinWidth"] = 0
 	########
-	plot_container = PlotContainer(cutName,variableName, variable, self._plotNormalizedDistributions)
-	plot_container.makeCanvas()
-	plot_container.makeStack()
-	plot_container.updateCounter()
-	list_PlotContainer.append(plot_container)
+        plot_container = PlotContainer(cutName,variableName, variable, self._plotNormalizedDistributions)
+        plot_container.makeCanvas()
+        plot_container.makeStack()
+        plot_container.updateCounter()
+        list_PlotContainer.append(plot_container)
 	########
 
 	for sampleName, plotdef in plot.iteritems():
 	  if 'samples' in variable and sampleName not in variable['samples']:
 	    continue
           self.addShape(sampleName, plot_container, plotdef)
-	  self.SetDataStyle(sampleName, plot_container, plotdef)
-          self.SetMCStyle(sampleName, plot_container, plotdef)
-	  self.HandleNuisanceShape(sampleName, plot_container, plotdef)
-	  self.FillGroupHisto(sampleName, plot_container)
+          self.SetDataStyle(sampleName, plot_container, plotdef)
+	  self.SetMCStyle(sampleName, plot_container, plotdef)
+          self.HandleNuisanceShape(sampleName, plot_container, plotdef)
+          self.FillGroupHisto(sampleName, plot_container)
 
         self.DecorateGroupHisto(plot_container)
-	self.SaveBkgSumErrCentral(plot_container)
-	self.addSigToBkg(plot_container)
-	self.calcNuisanceErr(plot_container)
-	self.prepareHistoPF(plot_container)
+        self.SaveBkgSumErrCentral(plot_container)
+        self.addSigToBkg(plot_container)
+        self.calcNuisanceErr(plot_container)
+        self.prepareHistoPF(plot_container)
         self.prepareRatio(plot_container)
-	self.prepareGroupedHistos(plot_container)
-	self.setCanvasFrame(plot_container)
-	self.draw(plot_container)
+        self.prepareGroupedHistos(plot_container)
+        self.setCanvasFrame(plot_container)
+        self.draw(plot_container)
 
 
   def addShape(self, sampleName_, plot_container_, plotdef_):
