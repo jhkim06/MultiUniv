@@ -73,3 +73,4 @@ mkPlot.py --pycfg configuration_Mu_Combi_All.py --inputFile=Output_MetFt_L_v2_TT
 #mkDatacards.py --pycfg configuration_Mu_Combi.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_Mu_Combi/CHToCB_Mu_Combi.root
 
 
+#mkDatacards.py --pycfg configuration_2b_Combi.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_2b_Combi/CHToCB_2b_Combi.root 

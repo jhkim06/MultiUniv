@@ -15,206 +15,205 @@ nuisances['lumi'] = {
     'type' : 'lnN',
     'samples' : dict((skey, '1.023') for skey in mc)
 }
-#
-#nuisances['ttxsec'] = {
-#    'name' : 'ttxsec',
-#    'type' : 'lnN',
-#    'samples' : {
-#      'TTLJ_powheg'	: '1.06114',
-#      'TTLL_powheg'	: '1.06114',
-#      'TTJJ_powheg'	: '1.06114',
-#    }
-#}
-#
-#nuisances['JES'] = {
-#    'name' : 'JES',
-#    'kind' : 'variableChange',
-#    'type' : 'shape',
-#    'samples' : { 
-#      'DYJet'                 : ['1', '1'],
-#      'DYJets10to50_MG'       : ['1', '1'],
-#      'WJets_MG'              : ['1', '1'],
-#      'TTLJ_powheg'	      : ['1', '1'],
-#      'TTLL_powheg'	      : ['1', '1'],
-#      'TTJJ_powheg'	      : ['1', '1'],
-#      'SingleTop_sch_top'     : ['1', '1'],
-#      'SingleTop_tch_top'     : ['1', '1'],
-#      'SingleTop_tch_antitop' : ['1', '1'],
-#      'SingleTop_tW_top'      : ['1', '1'],
-#      'SingleTop_tW_antitop'  : ['1', '1'],
-#      'WW_pythia'             : ['1', '1'],
-#      'WZ_pythia'             : ['1', '1'],
-#      'ZZ_pythia'             : ['1', '1'],
-#      'ttW'                   : ['1', '1'],
-#      'ttZ'                   : ['1', '1'],
-#      'ttH_bb'                : ['1', '1'],
-#      'ttbb'                  : ['1', '1'],
-#    },
-#    'variablesUp' : {
-#	'fitted_dijet_mass' : [
-#          'fitted_dijet_mass_JES_Up',
-#	  'fitted_dijet_m_JES_Up'
-#	],
-#	#'fitter_status' : [
-#	#  'fitter_status_JES_Up',
-#	#  'fitter_status_JES_Up'
-#	#],
-#	#'1st_leading_jet_pt' : [
-#	#  '1st_leading_jet_pt_JES_Up',
-#	#  'selected_jet_pt_JES_Up[0]'
-#	#],
-#	#'2nd_leading_jet_pt' : [
-#	#  '2nd_leading_jet_pt_JES_Up',
-#	#  'selected_jet_pt_JES_Up[1]'
-#        #],
-#	#'3rd_leading_jet_pt' : [
-#	#  '3rd_leading_jet_pt_JES_Up',
-#	#  'selected_jet_pt_JES_Up[2]'
-#        #],
-#	#'4th_leading_jet_pt' : [
-#	#  '4th_leading_jet_pt_JES_Up',
-#	#  'selected_jet_pt_JES_Up[3]',
-#        #],
-#	#'njets' : [
-#	#  'njets_JES_Up',
-#	#  'njets_JES_Up'
-#	#],
-#	#'MET' : [
-#	#  'MET_JES_Up',
-#	#  'MET_JES_Up'
-#	#],
-#    },
-#    'variablesDo' : {
-#	'fitted_dijet_mass' : [
-#          'fitted_dijet_mass_JES_Do',
-#	  'fitted_dijet_m_JES_Do'
-#	],
-#	#'fitter_status' : [
-#	#  'fitter_status_JES_Do',
-#	#  'fitter_status_JES_Do'
-#	#],
-#	#'1st_leading_jet_pt' : [
-#	#  '1st_leading_jet_pt_JES_Do',
-#	#  'selected_jet_pt_JES_Do[0]'
-#	#],
-#	#'2nd_leading_jet_pt' : [
-#	#  '2nd_leading_jet_pt_JES_Do',
-#	#  'selected_jet_pt_JES_Do[1]'
-#        #],
-#	#'3rd_leading_jet_pt' : [
-#	#  '3rd_leading_jet_pt_JES_Do',
-#	#  'selected_jet_pt_JES_Do[2]'
-#        #],
-#	#'4th_leading_jet_pt' : [
-#	#  '4th_leading_jet_pt_JES_Do',
-#	#  'selected_jet_pt_JES_Do[3]',
-#        #],
-#	#'njets' : [
-#	#  'njets_JES_Do',
-#	#  'njets_JES_Do'
-#	#],
-#	#'MET' : [
-#	#  'MET_JES_Do',
-#	#  'MET_JES_Do'
-#	#],
-#    },
-#}
 
-#nuisances['JER'] = {
-#    'name' : 'JER',
-#    'kind' : 'variableChange',
-#    'type' : 'shape',
-#    'samples' : {
-#      'DYJet'                 : ['1', '1'],
-#      'DYJets10to50_MG'       : ['1', '1'],
-#      'WJets_MG'              : ['1', '1'],
-#      'TTLJ_powheg'	      : ['1', '1'],
-#      'TTLL_powheg'	      : ['1', '1'],
-#      'TTJJ_powheg'	      : ['1', '1'],
-#      'SingleTop_sch_top'     : ['1', '1'],
-#      'SingleTop_tch_top'     : ['1', '1'],
-#      'SingleTop_tch_antitop' : ['1', '1'],
-#      'SingleTop_tW_top'      : ['1', '1'],
-#      'SingleTop_tW_antitop'  : ['1', '1'],
-#      'WW_pythia'             : ['1', '1'],
-#      'WZ_pythia'             : ['1', '1'],
-#      'ZZ_pythia'             : ['1', '1'],
-#      'ttW'                   : ['1', '1'],
-#      'ttZ'                   : ['1', '1'],
-#      'ttH_bb'                : ['1', '1'],
-#      'ttbb'                  : ['1', '1'],
-#    },
-#    'variablesUp' : {
-#	'fitted_dijet_mass' : [
-#          'fitted_dijet_mass_JER_Up',
-#	  'fitted_dijet_m_JER_Up'
-#	],
-#	#'fitter_status' : [
-#	#  'fitter_status_JER_Up',
-#	#  'fitter_status_JER_Up'
-#	#],
-#	#'1st_leading_jet_pt' : [
-#	#  '1st_leading_jet_pt_JER_Up',
-#	#  'selected_jet_pt_JER_Up[0]'
-#	#],
-#	#'2nd_leading_jet_pt' : [
-#	#  '2nd_leading_jet_pt_JER_Up',
-#	#  'selected_jet_pt_JER_Up[1]'
-#        #],
-#	#'3rd_leading_jet_pt' : [
-#	#  '3rd_leading_jet_pt_JER_Up',
-#	#  'selected_jet_pt_JER_Up[2]'
-#        #],
-#	#'4th_leading_jet_pt' : [
-#	#  '4th_leading_jet_pt_JER_Up',
-#	#  'selected_jet_pt_JER_Up[3]',
-#        #],
-#	#'njets' : [
-#	#  'njets_JER_Up',
-#	#  'njets_JER_Up'
-#	#],
-#	#'MET' : [
-#	#  'MET_JER_Up',
-#	#  'MET_JER_Up'
-#	#],
-#    },
-#    'variablesDo' : {
-#	'fitted_dijet_mass' : [
-#          'fitted_dijet_mass_JER_Do',
-#	  'fitted_dijet_m_JER_Do'
-#	],
-#	#'fitter_status' : [
-#	#  'fitter_status_JER_Do',
-#	#  'fitter_status_JER_Do'
-#	#],
-#	#'1st_leading_jet_pt' : [
-#	#  '1st_leading_jet_pt_JER_Do',
-#	#  'selected_jet_pt_JER_Do[0]'
-#	#],
-#	#'2nd_leading_jet_pt' : [
-#	#  '2nd_leading_jet_pt_JER_Do',
-#	#  'selected_jet_pt_JER_Do[1]'
-#        #],
-#	#'3rd_leading_jet_pt' : [
-#	#  '3rd_leading_jet_pt_JER_Do',
-#	#  'selected_jet_pt_JER_Do[2]'
-#        #],
-#	#'4th_leading_jet_pt' : [
-#	#  '4th_leading_jet_pt_JER_Do',
-#	#  'selected_jet_pt_JER_Do[3]',
-#        #],
-#	#'njets' : [
-#	#  'njets_JER_Do',
-#	#  'njets_JER_Do'
-#	#],
-#	#'MET' : [
-#	#  'MET_JER_Do',
-#	#  'MET_JER_Do'
-#	#],
-#    },
-#}
-#
-#
+nuisances['ttxsec'] = {
+    'name' : 'ttxsec',
+    'type' : 'lnN',
+    'samples' : {
+      'TTLJ_powheg'	: '1.06114',
+      'TTLL_powheg'	: '1.06114',
+      'TTJJ_powheg'	: '1.06114',
+    }
+}
+
+nuisances['JES'] = {
+    'name' : 'JES',
+    'kind' : 'variableChange',
+    'type' : 'shape',
+    'samples' : { 
+      'DYJet'                 : ['1', '1'],
+      'DYJets10to50_MG'       : ['1', '1'],
+      'WJets_MG'              : ['1', '1'],
+      'TTLJ_powheg'	      : ['1', '1'],
+      'TTLL_powheg'	      : ['1', '1'],
+      'TTJJ_powheg'	      : ['1', '1'],
+      'SingleTop_sch_top'     : ['1', '1'],
+      'SingleTop_tch_top'     : ['1', '1'],
+      'SingleTop_tch_antitop' : ['1', '1'],
+      'SingleTop_tW_top'      : ['1', '1'],
+      'SingleTop_tW_antitop'  : ['1', '1'],
+      'WW_pythia'             : ['1', '1'],
+      'WZ_pythia'             : ['1', '1'],
+      'ZZ_pythia'             : ['1', '1'],
+      'ttW'                   : ['1', '1'],
+      'ttZ'                   : ['1', '1'],
+      'ttH_bb'                : ['1', '1'],
+      'ttbb'                  : ['1', '1'],
+    },
+    'variablesUp' : {
+	'fitted_dijet_mass' : [
+         'fitted_dijet_mass_JES_Up',
+	 'fitted_dijet_m_JES_Up'
+	],
+	'fitter_status' : [
+	  'fitter_status_JES_Up',
+	  'fitter_status_JES_Up'
+	],
+	'1st_leading_jet_pt' : [
+	  '1st_leading_jet_pt_JES_Up',
+	  'selected_jet_pt_JES_Up[0]'
+	],
+	'2nd_leading_jet_pt' : [
+	  '2nd_leading_jet_pt_JES_Up',
+	  'selected_jet_pt_JES_Up[1]'
+        ],
+	'3rd_leading_jet_pt' : [
+	  '3rd_leading_jet_pt_JES_Up',
+	  'selected_jet_pt_JES_Up[2]'
+        ],
+	'4th_leading_jet_pt' : [
+	  '4th_leading_jet_pt_JES_Up',
+	  'selected_jet_pt_JES_Up[3]',
+        ],
+	'njets' : [
+	  'njets_JES_Up',
+	  'njets_JES_Up'
+	],
+	'MET' : [
+	  'MET_JES_Up',
+	  'MET_JES_Up'
+	],
+    },
+    'variablesDo' : {
+	'fitted_dijet_mass' : [
+          'fitted_dijet_mass_JES_Do',
+	  'fitted_dijet_m_JES_Do'
+	],
+	'fitter_status' : [
+	  'fitter_status_JES_Do',
+	  'fitter_status_JES_Do'
+	],
+	'1st_leading_jet_pt' : [
+	  '1st_leading_jet_pt_JES_Do',
+	  'selected_jet_pt_JES_Do[0]'
+	],
+	'2nd_leading_jet_pt' : [
+	  '2nd_leading_jet_pt_JES_Do',
+	  'selected_jet_pt_JES_Do[1]'
+        ],
+	'3rd_leading_jet_pt' : [
+	  '3rd_leading_jet_pt_JES_Do',
+	  'selected_jet_pt_JES_Do[2]'
+        ],
+	'4th_leading_jet_pt' : [
+	  '4th_leading_jet_pt_JES_Do',
+	  'selected_jet_pt_JES_Do[3]',
+        ],
+	'njets' : [
+	  'njets_JES_Do',
+	  'njets_JES_Do'
+	],
+	'MET' : [
+	  'MET_JES_Do',
+	  'MET_JES_Do'
+	],
+    },
+}
+nuisances['JER'] = {
+    'name' : 'JER',
+    'kind' : 'variableChange',
+    'type' : 'shape',
+    'samples' : {
+      'DYJet'                 : ['1', '1'],
+      'DYJets10to50_MG'       : ['1', '1'],
+      'WJets_MG'              : ['1', '1'],
+      'TTLJ_powheg'	      : ['1', '1'],
+      'TTLL_powheg'	      : ['1', '1'],
+      'TTJJ_powheg'	      : ['1', '1'],
+      'SingleTop_sch_top'     : ['1', '1'],
+      'SingleTop_tch_top'     : ['1', '1'],
+      'SingleTop_tch_antitop' : ['1', '1'],
+      'SingleTop_tW_top'      : ['1', '1'],
+      'SingleTop_tW_antitop'  : ['1', '1'],
+      'WW_pythia'             : ['1', '1'],
+      'WZ_pythia'             : ['1', '1'],
+      'ZZ_pythia'             : ['1', '1'],
+      'ttW'                   : ['1', '1'],
+      'ttZ'                   : ['1', '1'],
+      'ttH_bb'                : ['1', '1'],
+      'ttbb'                  : ['1', '1'],
+    },
+    'variablesUp' : {
+	'fitted_dijet_mass' : [
+          'fitted_dijet_mass_JER_Up',
+	  'fitted_dijet_m_JER_Up'
+	],
+	'fitter_status' : [
+	  'fitter_status_JER_Up',
+	  'fitter_status_JER_Up'
+	],
+	'1st_leading_jet_pt' : [
+	  '1st_leading_jet_pt_JER_Up',
+	  'selected_jet_pt_JER_Up[0]'
+	],
+	'2nd_leading_jet_pt' : [
+	  '2nd_leading_jet_pt_JER_Up',
+	  'selected_jet_pt_JER_Up[1]'
+        ],
+	'3rd_leading_jet_pt' : [
+	  '3rd_leading_jet_pt_JER_Up',
+	  'selected_jet_pt_JER_Up[2]'
+        ],
+	'4th_leading_jet_pt' : [
+	  '4th_leading_jet_pt_JER_Up',
+	  'selected_jet_pt_JER_Up[3]',
+        ],
+	'njets' : [
+	  'njets_JER_Up',
+	  'njets_JER_Up'
+	],
+	'MET' : [
+	  'MET_JER_Up',
+	  'MET_JER_Up'
+	],
+    },
+    'variablesDo' : {
+	'fitted_dijet_mass' : [
+          'fitted_dijet_mass_JER_Do',
+	  'fitted_dijet_m_JER_Do'
+	],
+	'fitter_status' : [
+	  'fitter_status_JER_Do',
+	  'fitter_status_JER_Do'
+	],
+	'1st_leading_jet_pt' : [
+	  '1st_leading_jet_pt_JER_Do',
+	  'selected_jet_pt_JER_Do[0]'
+	],
+	'2nd_leading_jet_pt' : [
+	  '2nd_leading_jet_pt_JER_Do',
+	  'selected_jet_pt_JER_Do[1]'
+        ],
+	'3rd_leading_jet_pt' : [
+	  '3rd_leading_jet_pt_JER_Do',
+	  'selected_jet_pt_JER_Do[2]'
+        ],
+	'4th_leading_jet_pt' : [
+	  '4th_leading_jet_pt_JER_Do',
+	  'selected_jet_pt_JER_Do[3]',
+        ],
+	'njets' : [
+	  'njets_JER_Do',
+	  'njets_JER_Do'
+	],
+	'MET' : [
+	  'MET_JER_Do',
+	  'MET_JER_Do'
+	],
+    },
+}
+
+
 #nuisances['top_mass'] = {
 #    'name' : 'top_mass',
 #    'kind' : 'sampleChange',
@@ -300,111 +299,111 @@ nuisances['lumi'] = {
 #    #TODO will add signal samples
 #}
 #
-#nuisances['PUweight'] = {
-#    'name' :'PUweight',
-#    'kind' : 'weight',
-#    'type' : 'shape',
-#    'samples' : {
-#      'DYJet'                 : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'DYJets10to50_MG'       : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'WJets_MG'              : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'TTLJ_powheg'	      : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'TTLL_powheg'	      : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'TTJJ_powheg'	      : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'SingleTop_sch_top'     : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'SingleTop_tch_top'     : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'SingleTop_tch_antitop' : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'SingleTop_tW_top'      : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'SingleTop_tW_antitop'  : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'WW_pythia'             : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'WZ_pythia'             : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'ZZ_pythia'             : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'ttW'                   : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'ttZ'                   : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'ttH_bb'                : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#      'ttbb'                  : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
-#
-#    }
-#}
-#
-#nuisances['IdSF'] = {
-#    'name' : 'IdSF',
-#    'kind'	: 'weight',
-#    'type'	: 'shape',
-#    'samples' : {
-#      'DYJets'	              : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'DYJets10to50_MG'       : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'WJets_MG'              : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'TTLJ_powheg'	      : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'TTLL_powheg'	      : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'TTJJ_powheg'	      : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'SingleTop_sch_top'         : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'SingleTop_tch_top'     : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'SingleTop_tch_antitop' : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'SingleTop_tW_top'      : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'SingleTop_tW_antitop'  : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'WW_pythia'             : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'WZ_pythia'             : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'ZZ_pythia'             : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'ttW'                   : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'ttZ'                   : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'ttH_bb'                : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#      'ttbb'                  : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
-#    }
-#}
-#
-#nuisances['IsoSF'] = {
-#    'name' : 'IsoSF',
-#    'kind'	: 'weight',
-#    'type'	: 'shape',
-#    'samples' : {
-#      'DYJets'	              : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'DYJets10to50_MG'       : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'WJets_MG'              : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'TTLJ_powheg'	      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'TTLL_powheg'	      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'TTJJ_powheg'	      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'SingleTop_sch_top'     : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'SingleTop_tch_top'     : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'SingleTop_tch_antitop' : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'SingleTop_tW_top'      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'SingleTop_tW_antitop'  : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'WW_pythia'             : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'WZ_pythia'             : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'ZZ_pythia'             : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'ttW'                   : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'ttZ'                   : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'ttH_bb'                : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#      'ttbb'                  : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
-#    }
-#}
-#
-#nuisances['recoSF'] = {
-#    'name' : 'recoSF',
-#    'kind'	: 'weight',
-#    'type'	: 'shape',
-#    'samples' : {
-#      'DYJets'	              : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'DYJets10to50_MG'       : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'WJets_MG'              : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'TTLJ_powheg'	      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'TTLL_powheg'	      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'TTJJ_powheg'	      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'SingleTop_sch_top'     : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'SingleTop_tch_top'     : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'SingleTop_tch_antitop' : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'SingleTop_tW_top'      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'SingleTop_tW_antitop'  : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'WW_pythia'             : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'WZ_pythia'             : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'ZZ_pythia'             : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'ttW'                   : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'ttZ'                   : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'ttH_bb'                : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#      'ttbb'                  : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
-#    }
-#}
-'''
+nuisances['PUweight'] = {
+    'name' :'PUweight',
+    'kind' : 'weight',
+    'type' : 'shape',
+    'samples' : {
+      'DYJet'                 : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'DYJets10to50_MG'       : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'WJets_MG'              : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'TTLJ_powheg'	      : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'TTLL_powheg'	      : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'TTJJ_powheg'	      : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'SingleTop_sch_top'     : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'SingleTop_tch_top'     : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'SingleTop_tch_antitop' : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'SingleTop_tW_top'      : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'SingleTop_tW_antitop'  : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'WW_pythia'             : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'WZ_pythia'             : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'ZZ_pythia'             : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'ttW'                   : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'ttZ'                   : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'ttH_bb'                : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+      'ttbb'                  : ['PUweight_Up/PUweight', 'PUweight_Do/PUweight'],
+
+    }
+}
+
+nuisances['IdSF'] = {
+    'name' : 'IdSF',
+    'kind'	: 'weight',
+    'type'	: 'shape',
+    'samples' : {
+      'DYJets'	              : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'DYJets10to50_MG'       : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'WJets_MG'              : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'TTLJ_powheg'	      : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'TTLL_powheg'	      : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'TTJJ_powheg'	      : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'SingleTop_sch_top'         : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'SingleTop_tch_top'     : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'SingleTop_tch_antitop' : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'SingleTop_tW_top'      : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'SingleTop_tW_antitop'  : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'WW_pythia'             : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'WZ_pythia'             : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'ZZ_pythia'             : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'ttW'                   : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'ttZ'                   : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'ttH_bb'                : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+      'ttbb'                  : ['IdSF_Up/IdSF', 'IdSF_Do/IdSF'],
+    }
+}
+
+nuisances['IsoSF'] = {
+    'name' : 'IsoSF',
+    'kind'	: 'weight',
+    'type'	: 'shape',
+    'samples' : {
+      'DYJets'	              : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'DYJets10to50_MG'       : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'WJets_MG'              : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'TTLJ_powheg'	      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'TTLL_powheg'	      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'TTJJ_powheg'	      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'SingleTop_sch_top'     : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'SingleTop_tch_top'     : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'SingleTop_tch_antitop' : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'SingleTop_tW_top'      : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'SingleTop_tW_antitop'  : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'WW_pythia'             : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'WZ_pythia'             : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'ZZ_pythia'             : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'ttW'                   : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'ttZ'                   : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'ttH_bb'                : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+      'ttbb'                  : ['IsoSF_Up/IsoSF', 'IsoSF_Do/IsoSF'],
+    }
+}
+
+nuisances['recoSF'] = {
+    'name' : 'recoSF',
+    'kind'	: 'weight',
+    'type'	: 'shape',
+    'samples' : {
+      'DYJets'	              : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'DYJets10to50_MG'       : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'WJets_MG'              : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'TTLJ_powheg'	      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'TTLL_powheg'	      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'TTJJ_powheg'	      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'SingleTop_sch_top'     : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'SingleTop_tch_top'     : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'SingleTop_tch_antitop' : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'SingleTop_tW_top'      : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'SingleTop_tW_antitop'  : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'WW_pythia'             : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'WZ_pythia'             : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'ZZ_pythia'             : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'ttW'                   : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'ttZ'                   : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'ttH_bb'                : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+      'ttbb'                  : ['recoSF_Up/recoSF', 'recoSF_Do/recoSF'],
+    }
+}
+
 nuisances['trgSF'] = {
     'name' : 'trgSF',
     'kind'	: 'weight',
@@ -430,34 +429,34 @@ nuisances['trgSF'] = {
       'ttbb'                  : ['trgSF_Up/trgSF', 'trgSF_Do/trgSF'],
     }
 }
-'''
-#
-#nuisances['BTagSF'] = {
-#    'name' : 'BTagSF',
-#    'kind'	: 'weight',
-#    'type'	: 'shape',
-#    'samples' : {
-#      'DYJets'	              : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'DYJets10to50_MG'       : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'WJets_MG'              : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'TTLJ_powheg'	      : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'TTLL_powheg'	      : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'TTJJ_powheg'	      : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'SingleTop_sch_top'     : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'SingleTop_tch_top'     : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'SingleTop_tch_antitop' : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'SingleTop_tW_top'      : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'SingleTop_tW_antitop'  : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'WW_pythia'             : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'WZ_pythia'             : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'ZZ_pythia'             : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'ttW'                   : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'ttZ'                   : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'ttH_bb'                : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#      'ttbb'                  : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
-#    }
-#}
-#
+
+
+nuisances['BTagSF'] = {
+    'name' : 'BTagSF',
+    'kind'	: 'weight',
+    'type'	: 'shape',
+    'samples' : {
+      'DYJets'	              : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'DYJets10to50_MG'       : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'WJets_MG'              : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'TTLJ_powheg'	      : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'TTLL_powheg'	      : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'TTJJ_powheg'	      : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'SingleTop_sch_top'     : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'SingleTop_tch_top'     : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'SingleTop_tch_antitop' : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'SingleTop_tW_top'      : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'SingleTop_tW_antitop'  : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'WW_pythia'             : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'WZ_pythia'             : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'ZZ_pythia'             : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'ttW'                   : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'ttZ'                   : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'ttH_bb'                : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+      'ttbb'                  : ['BTagSF_Up/BTagSF', 'BTagSF_Do/BTagSF'],
+    }
+}
+
 '''
 nuisances['MisTagSF'] = {
     'name' : 'MisTagSF',
@@ -532,39 +531,9 @@ nuisances['gentoppt_reweight'] = {
 ## other systematics(JEC/JER/top_mass/MEtoPS/generator) are not defined as event-by-event weight
 
 ########## Efficiency and Energy Scale
-#trg_syst = ['trgSF_Q_Up/trgSF_Q', 'trgSF_Q_Do/trgSF_Q']
-#id_syst  = ['IdSF_Q_Up/IdSF_Q', 'IdSF_Q_Do/IdSF_Q']
 #alphaS_syst  = ['PDFWeights_AlphaS[0]', 'PDFWeights_AlphaS[1]']
 #id_syst_ele = ['LepSF'+Nlep+'l_ele_'+eleWP+'_Up', 'LepSF'+Nlep+'l_ele_'+eleWP+'_Do']
 
-#nuisances['trigg'] = {
-#    'name'	: 'trg_2017',
-#    'kind'	: 'weight',
-#    'type'	: 'shape',
-#    'samples'	: {
-#      	'DYJets'	: trg_syst ,
-#	'TTLL_powheg'	: trg_syst ,
-#	'WJets_MG'	: trg_syst ,
-#	'WW_pythia'	: trg_syst ,
-#	'WZ_pythia'	: trg_syst ,
-#	'ZZ_pythia'	: trg_syst ,
-#	},
-#}
-#
-#
-#nuisances['eff'] = {
-#    'name'	: 'eff_2017',
-#    'kind'	: 'weight',
-#    'type'	: 'shape',
-#    'samples'	: {
-#      	'DYJets'	: id_syst ,
-#	'TTLL_powheg'	: id_syst ,
-#	'WJets_MG'	: id_syst ,
-#	'WW_pythia'	: id_syst ,
-#	'WZ_pythia'	: id_syst ,
-#	'ZZ_pythia'	: id_syst ,
-#	},
-#}
 nuisances['alphaS'] = {
     'name'	: 'alphaS',
     'kind'	: 'PDF',

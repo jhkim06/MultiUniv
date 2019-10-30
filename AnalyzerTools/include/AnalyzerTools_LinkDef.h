@@ -18,6 +18,7 @@
 #pragma link C++ class TSCorrection+;
 #pragma link C++ class RocCorrUtil+;
 #pragma link C++ class LeptonSFs+;
+#pragma link C++ class JetCombinationTool+;
 
 #pragma link C++ class PrescaleProvider-;
 #pragma link C++ class RunInfo-;

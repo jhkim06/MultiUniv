@@ -282,7 +282,7 @@ AntiIsoCut = 'passAntiIso==1'
 samples_QCD ={}
 for key, val in samples.iteritems():
   key_QCD = "%s@%s_QCD"%(key,key)
-  samples_QCD[key_QCD] = val
+  samples_QCD[key_QCD] = val.copy()
   samples_QCD[key_QCD]['cut'] = AntiIsoCut
   #XXX
   if key == 'EGamma' or key == 'SingleMuon':

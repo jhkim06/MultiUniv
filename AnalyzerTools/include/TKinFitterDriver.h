@@ -17,6 +17,12 @@
 
 #include "Jet.h"
 
+#include "TSystem.h"
+#include "TMVA/Tools.h"
+//#include "TMVA/PyMethodBase.h"
+#include "TMVA/Reader.h"
+
+
 using namespace std;
 
 class TKinFitterDriver{
@@ -24,11 +30,12 @@ class TKinFitterDriver{
 public:
 
   TKinFitterDriver();
-  TKinFitterDriver(int DataYear_);
+  TKinFitterDriver(int DataYear_,bool useMLCut_, TString MCSample_);
   ~TKinFitterDriver();
 
   int DataYear;
   void SetDataYear(int i);
+  void SetMLCut(bool useMLCut_){ useMLCut = useMLCut_; }
 
   void SetAllObjects(std::vector<Jet> jet_vector_,
                      std::vector<bool> btag_vector_,
@@ -126,8 +133,34 @@ private:
 
   void SetCurrentPermutationJets();
   bool Check_BJet_Assignment();
-  bool Kinematic_Cut();
   bool NextPermutation(bool UseLeading4Jets=false);
+
+  //ML
+  TMVA::Reader *tmva_reader;
+  // ML variables
+  float had_top_b_jet_pt;   //  1
+  float lep_top_b_jet_pt;   //  2
+  float up_type_jet_pt;     //  3
+  float down_type_jet_pt;   //  4
+  float dijet_deltaR;       //  5
+  float dijet_deltaEta;     //  6
+  float dijet_cosThetaTC;   //  7 
+  float dijet_cosThetaTB;   //  8
+  float hadronic_top_mass;  //  9
+  float leptonic_top_mass;  // 10
+  float W_MT;               // 11
+  float tt_MT;              // 12
+  float tt_deltaR;          // 13
+  float had_top_pt;         // 14
+  float lep_top_pt;         // 15
+ 
+  bool useMLCut;
+  TString MCSample;
+  void initML();
+  bool ML_Cut();
+  double GetMLCut(TString sample);
+  void updatesMLVariables();
+  bool Kinematic_Cut();
 
   void Sol_Neutrino_Pz();
   void Resol_Neutrino_Pt();

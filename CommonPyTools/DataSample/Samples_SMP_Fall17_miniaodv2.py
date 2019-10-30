@@ -33,4 +33,16 @@ sampleInfo = {
 'CHToCB_M140'		:{'name' :'ChargedHiggsToCB_M140_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':292000,	'Nsum': 292000 },
 'CHToCB_M150'		:{'name' :'ChargedHiggsToCB_M150_TuneCP5_PSweights_13TeV-madgraph-pythia8',	'xsec': 365.34,	'nMC':272000,	'Nsum': 272000 },
 
+#ttbar syst. samples
+'ttbb'			:{'name' :'ttbb_4FS_ckm_NNPDF31_TuneCP5_amcatnlo_madspin_pythia',	'xsec': 0.6,	'nMC':5965355,	'Nsum': 87666106.0353 },
+'TTLJ_powheg_Tune_Do'	:{'name' :'TTToSemiLeptonic_TuneCP5down_PSweights_13TeV-powheg-pythia8',	'xsec': 365.34,	'nMC':27104055,	'Nsum': 8153019844.01 },
+'TTLJ_powheg_Tune_Up'	:{'name' :'TTToSemiLeptonic_TuneCP5up_PSweights_13TeV-powheg-pythia8',	'xsec': 365.34,	'nMC':20122010,	'Nsum': 6052480343.46 },
+'TTLJ_powheg_hdamp_Do'	:{'name' :'TTToSemiLeptonic_hdampDOWN_TuneCP5_PSweights_13TeV-powheg-pythia8',	'xsec': 365.34,	'nMC':26849863,	'Nsum': 8076122776.83 },
+'TTLJ_powheg_mass_Do'	:{'name' :'TTToSemiLeptonic_mtop171p5_TuneCP5_PSweights_13TeV-powheg-pythia8',	'xsec': 365.34,	'nMC':25000000,	'Nsum': 7728754343.69 },
+'TTLL_powheg_Tune_Do'	:{'name' :'TTTo2L2Nu_TuneCP5down_PSweights_13TeV-powheg-pythia8',	'xsec': 88.29,	'nMC':5500000,	'Nsum': 396479519.288 },
+'TTLL_powheg_Tune_Up'	:{'name' :'TTTo2L2Nu_TuneCP5up_PSweights_13TeV-powheg-pythia8',	'xsec': 88.29,	'nMC':5500000,	'Nsum': 396469562.021 },
+'TTLL_powheg_hdamp_Do'	:{'name' :'TTTo2L2Nu_hdampDOWN_TuneCP5_PSweights_13TeV-powheg-pythia8',	'xsec': 88.29,	'nMC':5476459,	'Nsum': 394751183.72 },
+'TTLL_powheg_hdamp_Up'	:{'name' :'TTTo2L2Nu_hdampUP_TuneCP5_PSweights_13TeV-powheg-pythia8',	'xsec': 88.29,	'nMC':3288128,	'Nsum': 237033446.737 },
+'TTLL_powheg_mass_Up'	:{'name' :'TTTo2L2Nu_mtop173p5_TuneCP5_PSweights_13TeV-powheg-pythia8',	'xsec': 88.29,	'nMC':6000000,	'Nsum': 420865854.01 },
+
 }
