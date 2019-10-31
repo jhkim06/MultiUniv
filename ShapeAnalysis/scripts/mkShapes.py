@@ -132,8 +132,8 @@ string_JobStartTime =  JobStartTime.strftime('%Y-%m-%d %H:%M:%S')
 string_ThisTime = ""
 
 
-if SKFlatLogEmail=='':
-  print '[mkShapes] Put your email address in setup.sh'
+#if SKFlatLogEmail=='':
+#  print '[mkShapes] Put your email address in setup.sh'
 
 SendLogToWeb = True
 if SKFlatLogWeb=='' or SKFlatLogWebDir=='':

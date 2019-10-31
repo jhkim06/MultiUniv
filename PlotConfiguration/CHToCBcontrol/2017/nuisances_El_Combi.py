@@ -3,8 +3,9 @@
 #import  structure
 
 try:
-  mc =[skey for skey in samples if skey not in ['SingleMuon', 'SingleElectron'] and not skey.startswith('Fake')]
-#  mc =mc + [skey for skey in plot if skey != 'DATA' and not skey.startswith('Fake')]
+  #mc =[skey for skey in samples if skey not in ['SingleMuon', 'SingleElectron'] and not skey.startswith('Fake')]
+  mc = [skey for skey in groupPlot if skey != 'DATA' and not skey.startswith('Fake')]
+  mc =mc + [skey for skey in plot if skey != 'DATA' and not skey.startswith('Fake')]
 except NameError:
   mc =[]
 
@@ -14,6 +15,15 @@ nuisances['lumi'] = {
     'name' : 'lumi_13TeV',
     'type' : 'lnN',
     'samples' : dict((skey, '1.023') for skey in mc)
+}
+
+nuisances['stat'] = {
+    'type': 'auto',
+    'maxPoiss': '10',
+    'includeSignal': '0',
+   #  nuisance ['maxPoiss'] =  Number of threshold events for Poisson modelling
+   #  nuisance ['includeSignal'] =  Include MC stat nuisances on signal processes (1=True, 0=False)
+    'samples': {}
 }
 #
 #nuisances['ttxsec'] = {
