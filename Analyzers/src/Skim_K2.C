@@ -42,31 +42,42 @@ void Skim_K2::initializeAnalyzer(){
     newtree = fChain->CloneTree(-1); // JH : What relation does this outfile have with the fChain(created by SetTreeName)?
   }
   // New Branch
-  newtree->Branch("initial_dijet_m", &initial_dijet_m,"initial_dijet_m/D");
-  newtree->Branch("initial_dijet_m_JES_Up", &initial_dijet_m_JES_Up,"initial_dijet_m_JES_Up/D");
-  newtree->Branch("initial_dijet_m_JES_Do", &initial_dijet_m_JES_Do,"initial_dijet_m_JES_Do/D");
-  newtree->Branch("initial_dijet_m_JER_Up", &initial_dijet_m_JER_Up,"initial_dijet_m_JER_Up/D");
-  newtree->Branch("initial_dijet_m_JER_Do", &initial_dijet_m_JER_Do,"initial_dijet_m_JER_Do/D");
-  newtree->Branch("corrected_dijet_m", &corrected_dijet_m,"corrected_dijet_m/D");
-  newtree->Branch("corrected_dijet_m_JES_Up", &corrected_dijet_m_JES_Up,"corrected_dijet_m_JES_Up/D");
-  newtree->Branch("corrected_dijet_m_JES_Do", &corrected_dijet_m_JES_Do,"corrected_dijet_m_JES_Do/D");
-  newtree->Branch("corrected_dijet_m_JER_Up", &corrected_dijet_m_JER_Up,"corrected_dijet_m_JER_Up/D");
-  newtree->Branch("corrected_dijet_m_JER_Do", &corrected_dijet_m_JER_Do,"corrected_dijet_m_JER_Do/D");
-  newtree->Branch("fitted_dijet_m", &fitted_dijet_m,"fitted_dijet_m/D");
-  newtree->Branch("fitted_dijet_m_JES_Up", &fitted_dijet_m_JES_Up,"fitted_dijet_m_JES_Up/D");
-  newtree->Branch("fitted_dijet_m_JES_Do", &fitted_dijet_m_JES_Do,"fitted_dijet_m_JES_Do/D");
-  newtree->Branch("fitted_dijet_m_JER_Up", &fitted_dijet_m_JER_Up,"fitted_dijet_m_JER_Up/D");
-  newtree->Branch("fitted_dijet_m_JER_Do", &fitted_dijet_m_JER_Do,"fitted_dijet_m_JER_Do/D");
-  newtree->Branch("best_chi2", &best_chi2,"best_chi2/D");
-  newtree->Branch("best_chi2_JES_Up", &best_chi2_JES_Up,"best_chi2_JES_Up/D");
-  newtree->Branch("best_chi2_JES_Do", &best_chi2_JES_Do,"best_chi2_JES_Do/D");
-  newtree->Branch("best_chi2_JER_Up", &best_chi2_JER_Up,"best_chi2_JER_Up/D");
-  newtree->Branch("best_chi2_JER_Do", &best_chi2_JER_Do,"best_chi2_JER_Do/D");
-  newtree->Branch("fitter_status", &fitter_status,"fitter_status/I");
-  newtree->Branch("fitter_status_JES_Up", &fitter_status_JES_Up,"fitter_status_JES_Up/I");
-  newtree->Branch("fitter_status_JES_Do", &fitter_status_JES_Do,"fitter_status_JES_Do/I");
-  newtree->Branch("fitter_status_JER_Up", &fitter_status_JER_Up,"fitter_status_JER_Up/I");
-  newtree->Branch("fitter_status_JER_Do", &fitter_status_JER_Do,"fitter_status_JER_Do/I");
+  //--------
+  // To make branch for dijet mass, best_chi2, fitter_status
+  // for various mass(..., M090, M100, ...) and syst(JES/JER)
+  //--------
+  mass_points = {"M","M090","M100","M110","M120","M130","M140","M150"};
+  JES_JER_syst = {"","JESUp","JESDown","JERUp","JERDown"};
+  // start nested loop
+  for(auto mass : mass_points){
+    TString dijet_branch_name_base = TString::Format("_dijet_%s",mass.Data());
+    TString chi2_branch_name_base = TString::Format("best_chi2_%s",mass.Data());
+    TString status_branch_name_base = TString::Format("fitter_status_%s",mass.Data());
+    for(auto syst : JES_JER_syst){
+      TString dijet_branch_name_base_syst = dijet_branch_name_base;
+      TString chi2_branch_name_base_syst = chi2_branch_name_base;
+      TString status_branch_name_base_syst = status_branch_name_base;
+      if(syst != ""){
+        dijet_branch_name_base_syst = dijet_branch_name_base_syst + "_" + syst;
+        chi2_branch_name_base_syst   = chi2_branch_name_base_syst + "_" + syst;
+        status_branch_name_base_syst = status_branch_name_base_syst + "_" + syst;
+      }
+      //cout << "Branch Name: " << dijet_branch_name_base_syst  << endl;
+      //cout << "Branch Name: " << chi2_branch_name_base_syst   << endl;
+      //cout << "Branch Name: " << status_branch_name_base_syst << endl;
+      TString dijet_branch_name_initial_dijet_m   = "initial" + dijet_branch_name_base_syst;
+      TString dijet_branch_name_corrected_dijet_m = "corrected" + dijet_branch_name_base_syst;
+      TString dijet_branch_name_fitted_dijet_m    = "fitted" + dijet_branch_name_base_syst;
+      newtree->Branch(dijet_branch_name_initial_dijet_m, &(initial_dijet_m[syst][mass]), dijet_branch_name_initial_dijet_m + "/D");
+      newtree->Branch(dijet_branch_name_corrected_dijet_m, &(corrected_dijet_m[syst][mass]), dijet_branch_name_corrected_dijet_m + "/D");
+      newtree->Branch(dijet_branch_name_fitted_dijet_m, &(fitted_dijet_m[syst][mass]), dijet_branch_name_fitted_dijet_m + "/D");
+
+      newtree->Branch(chi2_branch_name_base_syst, &(best_chi2[syst][mass]), chi2_branch_name_base_syst + "/D");
+      newtree->Branch(status_branch_name_base_syst, &(fitter_status[syst][mass]), status_branch_name_base_syst + "/I");
+    }
+  }
+  // end of nested loop
+  //--------
 
   newtree->Branch("hadronic_top_M", &hadronic_top_M, "hadronic_top_M/D");
   newtree->Branch("leptonic_top_M", &leptonic_top_M,"leptonic_top_M/D");
@@ -158,59 +169,42 @@ void Skim_K2::executeEvent(){
 void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
 
   //set pointers
-  double *p_initial_dijet_m, *p_corrected_dijet_m, *p_fitted_dijet_m, *p_best_chi2, *p_MET;
-  int *p_fitter_status, *p_njets, *p_nbtags;
+  double *p_MET;
+  std::map<TString, double> *p_best_chi2, *p_initial_dijet_m, *p_corrected_dijet_m, *p_fitted_dijet_m;
+  int *p_njets, *p_nbtags;
+  std::map<TString, int> *p_fitter_status;
   std::vector<double> *p_selected_jet_pt;
+  TString syst_string = "NULL";
   if(em_shift_up_down==0 && res_shift_up_down==0){
-    p_initial_dijet_m = &initial_dijet_m;
-    p_corrected_dijet_m = &corrected_dijet_m;
-    p_fitted_dijet_m = &fitted_dijet_m;
-    p_best_chi2 = &best_chi2;
-    p_fitter_status = &fitter_status;
+    syst_string = "";
     p_selected_jet_pt = &selected_jet_pt;
     p_njets = &njets;
     p_nbtags = &nbtags;
     p_MET = &MET;
   }
   else if(em_shift_up_down==1 && res_shift_up_down==0){
-    p_initial_dijet_m = &initial_dijet_m_JES_Up;
-    p_corrected_dijet_m = &corrected_dijet_m_JES_Up;
-    p_fitted_dijet_m = &fitted_dijet_m_JES_Up;
-    p_best_chi2 = &best_chi2_JES_Up;
-    p_fitter_status = &fitter_status_JES_Up;
+    syst_string = "JESUp";
     p_selected_jet_pt = &selected_jet_pt_JES_Up;
     p_njets = &njets_JES_Up;
     p_nbtags = &nbtags_JES_Up;
     p_MET = &MET_JES_Up;
   }
   else if(em_shift_up_down==-1 && res_shift_up_down==0){
-    p_initial_dijet_m = &initial_dijet_m_JES_Do;
-    p_corrected_dijet_m = &corrected_dijet_m_JES_Do;
-    p_fitted_dijet_m = &fitted_dijet_m_JES_Do;
-    p_best_chi2 = &best_chi2_JES_Do;
-    p_fitter_status = &fitter_status_JES_Do;
+    syst_string = "JESDown";
     p_selected_jet_pt = &selected_jet_pt_JES_Do;
     p_njets = &njets_JES_Do;
     p_nbtags = &nbtags_JES_Do;
     p_MET = &MET_JES_Do;
   }
   else if(em_shift_up_down==0 && res_shift_up_down==1){
-    p_initial_dijet_m = &initial_dijet_m_JER_Up;
-    p_corrected_dijet_m = &corrected_dijet_m_JER_Up;
-    p_fitted_dijet_m = &fitted_dijet_m_JER_Up;
-    p_best_chi2 = &best_chi2_JER_Up;
-    p_fitter_status = &fitter_status_JER_Up;
+    syst_string = "JERUp";
     p_selected_jet_pt = &selected_jet_pt_JER_Up;
     p_njets = &njets_JER_Up;
     p_nbtags = &nbtags_JER_Up;
     p_MET = &MET_JER_Up;
   }
   else if(em_shift_up_down==0 && res_shift_up_down==-1){
-    p_initial_dijet_m = &initial_dijet_m_JER_Do;
-    p_corrected_dijet_m = &corrected_dijet_m_JER_Do;
-    p_fitted_dijet_m = &fitted_dijet_m_JER_Do;
-    p_best_chi2 = &best_chi2_JER_Do;
-    p_fitter_status = &fitter_status_JER_Do;
+    syst_string = "JERDown";
     p_selected_jet_pt = &selected_jet_pt_JER_Do;
     p_njets = &njets_JER_Do;
     p_nbtags = &nbtags_JER_Do;
@@ -220,6 +214,20 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
     cout <<"[Skim_K2::executeEventByJESJER] not supported option" << endl;
     exit(EXIT_FAILURE);
   }
+
+  // assign dijet_m
+  if(syst_string != "NULL"){
+    p_initial_dijet_m = &(initial_dijet_m[syst_string]);
+    p_corrected_dijet_m = &(corrected_dijet_m[syst_string]);
+    p_fitted_dijet_m = &(fitted_dijet_m[syst_string]);
+    p_best_chi2 = &(best_chi2[syst_string]);
+    p_fitter_status = &(fitter_status[syst_string]);
+  }
+  else{
+    cout <<"[Skim_K2::executeEventByJESJER] syst_string is NULL" << endl;
+    exit(EXIT_FAILURE);
+  }
+
 
   // get jets
   vector<Jet> jets = GetJets("tight", 30., 2.4, em_shift_up_down, res_shift_up_down); 
@@ -280,11 +288,14 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
 
   //std::vector<TKinFitterDriver::ResultContatiner> fit_result_vector = fitter_driver->GetResults();
 
-  *p_fitter_status = fitter_driver->GetBestStatus();
-  *p_initial_dijet_m = fitter_driver->GetBestInitialDijetMass();
-  *p_corrected_dijet_m = fitter_driver->GetBestCorrectedDijetMass();
-  *p_fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
-  *p_best_chi2 = fitter_driver->GetChi2();
+  for(auto mass : mass_points){
+    (*p_initial_dijet_m)[mass] = (mass=="M"||mass=="M120") ? fitter_driver->GetBestInitialDijetMass():100;
+    (*p_corrected_dijet_m)[mass] = (mass=="M"||mass=="M120") ? fitter_driver->GetBestCorrectedDijetMass():100;
+    (*p_fitted_dijet_m)[mass] = (mass=="M"||mass=="M120") ? fitter_driver->GetBestFittedDijetMass():100;
+
+    (*p_best_chi2)[mass] = (mass=="M"||mass=="M120") ? fitter_driver->GetChi2():-5;
+    (*p_fitter_status)[mass] = (mass=="M"||mass=="M120") ? fitter_driver->GetBestStatus():-5;
+  }
 
   // nominal only
   if(em_shift_up_down==0 && res_shift_up_down==0){
@@ -439,31 +450,26 @@ void Skim_K2::Clear(){
   selected_jet_eta.clear();
   selected_jet_phi.clear();
 
-  initial_dijet_m=-1;
-  initial_dijet_m_JES_Up=-1;
-  initial_dijet_m_JES_Do=-1;
-  initial_dijet_m_JER_Up=-1;
-  initial_dijet_m_JER_Do=-1;
-  corrected_dijet_m=-1;
-  corrected_dijet_m_JES_Up=-1;
-  corrected_dijet_m_JES_Do=-1;
-  corrected_dijet_m_JER_Up=-1;
-  corrected_dijet_m_JER_Do=-1;
-  fitted_dijet_m=-1;
-  fitted_dijet_m_JES_Up=-1;
-  fitted_dijet_m_JES_Do=-1;
-  fitted_dijet_m_JER_Up=-1;
-  fitted_dijet_m_JER_Do=-1;
-  best_chi2=-10;
-  best_chi2_JES_Up=-10;
-  best_chi2_JES_Do=-10;
-  best_chi2_JER_Up=-10;
-  best_chi2_JER_Do=-10;
-  fitter_status=-2;
-  fitter_status_JES_Up=-2;
-  fitter_status_JES_Do=-2;
-  fitter_status_JER_Up=-2;
-  fitter_status_JER_Do=-2;
+  //----------
+  // clear dijet mass
+  for(auto* map : {&initial_dijet_m, &corrected_dijet_m, &fitted_dijet_m}){
+    for(auto& value1 : *map){
+      for(auto& value2 : value1.second){
+        value2.second = -1;
+      }
+    }
+  }
+  for(auto& value1 : best_chi2){
+    for(auto& value2 : value1.second){
+      value2.second = -10;
+    }
+  }
+  for(auto& value1 : fitter_status){
+    for(auto& value2 : value1.second){
+      value2.second = -2;
+    }
+  }
+  //----------
 
   selected_lepton_pt=-1;
   selected_lepton_eta=-1;
