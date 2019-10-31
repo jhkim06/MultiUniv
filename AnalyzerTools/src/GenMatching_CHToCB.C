@@ -56,7 +56,8 @@ bool GenMatching_CHToCB::FindHardProcessParton(){
              //cout <<"GenMatching_CHToCB::FindHardProcessParton : found W(H+) decay product " << endl;
              if(AllGens->at(ig).Status() == 23||AllGens->at(ig).Status() == 11){
                if(abs(AllGens->at(ig).PID()) == 1 || 
-                  abs(AllGens->at(ig).PID()) == 3 
+                  abs(AllGens->at(ig).PID()) == 3 ||
+                  abs(AllGens->at(ig).PID()) == 5
                  ){
                  //cout <<"GenMatching_CHToCB::FindHardProcessParton : found hadronic W down type jet " << endl;
                  down_type_quark.truth_index = ig;

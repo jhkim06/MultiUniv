@@ -26,7 +26,7 @@ void MCCorrection::ReadHistograms(){
     if(tstring_elline.Contains("#")) continue;
 
     TString a,b,c,d,e,f, variableOrder;
-    is >> a; // ID,RERCO
+    is >> a; // ID,RERCO,Trigger
     is >> b; // Eff,SF
     is >> c; // <WPnames>
     is >> d; // <rootfilename>
@@ -495,6 +495,53 @@ double MCCorrection::MuonTrigger_SF(TString ID, TString trig, std::vector<Muon> 
   }
 
   return value;
+}
+
+double MCCorrection::ElectronTrigger_SF(TString ID, TString trig, const std::vector<Electron> &electrons, int sys){
+
+  if(ID=="Default") return 1.;
+
+  //double value = 1.;
+  //double error = 0.;
+
+  //if(pt<10.) pt = 10.;
+  //if(pt>=500.) pt = 499.;
+  //if(sceta>=2.5) sceta = 2.49;
+  //if(sceta<-2.5) sceta = -2.5;
+
+  if( ID.Contains("HEEP") ){
+
+    cout << "[MCCorrection::ElectronTrigger_SF] no Trg SF for HEEP ID " << endl;
+    exit(EXIT_FAILURE);
+    return 1.;
+  }
+  // non HEEP ID
+  else{
+    double sceta = electrons.at(0).scEta();
+    double pt = electrons.at(0).Pt();
+
+    TH2F *this_hist = map_hist_Electron["Trigger_SF_"+trig+"_"+ID];
+    _EtaPtOrder = map_VarOrder_Electron["Trigger_SF_"+trig+"_"+ID];
+    if(!this_hist){
+      if(IgnoreNoHist) return 1.;
+      else{
+        cout << "[MCCorrection::ElectronTrigger_SF] (Hist) No "<<"Trigger_SF_"+ID+"_"+trig<<endl;
+        exit(EXIT_FAILURE);
+      }
+    }
+    if(_EtaPtOrder == "etapt"){
+      return RootHelper::GetBinContent4SF(this_hist, sceta, pt, sys);
+    }
+    else if(_EtaPtOrder == "pteta"){
+      return RootHelper::GetBinContent4SF(this_hist, pt, sceta, sys);
+    }else{
+      cout << "[MCCorrection::ElectronTrigger_SF] (Hist) No etaptOrder "<<_EtaPtOrder<<endl;
+      exit(EXIT_FAILURE);
+    }
+
+    // never reaches here
+    return 1;
+  }
 }
 
 double MCCorrection::ElectronID_SF(TString ID, double sceta, double pt, int sys){

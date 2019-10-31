@@ -1588,6 +1588,41 @@ void AnalyzerCore::PrintGen(std::vector<Gen> gens){
 
 }
 
+bool AnalyzerCore::IsGenMatchedLepton(Lepton lep, std::vector<Gen> gens){
+
+  //==== find status 1 lepton
+
+  int reco_PID = -999;
+  if(lep.LeptonFlavour()==Lepton::ELECTRON) reco_PID = 11;
+  else if(lep.LeptonFlavour()==Lepton::MUON) reco_PID = 13;
+  else{
+    cout << "[AnalyzerCore::GetGenMatchedLepton] input lepton flavour not set" << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  double min_dR = 0.1;
+  bool matched = false;
+  for(unsigned int i=0; i<gens.size(); i++){
+
+    Gen gen = gens.at(i);
+
+    //==== Status 1
+    if( gen.Status() != 1 ) continue;
+    //==== PID
+    if( abs( gen.PID() ) != reco_PID ) continue;
+    //==== reject ISR?
+    if( gen.MotherIndex() < 0 ) continue;
+    //==== dR matching
+    if( gen.DeltaR( lep ) < min_dR ){
+        matched = true;
+        return matched;
+    }
+  }
+
+  return matched;
+
+}
+
 Gen AnalyzerCore::GetGenMatchedLepton(Lepton lep, std::vector<Gen> gens){
 
   //==== find status 1 lepton

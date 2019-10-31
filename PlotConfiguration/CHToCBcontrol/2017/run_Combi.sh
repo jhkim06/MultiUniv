@@ -74,3 +74,4 @@ do
   mkDatacards.py --pycfg configuration_Mu_Combi_M${mass}.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_Mu_CombiAll/CHToCB_Mu_CombiAll.root
 done
 
+#mkDatacards.py --pycfg configuration_2b_Combi.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_2b_Combi/CHToCB_2b_Combi.root 

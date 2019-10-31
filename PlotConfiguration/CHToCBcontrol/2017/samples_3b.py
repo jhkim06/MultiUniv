@@ -8,11 +8,7 @@ from CommonPyTools.python.CommonTools import *
 #eleWP='mediumSelectiveQ'
 
 #XXX: diff. between IdSF and IdSF_Q ?
-is2b = '(n_bjet_deepcsv_m_noSF==2)'
-is3b = '(n_bjet_deepcsv_m_noSF>=3)'
-McWeight_2b = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*recoSF*MisTagSF'
-McWeight_3b = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*recoSF*BTagSF'
-McWeight = '%s*%s+%s*%s'%(is2b, McWeight_2b, is3b, McWeight_3b)
+McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*recoSF*BTagSF'
 
 #--------------------    
 # MC
@@ -38,137 +34,137 @@ samples['TTLJ_powheg'] = {
     'weight' :McWeight,
     }
 
-samples['TTLJ_powheg_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLJ_powheg_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLJ_powheg_hdamp_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLJ_powheg_hdamp_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLJ_powheg_mass_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
+#samples['TTLJ_powheg_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLJ_powheg_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLJ_powheg_hdamp_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLJ_powheg_hdamp_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLJ_powheg_mass_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
 #samples['TTLJ_powheg_mass_Do'] = {
 #    'skim'   :'',
 #    'weight' :McWeight,
 #    }
-
+#
 samples['TTLL_powheg'] = {
     'skim'   :'',
     'weight' :McWeight,
     }
 
-samples['TTLL_powheg_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLL_powheg_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLL_powheg_hdamp_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLL_powheg_hdamp_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLL_powheg_mass_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTLL_powheg_mass_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTJJ_powheg'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTJJ_powheg_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTJJ_powheg_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTJJ_powheg_hdamp_Up'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['TTJJ_powheg_hdamp_Do'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
+#samples['TTLL_powheg_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLL_powheg_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLL_powheg_hdamp_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLL_powheg_hdamp_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLL_powheg_mass_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTLL_powheg_mass_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTJJ_powheg'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTJJ_powheg_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTJJ_powheg_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTJJ_powheg_hdamp_Up'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TTJJ_powheg_hdamp_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
 #samples['TTJJ_powheg_mass_Up'] = {
 #    'skim'   :'',
 #    'weight' :McWeight,
 #    }
 #
-samples['TTJJ_powheg_mass_Do'] = {
+#samples['TTJJ_powheg_mass_Do'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['TT_MG'] = {
+#    'skim'   :'',
+#    'weight' :McWeight+'/PUweight', #XXX no PUweight
+#    }
+#
+#samples['ttbb'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
+#
+samples['SingleTop_sch_Lep'] = {
     'skim'   :'',
     'weight' :McWeight,
     }
 
-samples['TT_MG'] = {
-    'skim'   :'',
-    'weight' :McWeight+'/PUweight', #XXX no PUweight
-    }
-
-samples['ttbb'] = {
+samples['SingleTop_tch_top_Incl'] = {
     'skim'   :'',
     'weight' :McWeight,
     }
 
-samples['SingleTop_sch_top'] = {
+samples['SingleTop_tch_antitop_Incl'] = {
     'skim'   :'',
     'weight' :McWeight,
     }
 
-samples['SingleTop_tch_top'] = {
+samples['SingleTop_tW_top_NoFullyHad'] = {
     'skim'   :'',
     'weight' :McWeight,
     }
 
-samples['SingleTop_tch_antitop'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['SingleTop_tW_top'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
-
-samples['SingleTop_tW_antitop'] = {
+samples['SingleTop_tW_antitop_NoFullyHad'] = {
     'skim'   :'',
     'weight' :McWeight,
     }
@@ -198,10 +194,10 @@ samples['ttZ'] = {
     'weight' :McWeight,
     }
 
-samples['ttH_bb'] = {
-    'skim'   :'',
-    'weight' :McWeight,
-    }
+#samples['ttH_bb'] = {
+#    'skim'   :'',
+#    'weight' :McWeight,
+#    }
 #--------------------    
 # DATA driven QCD
 #--------------------
@@ -221,25 +217,25 @@ samples['SingleMuon_FakeMu'] = {
 #--------------------    
 samples['SingleElectron'] = {
     'skim'   :'',
-    'weight' :'n_bjet_deepcsv_m_noSF>=3',
+    'weight' :'1',
     }
 
 samples['SingleMuon'] = {
     'skim'   :'',
-    'weight' :'n_bjet_deepcsv_m_noSF>=3',
+    'weight' :'1',
     }
 #--------------------    
 # Signal
 #--------------------    
-samples['CHToCB_M090'] = {
-    'skim'   :'',
-    'weight' :McWeight+'/PUweight', #XXX no PUweight
-    }
+#samples['CHToCB_M090'] = {
+#    'skim'   :'',
+#    'weight' :McWeight+'/PUweight', #XXX no PUweight
+#    }
 samples['CHToCB_M120'] = {
     'skim'   :'',
-    'weight' :McWeight+'/PUweight', #XXX no PUweight
+    'weight' :McWeight, #XXX no PUweight
     }
-samples['CHToCB_M140'] = {
-    'skim'   :'',
-    'weight' :McWeight+'/PUweight', #XXX no PUweight
-    }
+#samples['CHToCB_M140'] = {
+#    'skim'   :'',
+#    'weight' :McWeight+'/PUweight', #XXX no PUweight
+#    }

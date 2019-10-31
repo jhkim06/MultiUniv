@@ -35,15 +35,21 @@ else:
   outFile.write('# alias PD xsec nmc sumw\n')
   
 sumw=0
+nEntries=0
 for line in inputFile:
   filePath = line.rstrip('\n')
   f = TFile(filePath)
   t = f.Get('recoTree/SKFlat')
-  sumw += t.GetEntries()
+  t.SetBranchStatus('*',0)
+  t.SetBranchStatus('gen_weight',1)
+  nEntries += t.GetEntries()
+  for i in range(t.GetEntries()):
+    t.GetEntry(i)
+    sumw += t.gen_weight
   print(filePath)
 
 if args.nmc=='':
-  nmc=sumw
+  nmc=nEntries
 else:
   nmc=args.nmc
 
