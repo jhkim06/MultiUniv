@@ -16,6 +16,122 @@ nuisances['lumi'] = {
     'type' : 'lnN',
     'samples' : dict((skey, '1.023') for skey in mc)
 }
+<<<<<<< HEAD
+
+nuisances['stat'] = {
+    'type': 'auto',
+    'maxPoiss': '10',
+    'includeSignal': '0',
+   #  nuisance ['maxPoiss'] =  Number of threshold events for Poisson modelling
+   #  nuisance ['includeSignal'] =  Include MC stat nuisances on signal processes (1=True, 0=False)
+    'samples': {}
+}
+#
+#nuisances['ttxsec'] = {
+#    'name' : 'ttxsec',
+#    'type' : 'lnN',
+#    'samples' : {
+#      'TTLJ_powheg'	: '1.06114',
+#      'TTLL_powheg'	: '1.06114',
+#      'TTJJ_powheg'	: '1.06114',
+#    }
+#}
+#
+#nuisances['JES'] = {
+#    'name' : 'JES',
+#    'kind' : 'variableChange',
+#    'type' : 'shape',
+#    'samples' : { 
+#      'DYJet'                 : ['1', '1'],
+#      'DYJets10to50_MG'       : ['1', '1'],
+#      'WJets_MG'              : ['1', '1'],
+#      'TTLJ_powheg'	      : ['1', '1'],
+#      'TTLL_powheg'	      : ['1', '1'],
+#      'TTJJ_powheg'	      : ['1', '1'],
+#      'SingleTop_sch_top'     : ['1', '1'],
+#      'SingleTop_tch_top'     : ['1', '1'],
+#      'SingleTop_tch_antitop' : ['1', '1'],
+#      'SingleTop_tW_top'      : ['1', '1'],
+#      'SingleTop_tW_antitop'  : ['1', '1'],
+#      'WW_pythia'             : ['1', '1'],
+#      'WZ_pythia'             : ['1', '1'],
+#      'ZZ_pythia'             : ['1', '1'],
+#      'ttW'                   : ['1', '1'],
+#      'ttZ'                   : ['1', '1'],
+#      'ttH_bb'                : ['1', '1'],
+#      'ttbb'                  : ['1', '1'],
+#    },
+#    'variablesUp' : {
+#	'fitted_dijet_mass' : [
+#          'fitted_dijet_mass_JES_Up',
+#	  'fitted_dijet_m_JES_Up'
+#	],
+#	#'fitter_status' : [
+#	#  'fitter_status_JES_Up',
+#	#  'fitter_status_JES_Up'
+#	#],
+#	#'1st_leading_jet_pt' : [
+#	#  '1st_leading_jet_pt_JES_Up',
+#	#  'selected_jet_pt_JES_Up[0]'
+#	#],
+#	#'2nd_leading_jet_pt' : [
+#	#  '2nd_leading_jet_pt_JES_Up',
+#	#  'selected_jet_pt_JES_Up[1]'
+#        #],
+#	#'3rd_leading_jet_pt' : [
+#	#  '3rd_leading_jet_pt_JES_Up',
+#	#  'selected_jet_pt_JES_Up[2]'
+#        #],
+#	#'4th_leading_jet_pt' : [
+#	#  '4th_leading_jet_pt_JES_Up',
+#	#  'selected_jet_pt_JES_Up[3]',
+#        #],
+#	#'njets' : [
+#	#  'njets_JES_Up',
+#	#  'njets_JES_Up'
+#	#],
+#	#'MET' : [
+#	#  'MET_JES_Up',
+#	#  'MET_JES_Up'
+#	#],
+#    },
+#    'variablesDo' : {
+#	'fitted_dijet_mass' : [
+#          'fitted_dijet_mass_JES_Do',
+#	  'fitted_dijet_m_JES_Do'
+#	],
+#	#'fitter_status' : [
+#	#  'fitter_status_JES_Do',
+#	#  'fitter_status_JES_Do'
+#	#],
+#	#'1st_leading_jet_pt' : [
+#	#  '1st_leading_jet_pt_JES_Do',
+#	#  'selected_jet_pt_JES_Do[0]'
+#	#],
+#	#'2nd_leading_jet_pt' : [
+#	#  '2nd_leading_jet_pt_JES_Do',
+#	#  'selected_jet_pt_JES_Do[1]'
+#        #],
+#	#'3rd_leading_jet_pt' : [
+#	#  '3rd_leading_jet_pt_JES_Do',
+#	#  'selected_jet_pt_JES_Do[2]'
+#        #],
+#	#'4th_leading_jet_pt' : [
+#	#  '4th_leading_jet_pt_JES_Do',
+#	#  'selected_jet_pt_JES_Do[3]',
+#        #],
+#	#'njets' : [
+#	#  'njets_JES_Do',
+#	#  'njets_JES_Do'
+#	#],
+#	#'MET' : [
+#	#  'MET_JES_Do',
+#	#  'MET_JES_Do'
+#	#],
+#    },
+#}
+=======
+>>>>>>> ccce3e9ca3a1818b78fb291827e982593f0a9e41
 
 nuisances['ttxsec'] = {
     'name' : 'ttxsec',
