@@ -37,31 +37,25 @@ private:
 
   Event* evt;
 
-  double initial_dijet_m;
-  double initial_dijet_m_JES_Up;
-  double initial_dijet_m_JES_Do;
-  double initial_dijet_m_JER_Up;
-  double initial_dijet_m_JER_Do;
-  double corrected_dijet_m;
-  double corrected_dijet_m_JES_Up;
-  double corrected_dijet_m_JES_Do;
-  double corrected_dijet_m_JER_Up;
-  double corrected_dijet_m_JER_Do;
-  double fitted_dijet_m;
-  double fitted_dijet_m_JES_Up;
-  double fitted_dijet_m_JES_Do;
-  double fitted_dijet_m_JER_Up;
-  double fitted_dijet_m_JER_Do;
-  double best_chi2;
-  double best_chi2_JES_Up;
-  double best_chi2_JES_Do;
-  double best_chi2_JER_Up;
-  double best_chi2_JER_Do;
-  int fitter_status;
-  int fitter_status_JES_Up;
-  int fitter_status_JES_Do;
-  int fitter_status_JER_Up;
-  int fitter_status_JER_Do;
+  //dijet mass by signal mass point
+  std::vector<TString> mass_points;
+  std::vector<TString> JES_JER_syst;
+  std::map<TString, std::map<TString, double> > initial_dijet_m;
+  std::map<TString, std::map<TString, double> > corrected_dijet_m;
+  std::map<TString, std::map<TString, double> > fitted_dijet_m;
+  std::map<TString, std::map<TString, double> > best_chi2;
+  std::map<TString, std::map<TString, int> > fitter_status;
+
+  //double best_chi2;
+  //double best_chi2_JES_Up;
+  //double best_chi2_JES_Do;
+  //double best_chi2_JER_Up;
+  //double best_chi2_JER_Do;
+  //int fitter_status;
+  //int fitter_status_JES_Up;
+  //int fitter_status_JES_Do;
+  //int fitter_status_JER_Up;
+  //int fitter_status_JER_Do;
 
   double hadronic_top_M;
   double leptonic_top_M;
