@@ -188,6 +188,8 @@ class ShapeFactory:
 
 		for sampleNuisName, configurationNuis in nuisance['samples'].iteritems() :
 		  if sampleNuisName ==  sampleName :
+		    sysNameUp = '_' + nuisance['name'] + 'Up'
+		    sysNameDo = '_' + nuisance['name'] + 'Down'
 		    #                                 the first weight is "up", the second is "down"
 		    newSampleWeightUp = sample['weight'] + '* (' + configurationNuis[0]  + ")"
 		    newSampleWeightDo = sample['weight'] + '* (' + configurationNuis[1]  + ")"
@@ -201,37 +203,31 @@ class ShapeFactory:
 		    if 'weights' in sample.keys() :
 		      if not newVariableNameUp==None:
 			if 'cut' in sample.keys():
-		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition, sysNameUp)
 			else:
-		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, []           , newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, []           , newSampleWeightUp, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition, sysNameUp)
 		      if not newVariableNameDo==None:
 			if 'cut' in sample.keys():
-		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition, sysNameDo)
 			else:
-		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, [],            newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, [],            newSampleWeightDo, sample['weights'], totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition, sysNameDo)
 		    else :
 		      #print 'newSampleWeightUp', newSampleWeightUp
 		      if not newVariableNameUp==None:
 			if 'cut' in sample.keys():
-		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition, sysNameUp)
 			else:
-		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, [],            newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameUp[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+		          outputsHistoUp = self._draw( newVariableNameUp[1], variable['range'], combine_cuts, [],            newSampleWeightUp, [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition, sysNameUp)
 		      if not newVariableNameDo==None:
 			if 'cut' in sample.keys():
-		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, sample['cut'], newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition, sysNameDo)
 			else:
-		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, [],            newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition)
+		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, [],            newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, variableName, sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition, sysNameDo)
 
 		    if not newVariableNameUp==None:
-	              self.outFile.mkdir(cutName+"/"+newVariableNameUp[0])
-	              self.outFile.cd(cutName+"/"+newVariableNameUp[0])
 		      outputsHistoUp.Write()
-	              self.outFile.cd(cutName+"/"+variableName)
 		    if not newVariableNameDo==None:
-	              self.outFile.mkdir(cutName+"/"+newVariableNameDo[0])
-	              self.outFile.cd(cutName+"/"+newVariableNameDo[0])
 		      outputsHistoDo.Write()
-	              self.outFile.cd(cutName+"/"+variableName)
 
 	      elif nuisance['kind' ] == 'PDF' :
 		for sampleNuisName, pdfW in nuisance['samples'].iteritems() :
