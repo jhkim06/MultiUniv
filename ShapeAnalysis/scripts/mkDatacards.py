@@ -263,7 +263,7 @@ class DatacardFactory:
               card.write(''.join([tagNameToAppearInDatacard.ljust(columndef)] * (len(signals) + len(cut_backgrounds)))+'\n')
             
               card.write('process'.ljust(40))
-              card.write(''.join(name.ljust(columndef) for name in signals))
+              card.write(''.join(name.ljust(columndef) for name in signals ))
               card.write(''.join(name.ljust(columndef) for name in cut_backgrounds))
               card.write('\n')
 

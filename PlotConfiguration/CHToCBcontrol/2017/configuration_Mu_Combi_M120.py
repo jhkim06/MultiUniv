@@ -7,7 +7,7 @@ lumi        = 41.527540
 InSkim      = 'MetFt_L_v2_TTSemiLep_v1_K2_v1'
 #InSkim      = 'MetFt_L_v1_TTSemiLep_v3_K2_v1'
 # Userflags: separate by ','
-Userflags   = 'CHToCB_Mu_Combi120' # flag appends to ouput directory name
+Userflags   = 'CHToCB_Mu_Combi_M120' # flag appends to ouput directory name
 #Userflags   = 'AlPhaS'
 #Userflags   = 'DY'
 treeName    = 'recoTree/SKFlat'

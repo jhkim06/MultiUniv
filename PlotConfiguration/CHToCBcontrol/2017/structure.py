@@ -3,10 +3,16 @@ from CommonPyTools.python.CommonTools import *
 # keys here must match keys in plot.py  
 # a key is one component of final distribution, no overlap between sample in groupPlot and plot list
 
-structure['TT'] = {
+structure['tt'] = {
     'isSignal'   : 0,
     'isData'     : 0,
     }
+
+structure['St'] = {
+    'isSignal'   : 0,
+    'isData'     : 0,
+    }
+
 
 structure['WJets_MG'] = {
     'isSignal'   : 0,
@@ -44,15 +50,15 @@ structure['SingleMuon'] = {
 # Signal
 #--------------------  
 # isSignal: all signals not grid(1), alternative(2), signal grids(3)
-structure['CHToCB_M090'] = {
+structure['ttCH'] = {
     'isSignal'   : 1,
     'isData'     : 0,
     }
-structure['CHToCB_M120'] = {
-    'isSignal'   : 1,
-    'isData'     : 0,
-    }
-structure['CHToCB_M140'] = {
-    'isSignal'   : 1,
-    'isData'     : 0,
-    }
+#structure['CHToCB_M120'] = {
+#    'isSignal'   : 1,
+#    'isData'     : 0,
+#    }
+#structure['CHToCB_M140'] = {
+#    'isSignal'   : 1,
+#    'isData'     : 0,
+#    }

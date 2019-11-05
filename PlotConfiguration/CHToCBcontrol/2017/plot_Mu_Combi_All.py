@@ -6,13 +6,21 @@ from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed, kViolet
 # style 0 : noFillColor
 # no nameHR --> using sample keyname intead
 
-groupPlot['TT'] = {
-    'nameHR' : "TT",
+groupPlot['tt'] = {
+    'nameHR' : "tt",
     'isSignal' : 0,
     'color':  kRed,
     'samples' : ['TTLL_powheg','TTLJ_powheg']
     #'samples' : ['TTLL_powheg','TTLJ_powheg','TTJJ_powheg']
     }
+groupPlot['St'] = {
+    'nameHR' : "St",
+    'isSignal' : 0,
+    'color':  kMagenta,
+    'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_NoFullyHad','SingleTop_tW_antitop_NoFullyHad']
+    }
+
+
 #
 #groupPlot['ttbb'] = {
 #    'nameHR' : "ttbb",
@@ -110,42 +118,43 @@ plot['TTLJ_powheg'] = {
 #    'isData': 0,
 #    'scale':1,
 #    }
-#
-#plot['SingleTop_sch_top'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['SingleTop_tch_top'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['SingleTop_tch_antitop'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['SingleTop_tW_top'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['SingleTop_tW_antitop'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
+
+plot['SingleTop_sch_Lep'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tch_top_Incl'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tch_antitop_Incl'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tW_top_NoFullyHad'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tW_antitop_NoFullyHad'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+
 #plot['WZ_pythia'] = {
 #    'color': 450,
 #    'isSignal' :0,

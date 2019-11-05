@@ -4,8 +4,8 @@
 
 try:
   #mc =[skey for skey in samples if skey not in ['SingleMuon', 'SingleElectron'] and not skey.startswith('Fake')]
-  mc = [skey for skey in groupPlot if skey != 'DATA' and not skey.startswith('Fake')]
-  mc =mc + [skey for skey in plot if skey != 'DATA' and not skey.startswith('Fake')]
+  mc = [skey for skey in groupPlot if skey not in ['DATA','SingleMuon', 'SingleElectron'] and not skey.startswith('Fake')]
+  mc = mc + [skey for skey in plot if skey not in ['DATA','SingleMuon', 'SingleElectron'] and not skey.startswith('Fake')]
 except NameError:
   mc =[]
 

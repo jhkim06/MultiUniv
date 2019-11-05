@@ -139,32 +139,31 @@ samples['TTLL_powheg'] = {
 #    'weight' :McWeight+'/PUweight', #XXX no PUweight
 #    }
 #
+samples['SingleTop_sch_Lep'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_tch_top_Incl'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_tch_antitop_Incl'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_tW_top_NoFullyHad'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_tW_antitop_NoFullyHad'] = {
+    'skim'   :'',
+    'weight' :McWeight,
+    }
 #samples['ttbb'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['SingleTop_sch_top'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['SingleTop_tch_top'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['SingleTop_tch_antitop'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['SingleTop_tW_top'] = {
-#    'skim'   :'',
-#    'weight' :McWeight,
-#    }
-#
-#samples['SingleTop_tW_antitop'] = {
 #    'skim'   :'',
 #    'weight' :McWeight,
 #    }

@@ -6,8 +6,16 @@ from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed, kViolet
 # style 0 : noFillColor
 # no nameHR --> using sample keyname intead
 
-groupPlot['TT'] = {
-    'nameHR' : "TT",
+groupPlot['ttCH'] = {
+    'nameHR' : "ttCH",
+    'isSignal' : 1,
+    'color':  kRed,
+    'samples' : ['CHToCB_M120']
+    }
+
+
+groupPlot['tt'] = {
+    'nameHR' : "tt",
     'isSignal' : 0,
     'color':  kRed,
     'samples' : ['TTLL_powheg','TTLJ_powheg']
@@ -21,13 +29,13 @@ groupPlot['TT'] = {
 #    'samples' : ['ttbb']
 #    }
 #
-#groupPlot['ST'] = {
-#    'nameHR' : "ST",
-#    'isSignal' : 0,
-#    'color':  kMagenta,
-#    'samples' : ['SingleTop_sch_top','SingleTop_tch_top','SingleTop_tch_antitop','SingleTop_tW_top','SingleTop_tW_antitop']
-#    }
-#
+groupPlot['St'] = {
+    'nameHR' : "St",
+    'isSignal' : 0,
+    'color':  kMagenta,
+    'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_NoFullyHad','SingleTop_tW_antitop_NoFullyHad']
+    }
+
 #groupPlot['VJ'] = {
 #    'nameHR' : "VJ",
 #    'isSignal' : 0,
@@ -111,40 +119,40 @@ plot['TTLJ_powheg'] = {
 #    'scale':1,
 #    }
 #
-#plot['SingleTop_sch_top'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['SingleTop_tch_top'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['SingleTop_tch_antitop'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['SingleTop_tW_top'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['SingleTop_tW_antitop'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
+plot['SingleTop_sch_Lep'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tch_top_Incl'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tch_antitop_Incl'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tW_top_NoFullyHad'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tW_antitop_NoFullyHad'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
 #
 #plot['WZ_pythia'] = {
 #    'color': 450,
@@ -201,7 +209,6 @@ plot['SingleElectron'] = {
     'isData':1,
     'scale':1,
     }
-
 plot['CHToCB_M120'] = {
     'nameHR' : "CH M120",
     'color':kViolet,
