@@ -10,7 +10,7 @@ groupPlot['ttCH'] = {
     'nameHR' : "ttCH",
     'isSignal' : 1,
     'color':  kRed,
-    'samples' : ['CHToCB_M140']
+    'samples' : ['CHToCB_M130']
     }
 
 groupPlot['tt'] = {
@@ -208,8 +208,8 @@ plot['SingleElectron'] = {
     'isData':1,
     'scale':1,
     }
-plot['CHToCB_M140'] = {
-    'nameHR' : "CH M140",
+plot['CHToCB_M130'] = {
+    'nameHR' : "CH M130",
     'color':kViolet,
     'style':0,
     'lineWidth':2,

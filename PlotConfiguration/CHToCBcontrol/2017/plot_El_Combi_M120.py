@@ -13,7 +13,6 @@ groupPlot['ttCH'] = {
     'samples' : ['CHToCB_M120']
     }
 
-
 groupPlot['tt'] = {
     'nameHR' : "tt",
     'isSignal' : 0,
