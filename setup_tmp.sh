@@ -68,6 +68,7 @@ export PATH=${MYBIN}:${PYTHONDIR}:${PATH}
 export PATH=${SKFlat_WD}/CommonPyTools/scripts/:${PATH}
 export PATH=${SKFlat_WD}/ShapeAnalysis/scripts/:${PATH}
 export PATH=${SKFlat_WD}/Gardener/scripts/:${PATH}
+export PATH=${SKFlat_WD}/PyAnalyzers/scripts/:${PATH}
 export PYTHONPATH=${PYTHONPATH}:${SKFlat_WD} 
 # this guy is working only python only directory with __init__.py,
 # another solution: using sys.path.insert(0,'../../CommonTools/python') instead at a relavant python script
