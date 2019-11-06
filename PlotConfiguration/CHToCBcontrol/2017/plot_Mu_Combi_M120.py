@@ -21,11 +21,11 @@ groupPlot['tt'] = {
     'samples' : ['TTLL_powheg','TTLJ_powheg']
     #'samples' : ['TTLL_powheg','TTLJ_powheg','TTJJ_powheg']
     }
-groupPlot['St'] = {
-    'nameHR' : "St",
+groupPlot['nontt'] = {
+    'nameHR' : "nontt",
     'isSignal' : 0,
     'color':  kMagenta,
-    'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_NoFullyHad','SingleTop_tW_antitop_NoFullyHad']
+    'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_NoFullyHad','SingleTop_tW_antitop_NoFullyHad','WJets_MG']
     }
 
 

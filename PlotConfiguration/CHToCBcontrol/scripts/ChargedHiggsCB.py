@@ -14,10 +14,9 @@ class BRChargedHiggsCB(PhysicsModel):
 ##        self.modelBuilder.factory_('expr::Scaling_HH("@0*@0", BR)')
         self.modelBuilder.factory_('expr::Scaling_ttCH("2 * (1-@0)*@0", BR)')
         self.modelBuilder.factory_('expr::Scaling_tt("(1-@0)*(1-@0)", BR)')
-        self.modelBuilder.factory_('expr::Scaling_St("(1-@0)", BR)')
 ##        self.modelBuilder.factory_('expr::Scaling_tt("1 - (@0+@1)", Scaling_HH, Scaling_WH)')
 
-	self.processScaling = { 'ttCH':'ttCH', 'tt':'tt', 'St':'St' }
+	self.processScaling = { 'ttCH':'ttCH', 'tt':'tt' }
 
         self.modelBuilder.out.Print()
 

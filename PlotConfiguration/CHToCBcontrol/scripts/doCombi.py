@@ -187,5 +187,5 @@ if __name__ == '__main__':
     s = Get_Expected_Limit(StatOnly,Ch,Cuts,Year)
     s.CombineCards(False)
     s.Text_to_Workspace(False)
-    s.Combine(False)
+    s.Combine(True)
     #    s.Tail()
