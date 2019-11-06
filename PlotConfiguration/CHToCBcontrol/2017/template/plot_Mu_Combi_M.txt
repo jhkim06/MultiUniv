@@ -10,8 +10,9 @@ groupPlot['ttCH'] = {
     'nameHR' : "ttCH",
     'isSignal' : 1,
     'color':  kRed,
-    'samples' : ['CHToCB_M140']
+    'samples' : ['CHToCB_M<MASS>']
     }
+
 
 groupPlot['tt'] = {
     'nameHR' : "tt",
@@ -20,6 +21,14 @@ groupPlot['tt'] = {
     'samples' : ['TTLL_powheg','TTLJ_powheg']
     #'samples' : ['TTLL_powheg','TTLJ_powheg','TTJJ_powheg']
     }
+groupPlot['St'] = {
+    'nameHR' : "St",
+    'isSignal' : 0,
+    'color':  kMagenta,
+    'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_NoFullyHad','SingleTop_tW_antitop_NoFullyHad']
+    }
+
+
 #
 #groupPlot['ttbb'] = {
 #    'nameHR' : "ttbb",
@@ -28,13 +37,13 @@ groupPlot['tt'] = {
 #    'samples' : ['ttbb']
 #    }
 #
-groupPlot['St'] = {
-    'nameHR' : "St",
-    'isSignal' : 0,
-    'color':  kMagenta,
-    'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_NoFullyHad','SingleTop_tW_antitop_NoFullyHad']
-    }
-
+#groupPlot['ST'] = {
+#    'nameHR' : "ST",
+#    'isSignal' : 0,
+#    'color':  kMagenta,
+#    'samples' : ['SingleTop_sch_top','SingleTop_tch_top','SingleTop_tch_antitop','SingleTop_tW_top','SingleTop_tW_antitop']
+#    }
+#
 #groupPlot['VJ'] = {
 #    'nameHR' : "VJ",
 #    'isSignal' : 0,
@@ -117,7 +126,7 @@ plot['TTLJ_powheg'] = {
 #    'isData': 0,
 #    'scale':1,
 #    }
-#
+
 plot['SingleTop_sch_Lep'] = {
     'color': kMagenta,
     'isSignal' :0,
@@ -152,7 +161,8 @@ plot['SingleTop_tW_antitop_NoFullyHad'] = {
     'isData': 0,
     'scale':1,
     }
-#
+
+
 #plot['WZ_pythia'] = {
 #    'color': 450,
 #    'isSignal' :0,
@@ -193,23 +203,23 @@ plot['SingleTop_tW_antitop_NoFullyHad'] = {
 #    'scale':1,
 #    }
 #
-#plot['SingleMuon'] = {
-#    'nameHR' : "SingleMuon",
-#    'color':kBlack,
-#    'isSignal':0,
-#    'isData':1,
-#    'scale':1,
-#    }
-#
-plot['SingleElectron'] = {
-    'nameHR' : "SingleElectron",
+plot['SingleMuon'] = {
+    'nameHR' : "SingleMuon",
     'color':kBlack,
     'isSignal':0,
     'isData':1,
     'scale':1,
     }
-plot['CHToCB_M140'] = {
-    'nameHR' : "CH M140",
+#
+#plot['SingleElectron'] = {
+#    'nameHR' : "SingleElectron",
+#    'color':kBlack,
+#    'isSignal':0,
+#    'isData':1,
+#    'scale':1,
+#    }
+plot['CHToCB_M<MASS>'] = {
+    'nameHR' : "CH M<MASS>",
     'color':kViolet,
     'style':0,
     'lineWidth':2,
@@ -217,7 +227,6 @@ plot['CHToCB_M140'] = {
     'isData':0,
     'scale':1,
     }
-
 
 legend['lumi'] = 'L = 41.5/fb'
 legend['sqrt'] = '#sqrt{s} = 13 TeV'

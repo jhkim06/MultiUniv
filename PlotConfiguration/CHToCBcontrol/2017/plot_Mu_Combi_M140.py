@@ -218,8 +218,6 @@ plot['SingleMuon'] = {
 #    'isData':1,
 #    'scale':1,
 #    }
-
-
 plot['CHToCB_M140'] = {
     'nameHR' : "CH M140",
     'color':kViolet,
