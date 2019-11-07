@@ -95,6 +95,10 @@ class CombiPlot:
     frame = ROOT.TH2F("frame","",12,50.0,170.0,10,0.0,0.9);
     frame.SetYTitle("Limit on B(t #rightarrow H^{+}b) with B(H^{+}#rightarrow c#bar{b}) = 1");
     frame.GetYaxis().SetTitleSize(0.035);
+    frame.SetXTitle("m_{H^{+}} (GeV)");
+    frame.GetXaxis().SetTitleSize(0.035);
+    frame.GetXaxis().SetLabelSize(0.03);
+    frame.GetXaxis().SetTitleOffset(1.5);
     #tgr_cls_exp_pm2.GetHistogram().SetYTitle("Limit on B(t #rightarrow H^{+}b) with B(H^{+}#rightarrow c#bar{b}) = 1");
     frame.Draw()
     tgr_cls_exp_pm2.Draw("3 same")
@@ -102,6 +106,16 @@ class CombiPlot:
     tgr_cls_exp_pm1.Draw("3 same")
     tgr_cls_exp.Draw("l same")
     tgr_cls_obs.Draw("pl same")
+
+    leg= ROOT.TLegend(0.65,0.65,0.9,0.84);
+    leg.SetFillColor(0);
+    leg.SetBorderSize(0);
+    leg.SetTextFont(8);
+    leg.AddEntry(tgr_cls_exp,     "Expected Limit","l");
+    leg.AddEntry(tgr_cls_exp_pm1, "Expected #pm 1#sigma","f");
+    leg.AddEntry(tgr_cls_exp_pm2, "Expected #pm 2#sigma","f");
+    leg.Draw("same")
+
     tcanvas.SaveAs("hahaha.png")
 
 

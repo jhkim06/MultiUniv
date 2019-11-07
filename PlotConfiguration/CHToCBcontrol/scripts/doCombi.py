@@ -13,16 +13,17 @@ dirBase = '/data6/Users/salee/CMS/MultiUniv/PlotConfiguration/CHToCBcontrol/'
 variableName = 'fitted_dijet_mass'
 
 
-class Get_Expected_Limit():
+class LimitCalc():
 
-    def __init__(self,StatOnly=False,Ch="All",Cut='All',Year='All'):
+    def __init__(self,StatOnly, Ch, Cut, Year, Method, Run):
         if StatOnly==True:
             self.StatOnlyLabel = "stat_only"
+	    self.StatOnly = '-S 0'
         elif StatOnly==False:
             self.StatOnlyLabel = ""
+	    self.StatOnly = ''
         else:
-            raise RuntimeError("no such args: %s"%SystOnly)
-        self.StatOnly	= StatOnly
+            raise RuntimeError("no such args: %s"%StatOnly)
 
 	if Ch == "All":
 	  self.Ch = ['Mu', 'El']
@@ -48,6 +49,15 @@ class Get_Expected_Limit():
 	  print 'there is no cut like',Cut,'Exiting...'
 	  exit()
 
+	if Run !='':
+	  self.Run = '--run '+Run
+	  self.RunLabel = Run
+	else:
+	  self.Run =''
+	  self.RunLabel = ''
+	
+	self.Method = Method
+
 	self.combinedCards = []
 	self.workspaceFile = []
 
@@ -57,6 +67,8 @@ class Get_Expected_Limit():
 	print 'Channel'.ljust(20),	self.Ch
 	print 'Year'.ljust(20),		self.Year
 	print 'Cuts'.ljust(20),		self.Cuts
+	print 'Run'.ljust(20),		self.Run
+	print 'Method'.ljust(20),	self.Method
 
     def CombineCards(self, doRun=False):
         if not os.path.isdir('combinedCards'):
@@ -131,11 +143,17 @@ class Get_Expected_Limit():
 	      print name
 	      name = name.split('.txt.root')[0]
 	      print name
-              arg3 = name
+	      arg3 =name
+	      if self.StatOnly != '':
+                arg3 += '_' + self.StatOnlyLabel
+	      if self.RunLabel != '':
+		arg3 += '_' + self.RunLael
               command = command_template%(arg1,arg2,arg3)
               #options = "-M FitDiagnostics  --plots"
-              options = "-M AsymptoticLimits --cminDefaultMinimizerType Minuit2 --rAbsAcc 0.000001 "
+              options = '-M '+self.Method +' --cminDefaultMinimizerType Minuit2 --rAbsAcc 0.000001 '
               command += options
+	      command += ' '+self.Run
+	      command += ' '+self.StatOnly
               pipe_line = "| tee combine/res_%s.out"%(name)
               command += pipe_line
 	      if doRun:
@@ -168,24 +186,30 @@ class Get_Expected_Limit():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='TrueOrNotTrue')
-    parser.add_argument('-StatOnly',help="False or True", default=False)
+    parser.add_argument('-StatOnly',help="False or True", default=False, type=bool)
     parser.add_argument('-Ch',help="Mu of El", default='All')
     parser.add_argument('-Cuts',help="Cuts", default='All')
     parser.add_argument('-Year',help="Which year to use", default='All')
+    parser.add_argument('-M',help="Method to use", default='AsymptoticLimits')
+    parser.add_argument('-run',help="blind?", default='')
 
     args = parser.parse_args()
     StatOnly=args.StatOnly
     Ch=args.Ch
     Cuts=args.Cuts
     Year=args.Year
+    Method=args.M
+    Run=args.run
 
     print 'Set up parameters =========================================='
     print 'StatOnly:'.ljust(20),StatOnly
     print 'Lepton Flavor:'.ljust(20),Ch
     print 'Year:'.ljust(20),Year
+    print 'Method:'.ljust(20),Method
+    print 'Run:'.ljust(20),Run
 
-    s = Get_Expected_Limit(StatOnly,Ch,Cuts,Year)
-    s.CombineCards(False)
-    s.Text_to_Workspace(False)
+    s = LimitCalc(StatOnly,Ch,Cuts,Year,Method,Run)
+    s.CombineCards(True)
+    s.Text_to_Workspace(True)
     s.Combine(True)
     #    s.Tail()
