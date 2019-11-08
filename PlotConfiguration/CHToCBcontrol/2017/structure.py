@@ -8,32 +8,16 @@ structure['tt'] = {
     'isData'     : 0,
     }
 
-structure['St'] = {
+structure['nontt'] = {
     'isSignal'   : 0,
     'isData'     : 0,
     }
 
-
-structure['WJets_MG'] = {
-    'isSignal'   : 0,
-    'isData'     : 0,
-    }
 
 
 #--------------------    
 # DATA driven QCD
 #--------------------
-'''
-structure['SingleElectron_FakeEl'] = {
-    'skim'   :'MetFt_L_v0_TTSemiLepFake_v0', #TODO: this skim is not exist currently
-    'weight' :'1',
-    }
-
-structure['SingleMuon_FakeMu'] = {
-    'skim'   :'MetFt_L_v0_TTSemiLepFake_v0', #TODO: this skim is not exist currently
-    'weight' :'1',
-    }
-'''
 #--------------------    
 # DATA
 #--------------------    
@@ -54,11 +38,3 @@ structure['ttCH'] = {
     'isSignal'   : 1,
     'isData'     : 0,
     }
-#structure['CHToCB_M120'] = {
-#    'isSignal'   : 1,
-#    'isData'     : 0,
-#    }
-#structure['CHToCB_M140'] = {
-#    'isSignal'   : 1,
-#    'isData'     : 0,
-#    }
