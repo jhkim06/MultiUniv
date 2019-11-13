@@ -1,6 +1,34 @@
 #include "functions.h"
 #include "TF1.h"
 
+Double_t DoubleSidedSrystalFnc(Double_t* x, Double_t* par){
+
+  Double_t xcur = x[0];
+  Double_t N = par[0];
+  Double_t mu = par[1];
+  Double_t sigma = par[2];
+  Double_t alpha_low = fabs(par[3]);
+  Double_t n_low = par[4];
+  Double_t alpha_high = fabs(par[5]);
+  Double_t n_high = par[6];
+  
+  Double_t z = (xcur - mu)/sigma;
+  Double_t f=0.;
+
+  if(z<-alpha_low){
+    f = N*exp(-0.5*alpha_low*alpha_low)*pow(alpha_low/n_low*(n_low/alpha_low-alpha_low-z),-n_low);
+  }
+  else if(z>alpha_high){
+    f = N*exp(-0.5*alpha_high*alpha_high)*pow(alpha_high/n_high*(n_high/alpha_high-alpha_high+z),-n_high);
+  }
+  else{
+    f = N*exp(-0.5*z*z);
+  }
+
+  return f;
+}
+
+
 Double_t CrystalFnc(Double_t* x, Double_t* par){
 
   Double_t xcur = x[0];
@@ -48,3 +76,31 @@ TString Double_t_to_TString(Double_t num){
   s << fixed << setprecision(2) << num; // two decimal place precision.
   return s.str();
 }
+
+void AddCMSSimulation(TCanvas* c1){
+  /*
+  c1.cd();
+  TString cmsText = "CMS";
+  TString extraText = "Simulation";
+  int cmsTextFont = 61;
+  int extraTextFont = 52;
+  double cmsTextSize = 0.95;
+  double extraTextSize = cmsTextSize*0.76;
+
+  TLatex latex = TLatex();
+  latex.SetNDC();
+  latex.SetTextAngle(0);
+  latex.SetTextColor(kBlack);
+  latex.SetTextFont(cmsTextFont);
+  latex.SetTextSize(cmsTextSize);
+  //latex.SetTextAlign();
+  latex.DrawLatex(posX_,poxY_,cmsText);
+  //
+  latex.SetTextFont(extraTextFont);
+  latex.SetTextSize(extraTextSize);
+  //latex.SetTextAlign();
+
+  latex.DrawLatex(posX_,posY_-extra_posY,extraText);
+  */
+}
+

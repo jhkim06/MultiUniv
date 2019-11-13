@@ -242,10 +242,11 @@ void Fitting_Histogram::FitHistogram(TString sample){
 
   TCanvas *c = new TCanvas("c", "", 800, 600);    // Canvas
   c->cd();
-  Double_t par[3];
+  Double_t par[7];
 
   TF1 *gausFit = new TF1("gausFit","gaus");
-
+  TF1 *crystalFit = new TF1("crystalFit","crystalball");
+  TF1 *dscb = new TF1("dscb",DoubleSidedSrystalFnc,-1,1,7);
   if(MapHistogram.size()!=0){
     cout << "WARNING  :    MapHistogram is not empty!!!" << endl;
   }
@@ -297,9 +298,12 @@ void Fitting_Histogram::FitHistogram(TString sample){
     }
     cout <<"debug1" << endl;
     TString x_name = it_res->first;
+    if(!x_name.Contains("Pt")){
+      continue;
+    }
     x_name.ReplaceAll("Pt","P_{T}");
     x_name.ReplaceAll("Et","E_{T}");
-    MapHistogram[name]->GetXaxis()->SetTitle(Form("(True parton %s - Jet %s)/Jet %s",x_name.Data(),x_name.Data(),x_name.Data()));
+    MapHistogram[name]->GetXaxis()->SetTitle(Form("(Jet %s - True parton %s)/Jet %s",x_name.Data(),x_name.Data(),x_name.Data()));
 
     Double_t rawMean = MapHistogram[name]->GetMean();
     Double_t rawRMS = MapHistogram[name]->GetRMS();
@@ -308,15 +312,42 @@ void Fitting_Histogram::FitHistogram(TString sample){
     Double_t max = rawMean + n_sigma*rawRMS;
     cout << "  >>FitHistogram  :    " << "fit range    min  :    "  << min << "    max  :    "  << max << endl;
     gausFit->SetRange(min,max);
-    MapHistogram[name]->Fit("gausFit","","ep",min,max);
+    TH1F* rebined_hist = (TH1F*)MapHistogram[name]->Rebin(3);
+    rebined_hist->Fit("gausFit","","ep",min,max);
+    //MapHistogram[name]->Fit("gausFit","","ep",min,max);
     Double_t mean_gauss = gausFit->GetParameter(1);
     Double_t rms_gauss = gausFit->GetParameter(2);
     Double_t min_gauss = mean_gauss - n_sigma*rms_gauss;
     Double_t max_gauss = mean_gauss + n_sigma*rms_gauss;
-    MapHistogram[name]->Fit("gausFit","W","ep",min_gauss,max_gauss);
+    rebined_hist->Fit("gausFit","W","ep",min_gauss,max_gauss);
+    //MapHistogram[name]->Fit("gausFit","W","ep",min_gauss,max_gauss);
     gausFit->GetParameters(par);
-    MapHistogram[name]->Draw();
-    gausFit->Draw("same");
+    crystalFit->SetParameter(0,par[0]);
+    crystalFit->SetParameter(1,par[1]+0.1);
+    crystalFit->SetParameter(2,par[2]);
+    crystalFit->SetParameter(3,n_sigma);
+    crystalFit->SetParameter(4,1.);
+    crystalFit->SetParLimits(4,0,9999999.);
+    rebined_hist->Fit("crystalFit","EM","ep",min_gauss,max_gauss);
+    crystalFit->GetParameters(par);
+    dscb->SetParameter(0,par[0]);
+    dscb->SetParameter(1,par[1]);
+    dscb->SetParameter(2,par[2]);
+    dscb->SetParameter(3,par[3]);
+    dscb->SetParameter(4,par[4]);
+    dscb->SetParameter(5,n_sigma);
+    dscb->SetParameter(6,1.);
+    dscb->SetParLimits(4,0.,9999999.);
+    dscb->SetParLimits(6,0.,9999999.);
+    dscb->SetRange(min_gauss,max_gauss);
+    rebined_hist->Fit("dscb","EM","ep",min_gauss,max_gauss);
+    //MapHistogram[name]->Fit("crystalFit","W","ep",min_gauss,max_gauss);
+
+    rebined_hist->Draw();
+    //MapHistogram[name]->Draw();
+    dscb->Draw("same");
+    //gausFit->Draw("same");
+
    
     TString save_dir = std::getenv("TSCorrOutImgDir");
     save_dir+=Form("%s_%s_%s.pdf","response_histogram",name.Data(),sample.Data());
@@ -331,10 +362,10 @@ void Fitting_Histogram::FitHistogram(TString sample){
     }
     Double_t meanPt = MapHistogram[name_pt_dist]->GetMean();
     Double_t rmsPt = MapHistogram[name_pt_dist]->GetRMS();
-    Double_t mean = gausFit->GetParameter(1);
-    Double_t mean_error = gausFit->GetParError(1);
-    Double_t sigma = gausFit->GetParameter(2);
-    Double_t sigma_error = gausFit->GetParError(2);
+    Double_t mean = crystalFit->GetParameter(1);
+    Double_t mean_error = crystalFit->GetParError(1);
+    Double_t sigma = crystalFit->GetParameter(2);
+    Double_t sigma_error = crystalFit->GetParError(2);
 
     SaveFitParameter(fout1, name,
                      meanPt, rmsPt, mean, mean_error, sigma, sigma_error);
@@ -401,6 +432,9 @@ void Fitting_Histogram::FitHistMean(TString sample){
                                         it_pt->first.Data(),
                                         it_eta->first.Data()
                          );
+    if(!name.Contains("Pt")){
+      continue;
+    }
       int i = std::distance(it_pt_begin, it_pt);
       meanPt_array[i] = meanPt[name];
       mean_array[i] = mean[name];
@@ -496,6 +530,10 @@ void Fitting_Histogram::FitHistError(TString sample){
                                         it_pt->first.Data(),
                                         it_eta->first.Data()
                          );
+
+    if(!name.Contains("Pt")){
+      continue;
+    }
       int i = std::distance(it_pt_begin, it_pt);
       meanPt_array[i] = meanPt[name];
       sigma_array[i] = sigma[name];
