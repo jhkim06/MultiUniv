@@ -135,13 +135,23 @@ void MCCorrection::ReadHistograms(){
     is >> b; // syst
     is >> c; // rootfile name
 
-    if(DataYear == 2017 && a!=MCSample) continue;
+    if(DataYear == 2017 && a!=MCSample && a!="MC_2017" ) continue;
     
     TFile *file = new TFile(PUReweightPath+c);
     cout<<"MCCorrection:: getting PU hist: "<<a+"_"+b<<endl;
-    if((TH1D *)file->Get(a+"_"+b)) map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
+    TString histName = a+"_"+b;
+    if(DataYear == 2017 && a == "MC_2017"){
+      histName = "PUReweight_2017";
+      if(b=="sig_up"){
+        histName += "_Up";
+      }
+      else if(b=="sig_down"){
+        histName += "_Down";
+      }
+    }
+    if((TH1D *)file->Get(histName)) map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(histName);
     else{
-      cout << "[MCCorrection::ReadHistograms] No : " << a + "_" + b << endl;
+      cout << "[MCCorrection::ReadHistograms] No : " << histName << endl;
     }
   }
   if(DataYear == 2017 && map_hist_pileup.size() == 0){

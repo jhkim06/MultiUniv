@@ -81,15 +81,16 @@ void Skim_TSCorrTree::executeEvent(){
   electrons.clear();
   muons_loose.clear();
   electrons_veto.clear();
+  
+  evt = new Event;
+  *evt = GetEvent();
 
-  /*
   if(IsDATA){
-    baseW = 1;
-  }else{
+    baseW = 1.;
+  }else{ 
     baseW = weight_norm_1invpb*evt->MCweight()*evt->GetTriggerLumi("Full");
+    baseW *= mcCorr->GetPileUpWeight(nPileUp,0);
   }
-  */
-  baseW = 1;
   muons=GetMuons("POGTightWithTightIso",20.,2.4);
   electrons=GetElectrons("passTightID",20.,2.5);
   if(muons.size()+electrons.size() !=1) return; // 1 tight lepton
@@ -104,8 +105,6 @@ void Skim_TSCorrTree::executeEvent(){
   if(muons_loose.size()+electrons_veto.size() !=1) return; // veto extra lepton
   FillHist("CutFlow",3,1,30,0,30);
   
-  evt = new Event;
-  *evt = GetEvent();
   TLorentzVector MET_vector = evt->GetMETVector();
   if(MET_vector.Et()<20) return;
   FillHist("CutFlow",4,1,30,0,30);
