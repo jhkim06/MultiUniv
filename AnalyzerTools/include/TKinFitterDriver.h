@@ -2,6 +2,7 @@
 #define TKinFitterDriver_h
 
 #include "TString.h"
+#include "TRegexp.h"
 #include <iostream>
 #include <numeric>
 
@@ -58,11 +59,11 @@ public:
   double GetInitialDijetMass();
   double GetCorrectedDijetMass();
 
-  int GetBestStatus();
-  double GetBestChi2();
-  double GetBestFittedDijetMass();
-  double GetBestInitialDijetMass();
-  double GetBestCorrectedDijetMass();
+  int GetBestStatus(TString mass_="");
+  double GetBestChi2(TString mass_="");
+  double GetBestFittedDijetMass(TString mass_="");
+  double GetBestInitialDijetMass(TString mass_="");
+  double GetBestCorrectedDijetMass(TString mass_="");
 
   double GetBestHadronicTopMass();
   double GetBestLeptonicTopMass();
@@ -112,6 +113,9 @@ public:
     double currS;
     double deltaS;
     double chi2;
+
+    // ML cut
+    std::map<TString, bool> passMLcut;
   };
 
 private:
@@ -138,26 +142,16 @@ private:
   //ML
   TMVA::Reader *tmva_reader;
   // ML variables
-  float had_top_b_jet_pt;   //  1
-  float lep_top_b_jet_pt;   //  2
-  float up_type_jet_pt;     //  3
-  float down_type_jet_pt;   //  4
-  float dijet_deltaR;       //  5
-  float dijet_deltaEta;     //  6
-  float dijet_cosThetaTC;   //  7 
-  float dijet_cosThetaTB;   //  8
-  float hadronic_top_mass;  //  9
-  float leptonic_top_mass;  // 10
-  float W_MT;               // 11
-  float tt_MT;              // 12
-  float tt_deltaR;          // 13
-  float had_top_pt;         // 14
-  float lep_top_pt;         // 15
+  float dijet_deltaR;       // 1 
+  float had_w_ch_deltaR;    // 2 
+  float hadronic_top_mass;  // 3 
+  float tt_deltaPhi;        // 4
+  float Mbl;                // 5
  
   bool useMLCut;
   TString MCSample;
   void initML();
-  bool ML_Cut();
+  bool ML_Cut(TString mass_); // ex)mass_: "CHToCB_M120"
   double GetMLCut(TString sample);
   void updatesMLVariables();
   bool Kinematic_Cut();

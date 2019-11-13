@@ -22,8 +22,10 @@ class MLTools():
     inputDir = ''
     # get chained ttree
     self._treeName = "%s_%s"%(sampleName,tree_name)
-    trees = self._connectInputs( inFiles, inputDir, tree_name,False)
-    self._tools.SetTrees(self._treeName, trees)
+    trees_train = self._connectInputs( inFiles, inputDir, tree_name+"_Train",False)
+    trees_test = self._connectInputs( inFiles, inputDir, tree_name+"_Test",False)
+    self._tools.SetTrees(self._treeName+"_Train", trees_train)
+    self._tools.SetTrees(self._treeName+"_Test", trees_test)
 
   def SetVariables(self, variables):
     self._tools.SetVariables(variables)
@@ -35,7 +37,7 @@ class MLTools():
     self._tools.SetOptions(options)
     
   def doTrain(self,sigTreeName,bkgTreeName,outWeightsSuffix,outFileName,epoch=1):
-    self._tools.doTrain(sigTreeName,bkgTreeName,outFileName,epoch)
+    self._tools.doTrain(sigTreeName,bkgTreeName,outWeightsSuffix,outFileName,epoch)
     os.system('mv TMVAClassification/weights TMVAClassification/weights_%s'%(outWeightsSuffix))
 
   def doTest(self):

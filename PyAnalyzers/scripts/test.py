@@ -2,6 +2,9 @@
 
 import os
 
+from collections import OrderedDict
+
+
 import ROOT
 from ROOT import TFile, TTree
 from PyAnalyzers.python.MLTools import MLTools
@@ -55,68 +58,80 @@ file_names = {
 }
 
 file_names['2017','CHToCB_M120to150'] = [ ele for mass in ['120','130','140','150'] for ele in file_names['2017','CHToCB_M%s'%mass] ]
-variables = {
-  'had_top_b_jet_pt' : {
-    'name' : 'had_top_b_jet_pt',
-    'type' :  'D'
-  },
-  'lep_top_b_jet_pt' : {
-    'name' : 'lep_top_b_jet_pt',
-    'type' : 'D'
-  },
-  'up_type_jet_pt' : {
-    'name' : 'up_type_jet_pt',
-    'type' : 'D'
-  },
-  'down_type_jet_pt' : {
-    'name' : 'down_type_jet_pt',
-    'type' : 'D'
-  },
-  'dijet_deltaR' : {
+file_names['2017','CHToCB_M090to110'] = [ ele for mass in ['090','100','110'] for ele in file_names['2017','CHToCB_M%s'%mass] ]
+file_names['2017','CHToCB_M090to150'] = [ ele for mass in ['090','100','110','120','130','140','150'] for ele in file_names['2017','CHToCB_M%s'%mass] ]
+
+variables = OrderedDict()
+variables['dijet_deltaR'] = {
     'name' : 'dijet_deltaR',
     'type' : 'D'
-  },
-  'dijet_deltaEta' : {
-    'name' : 'dijet_deltaEta',
+  }
+
+#variables['dijet_pt_avg'] = { 
+#    'name' : 'dijet_pt_avg',
+#    'type' : 'D'
+#  }
+
+#variables['dijet_deltaEta'] = {
+#    'name' : 'dijet_deltaEta',
+#    'type' : 'D'
+#  }
+
+variables['had_w_ch_deltaR'] = {
+    'name' : 'had_w_ch_deltaR',
     'type' : 'D'
-  },
-  #'dijet_cosThetaTC' : {
-  #  'name' : 'dijet_cosThetaTC',
-  #  'type' : 'D'
-  #},
-  #'dijet_cosThetaTB' : {
-  #  'name' : 'dijet_cosThetaTB',
-  #  'type' : 'D'
-  #},
-  'hadronic_top_mass' : {
+  }
+
+#variables['had_top_b_jet_pt'] = {
+#    'name' : 'had_top_b_jet_pt',
+#    'type' : 'D'
+#  }
+#
+#variables['lep_top_b_jet_pt'] = {
+#    'name' : 'lep_top_b_jet_pt',
+#    'type' : 'D'
+#  }
+#
+#variables['up_type_jet_pt'] = {
+#    'name' : 'up_type_jet_pt',
+#    'type' : 'D'
+#  }
+#
+#variables['down_type_jet_pt'] = {
+#    'name' : 'down_type_jet_pt',
+#    'type' : 'D'
+#  }
+
+variables['hadronic_top_mass'] = {
     'name' : 'hadronic_top_mass',
     'type' : 'D'
-  },
-  'leptonic_top_mass' : {
-    'name' : 'leptonic_top_mass',
+  }
+
+#variables['leptonic_top_mass'] = {
+#    'name' : 'leptonic_top_mass',
+#    'type' : 'D'
+#  }
+
+variables['tt_deltaPhi'] = {
+    'name' : 'tt_deltaPhi',
     'type' : 'D'
-  },
-  'W_MT' : {
-    'name' : 'W_MT',
+  }
+
+#variables['W_MT'] = {
+#    'name' : 'W_MT',
+#    'type' : 'D'
+#  }
+
+variables['Mbl'] = {
+    'name' : 'Mbl',
     'type' : 'D'
-  },
-  #'tt_MT' : {
-  #  'name' : 'tt_MT',
-  #  'type' : 'D'
-  #},
-  'tt_deltaR' : {
-    'name' : 'tt_deltaR',
-    'type' : 'D'
-  },
-  #'had_top_pt' : {
-  #  'name' : 'had_top_pt',
-  #  'type' : 'D'
-  #},
-  #'lep_top_pt' : {
-  #  'name' : 'lep_top_pt',
-  #  'type' : 'D'
-  #},
-}
+  }
+
+#variables['sample_mass'] = {
+#    'name' : 'sample_mass',
+#    'type' : 'D'
+#  }
+
 cuts = {
   'sig' : '',
   'bkg' : '',
@@ -129,7 +144,7 @@ options = {
 	                  "!Silent",
 			  "Color",
 			  "DrawProgressBar",
-			  "Transformations=I;D;P;G,D",
+			  "Transformations=I",
 			  "AnalysisType=Classification"
 		         ]),
     'weight' : "weight",
@@ -142,34 +157,132 @@ options = {
 			     #"nTest_Background=1400000",
              	            ]),
   'bookMethod' : [
-    {
-      'type' : ROOT.TMVA.Types.kPyKeras,
-      'name' : "NN",
-      'options' : ":".join(["H",
-  	                    "!V",
-  			    "VarTransform=D,G",
-  			    "FilenameModel=model.h5",
-  			    "NumEpochs=20",
-  			    "BatchSize=100",
-  		           ]),
-    },
+    #{
+    #  'type' : ROOT.TMVA.Types.kPyKeras,
+    #  'name' : "PyKeras",
+    #  'options' : ":".join(["H",
+    #                        "!V",
+    #    		    "VarTransform=N,D(dijet_deltaR,had_w_ch_deltaR,dijet_pt_avg)",
+    #    		    "FilenameModel=model.h5",
+    #    		    "NumEpochs=20",
+    #    		    "BatchSize=100",
+    #    	           ]),
+    #},
+    ##{
+    #  'type' : ROOT.TMVA.Types.kBDT,
+    #  'name' : "BDT_400_MinNodeSize2of10",
+    #  'options' : ":".join(["!H",
+    #                        "!V",
+    #               	    "NTrees=400",
+    #    		    "MaxDepth=2",
+    #    		    "MinNodeSize=20%",
+    #    		    "BoostType=Grad",
+    #    		    "SeparationType=GiniIndex",
+    #    		    "nCuts=100",
+    #    		    "PruneMethod=NoPruning",
+    #    	           ])
+    #},
     {
       'type' : ROOT.TMVA.Types.kBDT,
-      'name' : "BDT",
+      'name' : "BDT_400_MinNodeSize1of10",
       'options' : ":".join(["!H",
-	                    "!V",
-	           	    "NTrees=850",
-			    #"nEventsMin=150",
-			    "MaxDepth=2",
-			    "BoostType=AdaBoost",
-			    "AdaBoostBeta=0.5",
-			    "SeparationType=GiniIndex",
-			    "nCuts=20",
-			    "PruneMethod=NoPruning",
-		           ]),
+                            "!V",
+			    "VarTransform=N,D(dijet_deltaR,had_w_ch_deltaR)",
+                   	    "NTrees=400",
+        		    "MaxDepth=2",
+			    "MinNodeSize=10%",
+        		    "BoostType=Grad",
+        		    "SeparationType=GiniIndex",
+        		    "nCuts=100",
+        		    "PruneMethod=NoPruning",
+        	           ])
     },
+    #{
+    #  'type' : ROOT.TMVA.Types.kBDT,
+    #  'name' : "BDT_400_NEvent400",
+    #  'options' : ":".join(["!H",
+    #                        "!V",
+    #    		    "VarTransform=N,D(dijet_deltaR,had_w_ch_deltaR)",
+    #               	    "NTrees=400",
+    #    		    "MaxDepth=2",
+    #    		    "NEventsMin=400",
+    #    		    "BoostType=Grad",
+    #    		    "SeparationType=GiniIndex",
+    #    		    "nCuts=100",
+    #    		    "PruneMethod=NoPruning",
+    #    	           ])
+    #},
+    #{
+    #  'type' : ROOT.TMVA.Types.kBDT,
+    #  'name' : "BDT_800_NEvent400_pruning",
+    #  'options' : ":".join(["!H",
+    #                        "!V",
+    #    		    "VarTransform=N,D(dijet_deltaR,had_w_ch_deltaR,dijet_pt_avg)",
+    #               	    "NTrees=800",
+    #    		    "MaxDepth=2",
+    #    		    "NEventsMin=400",
+    #    		    "BoostType=Grad",
+    #    		    "SeparationType=GiniIndex",
+    #    		    "nCuts=100",
+    #    		    "PruneMethod=ExpectedError",
+    #    	           ])
+    #},
+    #{
+    #  'type' : ROOT.TMVA.Types.kBDT,
+    #  'name' : "BDT_400_rand",
+    #  'options' : ":".join(["!H",
+    #                        "!V",
+    #               	    "NTrees=400",
+    #    		    "MaxDepth=2",
+    #    		    "UseRandomisedTrees=True",
+    #    		    "UseNvars=2",
+    #    		    "BoostType=Grad",
+    #    		    "SeparationType=GiniIndex",
+    #    		    "nCuts=100",
+    #    		    "PruneMethod=NoPruning",
+    #    	           ])
+    #},
+    #{
+    #  'type' : ROOT.TMVA.Types.kBDT,
+    #  'name' : "BDT_400_rand_pruning",
+    #  'options' : ":".join(["!H",
+    #                        "!V",
+    #               	    "NTrees=400",
+    #    		    "MaxDepth=2",
+    #    		    "UseRandomisedTrees=True",
+    #    		    "UseNvars=2",
+    #    		    "BoostType=Grad",
+    #    		    "SeparationType=GiniIndex",
+    #    		    "nCuts=100",
+    #    		    "PruneMethod=ExpectedError",
+    #    	           ])
+    #},
+        #{ 
+    #  'type' : ROOT.TMVA.Types.kDNN,
+    #  'name' : "DNN",
+    #  'options' : ":".join(["!H",
+    #                        "!V",
+    #                        "VarTransform=N",
+    #    		    "ErrorStrategy=CROSSENTROPY",
+    #    		    "WeightInitialization=XAVIERUNIFORM",
+    #    		    "Layout=TANH|100,TANH|50,TANH|10,LINEAR",
+    #    		    "TrainingStrategy="
+    #    		    "LearningRate=1e-1,"
+    #    		    "Momentum=0.5,"
+    #    		    "Repetitions=1,"
+    #    		    "ConvergenceSteps=20,"
+    #    		    "BatchSize=100,"
+    #    		    "DropConfig=0.0+0.5+0.5+0.0,"
+    #    		    "WeightDecay=0.001,"
+    #    		    "Regularization=L2,"
+    #    		    "TestRepetitions=2,"
+    #    		    "Multithreading=F"
+    #    	           ])
+    #}
+
   ],
 }
+
 IsKeras = False
 for option in options['bookMethod']:
   if option['name'] == "PyKeras":
@@ -190,7 +303,7 @@ train_years = [
   #'2018'
 ]
 train_samples = [
-	#'TTLJ_powheg',
+	'TTLJ_powheg',
         #'CHToCB_M090',
         #'CHToCB_M100',
 	#'CHToCB_M110',
@@ -198,7 +311,9 @@ train_samples = [
 	#'CHToCB_M130',
 	#'CHToCB_M140',
 	#'CHToCB_M150',
+	'CHToCB_M090to110',
 	'CHToCB_M120to150'
+	#'CHToCB_M090to150'
 ]
 
 for train_year in train_years:
@@ -220,23 +335,28 @@ for train_year in train_years:
     ml_tools.SetTrees(train_sample,'bkg_tree_all_5j_3b',file_names[train_year, train_sample])
     ml_tools.SetTrees(train_sample,'bkg_tree_all_6j_3b',file_names[train_year, train_sample])
 
-    #ml_tools.SetTrees('TTLJ_powheg','bkg_tree_flipped_3b',file_names)
+    #ml_tools.SetTrees(train_sample,'bkg_tree_flipped_4j_3b',file_names[train_year, train_sample])
+    #ml_tools.SetTrees(train_sample,'bkg_tree_flipped_5j_3b',file_names[train_year, train_sample])
+    #ml_tools.SetTrees(train_sample,'bkg_tree_flipped_6j_3b',file_names[train_year, train_sample])
+
     ml_tools.SetVariables(variables)
     ml_tools.SetCuts(cuts)
     ml_tools.SetOptions(options)
 
-    ml_tools.doTrain(['%s_sig_tree_4j_2b'%train_sample],['%s_bkg_tree_all_4j_2b'%train_sample],'%s_4j_2b'%train_sample,'out_train_%s_4j_2b.root'%train_sample)
-    ml_tools.doTrain(['%s_sig_tree_5j_2b'%train_sample],['%s_bkg_tree_all_5j_2b'%train_sample],'%s_5j_2b'%train_sample,'out_train_%s_5j_2b.root'%train_sample)
+    #ml_tools.doTrain(['%s_sig_tree_4j_2b'%train_sample,'%s_sig_tree_5j_2b'%train_sample,'%s_sig_tree_6j_2b'%train_sample],['%s_bkg_tree_all_4j_2b'%train_sample,'%s_bkg_tree_all_5j_2b'%train_sample,'%s_bkg_tree_all_6j_2b'%train_sample],'%s_2b'%train_sample,'out_train_%s_2b.root'%train_sample)
+    ml_tools.doTrain(['%s_sig_tree_4j_2b'%train_sample,'%s_sig_tree_5j_2b'%train_sample],['%s_bkg_tree_all_4j_2b'%train_sample,'%s_bkg_tree_all_5j_2b'%train_sample],'%s_4j5j_2b'%train_sample,'out_train_%s_4j5j_2b.root'%train_sample)
     ml_tools.doTrain(['%s_sig_tree_6j_2b'%train_sample],['%s_bkg_tree_all_6j_2b'%train_sample],'%s_6j_2b'%train_sample,'out_train_%s_6j_2b.root'%train_sample)
     #
     #---------------------------------------------------
     #
-    ml_tools.doTrain(['%s_sig_tree_4j_3b'%train_sample],['%s_bkg_tree_all_4j_3b'%train_sample],'%s_4j_3b'%train_sample,'out_train_%s_4j_3b.root'%train_sample)
-    ml_tools.doTrain(['%s_sig_tree_5j_3b'%train_sample],['%s_bkg_tree_all_5j_3b'%train_sample],'%s_5j_3b'%train_sample,'out_train_%s_5j_3b.root'%train_sample)
+    #ml_tools.doTrain(['%s_sig_tree_4j_3b'%train_sample,'%s_sig_tree_5j_3b'%train_sample,'%s_sig_tree_6j_3b'%train_sample],['%s_bkg_tree_all_4j_3b'%train_sample,'%s_bkg_tree_all_5j_3b'%train_sample,'%s_bkg_tree_all_6j_3b'%train_sample],'%s_3b'%train_sample,'out_train_%s_3b.root'%train_sample)
+    ml_tools.doTrain(['%s_sig_tree_4j_3b'%train_sample,'%s_sig_tree_5j_3b'%train_sample],['%s_bkg_tree_all_4j_3b'%train_sample,'%s_bkg_tree_all_5j_3b'%train_sample],'%s_4j5j_3b'%train_sample,'out_train_%s_4j5j_3b.root'%train_sample)
     ml_tools.doTrain(['%s_sig_tree_6j_3b'%train_sample],['%s_bkg_tree_all_6j_3b'%train_sample],'%s_6j_3b'%train_sample,'out_train_%s_6j_3b.root'%train_sample)
     #
     #---------------------------------------------------
+    #ml_tools.doTrain(['%s_sig_tree_4j_3b'%train_sample,'%s_sig_tree_5j_3b'%train_sample,'%s_sig_tree_6j_3b'%train_sample],['%s_bkg_tree_flipped_4j_3b'%train_sample,'%s_bkg_tree_flipped_5j_3b'%train_sample,'%s_bkg_tree_flipped_6j_3b'%train_sample],'%s_3b'%train_sample,'out_train_%s_3b.root'%train_sample)
     #
+    #---------------------------------------------------
     #ml_tools.doTrain(['%s_sig_tree_4j_2b'%train_sample,'%s_sig_tree_5j_2b'%train_sample,'%s_sig_tree_6j_2b'%train_sample],['%s_bkg_tree_all_4j_2b'%train_sample,'%s_bkg_tree_all_5j_2b'%train_sample,'%s_bkg_tree_all_6j_2b'%train_sample],'%s_2b'%train_sample,'out_train_%s_2b.root'%train_sample)
     #ml_tools.doTrain(['%s_sig_tree_4j_3b'%train_sample,'%s_sig_tree_5j_3b'%train_sample,'%s_sig_tree_6j_3b'%train_sample],['%s_bkg_tree_all_4j_3b'%train_sample,'%s_bkg_tree_all_5j_3b'%train_sample,'%s_bkg_tree_all_6j_3b'%train_sample],'%s_3b'%train_sample,'out_train_%s_3b.root'%train_sample)
   os.system('mv TMVAClassification TMVAClassification_%s'%(train_year))
