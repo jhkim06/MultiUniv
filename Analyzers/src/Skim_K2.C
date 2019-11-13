@@ -289,12 +289,13 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
   //std::vector<TKinFitterDriver::ResultContatiner> fit_result_vector = fitter_driver->GetResults();
 
   for(auto mass : mass_points){
-    (*p_initial_dijet_m)[mass] = (mass=="M"||mass=="M120") ? fitter_driver->GetBestInitialDijetMass():100;
-    (*p_corrected_dijet_m)[mass] = (mass=="M"||mass=="M120") ? fitter_driver->GetBestCorrectedDijetMass():100;
-    (*p_fitted_dijet_m)[mass] = (mass=="M"||mass=="M120") ? fitter_driver->GetBestFittedDijetMass():100;
+    TString sample_label = mass=="M"?"CHToCB_M120":"CHToCB_"+mass;
+    (*p_initial_dijet_m)[mass] = fitter_driver->GetBestInitialDijetMass(sample_label);
+    (*p_corrected_dijet_m)[mass] = fitter_driver->GetBestCorrectedDijetMass(sample_label);
+    (*p_fitted_dijet_m)[mass] = fitter_driver->GetBestFittedDijetMass(sample_label);
 
-    (*p_best_chi2)[mass] = (mass=="M"||mass=="M120") ? fitter_driver->GetChi2():-5;
-    (*p_fitter_status)[mass] = (mass=="M"||mass=="M120") ? fitter_driver->GetBestStatus():-5;
+    (*p_best_chi2)[mass] = fitter_driver->GetBestChi2(sample_label);
+    (*p_fitter_status)[mass] = fitter_driver->GetBestStatus(sample_label);
   }
 
   // nominal only

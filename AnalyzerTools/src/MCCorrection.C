@@ -140,8 +140,8 @@ void MCCorrection::ReadHistograms(){
     TFile *file = new TFile(PUReweightPath+c);
     cout<<"MCCorrection:: getting PU hist: "<<a+"_"+b<<endl;
     TString histName = a+"_"+b;
-    if(DataYear == 2017 && a == "MC_2017"){
-      histName = "PUReweight_2017";
+    if((DataYear == 2017 && a == "MC_2017") || DataYear == 2018 ){
+      histName = "PUReweight_"+TString::Itoa(DataYear,10);
       if(b=="sig_up"){
         histName += "_Up";
       }
