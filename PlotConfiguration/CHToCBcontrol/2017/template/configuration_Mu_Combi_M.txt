@@ -14,9 +14,9 @@ treeName    = 'recoTree/SKFlat'
 
 
 samplesFile   = 'samples_Mu_Combi_All.py'
-# sample in plot check structure.py to be used in plotting
+# sample in plot check structure.py to be used in datacard making
 plotFile      = 'plot_Mu_Combi_M<MASS>.py'
 variablesFile = 'variables_Combi_M<MASS>.py'
 cutsFile      = 'cuts_Mu_Combi.py'
-nuisancesFile = 'nuisances_Mu_Combi.py'
+nuisancesFile = 'nuisances_Mu_Combi_M<MASS>.py'
 structureFile = 'structure.py'

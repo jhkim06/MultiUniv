@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 
 template_directory = "."
 save_directory = "../"
@@ -8,6 +10,8 @@ template_list = [
   "plot_El_Combi_M.txt",
   "plot_Mu_Combi_M.txt",
   "variables_Combi_M.txt",
+  "nuisances_El_Combi_M.txt",
+  "nuisances_Mu_Combi_M.txt"
 ]
 
 mass_list = [

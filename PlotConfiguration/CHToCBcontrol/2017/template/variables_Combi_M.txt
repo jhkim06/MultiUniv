@@ -140,22 +140,23 @@ variables['fitted_dijet_mass'] = {
 #    }
 #
 #
-#variables['njets'] = {
-#    'name': 'njets',
-#    'range':(6,4,10),
-#    'xaxis': 'jet multiplicity [GeV]',
-#    'yaxis': 'Events',
-#    'fold' : 3
-#    }
-#
-#variables['nbjets'] = {
-#    'name': 'n_bjet_deepcsv_m_noSF',
-#    'range':(3,2,5),
-#    'xaxis': 'b jet multiplicity [GeV]',
-#    'yaxis': 'Events',
-#    'fold' : 3
-#    }
-#
+variables['njets'] = {
+    'name': 'njets',
+    'range':(6,4,10),
+    'xaxis': 'jet multiplicity [GeV]',
+    'yaxis': 'Events',
+    'fold' : 3
+    }
+
+variables['nbtags'] = {
+    'name': 'nbtags',
+    'range':(3,2,5),
+    'xaxis': 'b jet multiplicity [GeV]',
+    'yaxis': 'Events',
+    'fold' : 3
+    }
+
+
 #variables['nPV'] = {
 #    'name': 'nPV',
 #    'range':(50,0,50),
@@ -164,14 +165,14 @@ variables['fitted_dijet_mass'] = {
 #    'fold' : 3
 #    }
 #
-#variables['MET'] = {
-#    'name': 'MET',
-#    'range':(60,0,300),
-#    'xaxis': 'MET [GeV]',
-#    'yaxis': 'Events / 5GeV',
-#    'fold' : 3
-#    }
-#
+variables['MET'] = {
+    'name': 'MET',
+    'range':(60,0,300),
+    'xaxis': 'MET [GeV]',
+    'yaxis': 'Events / 5GeV',
+    'fold' : 3
+    }
+
 #variables['IdSF'] = {
 #    'name': 'IdSF',
 #    'range':(40,-1,2.0),
