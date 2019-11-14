@@ -25,7 +25,7 @@ groupPlot['nontt'] = {
     'nameHR' : "nontt",
     'isSignal' : 0,
     'color':  kMagenta,
-    'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_NoFullyHad','SingleTop_tW_antitop_NoFullyHad','WJets_MG']
+    'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_NoFullyHad','SingleTop_tW_antitop_NoFullyHad','WJets_MG','DYJets', 'DYJets10to50_MG','WW_pythia','WZ_pythia','ZZ_pythia','ttW','ttZ']
     }
 
 
@@ -78,20 +78,20 @@ groupPlot['nontt'] = {
 #    }
 #'''
 #
-#plot['DYJets'] = {
-#    'color': kYellow,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'style': 4050,
-#    }
-#
-#plot['DYJets10to50_MG'] = {
-#    'color': 418,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'style': 4050,
-#    }
-#
+plot['DYJets'] = {
+    'color': kYellow,
+    'isSignal' :0,
+    'isData': 0,
+    'style': 4050,
+    }
+
+plot['DYJets10to50_MG'] = {
+    'color': 418,
+    'isSignal' :0,
+    'isData': 0,
+    'style': 4050,
+    }
+
 plot['WJets_MG'] = {
     'color': kYellow,
     'isSignal' :0,
@@ -163,39 +163,39 @@ plot['SingleTop_tW_antitop_NoFullyHad'] = {
     }
 
 
-#plot['WZ_pythia'] = {
-#    'color': 450,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#plot['WW_pythia'] = {
-#    'color': 550,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#plot['ZZ_pythia'] = {
-#    'color': 550,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['ttW'] = {
-#    'color': kYellow,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['ttZ'] = {
-#    'color': kYellow,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
+plot['WZ_pythia'] = {
+    'color': 450,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+plot['WW_pythia'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+plot['ZZ_pythia'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['ttW'] = {
+    'color': kYellow,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['ttZ'] = {
+    'color': kYellow,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
 #plot['ttH_bb'] = {
 #    'color': kYellow,
 #    'isSignal' :0,
