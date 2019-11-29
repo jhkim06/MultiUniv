@@ -1009,14 +1009,38 @@ void AnalyzerCore::SetupBTagger(std::vector<Jet::Tagger> taggers, std::vector<Je
       Jet j;
       TString stagger = j.TaggerString(*it);
       TString swp = j.WPString(*it2);
-      
-      MapBTagSF[stagger + "_" + swp + "_lf"]              = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant,0);
-      MapBTagSF[stagger + "_" + swp + "_hf"]              = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant,0);
-      if(setup_systematics){
-	MapBTagSF[stagger + "_" + swp + "_lf_systup"]     = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant , 3);
-	MapBTagSF[stagger + "_" + swp + "_hf_systup"]     = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant , 1);
-	MapBTagSF[stagger + "_" + swp + "_lf_systdown"]   = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant , -3);
-	MapBTagSF[stagger + "_" + swp + "_hf_systdown"]   = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant , -1);
+      if(swp!="Reshaping"){    
+        MapBTagSF[stagger + "_" + swp + "_lf"]              = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant,0);
+        MapBTagSF[stagger + "_" + swp + "_hf"]              = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant,0);
+        if(setup_systematics){
+          MapBTagSF[stagger + "_" + swp + "_lf_systup"]     = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant , 3);
+          MapBTagSF[stagger + "_" + swp + "_hf_systup"]     = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant , 1);
+          MapBTagSF[stagger + "_" + swp + "_lf_systdown"]   = new BTagSFUtil("incl"  ,  string(stagger), swp, DataYear, period_dependant , -3);
+          MapBTagSF[stagger + "_" + swp + "_hf_systdown"]   = new BTagSFUtil("mujets",  string(stagger), swp, DataYear, period_dependant , -1);
+        }
+      }
+      else{
+        MapBTagSF[stagger + "_" + swp + ""]                 = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,0);
+        if(setup_systematics){
+          MapBTagSF[stagger + "_" + swp + "_up_lfstats1"]          = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,1);
+          MapBTagSF[stagger + "_" + swp + "_down_lfstats1"]        = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,-1);
+          MapBTagSF[stagger + "_" + swp + "_up_lfstats2"]          = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,2);
+          MapBTagSF[stagger + "_" + swp + "_down_lfstats2"]        = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,-2);
+          MapBTagSF[stagger + "_" + swp + "_up_hf"]           = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,3);
+          MapBTagSF[stagger + "_" + swp + "_down_hf"]         = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,-3);
+          MapBTagSF[stagger + "_" + swp + "_up_lf"]           = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,4);
+          MapBTagSF[stagger + "_" + swp + "_down_lf"]         = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,-4);
+          MapBTagSF[stagger + "_" + swp + "_up_jes"]          = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,5);
+          MapBTagSF[stagger + "_" + swp + "_down_jes"]        = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,-5);
+          MapBTagSF[stagger + "_" + swp + "_up_hfstats1"]          = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,6);
+          MapBTagSF[stagger + "_" + swp + "_down_hfstats1"]        = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,-6);
+          MapBTagSF[stagger + "_" + swp + "_up_hfstats2"]          = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,7);
+          MapBTagSF[stagger + "_" + swp + "_down_hfstats2"]        = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,-7);
+          MapBTagSF[stagger + "_" + swp + "_up_cferr1"]          = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,8);
+          MapBTagSF[stagger + "_" + swp + "_down_cferr1"]        = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,-8);
+          MapBTagSF[stagger + "_" + swp + "_up_cferr2"]          = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,9);
+          MapBTagSF[stagger + "_" + swp + "_down_cferr2"]        = new BTagSFUtil("iterativefit"  ,  string(stagger), swp, DataYear, period_dependant,-9);
+	}
       }
     }
   }
@@ -1155,8 +1179,8 @@ void AnalyzerCore::BtaggingSFEvtbyEvt(std::vector<Jet> &jets, Jet::Tagger tagger
 	    mistag_sf.push_back(0.);
 	  }
 	  else{
-	    float tmp_mistag_sf = 1 - (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
-	    tmp_mistag_sf /= (1.-Btag_SF*Btag_Eff)/(1.-Btag_Eff);
+            //(1.0 - Btag_SF) / (1.0 - (1./Btag_eff) )
+	    float tmp_mistag_sf = (1.0 - Btag_SF) / (1.0 - (1./Btag_Eff) );
 	    mistag_sf.push_back(tmp_mistag_sf);
 	  }
         }
@@ -1167,13 +1191,84 @@ void AnalyzerCore::BtaggingSFEvtbyEvt(std::vector<Jet> &jets, Jet::Tagger tagger
     }
   }
 
-  for(auto &x : mistag_sf){
-    x*=btag_sf;
-  }
-
 
   return;
 }
+
+
+double AnalyzerCore::BtaggingSFReshape(std::vector<Jet> &jets, Jet::Tagger tagger, Jet::WP WP, int systematic){
+  //=== loop over jet vector
+
+  if(IsDATA){
+    return 1.;
+  }
+
+  float Btag_SF=1.;
+
+  for(std::vector<Jet>::iterator itjet = jets.begin(); itjet!=jets.end(); itjet++){
+    //=== create key from configuration
+    TString map_key = itjet->TaggerString(tagger) + "_" + itjet->WPString(WP);
+    TString map_key_cent = map_key;
+    if(!IsDATA){
+      if(systematic==0){}        
+      else if(systematic==1) map_key  += "_up_lfstats1";  
+      else if(systematic==-1) map_key += "_down_lfstats1";
+      else if(systematic==2) map_key  += "_up_lfstats2";  
+      else if(systematic==-2) map_key += "_down_lfstats2";
+      else if(systematic==3) map_key  += "_up_hf";        
+      else if(systematic==-3) map_key  += "_down_hf";        
+      else if(systematic==4) map_key  += "_up_lf";        
+      else if(systematic==-4) map_key += "_down_lf";      
+      else if(systematic==5) map_key  += "_up_jes";       
+      else if(systematic==-5) map_key += "_down_jes";    
+      else if(systematic==6) map_key  += "_up_hfstats1";  
+      else if(systematic==-6) map_key += "_down_hfstats1";
+      else if(systematic==7) map_key  += "_up_hfstats2";  
+      else if(systematic==-7) map_key += "_down_hfstats2";
+      else if(systematic==8) map_key  += "_up_cferr1";    
+      else if(systematic==-8) map_key += "_down_cferr1";  
+      else if(systematic==9) map_key  += "_up_cferr2";    
+      else if(systematic==-9) map_key += "_down_cferr2";
+      else{
+        cout << "[AnalyzerCore::BtaggingSFReshape] not avaliable systematic " << endl;
+	exit(1);
+      }
+    }
+  
+    //=== use key to access correct BTagSFUtil object
+    std::map<TString,BTagSFUtil*>::iterator it_jet_btagger = MapBTagSF.find(map_key);
+    std::map<TString,BTagSFUtil*>::iterator it_jet_btagger_cent = MapBTagSF.find(map_key_cent);
+
+    if(it_jet_btagger == MapBTagSF.end() || it_jet_btagger_cent == MapBTagSF.end()) {
+      cout << "[AnalyzerCore::BtaggingSFReshape]  ERROR, incorrect combination of tagger/WP : " << itjet->TaggerString(tagger) <<  "/" << itjet->WPString(WP) << " check SetupBTagger is correctly configured for tagger/WP and systematics" << endl;
+      exit(EXIT_FAILURE);
+    }
+
+    int jet_flavour = IsDATA ? -999999 : itjet->hadronFlavour();
+
+    float jet_pt = itjet->Pt();
+    float jet_eta = itjet->Eta();
+
+    if( ((abs(systematic)==2 || abs(systematic)==1) && jet_flavour!=0) ||
+        (abs(systematic)==3 && jet_flavour!=0) ||
+        (abs(systematic)==4 && jet_flavour!=5) ||
+        (abs(systematic)==5 && jet_flavour==4) ||
+        ((abs(systematic)==6 || abs(systematic)==7) && jet_flavour!=5) ||
+        ((abs(systematic)==8 || abs(systematic)==9) && jet_flavour!=4)
+      ){
+      Btag_SF *= it_jet_btagger_cent->second->GetJetSF(jet_flavour, jet_pt, jet_eta);
+    }
+    else{
+      //cout << map_key << "   " << jet_flavour   <<endl;
+      Btag_SF *= it_jet_btagger->second->GetJetSF(jet_flavour, jet_pt, jet_eta);
+      //cout << Btag_SF << endl;
+    }
+  }
+
+  return (double)Btag_SF;
+
+}
+
 
 bool AnalyzerCore::IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF, int systematic){
 
@@ -1182,14 +1277,16 @@ bool AnalyzerCore::IsBTagged(Jet j, Jet::Tagger tagger, Jet::WP WP, bool applySF
   //=== create key from configuration
   TString map_key = j.TaggerString(tagger) + "_"+  j.WPString(WP) ;
 
-  if(j.hadronFlavour() == 0 || IsDATA) map_key += "_lf";
-  else map_key +="_hf";
+  if(WP!=Jet::Reshaping){
+    if(j.hadronFlavour() == 0 || IsDATA) map_key += "_lf";
+    else map_key +="_hf";
 
-  if(!IsDATA){
-    if(systematic > 0) map_key += "_systup";
-    else if (systematic < 0) map_key +=  "systdown";
+    if(!IsDATA){
+      if(systematic > 0) map_key += "_systup";
+      else if (systematic < 0) map_key +=  "systdown";
+    }
   }
-  
+
   //=== use key to access correct BTagSFUtil object
   
   std::map<TString,BTagSFUtil*>::iterator it_jet_btagger = MapBTagSF.find(map_key);

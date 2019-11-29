@@ -5,6 +5,7 @@
 2017 DeepCSV         Loose    0.1522
 2017 DeepCSV         Medium   0.4941
 2017 DeepCSV         Tight    0.8001
+2017 DeepCSV         Reshaping  0.4941
 2017 DeepJet         Loose    0.0521
 2017 DeepJet         Medium   0.3033
 2017 DeepJet         Tight    0.7489
