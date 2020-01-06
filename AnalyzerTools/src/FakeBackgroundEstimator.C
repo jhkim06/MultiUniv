@@ -140,9 +140,10 @@ double FakeBackgroundEstimator::GetMuonFakeRate(TString ID, TString key, double 
 
 }
 
-double FakeBackgroundEstimator::GetWeight(vector<Lepton *> lepptrs, AnalyzerParameter param, int sys, bool prompt_one){
+double FakeBackgroundEstimator::GetWeight(vector<Lepton *> lepptrs, AnalyzerParameter param, bool & pass_TT, bool & pass_TL, bool & pass_LL, double & weight_TT, double & weight_TL, double & weight_LL, int sys, bool prompt_one){
 
     double this_weight = -1.;
+
     // assume prompt ratio = 1
     if(prompt_one){
         vector<double> FRs;
@@ -185,24 +186,34 @@ double FakeBackgroundEstimator::GetWeight(vector<Lepton *> lepptrs, AnalyzerPara
         */
         
         if(FRs.size()==0){
+          pass_TT = true;
+          weight_TT = 0.;
           HasLooseLepton = false;
           return 0;
         }
         else{
+          if(FRs.size() == 1){
+            pass_TL = true;
+            weight_TL = FRs.at(0)/(1.-FRs.at(0));
+          }
+          else{
+            pass_LL = true;
+            weight_LL = (FRs.at(0)/(1.-FRs.at(0))) * (FRs.at(1)/(1.-FRs.at(1)));
+          }
+          
           HasLooseLepton = true;
           return this_weight;
         }
     }
     // 
     else{
-        cout << "calculate fake weight witout assumption p=1..." << endl;
         int nTight = 0;
         int tightLepton_index = -1;
         double weight_fp = 0;
         double weight_ff = 0; 
         vector<double> lepton_fake_ratio, lepton_prompt_ratio;
 
-        double prompt_ratio = 0.95;
+        double prompt_ratio = 1.;
         // count number of tight leptons and save its index
         for(unsigned int i=0; i<lepptrs.size(); i++){
 
@@ -216,7 +227,8 @@ double FakeBackgroundEstimator::GetWeight(vector<Lepton *> lepptrs, AnalyzerPara
                 double this_pt = el->Pt();
                 if(param.Electron_UsePtCone) this_pt = el->PtCone();
                 lepton_fake_ratio.push_back(GetElectronFakeRate(param.Electron_FR_ID, param.Electron_FR_Key, fabs(el->scEta()), this_pt, sys));
-                lepton_prompt_ratio.push_back(prompt_ratio);
+                //lepton_prompt_ratio.push_back(prompt_ratio);
+                lepton_prompt_ratio.push_back(GetElectronFakeRate("Prompt_ratio", "prompt_ratio", fabs(el->scEta()), el->Pt(), sys));
             }
             else{
                 
@@ -227,8 +239,18 @@ double FakeBackgroundEstimator::GetWeight(vector<Lepton *> lepptrs, AnalyzerPara
                 }
                 double this_pt = mu->Pt();
                 if(param.Muon_UsePtCone) this_pt = mu->PtCone();
-                lepton_fake_ratio.push_back(GetMuonFakeRate(param.Muon_FR_ID, param.Muon_FR_Key, fabs(mu->Eta()), this_pt, sys));
-                lepton_prompt_ratio.push_back(prompt_ratio);
+                //lepton_fake_ratio.push_back(GetMuonFakeRate(param.Muon_FR_ID, param.Muon_FR_Key, fabs(mu->Eta()), this_pt, sys));
+                //lepton_prompt_ratio.push_back(prompt_ratio);
+                //lepton_prompt_ratio.push_back(GetMuonFakeRate("Prompt_ratio", "prompt_ratio", fabs(mu->Eta()), mu->Pt(), sys));
+
+                if(fabs(mu->Eta()) < 1.5){
+                lepton_fake_ratio.push_back(0.1);
+                lepton_prompt_ratio.push_back(GetMuonFakeRate("Prompt_ratio", "prompt_ratio", fabs(mu->Eta()), mu->Pt(), sys));
+                }
+                else{
+                lepton_fake_ratio.push_back(0.2);
+                lepton_prompt_ratio.push_back(GetMuonFakeRate("Prompt_ratio", "prompt_ratio", fabs(mu->Eta()), mu->Pt(), sys));
+                }
             }
         }// lepton loop
 
@@ -239,6 +261,7 @@ double FakeBackgroundEstimator::GetWeight(vector<Lepton *> lepptrs, AnalyzerPara
         global_factor2 = 1./(lepton_prompt_ratio.at(1)-lepton_fake_ratio.at(1));
         global_factor = global_factor1 * global_factor2;
 
+
         if(nTight == 0){
             double weight_fp1 = 0., weight_fp2 = 0.;
             double fake_ratio = 0., prompt_ratio = 0.;
@@ -247,10 +270,12 @@ double FakeBackgroundEstimator::GetWeight(vector<Lepton *> lepptrs, AnalyzerPara
             fake_ratio   = lepton_fake_ratio.at(0);
             prompt_ratio = lepton_prompt_ratio.at(1);
             weight_fp1 = (-1.*(fake_ratio*prompt_ratio))*fake_ratio*prompt_ratio; 
+            //weight_fp1 = (-1.*(fake_ratio*prompt_ratio))*lepton_prompt_ratio.at(0)*lepton_fake_ratio.at(1); 
 
             fake_ratio   = lepton_fake_ratio.at(1);
             prompt_ratio = lepton_prompt_ratio.at(0);
             weight_fp2 = (-1.*(fake_ratio*prompt_ratio))*fake_ratio*prompt_ratio; 
+            //weight_fp2 = (-1.*(fake_ratio*prompt_ratio))*lepton_prompt_ratio.at(1)*lepton_fake_ratio.at(0); 
 
             weight_fp = weight_fp1 + weight_fp2;
             weight_ff = ((lepton_prompt_ratio.at(0)*lepton_prompt_ratio.at(1)))*lepton_fake_ratio.at(0)*lepton_fake_ratio.at(1);
@@ -263,12 +288,13 @@ double FakeBackgroundEstimator::GetWeight(vector<Lepton *> lepptrs, AnalyzerPara
             else looseLepton_index = 0;
 
             // inside the braket
-            fake_ratio   = lepton_fake_ratio.at(looseLepton_index);
-            prompt_ratio = lepton_prompt_ratio.at(looseLepton_index);
-            one_minus_fake_ratio   = 1.-lepton_fake_ratio.at(tightLepton_index);
-            one_minus_prompt_ratio = 1.-lepton_prompt_ratio.at(tightLepton_index);
+            fake_ratio   = lepton_fake_ratio.at(looseLepton_index);                // estimation for prompt lepton
+            prompt_ratio = lepton_prompt_ratio.at(looseLepton_index);              // estimation for fake lepton
+            one_minus_fake_ratio   = 1.-lepton_fake_ratio.at(tightLepton_index);   // estimation for prompt lepton
+            one_minus_prompt_ratio = 1.-lepton_prompt_ratio.at(tightLepton_index); // estimation for fake lepton
 
             weight_fp = (fake_ratio*one_minus_prompt_ratio + prompt_ratio*one_minus_fake_ratio)*fake_ratio*prompt_ratio; 
+            //weight_fp = (fake_ratio*one_minus_prompt_ratio)*lepton_prompt_ratio.at(looseLepton_index)*lepton_fake_ratio.at(tightLepton_index) + (prompt_ratio*one_minus_fake_ratio)*lepton_fake_ratio.at(looseLepton_index)*lepton_prompt_ratio.at(tightLepton_index); 
             weight_ff = (-1.*prompt_ratio*one_minus_prompt_ratio)*lepton_fake_ratio.at(0)*lepton_fake_ratio.at(1);
         }
         else if(nTight == 2){
@@ -277,18 +303,18 @@ double FakeBackgroundEstimator::GetWeight(vector<Lepton *> lepptrs, AnalyzerPara
             double one_minus_fake_ratio = 0., one_minus_prompt_ratio = 0.;
 
             // inside the braket
-            one_minus_fake_ratio   = 1.-lepton_fake_ratio.at(0);
-            one_minus_prompt_ratio = 1.-lepton_prompt_ratio.at(1);
+            one_minus_fake_ratio   = 1.-lepton_fake_ratio.at(0);        // estimation for prompt lepton
+            one_minus_prompt_ratio = 1.-lepton_prompt_ratio.at(1);      // estimation for fake lepton
             weight_fp1 = (-1.*(one_minus_fake_ratio*one_minus_prompt_ratio))*lepton_fake_ratio.at(0)*lepton_prompt_ratio.at(1);
+            //weight_fp1 = (-1.*(one_minus_fake_ratio*one_minus_prompt_ratio))*lepton_prompt_ratio.at(0)*lepton_fake_ratio.at(1);
 
-            one_minus_fake_ratio   = 1.-lepton_fake_ratio.at(1);
-            one_minus_prompt_ratio = 1.-lepton_prompt_ratio.at(0);
+            one_minus_fake_ratio   = 1.-lepton_fake_ratio.at(1);        // estimation for prompt lepton
+            one_minus_prompt_ratio = 1.-lepton_prompt_ratio.at(0);      // esimation for fake lepton
             weight_fp2 = (-1.*(one_minus_fake_ratio*one_minus_prompt_ratio))*lepton_fake_ratio.at(1)*lepton_prompt_ratio.at(0);
+            //weight_fp2 = (-1.*(one_minus_fake_ratio*one_minus_prompt_ratio))*lepton_prompt_ratio.at(1)*lepton_fake_ratio.at(0);
 
             weight_fp = weight_fp1 + weight_fp2; 
             weight_ff = ((1.-lepton_prompt_ratio.at(1))*(1.-lepton_prompt_ratio.at(0)))*lepton_fake_ratio.at(0)*lepton_fake_ratio.at(1);
-            weight_fp = 0.;
-            weight_ff = 0.;
         }
         else{
             cout << "[FakeBackgroundEstimator::GetElectronFakeRate] Check total number of leptons equals 2"<<endl;
@@ -296,7 +322,7 @@ double FakeBackgroundEstimator::GetWeight(vector<Lepton *> lepptrs, AnalyzerPara
         }
     //cout << "number of passing tight id: " << nTight << endl;
     //cout << "weight_fp: " << weight_fp << " weight_ff: " << weight_ff << " global_factor: " << global_factor << endl;
-    return global_factor * ( weight_fp + weight_ff); 
+    return global_factor * (weight_fp + weight_ff); 
     }
 
 }

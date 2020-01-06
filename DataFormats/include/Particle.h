@@ -30,8 +30,12 @@ public:
   void SetCharge(int q);
   inline int Charge() const {return j_Charge;}
 
+  void SetNtupleIndex(int idx);
+  inline int getNtupleIndex() const {return ntuple_index;}
+
 private:
   int j_Charge;
+  int ntuple_index;
 
   ClassDef(Particle,1)
 

@@ -4,66 +4,26 @@
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 
-// dimu variables for FSR photon study
-struct Dimu_variables {
-    TString muon_id;
+struct Analysis_SelVariation {
+
+    TString prefix;
 
     bool evt_tag_analysisevnt_sel_rec_;
-    double dimu_pt_rec_;
-    double dimu_mass_rec_;
-    double dimu_photon_mass_rec_;
-    double leadingmuon_pt_rec_;
-    double subleadingmuon_pt_rec_;
-    double leadingmuon_eta_rec_;
-    double subleadingmuon_eta_rec_;
-    double leadingphoton_muon_dr_rec_;
-
-    TString  evt_tag_analysisevnt_sel_rec_brname;
-    TString  dimu_pt_rec_brname;
-    TString  dimu_mass_rec_brname;
-    TString  dimu_photon_mass_rec_brname;
-    TString  leadingmuon_pt_rec_brname;
-    TString  subleadingmuon_pt_rec_brname;
-    TString  leadingmuon_eta_rec_brname;
-    TString  subleadingmuon_eta_rec_brname;
-    TString  leadingphoton_muon_dr_rec_brname;
-
-    Dimu_variables(TString muon_id_="POGTightWithTightIso"): muon_id(muon_id_)
-    {
-        evt_tag_analysisevnt_sel_rec_ = false;
-        dimu_pt_rec_                = -999.;
-        dimu_mass_rec_              = -999.;
-        dimu_photon_mass_rec_       = -999.;
-        leadingmuon_pt_rec_         = -999.;
-        subleadingmuon_pt_rec_      = -999.;
-        leadingmuon_eta_rec_        = -999.;
-        subleadingmuon_eta_rec_     = -999.;
-        leadingphoton_muon_dr_rec_  = -999.;
-
-        evt_tag_analysisevnt_sel_rec_brname = "evt_tag_analysisevnt_sel_rec_" + muon_id;
-        dimu_pt_rec_brname                 = "dimu_pt_rec_" + muon_id;
-        dimu_mass_rec_brname               = "dimu_mass_rec_" + muon_id;
-        dimu_photon_mass_rec_brname        = "dimu_photon_mass_rec_" + muon_id;
-        leadingmuon_pt_rec_brname          = "leadingmuon_pt_rec_" + muon_id;
-        subleadingmuon_pt_rec_brname       = "subleadingmuon_pt_rec_" + muon_id;
-        leadingmuon_eta_rec_brname         = "leadingmuon_eta_rec_" + muon_id;
-        subleadingmuon_eta_rec_brname      = "subleadingmuon_eta_rec_" + muon_id;
-        leadingphoton_muon_dr_rec_brname   = "leadingphoton_muon_dr_rec_" + muon_id;
-    }
-
-    void setBranch(TTree *tree);
-    void resetVariables();
-    void setVariables(bool pass_sel, double dimu_pt, double dimu_mass, double dimu_gamma_mass, double lead_muon_pt, double sublead_muon_pt, double lead_muon_eta, double sublead_muon_eta, double dr_muon_gamma);
-};
-
-struct ISR_LeptonIDVariation {
-    TString muon_id;
-    TString electron_id;
-    TString id_sel_name;
-
-    bool evt_tag_analysisevnt_sel_rec_;
+    bool evt_tag_oppositecharge_sel_rec_;
+    bool evt_tag_leptonpt_sel_rec_;
+    bool evt_tag_leptoneta_sel_rec_;
     bool evt_tag_dielectron_rec_;
     bool evt_tag_dimuon_rec_;
+
+    int additional_veto_mu_size_;
+    int additional_veto_el_size_;
+
+    int el1_ntuple_index_;
+    int el2_ntuple_index_;
+
+    int mu1_ntuple_index_;
+    int mu2_ntuple_index_;
+
     double dilep_pt_rec_;
     double dilep_mass_rec_;
     double dilep_photon_mass_rec_;
@@ -73,9 +33,33 @@ struct ISR_LeptonIDVariation {
     double subleadinglep_eta_rec_;
     double leadingphoton_lep_dr_rec_;
 
+    double evt_weight_recoSF_rec_, evt_weight_recoSF_up_rec_, evt_weight_recoSF_down_rec_;
+    double evt_weight_idSF_rec_,   evt_weight_idSF_up_rec_,   evt_weight_idSF_down_rec_;
+    double evt_weight_isoSF_rec_,  evt_weight_isoSF_up_rec_,  evt_weight_isoSF_down_rec_;
+    double evt_weight_trigSF_rec_, evt_weight_trigSF_up_rec_, evt_weight_trigSF_down_rec_;
+
+    // fake weight
+    bool evt_tag_TT_rec_;
+    bool evt_tag_TL_rec_;
+    bool evt_tag_LL_rec_;
+    double evt_weight_TT_rec_;
+    double evt_weight_TL_rec_;
+    double evt_weight_LL_rec_;
+
     TString evt_tag_analysisevnt_sel_rec_brname;
+    TString evt_tag_oppositecharge_sel_rec_brname;
+    TString evt_tag_leptonpt_sel_rec_brname;
+    TString evt_tag_leptoneta_sel_rec_brname;
     TString evt_tag_dielectron_rec_brname;
     TString evt_tag_dimuon_rec_brname;
+
+    TString additional_veto_mu_size_brname;
+    TString additional_veto_el_size_brname;
+    TString el1_ntuple_index_brname;
+    TString el2_ntuple_index_brname;
+    TString mu1_ntuple_index_brname;
+    TString mu2_ntuple_index_brname;
+
     TString dilep_pt_rec_brname;
     TString dilep_mass_rec_brname;
     TString leadinglep_pt_rec_brname;
@@ -83,32 +67,100 @@ struct ISR_LeptonIDVariation {
     TString leadinglep_eta_rec_brname;
     TString subleadinglep_eta_rec_brname;
 
-    ISR_LeptonIDVariation(TString muon_id_="POGTightWithTightIso", TString electron_id_ = "passMediumID", TString id_sel_name_ = "Fake"): muon_id(muon_id_), electron_id(electron_id_), id_sel_name(id_sel_name_) 
-    {
-        evt_tag_analysisevnt_sel_rec_ = false;
-        evt_tag_dielectron_rec_ = false;
-        evt_tag_dimuon_rec_ = false;
-        dilep_pt_rec_                = -999.;
-        dilep_mass_rec_              = -999.;
-        leadinglep_pt_rec_         = -999.;
-        subleadinglep_pt_rec_      = -999.;
-        leadinglep_eta_rec_        = -999.;
-        subleadinglep_eta_rec_     = -999.;
+    TString evt_weight_recoSF_rec_brname, evt_weight_recoSF_up_rec_brname, evt_weight_recoSF_down_rec_brname;
+    TString evt_weight_idSF_rec_brname,   evt_weight_idSF_up_rec_brname,   evt_weight_idSF_down_rec_brname;
+    TString evt_weight_isoSF_rec_brname,  evt_weight_isoSF_up_rec_brname,  evt_weight_isoSF_down_rec_brname;
+    TString evt_weight_trigSF_rec_brname, evt_weight_trigSF_up_rec_brname, evt_weight_trigSF_down_rec_brname;
 
-        evt_tag_analysisevnt_sel_rec_brname = "evt_tag_analysisevnt_sel_rec_" + id_sel_name;
-        evt_tag_dielectron_rec_brname = "evt_tag_dielectron_rec_" + id_sel_name;
-        evt_tag_dimuon_rec_brname = "evt_tag_dimuon_rec_" + id_sel_name;
-        dilep_pt_rec_brname                 = "dilep_pt_rec_" + id_sel_name;
-        dilep_mass_rec_brname               = "dilep_mass_rec_" + id_sel_name;
-        leadinglep_pt_rec_brname          = "leadinglep_pt_rec_" + id_sel_name;
-        subleadinglep_pt_rec_brname       = "subleadinglep_pt_rec_" + id_sel_name;
-        leadinglep_eta_rec_brname         = "leadinglep_eta_rec_" + id_sel_name;
-        subleadinglep_eta_rec_brname      = "subleadinglep_eta_rec_" + id_sel_name;
+    // branch names for fake
+    TString evt_tag_TT_rec_brname;
+    TString evt_tag_TL_rec_brname;
+    TString evt_tag_LL_rec_brname;
+    TString evt_weight_TT_rec_brname;
+    TString evt_weight_TL_rec_brname;
+    TString evt_weight_LL_rec_brname;
+
+    Analysis_SelVariation(TString prefix_ = "Fake"): prefix(prefix_) 
+    {
+        evt_tag_analysisevnt_sel_rec_   = false;
+        evt_tag_oppositecharge_sel_rec_ = false;
+        evt_tag_leptonpt_sel_rec_      = false;
+        evt_tag_leptoneta_sel_rec_      = false;
+        evt_tag_dielectron_rec_         = false;
+        evt_tag_dimuon_rec_             = false;
+
+        additional_veto_mu_size_ = 0;
+        additional_veto_el_size_ = 0;
+        el1_ntuple_index_ = -1;
+        el2_ntuple_index_ = -1;
+        mu1_ntuple_index_ = -1;
+        mu2_ntuple_index_ = -1;
+
+        dilep_pt_rec_                   = -999.;
+        dilep_mass_rec_                 = -999.;
+        leadinglep_pt_rec_              = -999.;
+        subleadinglep_pt_rec_           = -999.;
+        leadinglep_eta_rec_             = -999.;
+        subleadinglep_eta_rec_          = -999.;
+
+        evt_tag_TT_rec_           = false;
+        evt_tag_TL_rec_           = false;
+        evt_tag_LL_rec_           = false;
+        evt_weight_TT_rec_           = 1.;
+        evt_weight_TL_rec_           = 1.;
+        evt_weight_LL_rec_           = 1.;
+
+        evt_weight_recoSF_rec_ = 1., evt_weight_recoSF_up_rec_ = 1., evt_weight_recoSF_down_rec_ = 1.;
+        evt_weight_idSF_rec_ = 1.,   evt_weight_idSF_up_rec_ = 1.,   evt_weight_idSF_down_rec_ = 1.;
+        evt_weight_isoSF_rec_ = 1.,  evt_weight_isoSF_up_rec_ = 1.,  evt_weight_isoSF_down_rec_ = 1.;
+        evt_weight_trigSF_rec_ = 1., evt_weight_trigSF_up_rec_ = 1., evt_weight_trigSF_down_rec_ = 1.;
+
+        // initialize branch names
+        evt_tag_analysisevnt_sel_rec_brname   = "evt_tag_analysisevnt_sel_rec_" + prefix;
+        evt_tag_oppositecharge_sel_rec_brname = "evt_tag_oppositecharge_sel_rec_" + prefix;
+        evt_tag_leptonpt_sel_rec_brname = "evt_tag_leptonpt_sel_rec_" + prefix;
+        evt_tag_leptoneta_sel_rec_brname = "evt_tag_leptoneta_sel_rec_" + prefix;
+        evt_tag_dielectron_rec_brname         = "evt_tag_dielectron_rec_" + prefix;
+        evt_tag_dimuon_rec_brname             = "evt_tag_dimuon_rec_" + prefix;
+
+        additional_veto_mu_size_brname = "additional_veto_mu_size_" + prefix;
+        additional_veto_el_size_brname = "additional_veto_el_size_" + prefix;;
+        el1_ntuple_index_brname        = "el1_ntuple_index_" + prefix;
+        el2_ntuple_index_brname        = "el2_ntuple_index_" + prefix;
+        mu1_ntuple_index_brname        = "mu1_ntuple_index_" + prefix;
+        mu2_ntuple_index_brname        = "mu2_ntuple_index_" + prefix;
+
+        dilep_pt_rec_brname                 = "dilep_pt_rec_" + prefix;
+        dilep_mass_rec_brname               = "dilep_mass_rec_" + prefix;
+        leadinglep_pt_rec_brname            = "leadinglep_pt_rec_" + prefix;
+        subleadinglep_pt_rec_brname         = "subleadinglep_pt_rec_" + prefix;
+        leadinglep_eta_rec_brname           = "leadinglep_eta_rec_" + prefix;
+        subleadinglep_eta_rec_brname        = "subleadinglep_eta_rec_" + prefix;
+
+        evt_tag_TT_rec_brname               = "evt_tag_TT_rec_" + prefix;
+        evt_tag_TL_rec_brname               = "evt_tag_TL_rec_" + prefix;
+        evt_tag_LL_rec_brname               = "evt_tag_LL_rec_" + prefix;
+        evt_weight_TT_rec_brname            = "evt_weight_TT_rec_" + prefix;
+        evt_weight_TL_rec_brname            = "evt_weight_TL_rec_" + prefix;
+        evt_weight_LL_rec_brname            = "evt_weight_LL_rec_" + prefix;
+
+        evt_weight_recoSF_rec_brname = "evt_weight_recoSF_rec_" + prefix;
+        evt_weight_recoSF_up_rec_brname = "evt_weight_recoSF_up_rec_" + prefix;
+        evt_weight_recoSF_down_rec_brname = "evt_weight_recoSF_down_rec_" + prefix;
+        evt_weight_idSF_rec_brname = "evt_weight_idSF_rec_" + prefix;
+        evt_weight_idSF_up_rec_brname = "evt_weight_idSF_up_rec_" + prefix;
+        evt_weight_idSF_down_rec_brname = "evt_weight_idSF_down_rec_" + prefix;
+        evt_weight_isoSF_rec_brname = "evt_weight_isoSF_rec_" + prefix;
+        evt_weight_isoSF_up_rec_brname = "evt_weight_isoSF_up_rec_" + prefix;
+        evt_weight_isoSF_down_rec_brname = "evt_weight_isoSF_down_rec_" + prefix;
+        evt_weight_trigSF_rec_brname = "evt_weight_trigSF_rec_" + prefix;
+        evt_weight_trigSF_up_rec_brname = "evt_weight_trigSF_up_rec_" + prefix;
+        evt_weight_trigSF_down_rec_brname = "evt_weight_trigSF_down_rec_" + prefix;
     }
 
     void setBranch(TTree *tree);
     void resetVariables();
-    void setVariables(bool pass_sel, bool pass_dielectron, bool pass_dimuon, double dilep_pt, double dilep_mass, double lead_lep_pt, double sublead_lep_pt, double lead_lep_eta, double sublead_lep_eta);
+
 };
 
 class Skim_ISR : public AnalyzerCore {
@@ -116,12 +168,15 @@ class Skim_ISR : public AnalyzerCore {
 public:
 
     void initializeAnalyzer();
-    void executeEventFromParameter(AnalyzerParameter param, bool temp_FSR_study = true);
+    void executeEventFromParameter(AnalyzerParameter param, Analysis_SelVariation * p_struct, bool fake_estimation = false);
     void executeEvent();
     
     int findInitialMoterIndex(int mother_index, int current_index, bool same_flavor=true);
     void saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map);
+    bool PassKinematicCuts(const Gen lep1, const Gen lep2, double leading_pt, double subleading_pt, double eta);
     void clearVariables();
+
+    double FR_template(double pT, double eta);
 
     Skim_ISR();
     ~Skim_ISR();
@@ -134,13 +189,24 @@ private:
 
     bool debug_;
 
+    Event* evt;
+
     int IsMuMu;
     int IsElEl;
 
     vector<TString> DiMuTrgs;
     vector<TString> DiElTrgs;
+    vector<TString> SingleMuTrgs;
+    vector<TString> SingleElTrgs;
 
-    Event* evt;
+    // function pointer for Lepton SF
+    double (MCCorrection::*LeptonID_SF)(TString,double,double,int);
+    double (MCCorrection::*LeptonISO_SF)(TString,double,double,int);
+    double (MCCorrection::*LeptonReco_SF)(double,double,int);
+
+    TString leading_trig_key, subleading_trig_key;
+    TString idSF_key;
+    TString isoSF_key;
 
     bool save_detector_info;
     bool save_generator_info;
@@ -152,13 +218,50 @@ private:
     std::vector<Gen>      gen_photons;
     std::vector<Muon>     muons;
     std::vector<Electron> electrons;
+    std::vector<Muon>     veto_muons;
+    std::vector<Electron> veto_electrons;
     std::vector<Photon>   photons;
     std::vector<Lepton*>  leps;
 
+    // isPromptFinalstate gen particles
+    std::vector<Gen> gen_lepton_isPromptFinalstate;
+    std::vector<Gen> gen_antilepton_isPromptFinalstate;
+    std::vector<Gen> gen_photon_isPromptFinalstate;
     std::vector<Gen> leptons_postfsr;
 
-    bool gen_rec_evt_matched;
-    vector<Double_t> gen_rec_lepton_dR;
+    bool is_dimuon_gen;
+    bool is_dielectron_gen;
+    bool is_emu_gen;
+
+    bool pass_kinematic_cut_el_bare_gen;
+    bool pass_kinematic_cut_mu_bare_gen;
+
+    bool pass_kinematic_cut_el_FSRgammaDRp1_gen;
+    bool pass_kinematic_cut_mu_FSRgammaDRp1_gen;
+
+    bool pass_kinematic_cut_el_FSRgamma_gen;
+    bool pass_kinematic_cut_mu_FSRgamma_gen;
+
+    bool pass_kinematic_cut_el_alllepton_FSRgamma_gen;
+    bool pass_kinematic_cut_mu_alllepton_FSRgamma_gen;
+
+    double dilep_pt_bare_gen_ispromptfinal;
+    double dilep_mass_bare_gen_ispromptfinal;
+
+    //double dilep_pt_allgamma_gen_ispromptfinal;
+    //double dilep_mass_allgamma_gen_ispromptfinal;
+    
+    double dilep_pt_FSRgammaDRp1_gen_ispromptfinal;
+    double dilep_mass_FSRgammaDRp1_gen_ispromptfinal;
+
+    double dilep_pt_FSRgamma_gen_ispromptfinal;
+    double dilep_mass_FSRgamma_gen_ispromptfinal;
+
+    //double dilep_pt_FSRlepton_FSRgamma_gen_ispromptfinal;
+    //double dilep_mass_FSRlepton_FSRgamma_gen_ispromptfinal;
+
+    double dilep_pt_alllepton_FSRgamma_gen_ispromptfinal;
+    double dilep_mass_alllepton_FSRgamma_gen_ispromptfinal;
 
     Gen gen_particle_ME, gen_antiparticle_ME;
     Gen gen_particle_status1, gen_antiparticle_status1;
@@ -171,7 +274,55 @@ private:
     double Lep1PtCut;
     double LepEtaCut;
 
+    bool is_met_filter_passed;
+    bool is_diel_tri_passed;
+    bool is_dimu_tri_passed;
+
+    int additional_veto_mu_size;
+    int additional_veto_el_size;
+
+    int el1_ntuple_index;
+    int el2_ntuple_index;
+
+    int mu1_ntuple_index;
+    int mu2_ntuple_index;
+
+    double dilep_pt_rec;
+    double dilep_mass_rec;
+    double dilep_photon_mass_rec;
+    double leadinglep_pt_rec;
+    double subleadinglep_pt_rec;
+    double leadinglep_iso_rec;
+    double subleadinglep_iso_rec;
+    double leadinglep_eta_rec;
+    double subleadinglep_eta_rec;
+
+    bool evt_tag_leptonpt_sel_rec;
+    bool evt_tag_leptoneta_sel_rec;
+    bool evt_tag_oppositecharge_sel_rec;
+    bool evt_tag_analysisevnt_sel_rec;
+
+    Analysis_SelVariation* fake_estimation;
+    Analysis_SelVariation* lepton_momentum_correction;
+
+    double evt_weight_total_gen;
+    double evt_weight_total_rec;
+    double evt_weight_btag_rec;
+
+    double evt_weight_pureweight, evt_weight_pureweight_up, evt_weight_pureweight_down;
+    double evt_weight_l1prefire,  evt_weight_l1prefire_up,  evt_weight_l1prefire_down;
+    double evt_weight_bveto,      evt_weight_bveto_up,      evt_weight_bveto_down;
+
+    double evt_weight_recoSF_rec, evt_weight_recoSF_up_rec, evt_weight_recoSF_down_rec;
+    double evt_weight_idSF_rec,   evt_weight_idSF_up_rec,   evt_weight_idSF_down_rec;
+    double evt_weight_isoSF_rec,  evt_weight_isoSF_up_rec,  evt_weight_isoSF_down_rec;
+    double evt_weight_trigSF_rec, evt_weight_trigSF_up_rec, evt_weight_trigSF_down_rec;
+
+    // gen level variables
     int mother_id_of_prefsr_dilep;
+    int n_lepton_isPromptFinalState;
+    int n_lepton_isGammaMother_isPromptFinalState;
+    int n_isPromptFinalState;
 
     double dilep_pt_gen_prefsr   ;
     double dilep_mass_gen_prefsr ;
@@ -199,46 +350,6 @@ private:
     std::vector<Int_t> photons_mother_id_gen;
     std::vector<Double_t> photons_closest_dr_to_leptons_gen;
     std::vector<Double_t> lepton_matched_photons_closest_dr_to_leptons_gen;
-
-    std::vector<Bool_t> dielectron_tnp;
-    std::vector<Bool_t> dimuon_tnp;
-    std::vector<Double_t>  pair_mass_tnp;
-    std::vector<Double_t>  evt_weight_tnp;
-    std::vector<Double_t>  probe_pt_tnp;
-    std::vector<Double_t>  probe_eta_tnp;
-    std::vector<Bool_t>    probe_tight_tag_tnp;
-
-    double dilep_pt_rec;
-    double dilep_mass_rec;
-    double dilep_photon_mass_rec;
-    double leadinglep_pt_rec;
-    double subleadinglep_pt_rec;
-    double leadinglep_eta_rec;
-    double subleadinglep_eta_rec;
-    double leadingphoton_pt_rec;
-    double leadingphoton_eta_rec;
-    double leadingphoton_lepton_dr_rec;
-    int photon_n_rec;
-
-    double leadingmuon_reliso_rec;
-    double subleadingmuon_reliso_rec;
-
-    std::map<TString, Dimu_variables*> Dimu_map;
-    ISR_LeptonIDVariation* fake_estimation;
-
-    double evt_weight_fake;
-    double evt_weight_total_gen;
-    double evt_weight_total_rec;
-    double evt_weight_btag_rec;
-
-    double evt_weight_pureweight, evt_weight_pureweight_up, evt_weight_pureweight_down;
-    double evt_weight_l1prefire, evt_weight_l1prefire_up, evt_weight_l1prefire_down;
-    double evt_weight_bveto, evt_weight_bveto_up, evt_weight_bveto_down;
-
-    bool evt_tag_leptonpt_sel_rec;
-    bool evt_tag_leptoneta_sel_rec;
-    bool evt_tag_oppositecharge_sel_rec;
-    bool evt_tag_analysisevnt_sel_rec;
 
     int  photon_n_gen;
     int  lepton_matched_photon_n_gen;

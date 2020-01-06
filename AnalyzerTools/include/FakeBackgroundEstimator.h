@@ -40,7 +40,7 @@ public:
   double GetMuonFakeRate(TString ID, TString key, double eta, double pt, int sys=0);
 
   bool HasLooseLepton;
-  double GetWeight(vector<Lepton *> lepptrs, AnalyzerParameter param, int sys=0, bool prompt_one = true);
+  double GetWeight(vector<Lepton *> lepptrs, AnalyzerParameter param, bool & pass_TT, bool & pass_TL, bool & pass_LL, double & weight_TT, double & weight_TL, double & weight_LL, int sys=0, bool prompt_one = true);
 
 };
 

@@ -7,15 +7,15 @@ import ROOT as rt
 #
 
 cmsText     = "CMS";
-cmsTextFont = 61  
+cmsTextFont = 131  
 
 writeExtraText = True
 extraText      = "Preliminary"
-extraTextFont  = 52 
+extraTextFont  = 52
 
 #lumiTextSize     = 0.6
 lumiTextSize     = 0.9
-lumiTextOffset   = 0.2
+lumiTextOffset   = 0.1
 
 #cmsTextSize      = 0.75
 cmsTextSize      = 0.95
@@ -100,7 +100,7 @@ def CMS_lumi(pad,  iPeriod,  iPosX ):
     
     extraTextSize = extraOverCmsTextSize*cmsTextSize
     
-    latex.SetTextFont(42)
+    latex.SetTextFont(132)
     latex.SetTextAlign(31) 
     latex.SetTextSize(lumiTextSize*t)    
 

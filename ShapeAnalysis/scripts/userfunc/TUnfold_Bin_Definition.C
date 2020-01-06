@@ -10,9 +10,16 @@ TUnfoldBinning* massBinningGen = NULL;
 const int nptbin_fine=17;
 double ptbin_fine[nptbin_fine+1]={0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 35., 45., 55., 65., 75., 85., 100.};
 
+//const int nptbin_fine=27;
+//double ptbin_fine[nptbin_fine+1]={0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12., 13., 14., 16., 18., 20., 22., 25., 28., 32., 37., 43., 52., 62., 80., 100.};
+                                                                                                                        //3    4    5    6    9    10   18   20
 const int nptbin_wide=9;
 double ptbin_wide[nptbin_wide+1]={0., 4., 8., 12., 18., 28., 40., 55., 75., 100.};
 
+//const int nptbin_wide=14;
+//double ptbin_wide[nptbin_wide+1]={0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 37., 52., 72., 100.};
+//double ptbin_wide[nptbin_wide+1]={0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 37., 47., 62., 80., 100.};
+                                                                    //  4   6    9   10  15  18 20
 const int nmassbin_forPt = 5;
 const Double_t massbin_forPt_muon[nmassbin_forPt+1] =     {40,60,80,100,200,350};
 const Double_t massbin_forPt_electron[nmassbin_forPt+1] = {50,65,80,100,200,350};

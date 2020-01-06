@@ -228,9 +228,9 @@ class PlotFactory:
     if type(self.fileIn) is dict:
       plot_container_.histo = self.fileIn[sampleName_].Get(shapeName)
     else:
-      print 'before getting', shapeName
+      #print 'before getting', shapeName
       plot_container_.histo = self.fileIn.Get(shapeName)
-      print 'after getting', shapeName
+      #print 'after getting', shapeName
 
     histoName = 'new_histo_' + sampleName_ + '_' + cutName + '_' + variableName
     histos[sampleName_] = plot_container_.histo.Clone(histoName)
@@ -994,7 +994,11 @@ class PlotFactory:
 	
     plot_container_.minXused = minXused
     plot_container_.maxXused = maxXused
-                                      
+
+    # to avoid error when setting y axis as log scale 
+    if minYused <= 0:
+        minYused = 1.e-2                                       
+
     plot_container_.minYused = minYused
     plot_container_.maxYused = maxYused
 
@@ -1088,12 +1092,12 @@ class PlotFactory:
     # if there is a systematic band draw it
     if len(mynuisances.keys()) != 0:
       tgrMC.SetLineColor(12)
-      tgrMC.SetFillColor(12)
-      tgrMC.SetLineWidth(2)
+      tgrMC.SetFillColor(1)
+      tgrMC.SetLineWidth(1)
       tgrMC.SetFillStyle(3004)
       tgrMCOverMC.SetLineColor(12)
-      tgrMCOverMC.SetFillColor(12)
-      tgrMCOverMC.SetLineWidth(2)
+      tgrMCOverMC.SetFillColor(1)
+      tgrMCOverMC.SetLineWidth(1)
       tgrMCOverMC.SetFillStyle(3004)
       tgrMC.Draw("2")
 
@@ -1116,10 +1120,11 @@ class PlotFactory:
     #---- the Legend
     tlegend = ROOT.TLegend(0.20, 0.70, 0.80, 0.88)
     tlegend.SetFillColor(0)
-    tlegend.SetTextFont(42)
-    tlegend.SetTextSize(0.035)
+    tlegend.SetTextFont(133)
+    tlegend.SetTextSize(23)
     tlegend.SetLineColor(0)
     tlegend.SetShadowColor(0)
+    tlegend.SetFillStyle(0)
     reversedSampleNames = list(self._samples)
     reversedSampleNames.reverse()
 
@@ -1139,7 +1144,6 @@ class PlotFactory:
         else :
           print 'Specify isData at plot.py !!!!!!!!!!!!!!!!!!!!!!!!'
           continue
-
 
         if 'nameHR' in plotdef.keys() :
 	  if plotdef['nameHR'] != '' :
@@ -1262,14 +1266,17 @@ class PlotFactory:
     # draw back all the axes
     tcanvas.RedrawAxis()
 
-    tcanvas.SaveAs(self._outputDirPlots + "/" + plot_container_.canvasNameTemplate + self._FigNamePF + ".png")
-    tcanvas.SaveAs(self._outputDirPlots + "/" + plot_container_.canvasNameTemplate + self._FigNamePF + ".root")
+    # TODO add option whther to create pdf and root file later
+    #tcanvas.SaveAs(self._outputDirPlots + "/" + plot_container_.canvasNameTemplate + self._FigNamePF + ".pdf")
+    #tcanvas.SaveAs(self._outputDirPlots + "/" + plot_container_.canvasNameTemplate + self._FigNamePF + ".root")
 
     # log Y axis
     frame.GetYaxis().SetRangeUser( self._minLogC, self._maxLogC * maxYused )
     #frame.GetYaxis().SetRangeUser( max(self._minLogC, minYused), self._maxLogC * maxYused )
     tcanvas.SetLogy()
-    tcanvas.SaveAs(self._outputDirPlots + "/log_" + plot_container_.canvasNameTemplate + self._FigNamePF + ".png")
+    #tcanvas.SetGridy()
+    #tcanvas.SetGridx()
+    #tcanvas.SaveAs(self._outputDirPlots + "/log_" + plot_container_.canvasNameTemplate + self._FigNamePF + ".pdf")
     tcanvas.SetLogy(0)
 
     if self._plotNormalizedDistributions :
@@ -1320,7 +1327,7 @@ class PlotFactory:
       frameNorm.GetYaxis().SetRangeUser(0, 1.8*maxY_normalized)
 
       tlegend.Draw()
-      plot_container_.tcanvasSigVsBkg.SaveAs(self._outputDirPlots + "/" + 'SigVsBkg_' + cutName + "_" + variableName + self._FigNamePF + ".png")
+      plot_container_.tcanvasSigVsBkg.SaveAs(self._outputDirPlots + "/" + 'SigVsBkg_' + cutName + "_" + variableName + self._FigNamePF + ".pdf")
 
     # ~~~~~~~~~~~~~~~~~~~~
     # plot with ratio plot
@@ -1330,9 +1337,9 @@ class PlotFactory:
 
     tcanvasRatio.cd()
     canvasPad1Name = 'pad1_' + cutName + "_" + variableName
-    pad1 = ROOT.TPad(canvasPad1Name,canvasPad1Name, 0, 1-0.72, 1, 1)
+    pad1 = ROOT.TPad(canvasPad1Name,canvasPad1Name, 0, 1-0.7, 1, 1)
     pad1.SetTopMargin(0.098)
-    pad1.SetBottomMargin(0.000) 
+    pad1.SetBottomMargin(0.0) 
     pad1.Draw()
 
     pad1.cd()
@@ -1372,6 +1379,7 @@ class PlotFactory:
       xAxisDistro.SetNdivisions(len(variable['xlabels']['labels']),5,0)
 
     frameDistro.GetYaxis().SetRangeUser( min(0.001, minYused), maxYused )
+    frameDistro.GetXaxis().SetLabelSize(0.)
 
     if len(self._groupPlot.keys()) == 0:
       if thsBackground.GetNhists() != 0:
@@ -1410,10 +1418,36 @@ class PlotFactory:
     # draw back all the axes
     pad1.RedrawAxis()
 
+    ######## Lets draw vertical line for 2D->1D histogram
+
+    vertical_line = None
+    vertical_line_ratio = None 
+    if 'go1D' in variable.keys() :
+        if variable['go1D'] == True :    
+            bin_definition = variable['range']
+
+            if len(bin_definition) == 2 :   
+                xbins = bin_definition[0]
+                ybins = bin_definition[1]
+                nxbin = len(xbins) - 1
+                nybin = len(ybins) - 1
+                
+                pad1.cd() 
+                #vertical_line = ROOT.TLine(nybin, frameDistro.GetMinimum(), nybin, frameDistro.GetMaximum()) 
+                vertical_line = ROOT.TLine() 
+                vertical_line.SetLineStyle(1)
+                vertical_line.SetLineWidth(1)
+                vertical_line.SetLineColor(1)
+                #vertical_line.Draw("same")
+                for xbin in range(1, nxbin):
+                    vertical_line.DrawLine(xbin * nybin, frameDistro.GetMinimum(), xbin * nybin, frameDistro.GetMaximum())
+                
+    ######## 
+       
     tcanvasRatio.cd()
     canvasPad2Name = 'pad2_' + cutName + "_" + variableName
-    pad2 = ROOT.TPad(canvasPad2Name,canvasPad2Name,0,0,1,1-0.72)
-    pad2.SetTopMargin(0.000)
+    pad2 = ROOT.TPad(canvasPad2Name,canvasPad2Name,0,0,1,1-0.7)
+    pad2.SetTopMargin(0.02)
     pad2.SetBottomMargin(0.392)
     pad2.Draw()
     #pad2.cd().SetGrid()
@@ -1430,15 +1464,45 @@ class PlotFactory:
       frameRatio.GetXaxis().SetTitle(variableName)
 
     frameRatio.GetYaxis().SetTitle("Data/Expected")
-    frameRatio.GetYaxis().SetRangeUser( 0.5, 1.5 )
+    frameRatio.GetYaxis().SetRangeUser( 0.7, 1.3 )
     self.Pad2TAxis(frameRatio)
 
-    if 'xlabels' in variable.keys() :
-      for i, label in enumerate(variable['xlabels']['labels']):
-        frameRatio.GetXaxis().ChangeLabel(i+1,20,0.06,-1,-1,-1 ,label)
-        frameRatio.GetXaxis().SetNdivisions(len(variable['xlabels']['labels']),5,0)
-      frameRatio.GetXaxis().LabelsOption(variable['xlabels']['option'])
-      frameRatio.GetXaxis().CenterLabels(True)
+    if 'go1D' in variable.keys() :
+        if variable['go1D'] == True :
+            bin_definition = variable['range']
+
+            if len(bin_definition) == 2 :
+                xbins = bin_definition[0]
+                ybins = bin_definition[1]
+                nxbin = len(xbins) - 1
+                nybin = len(ybins) - 1
+
+                xAxisDistro.SetNdivisions(nxbin,nybin,0, False)
+
+                if 'xlabels' in variable.keys() :
+                  print "xlabels set"
+                  for i, label in enumerate(variable['xlabels']['labels']):
+                    print str(i) + " label: " + label
+                    frameRatio.GetXaxis().ChangeLabel(i+2,-1,-1,-1,-1,-1 ,label)
+                  frameRatio.GetXaxis().LabelsOption(variable['xlabels']['option'])
+                  #frameRatio.GetXaxis().CenterLabels(True)
+
+                vertical_line_ratio = ROOT.TLine()
+                vertical_line_ratio.SetLineStyle(1)
+                vertical_line_ratio.SetLineWidth(1)
+                vertical_line_ratio.SetLineColor(1)
+
+                for xbin in range(1, nxbin):
+                    vertical_line_ratio.DrawLine(xbin * nybin, frameRatio.GetMinimum(), xbin * nybin, frameRatio.GetMaximum())
+    else:
+
+        if 'xlabels' in variable.keys() :
+          for i, label in enumerate(variable['xlabels']['labels']):
+            frameRatio.GetXaxis().ChangeLabel(i+1,20,0.06,-1,-1,-1 ,label)
+            frameRatio.GetXaxis().SetNdivisions(len(variable['xlabels']['labels']),5,0)
+          frameRatio.GetXaxis().LabelsOption(variable['xlabels']['option'])
+          frameRatio.GetXaxis().CenterLabels(True)
+
 
     if (len(mynuisances.keys())!=0):
       tgrMCOverMC.Draw("2") 
@@ -1451,9 +1515,11 @@ class PlotFactory:
       #---- Ratio Legend
       tlegendRatio = ROOT.TLegend(0.20, 0.40, 0.60, 0.55)
       tlegendRatio.SetFillColor(0)
-      tlegendRatio.SetTextFont(42)
+      tlegendRatio.SetTextFont(133)
+      tlegendRatio.SetTextFontSize(23)
       tlegendRatio.SetLineColor(0)
       tlegendRatio.SetShadowColor(0)
+      tlegendRatio.SetFillStyle(0)
 
       if self._postFit == 'p':
         tlegendRatio.AddEntry(tgrDataOverMC, "post-fit", "PL")
@@ -1473,45 +1539,66 @@ class PlotFactory:
       samplesGrToRatio.Draw("P")
 
     oneLine2 = ROOT.TLine(frameRatio.GetXaxis().GetXmin(), 1, frameRatio.GetXaxis().GetXmax(), 1);
-    oneLine2.SetLineStyle(3)
-    oneLine2.SetLineWidth(3)
+    oneLine2.SetLineStyle(2)
+    oneLine2.SetLineWidth(1)
+    oneLine2.SetLineColor(1)
     oneLine2.Draw("same")
 
     # draw back all the axes
     pad2.RedrawAxis()
-    pad2.SetGrid()
+    #pad2.SetGrid()
 
-    tcanvasRatio.SaveAs(self._outputDirPlots + "/" + canvasRatioNameTemplate + self._FigNamePF + ".png")
+    tcanvasRatio.SaveAs(self._outputDirPlots + "/" + canvasRatioNameTemplate + self._FigNamePF + ".pdf")
     tcanvasRatio.SaveAs(self._outputDirPlots + "/" + canvasRatioNameTemplate + self._FigNamePF + ".root")
 
     # log Y axis
+    ymax_bfLogScale = frameDistro.GetMaximum() # assuming _maxLogCratio > 1
     frameDistro.GetYaxis().SetRangeUser( min(self._minLogCratio, maxYused/1000), self._maxLogCratio * maxYused )
     pad1.SetLogy()
-    tcanvasRatio.SaveAs(self._outputDirPlots + "/log_" + canvasRatioNameTemplate + self._FigNamePF + ".png")
-    pad1.SetLogy(0)
+    #pad1.SetGridy()
+    #pad1.SetGridx()
 
+    if 'go1D' in variable.keys() :
+        if variable['go1D'] == True :    
+            bin_definition = variable['range']
+
+            if len(bin_definition) == 2 :    
+                xbins = bin_definition[0]
+                ybins = bin_definition[1]
+                nxbin = len(xbins) - 1
+                nybin = len(ybins) - 1
+     
+                pad1.cd()
+                vertical_line.Clear()
+                pad1.Update()
+                for xbin in range(1, nxbin):
+                    vertical_line.DrawLine(xbin * nybin, ymax_bfLogScale, xbin * nybin, frameDistro.GetMaximum())
+
+    pad2.cd()
+    tcanvasRatio.SaveAs(self._outputDirPlots + "/log_" + canvasRatioNameTemplate + self._FigNamePF + ".pdf")
+    pad1.SetLogy(0)
 
   # _______________________________________________
   # --- squared sum
   def Pad2TAxis(self, hist):
     xaxis = hist.GetXaxis()
-    xaxis.SetLabelFont ( 42)
-    xaxis.SetLabelOffset( 0.025)
-    xaxis.SetLabelSize ( 0.1)
+    #xaxis.SetLabelFont ( 42)
+    #xaxis.SetLabelOffset( 0.025)
+    #xaxis.SetLabelSize ( 0.1)
     xaxis.SetNdivisions ( 505)
-    xaxis.SetTitleFont ( 42)
-    xaxis.SetTitleOffset( 1.35)
-    xaxis.SetTitleSize ( 0.11)
+    #xaxis.SetTitleFont ( 42)
+    #xaxis.SetTitleOffset( 1.35)
+    #xaxis.SetTitleSize ( 0.11)
 
     yaxis = hist.GetYaxis()
     yaxis.CenterTitle ( )
-    yaxis.SetLabelFont ( 42)
-    yaxis.SetLabelOffset( 0.02)
-    yaxis.SetLabelSize ( 0.1)
+    #yaxis.SetLabelFont ( 42)
+    #yaxis.SetLabelOffset( 0.02)
+    #yaxis.SetLabelSize ( 0.1)
     yaxis.SetNdivisions ( 505)
-    yaxis.SetTitleFont ( 42)
-    yaxis.SetTitleOffset( .6)
-    yaxis.SetTitleSize ( 0.11)
+    #yaxis.SetTitleFont ( 42)
+    #yaxis.SetTitleOffset( .6)
+    #yaxis.SetTitleSize ( 0.11)
 
 
 

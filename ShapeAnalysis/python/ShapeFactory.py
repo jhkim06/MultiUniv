@@ -277,6 +277,7 @@ class ShapeFactory:
     go1D          : option to select whether to go 1D from 2D or not  
     useTUnfoldBin : use TUnfoldBinning class in TUnfold
     unfoldBinType : miagraion matrix or input histogram    
+    isSumwxHist   : draw sumwx histograms
     =============================================================================================
     '''
     
@@ -1098,10 +1099,12 @@ class ShapeFactory:
     l = len(bins)
     # 1D variable binning
     if l == 1 and isinstance(bins[0], list) :
+        
       ndim = 1
       hclass = TH1D
       xbins = bins[0]
       hargs = (len(xbins)-1, array('d', xbins) )
+
     elif l == 2 and isinstance( bins[0], list) and isinstance( bins[1], list) :
       ndim = 2
       hclass = TH2D

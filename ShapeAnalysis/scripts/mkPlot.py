@@ -184,7 +184,6 @@ else:
   exit()
 
 
-
 nuisances = {}
 if os.path.exists(opt.nuisancesFile):
   handle = open(opt.nuisancesFile,'r')

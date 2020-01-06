@@ -70,6 +70,7 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(bool apply_roc, bool update_roc, int
     Muon mu_temp;
     mu_temp.SetPtEtaPhiM(muon_pt->at(i), muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
     mu_temp.SetCharge(muon_charge->at(i));
+    mu.SetNtupleIndex(i);
 
     mu.SetCharge(muon_charge->at(i));
     mu.SetMiniAODPt(muon_pt->at(i));
@@ -78,7 +79,6 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(bool apply_roc, bool update_roc, int
 
     double rc = muon_roch_sf->at(i);
     double rc_err = muon_roch_sf_up->at(i)-rc;
- 
 
     if(update_roc){
       std::vector<Gen> gens = GetGens();
@@ -157,6 +157,7 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(bool apply_reg_correction){
 
     Electron el;
 
+    el.SetNtupleIndex(i);
     el.SetEnShift(  electron_Energy_Scale_Up->at(i)/electron_Energy->at(i), electron_Energy_Scale_Down->at(i)/electron_Energy->at(i) );
     el.SetResShift( electron_Energy_Smear_Up->at(i)/electron_Energy->at(i), electron_Energy_Smear_Down->at(i)/electron_Energy->at(i) );
 
@@ -677,7 +678,7 @@ std::vector<Muon> AnalyzerCore::UseTunePMuon(std::vector<Muon> muons){
 
 }
 
-std::vector<Muon> AnalyzerCore::SelectMuons(std::vector<Muon> muons, TString id, double ptmin, double fetamax){
+std::vector<Muon> AnalyzerCore::SelectMuons(std::vector<Muon> & muons, TString id, double ptmin, double fetamax){
 
   std::vector<Muon> out;
   for(unsigned int i=0; i<muons.size(); i++){
@@ -700,7 +701,7 @@ std::vector<Muon> AnalyzerCore::SelectMuons(std::vector<Muon> muons, TString id,
 
 }
 
-std::vector<Electron> AnalyzerCore::SelectElectrons(std::vector<Electron> electrons, TString id, double ptmin, double fetamax){
+std::vector<Electron> AnalyzerCore::SelectElectrons(std::vector<Electron> & electrons, TString id, double ptmin, double fetamax){
 
   std::vector<Electron> out;
   for(unsigned int i=0; i<electrons.size(); i++){
