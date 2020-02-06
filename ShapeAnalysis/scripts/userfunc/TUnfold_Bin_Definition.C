@@ -10,16 +10,9 @@ TUnfoldBinning* massBinningGen = NULL;
 const int nptbin_fine=17;
 double ptbin_fine[nptbin_fine+1]={0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 35., 45., 55., 65., 75., 85., 100.};
 
-//const int nptbin_fine=27;
-//double ptbin_fine[nptbin_fine+1]={0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12., 13., 14., 16., 18., 20., 22., 25., 28., 32., 37., 43., 52., 62., 80., 100.};
-                                                                                                                        //3    4    5    6    9    10   18   20
 const int nptbin_wide=9;
 double ptbin_wide[nptbin_wide+1]={0., 4., 8., 12., 18., 28., 40., 55., 75., 100.};
 
-//const int nptbin_wide=14;
-//double ptbin_wide[nptbin_wide+1]={0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 37., 52., 72., 100.};
-//double ptbin_wide[nptbin_wide+1]={0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 37., 47., 62., 80., 100.};
-                                                                    //  4   6    9   10  15  18 20
 const int nmassbin_forPt = 5;
 const Double_t massbin_forPt_muon[nmassbin_forPt+1] =     {40,60,80,100,200,350};
 const Double_t massbin_forPt_electron[nmassbin_forPt+1] = {50,65,80,100,200,350};
@@ -28,7 +21,7 @@ const int nmassbin_forPt_preFSR = 10;
 const Double_t massbin_forPt_preFSR[nmassbin_forPt_preFSR+1] = {50,60,70,80,90,100,110,150,200,300,350};
 
 const int nptbin_forMass = 1;
-const Double_t ptbin_forMass[nptbin_forMass+1] =     {0,100};
+const Double_t ptbin_forMass[nptbin_forMass+1] = {0,100};
 
 // for mass 1D histogram bins
 const int nmassbin_fine_muon = 58;
@@ -57,7 +50,6 @@ void SetPtBinningGen(TString channel = "electron"){
  ptBinningGen->AddAxis("pt",nptbin_wide,ptbin_wide,false,true);
  if( channel.CompareTo("electron") == 0 ) ptBinningGen->AddAxis("mass", nmassbin_forPt, massbin_forPt_electron, true, true);
  if( channel.CompareTo("muon") == 0 )     ptBinningGen->AddAxis("mass", nmassbin_forPt, massbin_forPt_muon, true, true);
- if( channel.CompareTo("preFSR") == 0 )     ptBinningGen->AddAxis("mass", nmassbin_forPt_preFSR, massbin_forPt_preFSR, true, true); // just to show more points 
 }
 
 void SetMassBinningRec(TString channel = "electron"){
@@ -76,7 +68,7 @@ void SetMassBinningGen(TString channel = "electron"){
  massBinningGen->AddAxis("pt", nptbin_forMass,  ptbin_forMass, false, true);
 }
 
-                                                               /////////////////// functions to be used in the TTree::Draw() ////////////////////////////////////
+/////////////////// functions to be used in the TTree::Draw() ////////////////////////////////////
 // create histograms 
 TH1* get2DHistogramPtRec(TString hname){
 

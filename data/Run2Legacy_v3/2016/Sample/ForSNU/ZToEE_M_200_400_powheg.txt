@@ -1,0 +1,1 @@
+/data6/Users/jhkim/DY_Powheg/2016/ZToEE_NNPDF30_13TeV-powheg_M_200_400/SKFlat_Run2Legacy_v3/200124_093733/0000/SKFlatNtuple_2016_MC_1.root

@@ -50,7 +50,7 @@ public:
   inline bool fromHardProcessDecayed() const { return j_fromHardProcessDecayed; }
   inline bool fromHardProcessFinalState() const { return j_fromHardProcessFinalState; }
   inline bool isMostlyLikePythia6Status3() const { return j_isMostlyLikePythia6Status3; }
-
+  inline int getIndex() const { return j_index; }
 private:
 
   bool j_IsEmpty;

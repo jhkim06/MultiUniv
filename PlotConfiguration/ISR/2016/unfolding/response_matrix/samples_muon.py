@@ -4,25 +4,43 @@ from CommonPyTools.python.CommonTools import *
 # Number of Leptons and WP
 ###########################
 
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec * muon_double_idSF_POGTightWithTightIso * muon_double_isoSF_POGTightWithTightIso * muon_double_trigSF_DoubleMuon_POGTightWithTightIso'
+McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_isoSF_rec * evt_weight_idSF_rec * evt_weight_trigSF_rec'
 
-#--------------------    
+#--------------------
 # MC
-#--------------------    
+#--------------------
 
-samples['DYJets'] = {
+samples['DYJets_MG'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
     'weight' :McWeight,
     }
 
-samples['DYJets10to50'] = {
+samples['DYJets10to50_MG'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
     'weight' :McWeight,
     }
 
-#--------------------    
+#samples['ZToMuMu_M_50_120_powheg'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['ZToMuMu_M_120_200_powheg'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['ZToMuMu_M_200_400_powheg'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+
+#--------------------
 # DATA driven QCD
 #--------------------
 

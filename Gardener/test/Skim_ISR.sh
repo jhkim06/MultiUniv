@@ -15,18 +15,19 @@
 
 rm JobCheck.log
 
-for sample in DYJets10to50 DYJets
+#for sample in  ZToMuMu_M_50_120_powheg ZToMuMu_M_120_200_powheg ZToMuMu_M_200_400_powheg
 #for sample in DYJets10to50 DYJets
+for sample in DYFSR_PHOTOS DYFSR_PYTHIA DY_MuMu_FSR_PYTHIA DY_MuMu_FSR_PHOTOS 
 #for sample in EGamma DoubleMuon DYJets10to50_MG DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia
 #for sample in DoubleMuon DoubleEG TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia
 #for sample in DoubleEG DoubleMuon DYJets10to50 DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
 #for sample in EGamma DoubleMuon DYJets10to50 DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
 do
   echo $sample
-  #mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 50 --skimV 2 --userflags ISR --multiQueue
-  #mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 50 --skimV 1 --userflags ISR_generator_only --multiQueue --treeDir GEN  --OnlyGenLevel --dry_run
-  mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 50 --skimV 1 --userflags ISR --multiQueue
-  #mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 100 --skimV 1 --userflags ISR_detector_only --multiQueue 
+  #mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 50 --skimV 1 --userflags ISR --multiQueue
+  mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 50 --skimV 1 --userflags ISR_generator_only --multiQueue --treeDir GEN  --OnlyGenLevel
+  #mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 50 --skimV 1 --userflags ISR --multiQueue  --dry_run
+  #mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 50 --skimV 1 --userflags ISR_detector_only --multiQueue 
 
   #mkGardener.py --Category SMP -a Skim_ISR -y 2017 -i $sample -n 50 --skimV 1 --userflags ISR_generator_only --multiQueue --treeDir GEN  --OnlyGenLevel
   #mkGardener.py --Category SMP -a Skim_ISR -y 2017 -i $sample -n 50 --skimV 1 --userflags ISR --multiQueue 

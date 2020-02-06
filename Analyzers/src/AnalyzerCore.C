@@ -61,10 +61,12 @@ Event AnalyzerCore::GetEvent(){
 
 }
 
-std::vector<Muon> AnalyzerCore::GetAllMuons(bool apply_roc, bool update_roc, int s, int m){
+std::vector<Muon> AnalyzerCore::GetAllMuons(bool apply_roc, bool update_roc, int s, int m, const int scale_res_sys)
+{
 
   std::vector<Muon> out;
-  for(unsigned int i=0; i<muon_pt->size(); i++){
+  for(unsigned int i=0; i<muon_pt->size(); i++)
+    {
 
     Muon mu;
     Muon mu_temp;
@@ -80,7 +82,8 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(bool apply_roc, bool update_roc, int
     double rc = muon_roch_sf->at(i);
     double rc_err = muon_roch_sf_up->at(i)-rc;
 
-    if(update_roc){
+    if(update_roc)
+    {
       std::vector<Gen> gens = GetGens();
       RocUtil->CalcScaleAndError(mu_temp, s, m, event, gens, IsDATA);
       rc = mu_temp.MomentumScale();
@@ -89,7 +92,18 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(bool apply_roc, bool update_roc, int
 
 
     mu.SetMomentumScaleAndError(rc, rc_err);
-    if(apply_roc) mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i)); // apply correction as stored in the ntuple
+    if(apply_roc)
+    {
+        if(scale_res_sys == 1)
+        {
+            rc = rc + rc_err;
+        }
+        if(scale_res_sys == 2)
+        {
+            rc = rc - rc_err;
+        }
+        mu.SetPtEtaPhiM(muon_pt->at(i)*rc, muon_eta->at(i), muon_phi->at(i), muon_mass->at(i)); // apply correction as stored in the ntuple
+    }
     else mu.SetPtEtaPhiM(muon_pt->at(i), muon_eta->at(i), muon_phi->at(i), muon_mass->at(i));
 
     //==== TuneP
@@ -126,9 +140,10 @@ std::vector<Muon> AnalyzerCore::GetAllMuons(bool apply_roc, bool update_roc, int
 
 }
 //                                              Roc set   nmembers
-std::vector<Muon> AnalyzerCore::GetMuons(TString id, double ptmin, double fetamax, bool apply_roc, bool update_roc, int s, int m){
+std::vector<Muon> AnalyzerCore::GetMuons(TString id, double ptmin, double fetamax, bool apply_roc, bool update_roc, int s, int m, const int scale_res_sys)
+{
 
-  std::vector<Muon> muons = GetAllMuons(apply_roc, update_roc, s, m);
+  std::vector<Muon> muons = GetAllMuons(apply_roc, update_roc, s, m, scale_res_sys);
   std::vector<Muon> out;
   for(unsigned int i=0; i<muons.size(); i++){
     Muon this_muon=muons.at(i);
@@ -150,10 +165,12 @@ std::vector<Muon> AnalyzerCore::GetMuons(TString id, double ptmin, double fetama
 
 }
 
-std::vector<Electron> AnalyzerCore::GetAllElectrons(bool apply_reg_correction){
+std::vector<Electron> AnalyzerCore::GetAllElectrons(bool apply_reg_correction, const int scale_res_sys)
+{
 
   std::vector<Electron> out;
-  for(unsigned int i=0; i<electron_Energy->size(); i++){
+  for(unsigned int i=0; i<electron_Energy->size(); i++)
+    {
 
     Electron el;
 
@@ -163,8 +180,35 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(bool apply_reg_correction){
 
     el.SetPtEtaPhiE(1., electron_eta->at(i), electron_phi->at(i), electron_Energy->at(i));
     double el_theta = el.Theta();
+
     double el_pt  = apply_reg_correction? electron_Energy->at(i) * TMath::Sin( el_theta ) : electron_EnergyUnCorr->at(i) * TMath::Sin( el_theta );
     double el_energy = apply_reg_correction? electron_Energy->at(i) : electron_EnergyUnCorr->at(i) ;
+
+    if(scale_res_sys == 1)
+    {
+        // scale up
+        el_pt = electron_Energy_Scale_Up->at(i) * TMath::Sin( el_theta );
+        el_energy = electron_Energy_Scale_Up->at(i);
+    }
+    if(scale_res_sys == 2)
+    {
+        // scale down
+        el_pt = electron_Energy_Scale_Down->at(i) * TMath::Sin( el_theta );
+        el_energy = electron_Energy_Scale_Down->at(i);
+    }
+    if(scale_res_sys == 3)
+    {
+        // resolution up
+        el_pt = electron_Energy_Smear_Up->at(i) * TMath::Sin( el_theta );
+        el_energy = electron_Energy_Smear_Up->at(i);
+    }
+    if(scale_res_sys == 4)
+    {
+        // resolution down
+        el_pt = electron_Energy_Smear_Down->at(i) * TMath::Sin( el_theta );
+        el_energy = electron_Energy_Smear_Down->at(i);
+    }
+
     el.SetPtEtaPhiE( el_pt, electron_eta->at(i), electron_phi->at(i), el_energy);
 
     el.SetUncorrE(electron_EnergyUnCorr->at(i));
@@ -213,9 +257,9 @@ std::vector<Electron> AnalyzerCore::GetAllElectrons(bool apply_reg_correction){
 
 }
 
-std::vector<Electron> AnalyzerCore::GetElectrons(TString id, double ptmin, double fetamax, bool apply_reg_correction){
+std::vector<Electron> AnalyzerCore::GetElectrons(TString id, double ptmin, double fetamax, bool apply_reg_correction, const int scale_res_sys){
 
-  std::vector<Electron> electrons = GetAllElectrons(apply_reg_correction);
+  std::vector<Electron> electrons = GetAllElectrons(apply_reg_correction, scale_res_sys);
   std::vector<Electron> out;
   for(unsigned int i=0; i<electrons.size(); i++){
     Electron this_electron= electrons.at(i);

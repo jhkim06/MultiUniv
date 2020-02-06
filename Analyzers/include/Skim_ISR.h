@@ -168,9 +168,10 @@ class Skim_ISR : public AnalyzerCore {
 public:
 
     void initializeAnalyzer();
-    void executeEventFromParameter(AnalyzerParameter param, Analysis_SelVariation * p_struct, bool fake_estimation = false);
+    void executeEventFromParameter(AnalyzerParameter param, Analysis_SelVariation * p_struct, bool fake_estimation = false, const int scale_res_sys = 0);
     void executeEvent();
     
+    int getInitialMoterIndex(int mother_index, int initial_PID);
     int findInitialMoterIndex(int mother_index, int current_index, bool same_flavor=true);
     void saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map);
     bool PassKinematicCuts(const Gen lep1, const Gen lep2, double leading_pt, double subleading_pt, double eta);
@@ -303,7 +304,10 @@ private:
     bool evt_tag_analysisevnt_sel_rec;
 
     Analysis_SelVariation* fake_estimation;
-    Analysis_SelVariation* lepton_momentum_correction;
+    Analysis_SelVariation* lepton_momentum_scale_up;
+    Analysis_SelVariation* lepton_momentum_scale_down;
+    Analysis_SelVariation* lepton_momentum_res_up;
+    Analysis_SelVariation* lepton_momentum_res_down;
 
     double evt_weight_total_gen;
     double evt_weight_total_rec;

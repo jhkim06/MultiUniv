@@ -7,16 +7,18 @@
 void SKFlatNtuple::Loop(){
 
   Long64_t nentries = fChain->GetEntries();
-  //nentries = 10;
   //cout << "nentries = " << nentries << endl;
 
-  if(MaxEvent>0){
+  if(MaxEvent>0)
+  {
     nentries = std::min(nentries,MaxEvent);
   }
+  //nentries = 10;
 
   cout << "[SKFlatNtuple::Loop] Event Loop Started " << printcurrunttime() << endl;
-
-  for(Long64_t jentry=0; jentry<nentries;jentry++){
+  for(Long64_t jentry=0; jentry<nentries;jentry++)
+    {
+    //cout << "jentry: " << jentry << endl;
 
     if(jentry<NSkipEvent){
       //cout << "[SKFlatNtuple::Loop] Skipping " << jentry << "'th event" << endl;

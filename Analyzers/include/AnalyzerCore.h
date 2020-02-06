@@ -59,12 +59,11 @@ public:
 
   Event GetEvent();
 
+  std::vector<Electron> GetAllElectrons(bool apply_reg_correction = true, const int scale_res_sys = 0);
+  std::vector<Electron> GetElectrons(TString id, double ptmin, double fetamax, bool apply_reg_correction = true, const int scale_res_sys = 0);
 
-  std::vector<Electron> GetAllElectrons(bool apply_reg_correction = true);
-  std::vector<Electron> GetElectrons(TString id, double ptmin, double fetamax, bool apply_reg_correction = true);
-
-  std::vector<Muon> GetAllMuons(bool apply_roc = true, bool update_roc = false, int s = 0, int m = 0);
-  std::vector<Muon> GetMuons(TString id, double ptmin, double fetamax, bool apply_roc = true, bool update_roc = false, int s = 0, int m = 0);
+  std::vector<Muon> GetAllMuons(bool apply_roc = true, bool update_roc = false, int s = 0, int m = 0, const int scale_res_sys = 0);
+  std::vector<Muon> GetMuons(TString id, double ptmin, double fetamax, bool apply_roc = true, bool update_roc = false, int s = 0, int m = 0, const int scale_res_sys = 0);
 
   std::vector<Photon> GetAllPhotons();
   std::vector<Photon> GetPhotons(TString id, double ptmin, double fetamax, bool checkPixelSeed = false);

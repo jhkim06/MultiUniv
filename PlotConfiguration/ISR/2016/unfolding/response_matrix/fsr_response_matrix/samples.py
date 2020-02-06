@@ -9,9 +9,9 @@ from CommonPyTools.python.CommonTools import *
 
 McWeight = 'evt_weight_total_gen'
 
-#--------------------    
+#--------------------
 # MC
-#--------------------    
+#--------------------
 #samples['DY_MuMu_FSR_PYTHIA'] = {
 #    'skim'   :'', # use default skim defined in configuration.py
 #    'cut'    :'',
@@ -50,7 +50,43 @@ samples['DYJets10to50'] = {
     'weight' :McWeight,
     }
 
-#--------------------    
+#samples['ZToEE_M_50_120_powheg'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['ZToEE_M_120_200_powheg'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['ZToEE_M_200_400_powheg'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+
+#samples['ZToMuMu_M_50_120_powheg'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['ZToMuMu_M_120_200_powheg'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['ZToMuMu_M_200_400_powheg'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+
+#--------------------
 # DATA driven QCD
 #--------------------
 
