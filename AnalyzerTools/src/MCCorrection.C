@@ -135,7 +135,7 @@ void MCCorrection::ReadHistograms(){
     is >> b; // syst
     is >> c; // rootfile name
 
-    if(DataYear == 2017 && a!=MCSample && a!="MC_2017" ) continue;
+    //if(DataYear == 2017 && a!=MCSample && a!="MC_2017" ) continue;
     
     TFile *file = new TFile(PUReweightPath+c);
     cout<<"MCCorrection:: getting PU hist: "<<a+"_"+b<<endl;
@@ -754,6 +754,8 @@ double MCCorrection::GetPileUpWeightBySampleName(int N_vtx, int syst){
   TString this_histname = MCSample;
   if(MCSample.Contains("CHToCB_M")) 
     this_histname="TTLJ_powheg"; //TODO: make pileup hist for signal
+  else if(MCSample.Contains("TT_herwig")) 
+    this_histname="TTLJ_powheg";
   else if(MCSample.Contains("TTLJ_powheg")) 
     this_histname="TTLJ_powheg";
   else if(MCSample.Contains("TTLL_powheg")) 

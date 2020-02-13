@@ -439,6 +439,9 @@ class PlotFactory:
 	    shapeNameDown = cutName+"/"+nuisance['variablesDo'][variableName][0]+'/histo_' + sampleName
 	  else:
 	    shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleName
+	elif nuisance.get('kind')=='PDF':
+	  print "nuisance kine PDF will not be handled in plotter!!!!!!!!!"
+          continue
 	elif 'name' in nuisance:
 	  shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisance['name']+"Up"
 	  shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisance['name']+"Down"
@@ -652,7 +655,8 @@ class PlotFactory:
 	  histos_grouped[sampleNameGroup].SetLineWidth(sampleConfiguration['lineWidth'])
 	if 'lineColor' in sampleConfiguration.keys():
 	  histos_grouped[sampleNameGroup].SetLineColor(sampleConfiguration['lineColor'])
-
+	if 'suppressNegative' in sampleConfiguration.keys() and sampleConfiguration['suppressNegative'] == True:
+	  self._fixNegativeBinAndError(histos_grouped[sampleNameGroup])
 
   def SaveBkgSumErrCentral(self, plot_container_):
 
@@ -1598,6 +1602,20 @@ class PlotFactory:
       out_histo.SetBinError(i,0)
     return out_histo
 
+  def _fixNegativeBinAndError(self, histogram_to_be_fixed):
+    # if a histogram has a bin < 0
+    # then put the bin content to 0
+    # and also if a histogram has uncertainties that go <0,
+    # then put the uncertainty to the maximum allowed
+
+    for ibin in range(1, histogram_to_be_fixed.GetNbinsX()+1) :
+      if histogram_to_be_fixed.GetBinContent(ibin) < 0 :
+	histogram_to_be_fixed.SetBinContent(ibin, 0) 
+
+    # the SetBinError does not allow asymmetric -> fine, maximum uncertainty set
+    for ibin in range(1, histogram_to_be_fixed.GetNbinsX()+1) :
+      if histogram_to_be_fixed.GetBinContent(ibin) - histogram_to_be_fixed.GetBinErrorLow(ibin) < 0 :
+	histogram_to_be_fixed.SetBinError(ibin, histogram_to_be_fixed.GetBinContent(n)) 
 
 
     

@@ -300,8 +300,12 @@ for icut in cuts:
 	      if idxPlus < 0 or idxMinus <0:
 		print 'Something wrong in Scale variation'
 		exit()
-	      print 'Max Scale Up variation', diff_Plus/Nnom, 'for',idxPlus
-	      print 'Max Scale Down variation', diff_Minus/Nnom, 'for',idxMinus
+	      if not Nnom==0:
+	        print 'Max Scale Up variation', diff_Plus/Nnom, 'for',idxPlus
+	        print 'Max Scale Down variation', diff_Minus/Nnom, 'for',idxMinus
+	      else:
+		print 'Nnom is zero'
+	        pass
 	      InF.cd(icut+'/'+ivar)
               ScaleUpName    = 'histo_'+InputSample+'_'+nuisance['name']+'Up'
               ScaleDownName    = 'histo_'+InputSample+'_'+nuisance['name']+'Down'

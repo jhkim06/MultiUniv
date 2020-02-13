@@ -1,7 +1,7 @@
 from ROOT import TFile, TH1, TH1F, TMVA, Double
 
 base_dir    = "out_root_2017/"
-method_list = ['BDT_400_MinNodeSize1of10'] #currently only support single method
+method_list = ['BDT'] #currently only support single method
 sample_list = [
   'TTLJ_powheg_4j5j_2b',
   'TTLJ_powheg_4j5j_3b',
@@ -17,7 +17,7 @@ sample_list = [
   'CHToCB_M120to150_6j_3b',
 ]
 #
-ref_effB_list       = [0.1,0.2,0.3,0.4,0.5]
+ref_effB_list       = [0.1,0.2]
 #
 out_effS_dict       = {}
 out_effS_dict_train = {}

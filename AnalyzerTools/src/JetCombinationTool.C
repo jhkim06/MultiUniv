@@ -80,9 +80,21 @@ bool JetCombinationTool::NextPermutation(bool UseLeading4Jets){
 
 bool JetCombinationTool::Check_BJet_Assignment(){
 
+  // UP type found and then Down type found later : true
+  // vice versa : false
+
   int nbtags_in_four_jets=0;
+  bool found_up_type=false;
   for(unsigned int i=0; i<permutation_vector.size(); i++){
     JET_ASSIGNMENT jet_assignment_idx = permutation_vector.at(i);
+
+    if( jet_assignment_idx == W_CH_UP_TYPE ){
+      found_up_type = true;
+    }
+    if( jet_assignment_idx == W_CH_DOWN_TYPE && found_up_type == false ){
+      break;
+    }
+    //check b tag
     bool IsBTagged = btag_vector.at(i);
     if(nbtags>=2){
       if( jet_assignment_idx == HADRONIC_TOP_B && IsBTagged ) nbtags_in_four_jets+=1;
@@ -94,7 +106,8 @@ bool JetCombinationTool::Check_BJet_Assignment(){
   }
 
   bool true_bjet_assignment=false;
-  if(nbtags==2 && nbtags_in_four_jets==2) true_bjet_assignment=true;
+  if(found_up_type==false) true_bjet_assignment=false;
+  else if(nbtags==2 && nbtags_in_four_jets==2) true_bjet_assignment=true;
   else if(nbtags>=3 && nbtags_in_four_jets>=3) true_bjet_assignment=true;
 
   //cout << "JetCombinationTool::Check_BJet_Assignment : " << endl; 

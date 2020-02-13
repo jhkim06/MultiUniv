@@ -131,7 +131,7 @@ TLorentzVector TSCorrection::GetCorrectedJet(TString flavour_key, TLorentzVector
   double Pt = jet.Pt();
   double Eta = jet.Eta();
   double Phi = jet.Phi();
-  double M = jet.M();
+  double M = flavour_key=="b"?4.5:jet.M();
   double corr = this->GetFittedMean("Pt", flavour_key, Pt, Eta);
   TLorentzVector out_vector;
   double corr_Pt = Pt*(corr+1);

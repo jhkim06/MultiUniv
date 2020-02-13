@@ -62,6 +62,7 @@ file_names['2017','CHToCB_M090to110'] = [ ele for mass in ['090','100','110'] fo
 file_names['2017','CHToCB_M090to150'] = [ ele for mass in ['090','100','110','120','130','140','150'] for ele in file_names['2017','CHToCB_M%s'%mass] ]
 
 variables = OrderedDict()
+
 variables['dijet_deltaR'] = {
     'name' : 'dijet_deltaR',
     'type' : 'D'
@@ -102,8 +103,42 @@ variables['had_w_ch_deltaR'] = {
 #    'type' : 'D'
 #  }
 
+
+#csv
+variables['had_top_b_jet_csv'] = {
+    'name' : 'had_top_b_jet_csv',
+    'type' : 'D'
+  }
+
+variables['lep_top_b_jet_csv'] = {
+    'name' : 'lep_top_b_jet_csv',
+    'type' : 'D'
+  }
+
+variables['up_type_jet_csv'] = {
+    'name' : 'up_type_jet_csv',
+    'type' : 'D'
+  }
+
+variables['down_type_jet_csv'] = {
+    'name' : 'down_type_jet_csv',
+    'type' : 'D'
+  }
+
+
+#mass
 variables['hadronic_top_mass'] = {
     'name' : 'hadronic_top_mass',
+    'type' : 'D'
+  }
+
+variables['hadronic_top_mass_flipped1'] = {
+    'name' : 'hadronic_top_mass_flipped1',
+    'type' : 'D'
+  }
+
+variables['hadronic_top_mass_flipped2'] = {
+    'name' : 'hadronic_top_mass_flipped2',
     'type' : 'D'
   }
 
@@ -117,6 +152,15 @@ variables['tt_deltaPhi'] = {
     'type' : 'D'
   }
 
+variables['tt_deltaPhi_flipped1'] = {
+    'name' : 'tt_deltaPhi_flipped1',
+    'type' : 'D'
+  }
+
+variables['tt_deltaPhi_flipped2'] = {
+    'name' : 'tt_deltaPhi_flipped2',
+    'type' : 'D'
+  }
 #variables['W_MT'] = {
 #    'name' : 'W_MT',
 #    'type' : 'D'
@@ -127,6 +171,15 @@ variables['Mbl'] = {
     'type' : 'D'
   }
 
+variables['Mbl_flipped1'] = {
+    'name' : 'Mbl_flipped1',
+    'type' : 'D'
+  }
+
+variables['Mbl_flipped2'] = {
+    'name' : 'Mbl_flipped2',
+    'type' : 'D'
+  }
 #variables['sample_mass'] = {
 #    'name' : 'sample_mass',
 #    'type' : 'D'
@@ -159,10 +212,10 @@ options = {
   'bookMethod' : [
     #{
     #  'type' : ROOT.TMVA.Types.kPyKeras,
-    #  'name' : "PyKeras",
+    #  'name' : "DNN",
     #  'options' : ":".join(["H",
     #                        "!V",
-    #    		    "VarTransform=N,D(dijet_deltaR,had_w_ch_deltaR,dijet_pt_avg)",
+    #    		    "VarTransform=N,D(dijet_deltaR,had_w_ch_deltaR)",
     #    		    "FilenameModel=model.h5",
     #    		    "NumEpochs=20",
     #    		    "BatchSize=100",
@@ -184,10 +237,12 @@ options = {
     #},
     {
       'type' : ROOT.TMVA.Types.kBDT,
-      'name' : "BDT_400_MinNodeSize1of10",
+      'name' : "BDT",
+      #'name' : "BDT_400_MinNodeSize1of10",
       'options' : ":".join(["!H",
                             "!V",
 			    "VarTransform=N,D(dijet_deltaR,had_w_ch_deltaR)",
+			    #"VarTransform=N",
                    	    "NTrees=400",
         		    "MaxDepth=2",
 			    "MinNodeSize=10%",
@@ -285,7 +340,7 @@ options = {
 
 IsKeras = False
 for option in options['bookMethod']:
-  if option['name'] == "PyKeras":
+  if option['name'] == "DNN":
     IsKeras = True
 if IsKeras:
   m = KerasModel()
@@ -303,7 +358,7 @@ train_years = [
   #'2018'
 ]
 train_samples = [
-	'TTLJ_powheg',
+	#'TTLJ_powheg',
         #'CHToCB_M090',
         #'CHToCB_M100',
 	#'CHToCB_M110',
@@ -312,7 +367,7 @@ train_samples = [
 	#'CHToCB_M140',
 	#'CHToCB_M150',
 	'CHToCB_M090to110',
-	'CHToCB_M120to150'
+	#'CHToCB_M120to150',
 	#'CHToCB_M090to150'
 ]
 

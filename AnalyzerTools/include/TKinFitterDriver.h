@@ -13,6 +13,7 @@
 #include "TFitParticlePt.h"
 #include "TFitParticlePz.h"
 #include "TFitParticlePxPy.h"
+#include "TFitParticleEtPhi.h"
 #include "TKinFitter.h"
 #include "TSCorrection.h"
 
@@ -48,10 +49,11 @@ public:
   void SetWCHDownTypeJets(TLorentzVector jet_); // d/s/b jet from W(H+)
   void SetLepton(TLorentzVector lepton_);
   void SetMET(TLorentzVector met_);
-  void SetNeutrino(TLorentzVector met_,int i); // i is related to neu. Pz
+  void SetMETShift(double met_shift_, double met_phi_shift_);
+  void SetNeutrino(TLorentzVector met_, double met_shift_, double met_phi_shift_, int i); // i is related to neu. Pz
 
   void Fit();
-  void FindBestChi2Fit(bool UseLeading4Jets=false, bool IsHighMassFitter=false);
+  void FindBestChi2Fit(bool UseLeading5Jets=false, bool IsHighMassFitter=false);
 
   int GetStatus();
   double GetChi2();
@@ -59,6 +61,7 @@ public:
   double GetInitialDijetMass();
   double GetCorrectedDijetMass();
 
+  double GetBestChi2Variables(TString varName, TString mass_, bool highMassFitter);
   int GetBestStatus(TString mass_="");
   double GetBestChi2(TString mass_="");
   double GetBestFittedDijetMass(TString mass_="");
@@ -89,14 +92,15 @@ public:
     NONE
   };
 
-  struct ResultContatiner{
-    ResultContatiner(){}
-    ~ResultContatiner(){}
+  struct ResultContainer{
+    ResultContainer(){}
+    ~ResultContainer(){}
     int status; //fitter status
     double fitted_dijet_M;
     double initial_dijet_M;
     double corrected_dijet_M;
     double hadronic_top_M;
+    double hadronic_top_pt;
     double leptonic_top_M;
     double leptonic_W_M;
     bool IsRealNeuPz;
@@ -106,6 +110,12 @@ public:
     double w_ch_up_type_pt;
     double w_ch_down_type_pt;
 
+    // fitted object
+    const TLorentzVector* fitted_hadronic_top_b_jet;
+    const TLorentzVector* fitted_leptonic_top_b_jet;
+    const TLorentzVector* fitted_hadronic_w_ch_jet1;
+    const TLorentzVector* fitted_hadronic_w_ch_jet2;
+
     // F from constraints
     double hadronic_top_mass_F;
     double leptonic_top_mass_F;
@@ -114,8 +124,11 @@ public:
     double deltaS;
     double chi2;
 
-    // ML cut
+    // cuts
     std::map<TString, bool> passMLcut;
+    bool passGoodnessCut;
+    bool passAngularCorr;
+    bool passThirdBTaggingCut;
   };
 
 private:
@@ -137,16 +150,28 @@ private:
 
   void SetCurrentPermutationJets();
   bool Check_BJet_Assignment();
-  bool NextPermutation(bool UseLeading4Jets=false);
+  bool NextPermutation(bool UseLeading5Jets=false);
 
   //ML
   TMVA::Reader *tmva_reader;
   // ML variables
   float dijet_deltaR;       // 1 
   float had_w_ch_deltaR;    // 2 
-  float hadronic_top_mass;  // 3 
-  float tt_deltaPhi;        // 4
-  float Mbl;                // 5
+
+  float had_top_b_jet_csv;
+  float lep_top_b_jet_csv;
+  float up_type_jet_csv;
+  float down_type_jet_csv;
+
+  float hadronic_top_mass;
+  float hadronic_top_mass_flipped1; 
+  float hadronic_top_mass_flipped2; 
+  float tt_deltaPhi;        
+  float tt_deltaPhi_flipped1;      
+  float tt_deltaPhi_flipped2;      
+  float Mbl;                
+  float Mbl_flipped1;              
+  float Mbl_flipped2;              
  
   bool useMLCut;
   TString MCSample;
@@ -155,6 +180,9 @@ private:
   double GetMLCut(TString sample);
   void updatesMLVariables();
   bool Kinematic_Cut();
+  bool ThirdBTaggingCut();
+  bool GoodnessCut();
+  bool AngularCorr();
 
   void Sol_Neutrino_Pz();
   void Resol_Neutrino_Pt();
@@ -164,9 +192,11 @@ private:
   TKinFitter *fitter;
   TSCorrection *ts_correction;
 
-  std::vector<TLorentzVector> jet_vector;
+  std::vector<Jet> jet_vector;
   std::vector<bool> btag_vector;
   TLorentzVector METv;
+  double MET_shift;
+  double MET_phi_shift;
   TLorentzVector recal_METv;
 
   int njets;
@@ -183,8 +213,10 @@ private:
   TLorentzVector corr_hadronic_w_ch_jet2;
   TLorentzVector corr_extra_jet;
   TLorentzVector lepton; // lepton comes from leptonic W
-  TLorentzVector neutrino_pxpy; // neutrino_pxpy comes from leptonic W
-  TLorentzVector neutrino_pz; // neutrino_pz
+  //TLorentzVector neutrino_pt;
+  TLorentzVector neutrino_etphi;
+  //TLorentzVector neutrino_pxpy; // neutrino_pxpy comes from leptonic W
+  //TLorentzVector neutrino_pz; // neutrino_pz
 
   TFitParticlePt *fit_hadronic_top_b_jet;
   TFitParticlePt *fit_leptonic_top_b_jet;
@@ -193,15 +225,20 @@ private:
   TFitParticlePt *fit_extra_jet;
   //std::vector<TFitParticlePt*> fit_extra_jets;
   TFitParticlePt *fit_lepton;
-  TFitParticlePxPy *fit_neutrino_pxpy;
-  TFitParticlePz *fit_neutrino_pz;
+  //TFitParticlePt *fit_neutrino_pt;
+  TFitParticleEtPhi *fit_neutrino_etphi;
+  //TFitParticlePxPy *fit_neutrino_pxpy;
+  //TFitParticlePz *fit_neutrino_pz;
 
   TMatrixD error_hadronic_top_b_jet; 
   TMatrixD error_leptonic_top_b_jet;
   TMatrixD error_hadronic_w_ch_jet1;
   TMatrixD error_hadronic_w_ch_jet2;
   TMatrixD error_lepton;
-  TMatrixD error_neutrino_pxpy;
+  //TMatrixD error_neutrino_pxpy;
+  //TMatrixD error_neutrino_pt;
+  TMatrixD error_neutrino_etphi;
+  //TMatrixD error_neutrino_pz;
 
   TFitConstraintM *constrain_hadronic_top_M;
   //TFitConstraintMGaus *constrain_hadronic_top_MGaus;
@@ -210,12 +247,13 @@ private:
   TFitConstraintM *constrain_leptonic_W_M;
   //TFitConstraintMGaus *constrain_leptonic_W_MGaus;
 
-  TKinFitterDriver::ResultContatiner fit_result;
+  TKinFitterDriver::ResultContainer fit_result;
 
-  std::vector<TKinFitterDriver::ResultContatiner> fit_result_vector;
-  std::vector<TKinFitterDriver::ResultContatiner> GetResults();
-  static bool Chi2Comparing(const TKinFitterDriver::ResultContatiner& rc1, const TKinFitterDriver::ResultContatiner& rc2);
-  static bool HighMassFitter(const TKinFitterDriver::ResultContatiner& rc1, const TKinFitterDriver::ResultContatiner& rc2);
+  std::vector<TKinFitterDriver::ResultContainer> fit_result_vector;
+  std::vector<TKinFitterDriver::ResultContainer> GetResults();
+  static bool Chi2Comparing(const TKinFitterDriver::ResultContainer& rc1, const TKinFitterDriver::ResultContainer& rc2);
+  static bool HadTopPtComparing(const TKinFitterDriver::ResultContainer& rc1, const TKinFitterDriver::ResultContainer& rc2);
+  static bool HighMassFitter(const TKinFitterDriver::ResultContainer& rc1, const TKinFitterDriver::ResultContainer& rc2);
 };
 
 #endif

@@ -1196,7 +1196,7 @@ void AnalyzerCore::BtaggingSFEvtbyEvt(std::vector<Jet> &jets, Jet::Tagger tagger
 }
 
 
-double AnalyzerCore::BtaggingSFReshape(std::vector<Jet> &jets, Jet::Tagger tagger, Jet::WP WP, int systematic){
+double AnalyzerCore::BtaggingSFReshape(std::vector<Jet> &jets, Jet::Tagger tagger, Jet::WP WP, int systematic, std::vector<double> &BTag_SF_vector){
   //=== loop over jet vector
 
   if(IsDATA){
@@ -1204,6 +1204,8 @@ double AnalyzerCore::BtaggingSFReshape(std::vector<Jet> &jets, Jet::Tagger tagge
   }
 
   float Btag_SF=1.;
+  //float Btag_SF=0.;
+  float njets = (float)jets.size();
 
   for(std::vector<Jet>::iterator itjet = jets.begin(); itjet!=jets.end(); itjet++){
     //=== create key from configuration
@@ -1248,6 +1250,8 @@ double AnalyzerCore::BtaggingSFReshape(std::vector<Jet> &jets, Jet::Tagger tagge
 
     float jet_pt = itjet->Pt();
     float jet_eta = itjet->Eta();
+    float jet_dscr = itjet->GetTaggerResult(tagger);
+    float tmp_Btag_SF = 1.;
 
     if( ((abs(systematic)==2 || abs(systematic)==1) && jet_flavour!=0) ||
         (abs(systematic)==3 && jet_flavour!=0) ||
@@ -1256,13 +1260,21 @@ double AnalyzerCore::BtaggingSFReshape(std::vector<Jet> &jets, Jet::Tagger tagge
         ((abs(systematic)==6 || abs(systematic)==7) && jet_flavour!=5) ||
         ((abs(systematic)==8 || abs(systematic)==9) && jet_flavour!=4)
       ){
-      Btag_SF *= it_jet_btagger_cent->second->GetJetSF(jet_flavour, jet_pt, jet_eta);
+      //Btag_SF *= it_jet_btagger_cent->second->GetJetSF(jet_flavour, jet_pt, jet_eta);
+      tmp_Btag_SF = it_jet_btagger_cent->second->GetJetSF(jet_flavour, jet_pt, jet_eta, jet_dscr);
     }
     else{
       //cout << map_key << "   " << jet_flavour   <<endl;
-      Btag_SF *= it_jet_btagger->second->GetJetSF(jet_flavour, jet_pt, jet_eta);
+      //Btag_SF *= it_jet_btagger->second->GetJetSF(jet_flavour, jet_pt, jet_eta);
+      tmp_Btag_SF = it_jet_btagger->second->GetJetSF(jet_flavour, jet_pt, jet_eta, jet_dscr);
       //cout << Btag_SF << endl;
     }
+    Btag_SF *= tmp_Btag_SF;
+    BTag_SF_vector.push_back((double)tmp_Btag_SF);
+  }
+  if(jets.size()!=BTag_SF_vector.size()){
+    cout << "[AnalyzerCore::BtaggingSFReshape]" << "vector size is not match!!!!" << endl;
+    exit(1);
   }
 
   return (double)Btag_SF;

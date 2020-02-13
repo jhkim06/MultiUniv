@@ -13,6 +13,11 @@ structure['nontt'] = {
     'isData'     : 0,
     }
 
+structure['QCD'] = {
+    'isSignal'   : 0,
+    'isData'     : 0,
+    }
+
 
 
 #--------------------    
@@ -30,6 +35,7 @@ structure['SingleMuon'] = {
     'isSignal'   : 0,
     'isData'     : 1,
     }
+
 #--------------------    
 # Signal
 #--------------------  
