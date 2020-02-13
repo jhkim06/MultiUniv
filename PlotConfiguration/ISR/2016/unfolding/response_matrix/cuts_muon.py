@@ -9,12 +9,12 @@ supercut = 'evt_tag_dimuon_gen == 1'
 # detector distribution
 cuts['detector_level'] = 'evt_tag_dimuon_rec == 1 && evt_tag_analysisevnt_sel_rec == 1 '
 cuts['detector_level_DY_Fake'] = 'evt_tag_dimuon_rec == 1 && evt_tag_analysisevnt_sel_rec == 1 && evt_tag_dimuon_fiducial_lepton_matched_dressed_drX[0] == 0'
-cuts['detector_level_lepMomUp'] = 'evt_tag_dimuon_rec_LepMomScaleUp == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleUp == 1 '
-cuts['detector_level_DY_Fake_lepMomUp'] = 'evt_tag_dimuon_rec_LepMomScaleUp == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleUp == 1 && evt_tag_dimuon_fiducial_lepton_matched_dressed_drX[0] == 0'
-cuts['detector_level_lepMomDown'] = 'evt_tag_dimuon_rec_LepMomScaleDown == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleDown == 1 '
-cuts['detector_level_DY_Fake_lepMomDown'] = 'evt_tag_dimuon_rec_LepMomScaleDown == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleDown == 1 && evt_tag_dimuon_fiducial_lepton_matched_dressed_drX[0] == 0'
+#cuts['detector_level_lepMomUp'] = 'evt_tag_dimuon_rec_LepMomScaleUp == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleUp == 1 '
+#cuts['detector_level_DY_Fake_lepMomUp'] = 'evt_tag_dimuon_rec_LepMomScaleUp == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleUp == 1 && evt_tag_dimuon_fiducial_lepton_matched_dressed_drX[0] == 0'
+#cuts['detector_level_lepMomDown'] = 'evt_tag_dimuon_rec_LepMomScaleDown == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleDown == 1 '
+#cuts['detector_level_DY_Fake_lepMomDown'] = 'evt_tag_dimuon_rec_LepMomScaleDown == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleDown == 1 && evt_tag_dimuon_fiducial_lepton_matched_dressed_drX[0] == 0'
 
 # matrix
 cuts['fiducial_phase_pre_FSR_dRp1'] = 'evt_tag_dimuon_fiducial_lepton_matched_dressed_drX[0] == 1 && evt_tag_dimuon_rec == 1 && evt_tag_analysisevnt_sel_rec == 1 '
-cuts['fiducial_phase_pre_FSR_dRp1_lepMomUp'] = 'evt_tag_dimuon_fiducial_lepton_matched_dressed_drX[0] == 1 && evt_tag_dimuon_rec_LepMomScaleUp == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleUp == 1 '
-cuts['fiducial_phase_pre_FSR_dRp1_lepMomDown'] = 'evt_tag_dimuon_fiducial_lepton_matched_dressed_drX[0] == 1 && evt_tag_dimuon_rec_LepMomScaleDown == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleDown == 1 '
+#cuts['fiducial_phase_pre_FSR_dRp1_lepMomUp'] = 'evt_tag_dimuon_fiducial_lepton_matched_dressed_drX[0] == 1 && evt_tag_dimuon_rec_LepMomScaleUp == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleUp == 1 '
+#cuts['fiducial_phase_pre_FSR_dRp1_lepMomDown'] = 'evt_tag_dimuon_fiducial_lepton_matched_dressed_drX[0] == 1 && evt_tag_dimuon_rec_LepMomScaleDown == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleDown == 1 '

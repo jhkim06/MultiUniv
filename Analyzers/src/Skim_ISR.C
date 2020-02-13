@@ -74,6 +74,9 @@ void Skim_ISR::initializeAnalyzer(){
         newtree->Branch("evt_weight_trigSF_rec", &evt_weight_trigSF_rec,"evt_weight_trigSF_rec/D");
         newtree->Branch("evt_weight_trigSF_up_rec", &evt_weight_trigSF_up_rec,"evt_weight_trigSF_up_rec/D");
         newtree->Branch("evt_weight_trigSF_down_rec", &evt_weight_trigSF_down_rec,"evt_weight_trigSF_down_rec/D");
+        newtree->Branch("evt_weight_trigSFDZ_rec", &evt_weight_trigSFDZ_rec,"evt_weight_trigSFDZ_rec/D");
+        newtree->Branch("evt_weight_trigSFDZ_up_rec", &evt_weight_trigSFDZ_up_rec,"evt_weight_trigSFDZ_up_rec/D");
+        newtree->Branch("evt_weight_trigSFDZ_down_rec", &evt_weight_trigSFDZ_down_rec,"evt_weight_trigSFDZ_down_rec/D");
 
         newtree->Branch("evt_weight_pureweight", &evt_weight_pureweight,"evt_weight_pureweight/D");
         newtree->Branch("evt_weight_pureweight_up", &evt_weight_pureweight_up,"evt_weight_pureweight_up/D");
@@ -327,6 +330,7 @@ void Skim_ISR::executeEvent(){
     evt_weight_idSF_rec = 1.,   evt_weight_idSF_up_rec = 1.,   evt_weight_idSF_down_rec = 1.;
     evt_weight_isoSF_rec = 1.,  evt_weight_isoSF_up_rec = 1.,  evt_weight_isoSF_down_rec = 1.;
     evt_weight_trigSF_rec = 1., evt_weight_trigSF_up_rec = 1., evt_weight_trigSF_down_rec = 1.;
+    evt_weight_trigSFDZ_rec = 1., evt_weight_trigSFDZ_up_rec = 1., evt_weight_trigSFDZ_down_rec = 1.;
 
     evt_weight_pureweight = 1.;
     evt_weight_pureweight_up = 1.;
@@ -1310,13 +1314,15 @@ void Skim_ISR::executeEvent(){
                 isoSF_key = "NUM_TightRelIso_DEN_TightIDandIPCut";
                 leading_trig_key =    "Lead17_POGTight";
                 subleading_trig_key = "Tail8_POGTight";
+                DZfilter_key = "";
             }
             else if(DataYear==2017)
             {
                 idSF_key =  "NUM_TightID_DEN_genTracks";
                 isoSF_key = "NUM_TightRelIso_DEN_TightIDandIPCut";
-                leading_trig_key =    "";
-                subleading_trig_key = "";
+                leading_trig_key = "LeadMu17_POGTight";
+                subleading_trig_key = "TailMu8_POGTight";
+                DZfilter_key = "";
 
             }
             else if(DataYear==2018)
@@ -1325,6 +1331,7 @@ void Skim_ISR::executeEvent(){
                 isoSF_key = "NUM_TightRelIso_DEN_TightIDandIPCut";
                 leading_trig_key =    "";
                 subleading_trig_key = "";
+                DZfilter_key = "";
 
             }
             else
@@ -1352,14 +1359,16 @@ void Skim_ISR::executeEvent(){
                 idSF_key = "passMediumID";
                 leading_trig_key =    "LeadEle23_MediumID";
                 subleading_trig_key = "TailEle12_MediumID";
+                DZfilter_key = "DZfilter";
             }
             else if(DataYear==2017)
             {
                 LeptonReco_SF = &MCCorrection::ElectronReco_SF;
                 LeptonID_SF   = &MCCorrection::ElectronID_SF;
                 idSF_key = "passMediumID";
-                leading_trig_key =    "";
-                subleading_trig_key = "";
+                leading_trig_key =    "LeadEle23_MediumID";
+                subleading_trig_key = "TailEle12_MediumID";
+                DZfilter_key = "";
 
             }
             else if(DataYear==2018)
@@ -1369,6 +1378,7 @@ void Skim_ISR::executeEvent(){
                 idSF_key = "passMediumID";
                 leading_trig_key =    "";
                 subleading_trig_key = "";
+                DZfilter_key = "";
 
             }
             else{
@@ -1427,6 +1437,13 @@ void Skim_ISR::executeEvent(){
                 evt_weight_trigSF_rec *=      mcCorr->DiLeptonTrg_SF(leading_trig_key, subleading_trig_key, leps, 0);
                 evt_weight_trigSF_up_rec *=   mcCorr->DiLeptonTrg_SF(leading_trig_key, subleading_trig_key, leps, 1);
                 evt_weight_trigSF_down_rec *= mcCorr->DiLeptonTrg_SF(leading_trig_key, subleading_trig_key, leps, -1);
+            }
+
+            if(DZfilter_key != "")
+            {
+                evt_weight_trigSFDZ_rec *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, 0); 
+                evt_weight_trigSFDZ_up_rec *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, 1); 
+                evt_weight_trigSFDZ_down_rec *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, -1); 
             }
 
             // reco/id/iso SF
@@ -1691,6 +1708,12 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_SelVa
                     p_struct->evt_weight_trigSF_up_rec_ *=   mcCorr->DiLeptonTrg_SF(leading_trig_key, subleading_trig_key, leps, 1);
                     p_struct->evt_weight_trigSF_down_rec_ *= mcCorr->DiLeptonTrg_SF(leading_trig_key, subleading_trig_key, leps, -1);
                 }
+                if(DZfilter_key != "")
+                {
+                    p_struct->evt_weight_trigSFDZ_rec_ *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, 0); 
+                    p_struct->evt_weight_trigSFDZ_up_rec_ *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, 1); 
+                    p_struct->evt_weight_trigSFDZ_down_rec_ *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, -1); 
+                }
 
                 // reco/id/iso SF
                 for( unsigned int i = 0; i< 2; i++)
@@ -1934,6 +1957,7 @@ void Analysis_SelVariation::resetVariables(){
     evt_weight_idSF_rec_ = 1.,   evt_weight_idSF_up_rec_ = 1.,   evt_weight_idSF_down_rec_ = 1.;
     evt_weight_isoSF_rec_ = 1.,  evt_weight_isoSF_up_rec_ = 1.,  evt_weight_isoSF_down_rec_ = 1.;
     evt_weight_trigSF_rec_ = 1., evt_weight_trigSF_up_rec_ = 1., evt_weight_trigSF_down_rec_ = 1.;
+    evt_weight_trigSFDZ_rec_ = 1., evt_weight_trigSFDZ_up_rec_ = 1., evt_weight_trigSFDZ_down_rec_ = 1.;
 
 }
 
@@ -1976,6 +2000,9 @@ void Analysis_SelVariation::setBranch(TTree *tree){
     tree->Branch(evt_weight_trigSF_rec_brname, &evt_weight_trigSF_rec_);
     tree->Branch(evt_weight_trigSF_up_rec_brname, &evt_weight_trigSF_up_rec_);
     tree->Branch(evt_weight_trigSF_down_rec_brname, &evt_weight_trigSF_down_rec_);
+    tree->Branch(evt_weight_trigSFDZ_rec_brname, &evt_weight_trigSFDZ_rec_);
+    tree->Branch(evt_weight_trigSFDZ_up_rec_brname, &evt_weight_trigSFDZ_up_rec_);
+    tree->Branch(evt_weight_trigSFDZ_down_rec_brname, &evt_weight_trigSFDZ_down_rec_);
 }
 
 Skim_ISR::Skim_ISR(){

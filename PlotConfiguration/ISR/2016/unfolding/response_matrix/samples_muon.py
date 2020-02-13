@@ -10,13 +10,13 @@ McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_isoSF_rec *
 # MC
 #--------------------
 
-samples['DYJets_MG'] = {
+samples['DYJets'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
     'weight' :McWeight,
     }
 
-samples['DYJets10to50_MG'] = {
+samples['DYJets10to50'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
     'weight' :McWeight,

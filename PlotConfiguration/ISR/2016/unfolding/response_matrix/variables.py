@@ -77,6 +77,19 @@ variables['mll_rec_gen_dressed_dRp1_response_matrix'] = {
     'isResMatrix':True
 }
 
+variables['ptll_rec_gen_dressed_dRp1_response_matrix'] = {
+
+    'unfoldBinType': ISRUnfold.PtMigrationM,
+    'fold': 0,
+    'range': None,
+    'name': 'Get2DPtRecBinIndex(dilep_pt_rec, dilep_mass_rec):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[0], dilep_mass_gen_lepton_matched_dressed_drX[0])',
+    'xaxis': 'Pre FSR',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': "electron",
+    'go1D': False,
+    'isResMatrix':True
+}
+
 variables['hist_ptll_lepMomDown'] = {
 
     'unfoldBinType': ISRUnfold.PtRec2DHist,
@@ -103,18 +116,6 @@ variables['hist_mll_lepMomDown'] = {
     'go1D': False
 }
 
-variables['ptll_rec_gen_dressed_dRp1_response_matrix'] = {
-
-    'unfoldBinType': ISRUnfold.PtMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DPtRecBinIndex(dilep_pt_rec, dilep_mass_rec):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[0], dilep_mass_gen_lepton_matched_dressed_drX[0])',
-    'xaxis': 'Pre FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
-    'go1D': False,
-    'isResMatrix':True
-}
 
 variables['mll_rec_gen_dressed_dRp1_response_matrix_lepMomUp'] = {
 

@@ -8,6 +8,7 @@
 
 ########## Efficiency and Energy Scale
 trg_syst = ['evt_weight_trigSF_up_rec/evt_weight_trigSF_rec', 'evt_weight_trigSF_down_rec/evt_weight_trigSF_rec']
+trgDZ_syst = ['evt_weight_trigSFDZ_up_rec/evt_weight_trigSFDZ_rec', 'evt_weight_trigSFDZ_down_rec/evt_weight_trigSFDZ_rec']
 reco_syst  = ['evt_weight_recoSF_up_rec/evt_weight_recoSF_rec', 'evt_weight_recoSF_down_rec/evt_weight_recoSF_rec']
 id_syst  = ['evt_weight_idSF_up_rec/evt_weight_idSF_rec', 'evt_weight_idSF_down_rec/evt_weight_idSF_rec']
 l1prefire_syst = ['evt_weight_l1prefire_up/evt_weight_l1prefire','evt_weight_l1prefire_down/evt_weight_l1prefire']
@@ -30,6 +31,23 @@ nuisances['trig_sf'] = {
       	'WW_pythia'	        : trg_syst ,
       	'WZ_pythia'	        : trg_syst ,
       	'ZZ_pythia'	        : trg_syst ,
+	},
+}
+
+nuisances['trigDZ_sf'] = {
+    'name'	: 'trgSFDZ',
+    'kind'	: 'weight',
+    'type'	: 'shape',
+    'samples'	: {
+      	'DYJetsToEE'	        : trgDZ_syst ,
+      	'DYJets10to50ToEE'	: trgDZ_syst ,
+      	'DYJetsToTauTau'	: trgDZ_syst ,
+      	'DYJets10to50ToTauTau'	: trgDZ_syst ,
+      	'TTLL_powheg'	        : trgDZ_syst ,
+      	'WJets_MG'	        : trgDZ_syst ,
+      	'WW_pythia'	        : trgDZ_syst ,
+      	'WZ_pythia'	        : trgDZ_syst ,
+      	'ZZ_pythia'	        : trgDZ_syst ,
 	},
 }
 

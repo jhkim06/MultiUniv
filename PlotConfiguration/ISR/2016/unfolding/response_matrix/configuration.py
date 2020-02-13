@@ -4,6 +4,7 @@ Outputdir   = 'Output'
 Category    = 'SMP'
 Year        = '2016'
 InSkim      = 'ISR_v1'
+#Userflags   = 'ISR_response_PDF'
 Userflags   = 'ISR_response'
 treeName    = 'recoTree/SKFlat'
 

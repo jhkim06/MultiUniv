@@ -37,6 +37,7 @@ struct Analysis_SelVariation {
     double evt_weight_idSF_rec_,   evt_weight_idSF_up_rec_,   evt_weight_idSF_down_rec_;
     double evt_weight_isoSF_rec_,  evt_weight_isoSF_up_rec_,  evt_weight_isoSF_down_rec_;
     double evt_weight_trigSF_rec_, evt_weight_trigSF_up_rec_, evt_weight_trigSF_down_rec_;
+    double evt_weight_trigSFDZ_rec_, evt_weight_trigSFDZ_up_rec_, evt_weight_trigSFDZ_down_rec_;
 
     // fake weight
     bool evt_tag_TT_rec_;
@@ -71,6 +72,7 @@ struct Analysis_SelVariation {
     TString evt_weight_idSF_rec_brname,   evt_weight_idSF_up_rec_brname,   evt_weight_idSF_down_rec_brname;
     TString evt_weight_isoSF_rec_brname,  evt_weight_isoSF_up_rec_brname,  evt_weight_isoSF_down_rec_brname;
     TString evt_weight_trigSF_rec_brname, evt_weight_trigSF_up_rec_brname, evt_weight_trigSF_down_rec_brname;
+    TString evt_weight_trigSFDZ_rec_brname, evt_weight_trigSFDZ_up_rec_brname, evt_weight_trigSFDZ_down_rec_brname;
 
     // branch names for fake
     TString evt_tag_TT_rec_brname;
@@ -114,6 +116,7 @@ struct Analysis_SelVariation {
         evt_weight_idSF_rec_ = 1.,   evt_weight_idSF_up_rec_ = 1.,   evt_weight_idSF_down_rec_ = 1.;
         evt_weight_isoSF_rec_ = 1.,  evt_weight_isoSF_up_rec_ = 1.,  evt_weight_isoSF_down_rec_ = 1.;
         evt_weight_trigSF_rec_ = 1., evt_weight_trigSF_up_rec_ = 1., evt_weight_trigSF_down_rec_ = 1.;
+        evt_weight_trigSFDZ_rec_ = 1., evt_weight_trigSFDZ_up_rec_ = 1., evt_weight_trigSFDZ_down_rec_ = 1.;
 
         // initialize branch names
         evt_tag_analysisevnt_sel_rec_brname   = "evt_tag_analysisevnt_sel_rec_" + prefix;
@@ -156,6 +159,9 @@ struct Analysis_SelVariation {
         evt_weight_trigSF_rec_brname = "evt_weight_trigSF_rec_" + prefix;
         evt_weight_trigSF_up_rec_brname = "evt_weight_trigSF_up_rec_" + prefix;
         evt_weight_trigSF_down_rec_brname = "evt_weight_trigSF_down_rec_" + prefix;
+        evt_weight_trigSFDZ_rec_brname = "evt_weight_trigSFDZ_rec_" + prefix;
+        evt_weight_trigSFDZ_up_rec_brname = "evt_weight_trigSFDZ_up_rec_" + prefix;
+        evt_weight_trigSFDZ_down_rec_brname = "evt_weight_trigSFDZ_down_rec_" + prefix;
     }
 
     void setBranch(TTree *tree);
@@ -206,6 +212,7 @@ private:
     double (MCCorrection::*LeptonReco_SF)(double,double,int);
 
     TString leading_trig_key, subleading_trig_key;
+    TString DZfilter_key;
     TString idSF_key;
     TString isoSF_key;
 
@@ -321,6 +328,7 @@ private:
     double evt_weight_idSF_rec,   evt_weight_idSF_up_rec,   evt_weight_idSF_down_rec;
     double evt_weight_isoSF_rec,  evt_weight_isoSF_up_rec,  evt_weight_isoSF_down_rec;
     double evt_weight_trigSF_rec, evt_weight_trigSF_up_rec, evt_weight_trigSF_down_rec;
+    double evt_weight_trigSFDZ_rec, evt_weight_trigSFDZ_up_rec, evt_weight_trigSFDZ_down_rec;
 
     // gen level variables
     int mother_id_of_prefsr_dilep;
