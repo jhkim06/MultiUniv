@@ -198,7 +198,7 @@ float BTagSFUtil::JetTagEfficiency(int JetFlavor, float JetPt, float JetEta) {
 
 
 
-float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
+float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta, float JetDscr) {
   float Btag_SF(-999.);
 
   //=== If chosen period dependant SF, then use lumi to weight
@@ -206,8 +206,8 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
   if (period_dependancy) {
     
     if(DataYear == 2016){
-      float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +TaggerName + "_272007_278808");
-      float Btag_SF_GH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +TaggerName + "_278820_284044");
+      float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr, "2016_" +TaggerName + "_272007_278808");
+      float Btag_SF_GH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr, "2016_" +TaggerName + "_278820_284044");
       
       double lumi_periodB = 5.929001722;
       double lumi_periodC = 2.645968083;
@@ -226,9 +226,9 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
     
     else if(DataYear == 2017){
 
-      float Btag_SF_B    = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +TaggerName + "_297046_299329");
-      float Btag_SF_CtoE = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +TaggerName + "_297020_304671");
-      float Btag_SF_EtoF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +TaggerName + "_304671_306462");
+      float Btag_SF_B    = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr, "2017_" +TaggerName + "_297046_299329");
+      float Btag_SF_CtoE = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr, "2017_" +TaggerName + "_297020_304671");
+      float Btag_SF_EtoF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr, "2017_" +TaggerName + "_304671_306462");
       
       /// lumi taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2017Analysis and brilcal 
       double lumi_periodB = 4.823;
@@ -254,15 +254,15 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
     //=== Access SF using Full data year, no periods
 
     if(DataYear == 2016){
-      float Btag_SF_BH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +TaggerName + "_272007_284044");
+      float Btag_SF_BH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr, "2016_" +TaggerName + "_272007_284044");
       return Btag_SF_BH;
     }
     else if(DataYear == 2017){
-      float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +TaggerName + "_297046_306462");
+      float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr,"2017_" +TaggerName + "_297046_306462");
       return Btag_SF_BF;
     }
     else if(DataYear == 2018){
-      float Btag_SF_AD = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2018_" +TaggerName + "_315252_325175");
+      float Btag_SF_AD = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr,"2018_" +TaggerName + "_315252_325175");
       return Btag_SF_AD;
     }
 
@@ -272,7 +272,7 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
   return Btag_SF;
 }
 
-float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, TString tag_key) {
+float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, float JetDscr, TString tag_key) {
 
   /// https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco for pt range and systematic correlations
   float Btag_SF=1.;
@@ -294,7 +294,7 @@ float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetE
     if(reader_bf_it==ReaderMap.end()){
       cout << "BTagSFUtil::GetJetSFPeriodDependant key not found,     " << tag_key+"_bc" << endl;
     }
-    Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_B, JetEta, ThisJetPt);
+    Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_B, JetEta, ThisJetPt, JetDscr);
   }
   else if (abs(JetFlavor)==4){ 
 
@@ -303,7 +303,7 @@ float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetE
     if(reader_bf_it==ReaderMap.end()){
       cout << "BTagSFUtil::GetJetSFPeriodDependant key not found,     " << tag_key+"_bc" << endl;
     }
-    Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_C, JetEta, ThisJetPt);
+    Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_C, JetEta, ThisJetPt, JetDscr);
   }
   else {
 
@@ -312,7 +312,7 @@ float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetE
     if(reader_bf_it==ReaderMap.end()){
       cout << "BTagSFUtil::GetJetSFPeriodDependant key not found,     " << tag_key+"_l" << endl;
     }
-    Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_UDSG, JetEta, ThisJetPt);
+    Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_UDSG, JetEta, ThisJetPt, JetDscr);
 
   }
     

@@ -33,6 +33,7 @@ private:
   int passAntiIso_Up; // for ABCD method
   int passAntiIso_Do; // for ABCD method
 
+  double baseW;
   double weight_Prefire;
   double HEMweight;
 
@@ -87,17 +88,108 @@ private:
 
   TLorentzVector genZ;
 
-  int n_bjet_deepcsv_m_noSF;
-  double BTagSF, BTagSF_Up, BTagSF_Do;
-  double MisTagSF, MisTagSF_Up, MisTagSF_Do;
+  int nbtags;
+  int nbtags_JES_Up;
+  int nbtags_JES_Do;
+  int nbtags_JER_Up;
+  int nbtags_JER_Do;
+
+  int nhf5;
+  int nhf5_JES_Up;
+  int nhf5_JES_Do;
+  int nhf5_JER_Up;
+  int nhf5_JER_Do;
+
+  int nhf0;
+  int nhf0_JES_Up;
+  int nhf0_JES_Do;
+  int nhf0_JER_Up;
+  int nhf0_JER_Do;
+
+  double BTagSF;
+  double BTagSF_JES_Up; // second Up/Do label is jet selection related one.
+  double BTagSF_JES_Do;
+  double BTagSF_JER_Up;
+  double BTagSF_JER_Do;
+  double BTagSF_up_lfstats1;
+  double BTagSF_down_lfstats1;
+  double BTagSF_up_lfstats2;
+  double BTagSF_down_lfstats2;
+  double BTagSF_up_lf;
+  double BTagSF_down_lf;
+  double BTagSF_up_hf;
+  double BTagSF_down_hf;
+  double BTagSF_up_jes;
+  double BTagSF_down_jes;
+  double BTagSF_up_hfstats1;
+  double BTagSF_down_hfstats1;
+  double BTagSF_up_hfstats2;
+  double BTagSF_down_hfstats2;
+  double BTagSF_up_cferr1;
+  double BTagSF_down_cferr1;
+  double BTagSF_up_cferr2;
+  double BTagSF_down_cferr2;
+
+  std::vector<double> BTagSF_vector;
+  std::vector<double> BTagSF_vector_JES_Up; // second Up/Do label is jet selection related one.
+  std::vector<double> BTagSF_vector_JES_Do;
+  std::vector<double> BTagSF_vector_JER_Up;
+  std::vector<double> BTagSF_vector_JER_Do;
+  std::vector<double> BTagSF_vector_up_lfstats1;
+  std::vector<double> BTagSF_vector_down_lfstats1;
+  std::vector<double> BTagSF_vector_up_lfstats2;
+  std::vector<double> BTagSF_vector_down_lfstats2;
+  std::vector<double> BTagSF_vector_up_lf;
+  std::vector<double> BTagSF_vector_down_lf;
+  std::vector<double> BTagSF_vector_up_hf;
+  std::vector<double> BTagSF_vector_down_hf;
+  std::vector<double> BTagSF_vector_up_jes;
+  std::vector<double> BTagSF_vector_down_jes;
+  std::vector<double> BTagSF_vector_up_hfstats1;
+  std::vector<double> BTagSF_vector_down_hfstats1;
+  std::vector<double> BTagSF_vector_up_hfstats2;
+  std::vector<double> BTagSF_vector_down_hfstats2;
+  std::vector<double> BTagSF_vector_up_cferr1;
+  std::vector<double> BTagSF_vector_down_cferr1;
+  std::vector<double> BTagSF_vector_up_cferr2;
+  std::vector<double> BTagSF_vector_down_cferr2;
+
+  void InitBTagReshapeNormEstimator();
+  void BTagReshapeNormEstimator();
+  TString GetBTagBin(const Jet& jet);
+
+  TString BTagNormPath;
+  std::map<TString, TH1D*> BTagNormHist;
+  TFile* btagNorm_root;
+
+  double BTagNorm;
+  double BTagNorm_up_lfstats1;
+  double BTagNorm_down_lfstats1;
+  double BTagNorm_up_lfstats2;
+  double BTagNorm_down_lfstats2;
+  double BTagNorm_up_lf;
+  double BTagNorm_down_lf;
+  double BTagNorm_up_hf;
+  double BTagNorm_down_hf;
+  double BTagNorm_up_jes;
+  double BTagNorm_down_jes;
+  double BTagNorm_up_hfstats1;
+  double BTagNorm_down_hfstats1;
+  double BTagNorm_up_hfstats2;
+  double BTagNorm_down_hfstats2;
+  double BTagNorm_up_cferr1;
+  double BTagNorm_down_cferr1;
+  double BTagNorm_up_cferr2;
+  double BTagNorm_down_cferr2;
 
   double TopPtReweight;
 
-  vector<Jet> this_AllJets ;
-  vector<Jet> jets_pt20cut;
-  vector<Jet> jets_pt30cut;
-  vector<Jet> jetsLveto_pt20cut;
-  vector<Jet> jetsLveto_pt30cut;
+  vector<Jet> jets;
+  vector<Jet> jets_JES_Up;
+  vector<Jet> jets_JES_Do;
+  vector<Jet> jets_JER_Up;
+  vector<Jet> jets_JER_Do;
+
   float tmp_btagsf;
   std::vector<float> tmp_mistagsf;
   

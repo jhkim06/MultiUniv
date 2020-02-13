@@ -17,9 +17,27 @@ groupPlot['tt'] = {
     'nameHR' : "tt",
     'isSignal' : 0,
     'color':  kRed,
-    'samples' : ['TTLL_powheg','TTLJ_powheg']
+    #'samples' : ['TTLJ_powheg']
+    #'samples' : ['TTLL_powheg','TTLJ_powheg']
+    'samples' : ['TTLL_powheg','TTLJ_powheg','ttbb']
     #'samples' : ['TTLL_powheg','TTLJ_powheg','TTJJ_powheg']
     }
+
+groupPlot['nontt'] = {
+    'nameHR' : "nontt",
+    'isSignal' : 0,
+    'color':  kMagenta,
+    'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_NoFullyHad','SingleTop_tW_antitop_NoFullyHad','WJets_MG','DYJets', 'DYJets10to50_MG','WW_pythia','WZ_pythia','ZZ_pythia','ttW','ttZ','ttHTobb']
+    }
+
+groupPlot['QCD'] = {
+    'nameHR' : "QCD",
+    'isSignal' :0,
+    'color': kCyan, #color is not defined yet
+    'samples' : [ "%s_QCD"%(ele) for ele in groupPlot['tt']['samples'] + groupPlot['nontt']['samples']+["SingleElectron"] ],
+    'suppressNegative' : True,
+    }
+
 #
 #groupPlot['ttbb'] = {
 #    'nameHR' : "ttbb",
@@ -28,12 +46,6 @@ groupPlot['tt'] = {
 #    'samples' : ['ttbb']
 #    }
 #
-groupPlot['nontt'] = {
-    'nameHR' : "nontt",
-    'isSignal' : 0,
-    'color':  kMagenta,
-    'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_NoFullyHad','SingleTop_tW_antitop_NoFullyHad','WJets_MG','DYJets', 'DYJets10to50_MG','WW_pythia','WZ_pythia','ZZ_pythia','ttW','ttZ']
-    }
 
 #groupPlot['VJ'] = {
 #    'nameHR' : "VJ",
@@ -111,13 +123,13 @@ plot['TTLJ_powheg'] = {
 #    'scale':1,
 #    }
 #
-#plot['ttbb'] = {
-#    'color': 550,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
+plot['ttbb'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
 plot['SingleTop_sch_Lep'] = {
     'color': kMagenta,
     'isSignal' :0,
@@ -186,13 +198,13 @@ plot['ttZ'] = {
     'scale':1,
     }
 
-#plot['ttH_bb'] = {
-#    'color': kYellow,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
+plot['ttHTobb'] = {
+    'color': kYellow,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
 #plot['SingleMuon'] = {
 #    'nameHR' : "SingleMuon",
 #    'color':kBlack,
@@ -208,6 +220,15 @@ plot['SingleElectron'] = {
     'isData':1,
     'scale':1,
     }
+
+plot_QCD = {}
+for key, val in plot.iteritems():
+  key_QCD = "%s_QCD"%(key)
+  plot_QCD[key_QCD] = val.copy()
+  plot_QCD[key_QCD]['isData'] = 0
+plot.update(plot_QCD)
+
+
 plot['CHToCB_M<MASS>'] = {
     'nameHR' : "CH M<MASS>",
     'color':kViolet,

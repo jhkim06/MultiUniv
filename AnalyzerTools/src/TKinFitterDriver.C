@@ -20,14 +20,21 @@ TKinFitterDriver::TKinFitterDriver(int DataYear_, bool useMLCut_, TString MCSamp
   error_hadronic_w_ch_jet1.ResizeTo(1,1);
   error_hadronic_w_ch_jet2.ResizeTo(1,1);
   error_lepton.ResizeTo(1,1);
-  error_neutrino_pxpy.ResizeTo(2,2);
+  //error_neutrino_pt.ResizeTo(1,1);
+  error_neutrino_etphi.ResizeTo(2,2);
+  //error_neutrino_pxpy.ResizeTo(2,2);
+  //error_neutrino_pt.ResizeTo(1,1);
+  //error_neutrino_pz.ResizeTo(1,1);
 
   error_hadronic_top_b_jet.Zero(); 
   error_leptonic_top_b_jet.Zero();
   error_hadronic_w_ch_jet1.Zero();
   error_hadronic_w_ch_jet2.Zero();
   error_lepton.Zero();
-  error_neutrino_pxpy.Zero();
+  //error_neutrino_pt.Zero();
+  error_neutrino_etphi.Zero();
+  //error_neutrino_pxpy.Zero();
+  //error_neutrino_pz.Zero();
 
   ts_correction = new TSCorrection(DataYear);
   ts_correction->ReadFittedError("fit_error_pythia.txt");
@@ -39,8 +46,10 @@ TKinFitterDriver::TKinFitterDriver(int DataYear_, bool useMLCut_, TString MCSamp
   fit_hadronic_w_ch_jet2 = new TFitParticlePt();
   fit_extra_jet = new TFitParticlePt();
   fit_lepton = new TFitParticlePt();
-  fit_neutrino_pxpy =  new TFitParticlePxPy();
-  fit_neutrino_pz =  new TFitParticlePz();
+  //fit_neutrino_pt =  new TFitParticlePt();
+  fit_neutrino_etphi =  new TFitParticleEtPhi();
+  //fit_neutrino_pxpy =  new TFitParticlePxPy();
+  //fit_neutrino_pz =  new TFitParticlePz();
 
   constrain_hadronic_top_M = new TFitConstraintM("hadronic_top_mass_constraint", "hadronic_top_mass_constraint", 0, 0, 172.5);
   //constrain_hadronic_top_MGaus = new TFitConstraintMGaus("hadronic_top_mass_constraint", "hadronic_top_mass_constraint", 0, 0, 172.5, 1.5);
@@ -61,19 +70,31 @@ void TKinFitterDriver::initML(){
   tmva_reader = new TMVA::Reader();
   tmva_reader->AddVariable((TString)"dijet_deltaR",&dijet_deltaR);
   tmva_reader->AddVariable((TString)"had_w_ch_deltaR",&had_w_ch_deltaR);
+
+  tmva_reader->AddVariable((TString)"had_top_b_jet_csv",&had_top_b_jet_csv);
+  tmva_reader->AddVariable((TString)"lep_top_b_jet_csv",&lep_top_b_jet_csv);
+  tmva_reader->AddVariable((TString)"up_type_jet_csv",  &up_type_jet_csv);
+  tmva_reader->AddVariable((TString)"down_type_jet_csv",&down_type_jet_csv);
+
   tmva_reader->AddVariable((TString)"hadronic_top_mass",&hadronic_top_mass);
+  tmva_reader->AddVariable((TString)"hadronic_top_mass_flipped1",&hadronic_top_mass_flipped1);
+  tmva_reader->AddVariable((TString)"hadronic_top_mass_flipped2",&hadronic_top_mass_flipped2);
   tmva_reader->AddVariable((TString)"tt_deltaPhi",&tt_deltaPhi);
+  tmva_reader->AddVariable((TString)"tt_deltaPhi_flipped1",&tt_deltaPhi_flipped1);
+  tmva_reader->AddVariable((TString)"tt_deltaPhi_flipped2",&tt_deltaPhi_flipped2);
   tmva_reader->AddVariable((TString)"Mbl",&Mbl);
+  tmva_reader->AddVariable((TString)"Mbl_flipped1",&Mbl_flipped1);
+  tmva_reader->AddVariable((TString)"Mbl_flipped2",&Mbl_flipped2);
 
   TString base_path= getenv("DATA_DIR"); 
   base_path += "/" + TString::Itoa(DataYear,10) + "/TMVAClassification/";
   std::map<TString, TString> methods;
   //TString MCSample_ = MCSample.Contains("CHToCB")?MCSample:"TTLJ_powheg";
   for(TString MCSample_ : {"TTLJ_powheg", "CHToCB_M090to110", "CHToCB_M120to150"}){
-    methods[Form("BDT_%s_4j5j_2b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT_400_MinNodeSize1of10.weights.xml",base_path.Data(),MCSample_.Data(),"4j5j","2b");
-    methods[Form("BDT_%s_6j_2b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT_400_MinNodeSize1of10.weights.xml",base_path.Data(),MCSample_.Data(),"6j","2b");
-    methods[Form("BDT_%s_4j5j_3b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT_400_MinNodeSize1of10.weights.xml",base_path.Data(),MCSample_.Data(),"4j5j","3b");
-    methods[Form("BDT_%s_6j_3b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT_400_MinNodeSize1of10.weights.xml",base_path.Data(),MCSample_.Data(),"6j","3b");
+    methods[Form("BDT_%s_4j5j_2b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"4j5j","2b");
+    methods[Form("BDT_%s_6j_2b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"6j","2b");
+    methods[Form("BDT_%s_4j5j_3b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"4j5j","3b");
+    methods[Form("BDT_%s_6j_3b",MCSample_.Data())] = Form("%s/weights_%s_%s_%s/TMVAClassification_BDT.weights.xml",base_path.Data(),MCSample_.Data(),"6j","3b");
   }
   for(auto &method : methods){
     tmva_reader->BookMVA(method.first,method.second);
@@ -90,8 +111,10 @@ TKinFitterDriver::~TKinFitterDriver(){
   delete fit_hadronic_w_ch_jet2;
   delete fit_extra_jet;
   delete fit_lepton;
-  delete fit_neutrino_pxpy;
-  delete fit_neutrino_pz;
+  //delete fit_neutrino_pxpy;
+  //delete fit_neutrino_pt;
+  delete fit_neutrino_etphi;
+  //delete fit_neutrino_pz;
 
   delete constrain_hadronic_top_M;
   //delete constrain_hadronic_top_MGaus;
@@ -120,7 +143,7 @@ void TKinFitterDriver::SetAllObjects(std::vector<Jet> jet_vector_,
   //cout << "btag vector size " << btag_vector_.size() << endl; 
   jet_vector.clear();
   for(UInt_t i=0; i<jet_vector_.size(); i++){
-    jet_vector.push_back((TLorentzVector)jet_vector_.at(i));
+    jet_vector.push_back(jet_vector_.at(i));
   }
   btag_vector.clear();
   for(UInt_t i=0; i<btag_vector_.size(); i++){
@@ -238,38 +261,61 @@ void TKinFitterDriver::SetMET(TLorentzVector met_){
 }
 
 
-void TKinFitterDriver::SetNeutrino(TLorentzVector met_, int i){
+void TKinFitterDriver::SetMETShift(double met_shift_, double met_phi_shift_){
+  MET_shift = met_shift_;
+  MET_phi_shift = met_phi_shift_;
+}
+
+
+void TKinFitterDriver::SetNeutrino(TLorentzVector met_, double met_shift_, double met_phi_shift_, int i){
 
   double Pz = neutrino_pz_sol[i];
-  neutrino_pxpy.SetPxPyPzE(met_.Px(),met_.Py(), 0., met_.E());
-  neutrino_pz.SetPxPyPzE(0., 0., Pz, fabs(Pz));
 
-  double error_neutrino_px=0., error_neutrino_py=0.;
-  for(auto &x : jet_vector){
-    double Pt = x.Pt();
-    double Px = x.Px();
-    double Py = x.Py();
-    double Eta = x.Eta();
-    double error_ts_corr = this->JetErrorPt(Pt, Eta, "udscb");
-    error_neutrino_px+=(error_ts_corr*Px)*(error_ts_corr*Px);
-    error_neutrino_py+=(error_ts_corr*Py)*(error_ts_corr*Py);
-  }
-  error_neutrino_pxpy(0,0) = error_neutrino_px;
-  error_neutrino_pxpy(1,1) = error_neutrino_py;
+  neutrino_etphi.SetPxPyPzE(met_.Pz(),met_.Py(), Pz, TMath::Sqrt(met_.E()*met_.E()+Pz*Pz));
+  error_neutrino_etphi(0,0) = TMath::Power(met_.E()-met_shift_, 2);
+  error_neutrino_etphi(1,1) = TMath::Power(met_.Phi()-met_phi_shift_, 2);
+  fit_neutrino_etphi->~TFitParticleEtPhi();
+  new(fit_neutrino_etphi) TFitParticleEtPhi("neutrino_etphi",
+		                            "neutrino_etphi",
+				            &neutrino_etphi,
+				            &error_neutrino_etphi
+		                           );
+
+  //neutrino_pxpy.SetPxPyPzE(met_.Px(),met_.Py(), 0., met_.E());
+  //neutrino_pz.SetPxPyPzE(0., 0., Pz, fabs(Pz));
+
+  //double error_neutrino_px=0., error_neutrino_py=0.;
+  //for(auto &x : jet_vector){
+  //  double Pt = x.Pt();
+  //  double Px = x.Px();
+  //  double Py = x.Py();
+  //  double Eta = x.Eta();
+  //  double error_ts_corr = this->JetErrorPt(Pt, Eta, "udscb");
+  //  error_neutrino_px+=(error_ts_corr*Px)*(error_ts_corr*Px);
+  //  error_neutrino_py+=(error_ts_corr*Py)*(error_ts_corr*Py);
+  //}
+  //error_neutrino_pxpy(0,0) = error_neutrino_px;
+  //error_neutrino_pxpy(1,1) = error_neutrino_py;
   //this->SetUnclError(&error_neutrino_pxpy, met_);
-  fit_neutrino_pxpy->~TFitParticlePxPy();
-  new(fit_neutrino_pxpy) TFitParticlePxPy("neutrino_pxpy",
-                                          "neutrino_pxpy",
-                                          &neutrino_pxpy,
-                                          &error_neutrino_pxpy
-                                         );
-  
-  fit_neutrino_pz->~TFitParticlePz();
-  new(fit_neutrino_pz) TFitParticlePz("neutrino_pz",
-		                      "neutrino_pz",
-				      &neutrino_pz,
-				      NULL
-				      );
+  //fit_neutrino_pxpy->~TFitParticlePxPy();
+  //new(fit_neutrino_pxpy) TFitParticlePxPy("neutrino_pxpy",
+  //                                        "neutrino_pxpy",
+  //                                        &neutrino_pxpy,
+  //                                        &error_neutrino_pxpy
+  //                                       );
+  //
+  //fit_neutrino_pz->~TFitParticlePz();
+  //double MET = METv.Pt();
+  //double lep_pt = lepton.Pt();
+  //double cos = TMath::Cos(METv.Phi()-lepton.Phi());
+  //double abs_sin = fabs(TMath::Sin(METv.Phi()-lepton.Phi()));
+  //error_neutrino_pz(0,0) = TMath::Power(Pz*0.2, 2);
+
+  //new(fit_neutrino_pz) TFitParticlePz("neutrino_pz",
+  //      	                      "neutrino_pz",
+  //      			      &neutrino_pz,
+  //      			      &error_neutrino_pz
+  //      			      );
   //cout << "TKinFitterDriver::SetNeutrino : " << endl;
 }
 
@@ -285,10 +331,17 @@ void TKinFitterDriver::SetCurrentPermutationJets(){
     else if( jet_assignment_idx == W_CH_DOWN_TYPE ) n=i;
   }
   //cout << k << l << m << n << endl;
-  this->SetHadronicTopBJets( jet_vector.at(k) );
-  this->SetLeptonicTopBJets( jet_vector.at(l) );
-  this->SetWCHUpTypeJets( jet_vector.at(m) );
-  this->SetWCHDownTypeJets( jet_vector.at(n) );
+  this->SetHadronicTopBJets( (TLorentzVector)jet_vector.at(k) );
+  this->SetLeptonicTopBJets( (TLorentzVector)jet_vector.at(l) );
+  this->SetWCHUpTypeJets( (TLorentzVector)jet_vector.at(m) );
+  this->SetWCHDownTypeJets( (TLorentzVector)jet_vector.at(n) );
+  
+  //csv variables
+  had_top_b_jet_csv = jet_vector.at(k).GetTaggerResult(Jet::DeepCSV);
+  lep_top_b_jet_csv = jet_vector.at(l).GetTaggerResult(Jet::DeepCSV);
+  up_type_jet_csv   = jet_vector.at(m).GetTaggerResult(Jet::DeepCSV);
+  down_type_jet_csv = jet_vector.at(n).GetTaggerResult(Jet::DeepCSV); 
+
 
 }
 
@@ -296,21 +349,49 @@ void TKinFitterDriver::SetCurrentPermutationJets(){
 bool TKinFitterDriver::Check_BJet_Assignment(){
 
   int nbtags_in_four_jets=0;
+  bool found_up_type=false, found_down_type=false;
+  double up_type_csv = -999, down_type_csv = -999;
   for(UInt_t i=0; i<permutation_vector.size(); i++){
     JET_ASSIGNMENT jet_assignment_idx = permutation_vector.at(i);
+
+    if( jet_assignment_idx == W_CH_UP_TYPE ){
+      found_up_type = true;
+      up_type_csv   = jet_vector.at(jet_assignment_idx).GetTaggerResult(Jet::DeepCSV);
+    }
+    else if( jet_assignment_idx == W_CH_DOWN_TYPE ){
+      found_down_type = true;
+      down_type_csv   = jet_vector.at(jet_assignment_idx).GetTaggerResult(Jet::DeepCSV);
+    }
+
+    if(found_up_type==true && found_down_type==true){
+      if(up_type_csv > down_type_csv){
+        break;
+      }
+    }
+
     bool IsBTagged = btag_vector.at(i);
     if(nbtags>=2){
       if( jet_assignment_idx == HADRONIC_TOP_B && IsBTagged ) nbtags_in_four_jets+=1;
       else if( jet_assignment_idx == LEPTONIC_TOP_B && IsBTagged ) nbtags_in_four_jets+=1;
     }
-    if(nbtags>=3){
-      if( jet_assignment_idx == W_CH_DOWN_TYPE && IsBTagged ) nbtags_in_four_jets+=1;
-    }
+    //if(nbtags>=3){
+    //  if( jet_assignment_idx == W_CH_DOWN_TYPE && IsBTagged ){
+	//if(i>=4){
+          // b tagged jet should be inside leading 4 jets
+          //break;
+        //}
+        //else{
+    //	  nbtags_in_four_jets+=1;
+	//}
+      //}
+    //}
   }
 
   bool true_bjet_assignment=false;
-  if(nbtags==2 && nbtags_in_four_jets==2) true_bjet_assignment=true;
-  else if(nbtags>=3 && nbtags_in_four_jets>=3) true_bjet_assignment=true;
+  if(up_type_csv > down_type_csv) true_bjet_assignment=false;
+  else if(nbtags==2 && nbtags_in_four_jets==2) true_bjet_assignment=true;
+  //if(nbtags==2 && nbtags_in_four_jets==2) true_bjet_assignment=true;
+  else if(nbtags>=3 && nbtags_in_four_jets>=2) true_bjet_assignment=true;
 
   //cout << "TKinFitterDriver::Check_BJet_Assignment : " << endl; 
   return true_bjet_assignment;
@@ -319,24 +400,121 @@ bool TKinFitterDriver::Check_BJet_Assignment(){
 
 bool TKinFitterDriver::Kinematic_Cut(){
   TLorentzVector hadronic_top = hadronic_top_b_jet + hadronic_w_ch_jet1 + hadronic_w_ch_jet2;
+  TLorentzVector hadronic_top_flipped = leptonic_top_b_jet + hadronic_w_ch_jet1 + hadronic_w_ch_jet2;
+  TLorentzVector hadronic_top_flipped2 = hadronic_top_b_jet + hadronic_w_ch_jet1 + leptonic_top_b_jet;
+  TLorentzVector bl = leptonic_top_b_jet + lepton;
+  //TLorentzVector cb = hadronic_w_ch_jet1 + hadronic_top_b_jet;
+  TLorentzVector bb = hadronic_w_ch_jet2 + hadronic_top_b_jet;
   double hadronic_top_mass = hadronic_top.M();
-  return (hadronic_top_mass > 100 && hadronic_top_mass < 240);
+  double hadronic_top_mass_flipped = hadronic_top_flipped.M();
+  double Mbl = bl.M();
+  //double Mcb = cb.M();
+  double Mbb = bb.M();
+  double deltaPhilhb = fabs(lepton.Phi() - hadronic_top_b_jet.Phi());
+  //double deltaEtabb1 = fabs(hadronic_top_b_jet.Eta()-leptonic_top_b_jet.Eta());
+  //double deltaEtabb2 = fabs(hadronic_w_ch_jet2.Eta()-leptonic_top_b_jet.Eta());
+  //double dijet_deltaR = hadronic_w_ch_jet1.DeltaR(hadronic_w_ch_jet2);
+  //return (hadronic_top_mass > 100 && hadronic_top_mass < 240) && ( Mbl < 152.6 ) && ( Mcb < 152.6) && (Mbb < 152.6)  && ( dijet_deltaR < 2.5 );
+  return (hadronic_top_mass > 100 && hadronic_top_mass < 240) && ( Mbl < 152.6 ) && ( Mbb < 152.6 ) && deltaPhilhb>2.;
+  //return (hadronic_top_mass > 100 && hadronic_top_mass < 240) && ( Mbl < 152.6 );
 }
 
+bool TKinFitterDriver::ThirdBTaggingCut(){
+  bool out = false;
+  if(nbtags<3){
+    out = true;
+  }
+  else{
+    //auto it_up = std::find(permutation_vector.begin(),permutation_vector.end(),W_CH_UP_TYPE);
+    auto it_down = std::find(permutation_vector.begin(),permutation_vector.end(),W_CH_DOWN_TYPE);
+    //int idx_up = std::distance(permutation_vector.begin(),it_up);
+    int idx_down = std::distance(permutation_vector.begin(),it_down);
+    //bool IsBTagged_up = btag_vector.at(idx_up);
+    bool IsBTagged_down = btag_vector.at(idx_down);
+    if(
+        IsBTagged_down == true
+      ){
+        out = true;
+      }
+  }
+  return out;
+}
+bool TKinFitterDriver::GoodnessCut(){
+  
+  bool out=true;
+  auto pull1 = fit_hadronic_top_b_jet->getPull();
+  auto pull2 = fit_leptonic_top_b_jet->getPull();
+  auto pull3 = fit_hadronic_w_ch_jet1->getPull();
+  auto pull4 = fit_hadronic_w_ch_jet2->getPull();
+  for(auto &x : {pull1,pull2,pull3,pull4}){
+    if(fabs((*x)(0,0))>3){
+      out = false;
+      break;
+    }
+  }
+  return out;
+}
+
+bool TKinFitterDriver::AngularCorr(){
+
+  bool out=true;
+  TLorentzVector had_w_ch = hadronic_w_ch_jet1 + hadronic_w_ch_jet2;
+  TLorentzVector h_top = hadronic_top_b_jet + had_w_ch;
+  //
+  TLorentzVector tmp_h_top;
+  tmp_h_top.SetPtEtaPhiM(h_top.Pt(), h_top.Eta(), h_top.Phi(), h_top.M());
+  double h_top_gamma = tmp_h_top.Gamma();
+  double h_top_beta = tmp_h_top.Beta();
+  double E_star = (172.5*172.5-80.4*80.4)/(2*172.5);
+  double theta_star = h_top.Theta() - (hadronic_top_b_jet-h_top).Theta();
+  double E = E_star*h_top_gamma*(1+h_top_beta*TMath::Cos(theta_star));
+  //TLorentzVector cb1 = hadronic_w_ch_jet1 + hadronic_w_ch_jet2;
+  //TLorentzVector cb2 = hadronic_w_ch_jet1 + hadronic_top_b_jet;
+  TLorentzVector bb = hadronic_w_ch_jet2 + hadronic_top_b_jet;
+  //double Mcb1 = cb1.M();
+  //double Mcb2 = cb2.M();
+  double Mbb = bb.M();
+  //double dijet_deltaR = had_w_ch.DeltaR(hadronic_top_b_jet);
+  if( 
+      //E < hadronic_top_b_jet.Pt() && E > hadronic_w_ch_jet2.Pt() ||
+      Mbb > 152.6
+      //fabs(had_w_ch.Eta()) < fabs(hadronic_top_b_jet.Eta())
+    ){
+    out=false;
+  }
+  //debug
+  //cout << "nbtags:  " << nbtags << "\t\t " << deltaR1 << "\t\t" << deltaR2 << "\t\t" << fit_result.fitted_dijet_M << endl;
+  return out;
+}
 
 void TKinFitterDriver::updatesMLVariables(){
 
   TLorentzVector had_w_ch = hadronic_w_ch_jet1 + hadronic_w_ch_jet2;
   TLorentzVector h_top = hadronic_top_b_jet + had_w_ch;
+  TLorentzVector h_top_flipped1 = leptonic_top_b_jet + had_w_ch;
+  TLorentzVector h_top_flipped2 = hadronic_w_ch_jet2 + had_w_ch;
   TLorentzVector l_W = METv + lepton;
   TLorentzVector bl = lepton + leptonic_top_b_jet;
+  TLorentzVector bl_flipped1 = lepton + hadronic_top_b_jet;
+  TLorentzVector bl_flipped2 = lepton + hadronic_w_ch_jet2;
   TLorentzVector l_top = l_W + leptonic_top_b_jet;
+  TLorentzVector l_top_flipped1 = l_W + hadronic_top_b_jet;
+  TLorentzVector l_top_flipped2 = l_W + hadronic_w_ch_jet2;
 
   dijet_deltaR = hadronic_w_ch_jet1.DeltaR(hadronic_w_ch_jet2);
   had_w_ch_deltaR = had_w_ch.DeltaR(hadronic_top_b_jet);
+
+  //csv variables updated in SetCurrentPermutationJets();
+
   hadronic_top_mass = h_top.M();
+  hadronic_top_mass_flipped1 = h_top_flipped1.M();
+  hadronic_top_mass_flipped2 = h_top_flipped2.M();
   Mbl = bl.M();
+  Mbl_flipped1 = bl_flipped1.M();
+  Mbl_flipped2 = bl_flipped2.M();
   tt_deltaPhi = fabs(h_top.Phi() - l_top.Phi());
+  tt_deltaPhi_flipped1 = fabs(h_top_flipped1.Phi() - l_top_flipped1.Phi());
+  tt_deltaPhi_flipped2 = fabs(h_top_flipped2.Phi() - l_top_flipped2.Phi());
 
 }
 
@@ -355,20 +533,15 @@ bool TKinFitterDriver::ML_Cut(TString mass_){
   method += nbtags==2?
 	      "_2b":nbtags>=3?
 	        "_3b":"_NULL";
-  TString mass_range = "CHToCB_M090to110";
-  for(auto high_mass_regexp :{"120$","130$","140$","150$"}){
-    if(mass_.Contains(TRegexp(high_mass_regexp))){
-      mass_range = "CHToCB_M120to150";
-      break;
-    }
-  }
   double MLoutput1 = tmva_reader->EvaluateMVA(Form(method.Data(),"TTLJ_powheg"));
-  double MLoutput2 = tmva_reader->EvaluateMVA(Form(method.Data(),mass_range.Data()));
+  double MLoutput2 = tmva_reader->EvaluateMVA(Form(method.Data(),mass_.Data()));
   //cout << MLoutput << endl;
   double cut1 = 0., cut2 = 0.;
-  this->GetMLCut("TTLJ_powheg");
-  this->GetMLCut(mass_range);
-  if(MLoutput1>cut1 || MLoutput2>cut2){
+  cut1 = this->GetMLCut("TTLJ_powheg");
+  cut2 = this->GetMLCut(mass_);
+  if( (MLoutput1>cut1) ||
+      (MLoutput2>cut2)
+    ){
     return true;
   }
   else{
@@ -381,54 +554,54 @@ double TKinFitterDriver::GetMLCut(TString sample){
   if(sample.Contains("TTLJ_powheg")){
     if(njets==4 || njets==5 ){
       if(nbtags==2){
-        out=-0.275;
+        out=0.5068280354158298;
       }
       else if(nbtags>=3){
-        out=-0.175;
+        out=0.2376547026255436;
       }
     }
     else if(njets>=6){
       if(nbtags==2){
-        out=-0.043;
+        out=0.47901386820577924;
       }
       else if(nbtags>=3){
-        out=-0.099;
+        out=0.306995535434061;
       }
     }
   }
   else if(sample.Contains("CHToCB_M090to110")){
     if(njets==4 || njets==5){
       if(nbtags==2){
-        out=-0.686;
+        out=-0.4239895236926861;
       }
       else if(nbtags>=3){
-        out=-0.521;
+        out=-0.033261172868134445;
       }
     }
     else if(njets>=6){
       if(nbtags==2){
-        out=-0.751;
+        out=-0.38815070034907145;
       }
       else if(nbtags>=3){
-        out=-0.595;
+        out=0.01624176652433411;
       }
     }
   }
   else if(sample.Contains("CHToCB_M120to150")){
     if(njets==4 || njets==5){
       if(nbtags==2){
-        out=-0.808;
+        out=-0.8674999772068501;
       }
       else if(nbtags>=3){
-        out=-0.762;
+        out=-0.5315194527877283;
       }
     }
     else if(njets>=6){
       if(nbtags==2){
-        out=-0.898;
+        out=-0.7287129222635327;
       }
       else if(nbtags>=3){
-        out=-0.763;
+        out=-0.39152847563149457;
       }
     }
   }
@@ -470,11 +643,15 @@ void TKinFitterDriver::SetConstraint(){
   //constrain_hadronic_top_MGaus->Clear();
   //constrain_hadronic_top_MGaus->addParticles1(fit_hadronic_top_b_jet, fit_hadronic_w_ch_jet1, fit_hadronic_w_ch_jet2);
   constrain_leptonic_top_M->Clear();
-  constrain_leptonic_top_M->addParticles1(fit_leptonic_top_b_jet, fit_lepton, fit_neutrino_pxpy, fit_neutrino_pz);
+  //constrain_leptonic_top_M->addParticles1(fit_leptonic_top_b_jet, fit_lepton, fit_neutrino_pxpy, fit_neutrino_pz);
+  //constrain_leptonic_top_M->addParticles1(fit_leptonic_top_b_jet, fit_lepton, fit_neutrino_pt);
+  constrain_leptonic_top_M->addParticles1(fit_leptonic_top_b_jet, fit_lepton, fit_neutrino_etphi);
   //constrain_leptonic_top_MGaus->Clear();
   //constrain_leptonic_top_MGaus->addParticles1(fit_leptonic_top_b_jet, fit_lepton, fit_neutrino_pxpy, fit_neutrino_pz);
   constrain_leptonic_W_M->Clear();
-  constrain_leptonic_W_M->addParticles1(fit_lepton, fit_neutrino_pxpy, fit_neutrino_pz);
+  //constrain_leptonic_W_M->addParticles1(fit_lepton, fit_neutrino_pt);
+  constrain_leptonic_W_M->addParticles1(fit_lepton, fit_neutrino_etphi);
+  //constrain_leptonic_W_M->addParticles1(fit_lepton, fit_neutrino_pxpy, fit_neutrino_pz);
   //constrain_leptonic_W_MGaus->Clear();
   //constrain_leptonic_W_MGaus->addParticles1(fit_lepton, fit_neutrino_pxpy, fit_neutrino_pz);
 }
@@ -492,8 +669,10 @@ void TKinFitterDriver::SetFitter(){
   // To fit MET, it is required to know uncertainty of MET
   // Also, Px, Py should be constrained
   fitter->addMeasParticle( fit_lepton );
-  fitter->addMeasParticle( fit_neutrino_pxpy );
-  fitter->addUnmeasParticle( fit_neutrino_pz );
+  //fitter->addMeasParticle( fit_neutrino_pt );
+  fitter->addMeasParticle( fit_neutrino_etphi );
+  //fitter->addMeasParticle( fit_neutrino_pxpy );
+  //fitter->addMeasParticle( fit_neutrino_pz );
   //fitter->addUnmeasParticle( fit_lepton );
   //fitter->addUnmeasParticle( fit_neutrino_pxpy );
   //add Constraint
@@ -525,9 +704,11 @@ void TKinFitterDriver::SaveResults(){
   fit_result.status = fitter->fit();
   // save kinematic variable before fit
   TLorentzVector hadronic_top = hadronic_top_b_jet + hadronic_w_ch_jet1 + hadronic_w_ch_jet2;
-  TLorentzVector leptonic_W = lepton + neutrino_pxpy + neutrino_pz;
+  //TLorentzVector leptonic_W = lepton + neutrino_pxpy + neutrino_pz;
+  TLorentzVector leptonic_W = lepton + neutrino_etphi;
   TLorentzVector leptonic_top = leptonic_top_b_jet + leptonic_W;
   fit_result.hadronic_top_M = hadronic_top.M();
+  fit_result.hadronic_top_pt = hadronic_top.Pt();
   fit_result.leptonic_top_M = leptonic_top.M();
   fit_result.leptonic_W_M = leptonic_W.M();
   fit_result.IsRealNeuPz = IsRealNeuPz;
@@ -552,6 +733,12 @@ void TKinFitterDriver::SaveResults(){
     //chi2 term comes from constraint is not accurate
     fit_result.chi2 = this->CalcChi2();
 
+    //
+    fit_result.fitted_hadronic_top_b_jet = fit_hadronic_top_b_jet->getCurr4Vec();
+    fit_result.fitted_leptonic_top_b_jet = fit_leptonic_top_b_jet->getCurr4Vec();
+    fit_result.fitted_hadronic_w_ch_jet1 = fit_hadronic_w_ch_jet1->getCurr4Vec();
+    fit_result.fitted_hadronic_w_ch_jet2 = fit_hadronic_w_ch_jet2->getCurr4Vec();
+
     // calc. dijet mass
     const TLorentzVector *fitted_jet1 = fit_hadronic_w_ch_jet1->getCurr4Vec(); // get address of fitted object
     const TLorentzVector *fitted_jet2 = fit_hadronic_w_ch_jet2->getCurr4Vec(); // get address of fitted object
@@ -564,13 +751,11 @@ void TKinFitterDriver::SaveResults(){
   //}
   //cout << "TKinFitterDriver::Fit : " << endl;
 
-    fit_result.passMLcut["CHToCB_M090"] = this->ML_Cut("CHToCB_M090");
-    fit_result.passMLcut["CHToCB_M100"] = this->ML_Cut("CHToCB_M100");
-    fit_result.passMLcut["CHToCB_M110"] = this->ML_Cut("CHToCB_M110");
-    fit_result.passMLcut["CHToCB_M120"] = this->ML_Cut("CHToCB_M120");
-    fit_result.passMLcut["CHToCB_M130"] = this->ML_Cut("CHToCB_M130");
-    fit_result.passMLcut["CHToCB_M140"] = this->ML_Cut("CHToCB_M140");
-    fit_result.passMLcut["CHToCB_M150"] = this->ML_Cut("CHToCB_M150");
+    fit_result.passMLcut["CHToCB_M090to110"] = this->ML_Cut("CHToCB_M090to110");
+    fit_result.passMLcut["CHToCB_M120to150"] = this->ML_Cut("CHToCB_M120to150");
+    fit_result.passThirdBTaggingCut = this->ThirdBTaggingCut();
+    fit_result.passGoodnessCut = this->GoodnessCut();
+    fit_result.passAngularCorr = this->AngularCorr();
 
 }
 
@@ -585,14 +770,17 @@ double TKinFitterDriver::CalcChi2(){
   //lepton
   chi2 += this->CalcEachChi2(fit_lepton);
   //extra pt
-  chi2 += this->CalcEachChi2(fit_neutrino_pxpy);
+  //chi2 += this->CalcEachChi2(fit_neutrino_pt);
+  chi2 += this->CalcEachChi2(fit_neutrino_etphi);
+  //chi2 += this->CalcEachChi2(fit_neutrino_pz);
+  //chi2 += this->CalcEachChi2(fit_neutrino_pxpy);
   // mass constraints
-  chi2 += this->CalcEachChi2(constrain_leptonic_W_M, 2.085);
+  chi2 += this->CalcEachChi2(constrain_leptonic_W_M, 2.141);
   //chi2 += this->CalcEachChi2(constrain_leptonic_W_MGaus);
   //chi2 += this->CalcEachChi2(constrain_hadronic_top_MGaus);
-  chi2 += this->CalcEachChi2(constrain_hadronic_top_M, 1.5);
+  chi2 += this->CalcEachChi2(constrain_hadronic_top_M, 1.31);
   //chi2 += this->CalcEachChi2(constrain_leptonic_top_MGaus);
-  chi2 += this->CalcEachChi2(constrain_leptonic_top_M, 1.5);
+  chi2 += this->CalcEachChi2(constrain_leptonic_top_M, 1.31);
   return chi2;
 }
 
@@ -625,7 +813,7 @@ double TKinFitterDriver::CalcEachChi2(TFitConstraintMGaus* ptr){
 }
 
 
-void TKinFitterDriver::FindBestChi2Fit(bool UseLeading4Jets, bool IsHighMassFitter){
+void TKinFitterDriver::FindBestChi2Fit(bool UseLeading5Jets, bool IsHighMassFitter){
   fit_result_vector.clear();
   fit_result_vector.shrink_to_fit();
   // status -1 : fit not performed
@@ -635,20 +823,24 @@ void TKinFitterDriver::FindBestChi2Fit(bool UseLeading4Jets, bool IsHighMassFitt
     this->SetCurrentPermutationJets();
     //XXX will be removed, results from ML_Cut() should be stored
     //if(this->ML_Cut() == false) continue;
+    if(this->Kinematic_Cut() == false) continue;
+    //if(this->ThirdBTaggingCut() == false) continue;
       this->Sol_Neutrino_Pz();
       for(int i(0); i<2; i++){
 	//if(!IsRealNeuPz && i==1) break;
 	if(IsRealNeuPz){
-	  this->SetNeutrino(METv, i);
+	  this->SetNeutrino(METv, MET_shift, MET_phi_shift, i);
 	}
 	else if(!IsRealNeuPz && i==0){
-	  this->SetNeutrino(recal_METv, i);
+	  this->SetNeutrino(METv, MET_shift, MET_phi_shift, i); // not use recalc MET
+	  //this->SetNeutrino(recal_METv, i);
 	}
         this->Fit();
 	fit_result_vector.push_back(fit_result);
       }
-    }while(this->NextPermutation(UseLeading4Jets));
+    }while(this->NextPermutation(UseLeading5Jets));
   std::sort(fit_result_vector.begin(), fit_result_vector.end(), Chi2Comparing);
+  std::sort(fit_result_vector.begin(), fit_result_vector.end(), HadTopPtComparing);
   if(IsHighMassFitter){
     std::sort(fit_result_vector.begin(), fit_result_vector.end(), HighMassFitter);
   }
@@ -680,98 +872,115 @@ double TKinFitterDriver::GetCorrectedDijetMass(){
 }
 
 
-int TKinFitterDriver::GetBestStatus(TString mass_){
-  int out=-1;
-  if(fit_result_vector.size()>0){
-    if(mass_==""){
-      out =fit_result_vector.at(0).status;
+double TKinFitterDriver::GetBestChi2Variables(TString varName, TString mass_, bool highMassFitter){
+
+  std::vector<ResultContainer*> tmp_fit_result_vector;
+  //
+  for(auto &x : fit_result_vector){
+    if(x.passThirdBTaggingCut==true &&
+       x.passAngularCorr==true &&
+       x.passMLcut[mass_]==true
+      ){
+      tmp_fit_result_vector.push_back(&x);
     }
-    else{
-      for(unsigned int i=0; i<fit_result_vector.size(); i++){
-        if(fit_result_vector.at(i).passMLcut[mass_]==true){
-          out = fit_result_vector.at(i).status;
-	  break;
+  }
+  
+  double out=-1;
+  int out_idx=0;
+  bool zeroVectorSize=false;
+  if(tmp_fit_result_vector.size()==0){
+    zeroVectorSize=true;
+  }
+  else if(tmp_fit_result_vector.size()==1){
+    //pass out_idx==0
+  }
+  else if(tmp_fit_result_vector.size()>1){
+    if(nbtags>=3){
+      double chi2_0 = tmp_fit_result_vector[0]->chi2;
+      double chi2_1 = tmp_fit_result_vector[1]->chi2;
+      double w_ch_b_pt_0 = tmp_fit_result_vector[0]->w_ch_down_type_pt;
+      double w_ch_b_pt_1 = tmp_fit_result_vector[1]->w_ch_down_type_pt;
+      double top_b_pt_0 = tmp_fit_result_vector[0]->hadronic_top_b_pt;
+      double top_b_pt_1 = tmp_fit_result_vector[1]->hadronic_top_b_pt; 
+
+      if(highMassFitter){
+       if(chi2_0==chi2_1  && w_ch_b_pt_0 < top_b_pt_0 && w_ch_b_pt_1 >= top_b_pt_1 ){
+       //if(chi2_0==chi2_1  && Pt_0 >= E_0 && Pt_1 < E_1 ){
+          out_idx = 1;
+        }
+        else{
+          //pass out_idx==0
+        }
+      }
+      else{
+        if(chi2_0==chi2_1  && w_ch_b_pt_0 >= top_b_pt_0 && w_ch_b_pt_1 < top_b_pt_1 ){
+        //if(chi2_0==chi2_1  && Pt_0 < E_0 && Pt_1 >= E_1 ){
+          out_idx = 1;
+        }
+        else{
+          //pass out_idx==0
         }
       }
     }
+    else{
+      //pass out_idx==0
+    }
+  }
+
+  if(zeroVectorSize==false){
+    if(varName=="status"){
+      out = tmp_fit_result_vector.at(out_idx)->status;
+    }
+    else if(varName=="chi2"){
+      out = tmp_fit_result_vector.at(out_idx)->chi2;
+    }
+    else if(varName=="fitted_dijet_M"){
+      out = tmp_fit_result_vector.at(out_idx)->fitted_dijet_M;
+    }
+    else if(varName=="initial_dijet_M"){
+      out = tmp_fit_result_vector.at(out_idx)->initial_dijet_M;
+    }
+    else if(varName=="corrected_dijet_M"){
+      out = tmp_fit_result_vector.at(out_idx)->corrected_dijet_M;
+    }
+    //else if(varName==""){
+    //  out = tmp_fit_result_vector.at(out_idx)->;
+    //}
+    //else if(varName==""){
+    //  out = tmp_fit_result_vector.at(out_idx)->;
+    //}
+  }
+  else{
+    //pass out==-1
   }
   return out;
+
+}
+
+
+
+int TKinFitterDriver::GetBestStatus(TString mass_){
+  return (int)GetBestChi2Variables("status",mass_,mass_=="CHToCB_M120to150"?true:false);
 }
 
 
 double TKinFitterDriver::GetBestChi2(TString mass_){
-  double out=-1;
-  if(fit_result_vector.size()>0){
-    if(mass_==""){
-      out =fit_result_vector.at(0).chi2;
-    }
-    else{
-      for(unsigned int i=0; i<fit_result_vector.size(); i++){
-        if(fit_result_vector.at(i).passMLcut[mass_]==true){
-          out = fit_result_vector.at(i).chi2;
-	  break;
-        }
-      }
-    }
-  }
-  return out==9999 ? -1. : out;
+  return GetBestChi2Variables("chi2",mass_,mass_=="CHToCB_M120to150"?true:false);
 }
 
 
 double TKinFitterDriver::GetBestFittedDijetMass(TString mass_){
-  double out=-1;
-  if(fit_result_vector.size()>0){
-    if(mass_==""){
-      out =fit_result_vector.at(0).fitted_dijet_M;
-    }
-    else{
-      for(unsigned int i=0; i<fit_result_vector.size(); i++){
-        if(fit_result_vector.at(i).passMLcut[mass_]==true){
-          out = fit_result_vector.at(i).fitted_dijet_M;
-	  break;
-        }
-      }
-    }
-  }
-  return out;
+  return GetBestChi2Variables("fitted_dijet_M",mass_,mass_=="CHToCB_M120to150"?true:false);
 }
 
 
 double TKinFitterDriver::GetBestInitialDijetMass(TString mass_){
-  double out=-1;
-  if(fit_result_vector.size()>0){
-    if(mass_==""){
-      out =fit_result_vector.at(0).initial_dijet_M;
-    }
-    else{
-      for(unsigned int i=0; i<fit_result_vector.size(); i++){
-        if(fit_result_vector.at(i).passMLcut[mass_]==true){
-          out = fit_result_vector.at(i).initial_dijet_M;
-	  break;
-        }
-      }
-    }
-  }
-  return out;
+  return GetBestChi2Variables("initial_dijet_M",mass_,mass_=="CHToCB_M120to150"?true:false);
 }
 
 
 double TKinFitterDriver::GetBestCorrectedDijetMass(TString mass_){
-  double out=-1;
-  if(fit_result_vector.size()>0){
-    if(mass_==""){
-      out =fit_result_vector.at(0).corrected_dijet_M;
-    }
-    else{
-      for(unsigned int i=0; i<fit_result_vector.size(); i++){
-        if(fit_result_vector.at(i).passMLcut[mass_]==true){
-          out = fit_result_vector.at(i).corrected_dijet_M;
-	  break;
-        }
-      }
-    }
-  }
-  return out;
+  return GetBestChi2Variables("corrected_dijet_M",mass_,mass_=="CHToCB_M120to150"?true:false);
 }
 
 
@@ -917,17 +1126,17 @@ std::vector<double> TKinFitterDriver::GetWCHUpTypePtVector(bool IsConverge){
 }
 
 
-std::vector<TKinFitterDriver::ResultContatiner> TKinFitterDriver::GetResults(){
+std::vector<TKinFitterDriver::ResultContainer> TKinFitterDriver::GetResults(){
   return fit_result_vector;
 }
 
 
-bool TKinFitterDriver::NextPermutation(bool UseLeading4Jets){
+bool TKinFitterDriver::NextPermutation(bool UseLeading5Jets){
 
   std::vector<TKinFitterDriver::JET_ASSIGNMENT>::iterator begin = permutation_vector.begin();
   std::vector<TKinFitterDriver::JET_ASSIGNMENT>::iterator end;
-  if(UseLeading4Jets){
-    end = begin+4;
+  if(UseLeading5Jets && njets>5){
+    end = begin+5;
   }
   else{
     end = permutation_vector.end();
@@ -1048,18 +1257,21 @@ void TKinFitterDriver::Resol_Neutrino_Pt(){
 }
 
 
-bool TKinFitterDriver::Chi2Comparing(const TKinFitterDriver::ResultContatiner& rc1, const TKinFitterDriver::ResultContatiner& rc2){
+bool TKinFitterDriver::Chi2Comparing(const TKinFitterDriver::ResultContainer& rc1, const TKinFitterDriver::ResultContainer& rc2){
   return (rc1.chi2 < rc2.chi2);
 }
 
+bool TKinFitterDriver::HadTopPtComparing(const TKinFitterDriver::ResultContainer& rc1, const TKinFitterDriver::ResultContainer& rc2){
+  return (rc1.hadronic_top_pt > rc2.hadronic_top_pt);
+}
 
-bool TKinFitterDriver::HighMassFitter(const TKinFitterDriver::ResultContatiner& rc1, const TKinFitterDriver::ResultContatiner& rc2){
+bool TKinFitterDriver::HighMassFitter(const TKinFitterDriver::ResultContainer& rc1, const TKinFitterDriver::ResultContainer& rc2){
   bool out; 
   out=(rc1.chi2 < rc2.chi2) ||
       (
        (rc1.chi2 == rc2.chi2) &&
-       (rc1.hadronic_top_b_pt < rc1.w_ch_down_type_pt) &&
-       (rc2.hadronic_top_b_pt >= rc2.w_ch_down_type_pt)
+       (rc1.fitted_hadronic_top_b_jet->Pt() < rc1.fitted_hadronic_w_ch_jet2->Pt()) &&
+       (rc1.fitted_hadronic_top_b_jet->Pt() >= rc1.fitted_hadronic_w_ch_jet2->Pt())
       );
   return out;
 }

@@ -2,10 +2,19 @@ from CommonPyTools.python.CommonTools import *
 
 
 
-variables['fitted_dijet_mass'] = {
+variables['fitted_dijet_M<MASS>'] = {
     'name': 'fitted_dijet_M<MASS>',
     #'range':(40,20,150),
     'range':(32,20,180),
+    'xaxis': 'm_{jj} [GeV]',
+    'yaxis': 'Events / 5GeV',
+    'fold' : 0
+    }
+
+variables['initial_dijet_M<MASS>'] = {
+    'name': 'initial_dijet_M<MASS>',
+    #'range':(56,20,300),
+    'range':(56,20,300),
     'xaxis': 'm_{jj} [GeV]',
     'yaxis': 'Events / 5GeV',
     'fold' : 0

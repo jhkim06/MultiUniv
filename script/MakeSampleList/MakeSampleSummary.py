@@ -45,7 +45,11 @@ for line in inputFile:
   nEntries += t.GetEntries()
   for i in range(t.GetEntries()):
     t.GetEntry(i)
-    sumw += t.gen_weight
+    if t.gen_weight>0:
+      sumw += 1.
+    else:
+      sumw += -1.
+
   print(filePath)
 
 if args.nmc=='':

@@ -15,21 +15,24 @@ template_list = [
 ]
 
 mass_list = [
-  "090",
-  "100",
-  "110",
-  "120",
-  "130",
-  "140",
-  "150",
+  ("090","090to110"),
+  ("100","090to110"),
+  ("110","090to110"),
+  ("120","120to150"),
+  ("130","120to150"),
+  ("140","120to150"),
+  ("150","120to150"),
 ]
 
 for template in template_list:
   for mass in mass_list:
     with open(template_directory+'/'+template, 'r') as fIn:
-      with open(save_directory+'/'+template.replace('_M.txt','_M%s.py'%mass), 'w') as fOut:
+      with open(save_directory+'/'+template.replace('_M.txt','_M%s.py'%mass[0]), 'w') as fOut:
         for line in fIn.readlines():
-          out = line.replace('<MASS>',mass)
+	  if "configuration_" in template or "plot_" in template:
+            out = line.replace('<MASS>',mass[0])
+	  else:
+            out = line.replace('<MASS>',mass[1])
 	  fOut.write(out)
 
 

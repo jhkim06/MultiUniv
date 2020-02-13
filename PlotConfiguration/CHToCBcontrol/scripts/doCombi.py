@@ -4,13 +4,15 @@ import collections
 
 
 #masses = ['090']
-masses = ['090','120','140']
+masses = ['090','100','110','120','130','140','150']
 #mass_points = [("CH090",90),("CH100",100),("CH110",110),("CH120",120),("CH130",130),("CH140",140),("CH150",150)]
 cuts_2b =[0.00] #[0.00,0.35,0.55]
 cuts_3b =[0.00] #[0.00,0.2,0.30,0.40,0.50,0.60]
 
-dirBase = '/data6/Users/salee/CMS/MultiUniv/PlotConfiguration/CHToCBcontrol/'
-variableName = 'fitted_dijet_mass'
+#dirBase = '/data6/Users/salee/CMS/MultiUniv/PlotConfiguration/CHToCBcontrol/'
+dirBase = '/data6/Users/bhoh/MultiUniv/MultiUniv/PlotConfiguration/CHToCBcontrol/'
+variableName = ['fitted_dijet_M090to110','fitted_dijet_M120to150']
+#variableName = ['initial_dijet_M090to110','initial_dijet_M120to150']
 
 
 class LimitCalc():
@@ -42,8 +44,11 @@ class LimitCalc():
 	  exit()
 
 	if Cut == 'All':
+	  #self.Cuts = ['4j5j2b','4j5j3b']
+	  #self.Cuts = ['4j5j2b','6j2b','4j5j3b','6j3b']
 	  self.Cuts = ['2b','3b']
 	elif Cut in ['2b','3b']:
+	#elif Cut in ['4j5j2b','6j2b','4j5j3b','6j3b']:
 	  self.Cuts = [Cut]
 	else:
 	  print 'there is no cut like',Cut,'Exiting...'
@@ -83,7 +88,11 @@ class LimitCalc():
 	      for cut in self.Cuts:
 		combName += cut
 		processName = 'M'+mass+'_'+ch+'_'+cut
-	        cardName= dirBase+year+'/DataCard_CHToCB_'+ch+'_Combi_M'+mass+'/'+ch+cut+'/'+variableName+'/datacard.txt'
+		if mass < "120":
+		  tmp_variableName = variableName[0]
+		else:
+		  tmp_variableName = variableName[1]
+	        cardName= dirBase+year+'/DataCard_CHToCB_'+ch+'_Combi_M'+mass+'/'+ch+cut+'/'+tmp_variableName+'/datacard.txt'
 		#print processName
 		#print cardName
 
@@ -94,6 +103,7 @@ class LimitCalc():
 	    cmd = cmd + ' ' + process + '=' + cards[process]
 	  cmd += ' > ' + combName + '.txt'
 	  if doRun:
+	    print 'cmd', cmd
             os.system(cmd)
 	  else:
 	    print 'cmd', cmd
@@ -118,6 +128,8 @@ class LimitCalc():
             arg3 = 'workspace/' + card.split('combinedCards/')[-1] + '.root'
             arg4 = massf
             command = command_template%(arg1,arg2,arg3,arg4)
+	    #### scaling constraint
+	    #command += " --X-rescale-nuisance 'CMS*' 0.5"
 	    self.workspaceFile.append(arg3)
 	    if doRun:
               os.system(command)
@@ -147,13 +159,34 @@ class LimitCalc():
 	      if self.StatOnly != '':
                 arg3 += '_' + self.StatOnlyLabel
 	      if self.RunLabel != '':
-		arg3 += '_' + self.RunLael
+		arg3 += '_' + self.RunLabel
               command = command_template%(arg1,arg2,arg3)
-              #options = "-M FitDiagnostics  --plots"
-              options = '-M '+self.Method +' --cminDefaultMinimizerType Minuit2 --rAbsAcc 0.000001 '
+	      #########
+              #options = "-M FitDiagnostics --plots --saveShapes"
+              #options = "-M FitDiagnostics --plots --saveShapes --saveWithUncertainties"
+	      #options += " -t -1 --expectSignal 0"
+	      #--cminDefaultMinimizerTolerance arg (=0.10000000000000001)
+	      #options += " --stepSize 0.01 --maxFailedSteps 10"
+	      #options += " --cminDefaultMinimizerTolerance 0.1"
+	      #options += " --robustHesse 1"
+	      #options += " --cminPreScan --cminPreFit 1"
+	      #options += " --keepFailures --saveNLL" 
+	      #options += " --preFitValue 0"
+	      #options += " --cminPreScan --cminSingleNuisFit "
+              #options = "-M FitDiagnostics --expectSignal 0 --stepSize 0 --plots --saveShapes"
+	      #########
+	      #options = "-M ChannelCompatibilityCheck"
+	      #########
+              options = '-M '+self.Method
+	      options +=' --rAbsAcc 0 --rRelAcc 0.000000001'
+	      #options += ' -t 500  '
+	      #options += ' --toysFrequentist'
+	      #########
+	      #options = "-M MultiDimFit --robustFit=1 "
+	      #########
               command += options
-	      command += ' '+self.Run
-	      command += ' '+self.StatOnly
+	      #command += ' '+self.Run
+	      #command += ' '+self.StatOnly
               pipe_line = "| tee combine/res_%s.out"%(name)
               command += pipe_line
 	      if doRun:

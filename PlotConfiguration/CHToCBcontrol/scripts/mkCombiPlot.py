@@ -30,6 +30,7 @@ class CombiPlot:
       # res_M090Y2017Mu2b3bEl2b3b.out
 
       fileName= 'combine/res_M' + str(mass).zfill(3) + 'Y2017Mu2b3bEl2b3b.out'
+      #fileName= 'combine/res_M' + str(mass).zfill(3) + 'Y2017Mu2bEl2b.out'
       print fileName
       f = open(fileName,"r")
       fL = f.readlines()
@@ -114,7 +115,7 @@ class CombiPlot:
     leg.AddEntry(tgr_cls_exp,     "Expected Limit","l");
     leg.AddEntry(tgr_cls_exp_pm1, "Expected #pm 1#sigma","f");
     leg.AddEntry(tgr_cls_exp_pm2, "Expected #pm 2#sigma","f");
-    leg.Draw("same")
+    #leg.Draw("same")
 
     tcanvas.SaveAs("hahaha.png")
 
@@ -199,7 +200,7 @@ if __name__ == "__main__":
   print tag
   
   com = CombiPlot()
-  masses = [90,120,140]
+  masses = [90,100,110,120,130,140,150]
   com.mkAsymptoticPlot(masses)
 
   

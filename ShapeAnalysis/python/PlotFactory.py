@@ -311,6 +311,10 @@ class PlotFactory:
 	      if not ( ('cuts' not in nuisance) or ( ('cuts' in nuisance) and (cutName in nuisance['cuts']) ) ) : # run only if this nuisance will affect the phase space defined in "cut"
 		is_this_nuisance_to_be_considered = False
 
+	      elif nuisance.get('kind')=='PDF':
+		is_this_nuisance_to_be_considered = False
+	        print("nuisance kind PDF will not be handled!!!!!!!!!!")
+
 	      if is_this_nuisance_to_be_considered :
 		if nuisance.get('kind')=='sampleChange':
 		  for sampleNuisName, sampleToChange in nuisance['samplesUp'].iteritems():
@@ -319,6 +323,16 @@ class PlotFactory:
 		  for sampleNuisName, sampleToChange in nuisance['samplesDo'].iteritems():
 		    if sampleNuisName == sampleName:
 		      shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleToChange
+	        elif nuisance.get('kind')=='variableChange':
+	          if variableName in nuisance['variablesUp']:
+	            shapeNameUp = cutName+"/"+nuisance['variablesUp'][variableName][0]+'/histo_' + sampleName
+	          else:
+	            shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleName
+	          if variableName in nuisance['variablesDo']:
+	            shapeNameDown = cutName+"/"+nuisance['variablesDo'][variableName][0]+'/histo_' + sampleName
+	          else:
+	            shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleName
+
 		elif 'name' in nuisance:
 		  shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisance['name']+"Up"
 		  shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisance['name']+"Down"

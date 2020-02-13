@@ -11,7 +11,7 @@ class Skim_K2 : public AnalyzerCore {
 public:
 
   void initializeAnalyzer();
-  void executeEventByJESJER(int em_shift_up_down, int res_shift_up_down);
+  void executeEventByJESJER(int em_shift_up_down, int res_shift_up_down, int btag_up_down=0);
   void executeEvent();
 
   Skim_K2();
@@ -24,16 +24,19 @@ public:
 private:
 
   TKinFitterDriver *fitter_driver;
-  bool IsTest;
+  bool FlagTest;
   int IsMu;
   int IsEl;
-  std::vector<bool>* btag_vector_noSF;
   TBranch *b_IsMu;
   TBranch *b_IsEl;
-  TBranch *b_btag_vector_noSF;
 
   std::vector<Muon> muons;
   std::vector<Electron> electrons;
+  std::vector<Jet> jets;
+  std::vector<Jet> jets_JES_Up;
+  std::vector<Jet> jets_JES_Do;
+  std::vector<Jet> jets_JER_Up;
+  std::vector<Jet> jets_JER_Do;
 
   Event* evt;
 
@@ -107,7 +110,60 @@ private:
   double MET_JER_Up;
   double MET_JER_Do;
 
+  //Mistag
+  // here upgrade means upgrade b-tagging status
+  bool FlagMistag; // store value of HasFlag("Mistag")
+  unsigned int nUpgrade;        // num. of untagged SF>1. jet
+  unsigned int nUpgrade_BTag_Up;
+  unsigned int nUpgrade_BTag_Do;
+  unsigned int nUpgrade_JES_Up; // to be initialized as 0
+  unsigned int nUpgrade_JES_Do; // will be calculated at dedicated method
+  unsigned int nUpgrade_JER_Up;
+  unsigned int nUpgrade_JER_Do;
+  unsigned int nUpgraded;       // to be initialized as 0 in clear
+  unsigned int nUpgraded_BTag_Up;
+  unsigned int nUpgraded_BTag_Do;
+  unsigned int nUpgraded_JES_Up;
+  unsigned int nUpgraded_JES_Do;
+  unsigned int nUpgraded_JER_Up;
+  unsigned int nUpgraded_JER_Do;
+
+  std::map<unsigned int,unsigned int> MapIdxUpgrade; // key: n th jets to be upgraded(correspond to nUpgraded), value: jets index to be upgraded
+  std::map<unsigned int,unsigned int> MapIdxUpgrade_BTag_Up;
+  std::map<unsigned int,unsigned int> MapIdxUpgrade_BTag_Do;
+  std::map<unsigned int,unsigned int> MapIdxUpgrade_JES_Up; // ex) MapIdxUpgrade[nUpgraded] = jet_idx
+  std::map<unsigned int,unsigned int> MapIdxUpgrade_JES_Do;
+  std::map<unsigned int,unsigned int> MapIdxUpgrade_JER_Up;
+  std::map<unsigned int,unsigned int> MapIdxUpgrade_JER_Do;
+
+  std::map<unsigned int, double> MapIdxMistagRate;       
+  std::map<unsigned int, double> MapIdxMistagRate_BTag_Up;       
+  std::map<unsigned int, double> MapIdxMistagRate_BTag_Do;       
+  std::map<unsigned int, double> MapIdxMistagRate_JES_Up;
+  std::map<unsigned int, double> MapIdxMistagRate_JES_Do;
+  std::map<unsigned int, double> MapIdxMistagRate_JER_Up;
+  std::map<unsigned int, double> MapIdxMistagRate_JER_Do;
+
+  void calcUpgrade(int em_shift_up_down, int res_shift_up_down, int btag_up_down=0); // estimate n upgrade and mistag sf.
+
+  double MistagRate;        // to be stored in tree
+  double MistagRate_BTag_Up;
+  double MistagRate_BTag_Do;
+  double MistagRate_JES_Up; // 1. will be stored for nUpgrade == 0.
+  double MistagRate_JES_Do; // 0. will be stored for nUpgraded >= nUpgrade
+  double MistagRate_JER_Up;
+  double MistagRate_JER_Do;
+
+  int IsMistag; // 0. for not upgraded event, 1. for upgraded event
+  int IsMistag_BTag_Up; // -1 for nUpgraded >= nUpgrade
+  int IsMistag_BTag_Do; // to be stored in tree
+  int IsMistag_JES_Up; 
+  int IsMistag_JES_Do; 
+  int IsMistag_JER_Up;
+  int IsMistag_JER_Do;
+
   void Clear();
+
 };
 
 
