@@ -62,13 +62,14 @@ public:
   }
 
   enum WP{
-    Loose, Medium, Tight
+    Loose, Medium, Tight, Reshaping
   };
   
   inline TString WPString(Jet::WP wp) const {
     if(wp == Jet::Loose) return "Loose";
     if(wp == Jet::Medium) return "Medium";
     if(wp == Jet::Tight) return "Tight";
+    if(wp == Jet::Reshaping) return "Reshaping";
     return "None";
   }
 

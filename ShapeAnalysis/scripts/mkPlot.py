@@ -8,7 +8,8 @@ from collections import OrderedDict
 
 import CommonPyTools.python.CommonTools as Tools
 #from ShapeAnalysis.python.PlotFactory import PlotFactory
-from ShapeAnalysis.python.PlotFactory_new import PlotFactory
+from ShapeAnalysis.python.PlotFactory import PlotFactory
+#from ShapeAnalysis.python.PlotFactory_new import PlotFactory
 
 print '''
 -----------------------------------------------------------------------------------------

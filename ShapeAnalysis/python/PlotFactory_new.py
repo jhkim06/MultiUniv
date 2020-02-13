@@ -179,42 +179,42 @@ class PlotFactory:
     for cutName in self._cuts:
       print 'cut =', cutName
       for variableName, variable in self._variables.iteritems():
-	if 'cuts' in variable and cutName not in variable['cuts']:
-	  continue
+        if 'cuts' in variable and cutName not in variable['cuts']:
+          continue
 
-	if type(self.fileIn) is not dict and not self.fileIn.GetDirectory(cutName+"/"+variableName):
-	  continue
+        if type(self.fileIn) is not dict and not self.fileIn.GetDirectory(cutName+"/"+variableName):
+          continue
 
-	print 'variableName = ', variableName
+        print 'variableName = ', variableName
 
-	if not "divideByBinWidth" in variable.keys():
+        if not "divideByBinWidth" in variable.keys():
 	  variable["divideByBinWidth"] = 0
 	########
-	plot_container = PlotContainer(cutName,variableName, variable, self._plotNormalizedDistributions)
-	plot_container.makeCanvas()
-	plot_container.makeStack()
-	plot_container.updateCounter()
-	list_PlotContainer.append(plot_container)
+        plot_container = PlotContainer(cutName,variableName, variable, self._plotNormalizedDistributions)
+        plot_container.makeCanvas()
+        plot_container.makeStack()
+        plot_container.updateCounter()
+        list_PlotContainer.append(plot_container)
 	########
 
 	for sampleName, plotdef in plot.iteritems():
 	  if 'samples' in variable and sampleName not in variable['samples']:
 	    continue
           self.addShape(sampleName, plot_container, plotdef)
-	  self.SetDataStyle(sampleName, plot_container, plotdef)
-          self.SetMCStyle(sampleName, plot_container, plotdef)
-	  self.HandleNuisanceShape(sampleName, plot_container, plotdef)
-	  self.FillGroupHisto(sampleName, plot_container)
+          self.SetDataStyle(sampleName, plot_container, plotdef)
+	  self.SetMCStyle(sampleName, plot_container, plotdef)
+          self.HandleNuisanceShape(sampleName, plot_container, plotdef)
+          self.FillGroupHisto(sampleName, plot_container)
 
         self.DecorateGroupHisto(plot_container)
-	self.SaveBkgSumErrCentral(plot_container)
-	self.addSigToBkg(plot_container)
-	self.calcNuisanceErr(plot_container)
-	self.prepareHistoPF(plot_container)
+        self.SaveBkgSumErrCentral(plot_container)
+        self.addSigToBkg(plot_container)
+        self.calcNuisanceErr(plot_container)
+        self.prepareHistoPF(plot_container)
         self.prepareRatio(plot_container)
-	self.prepareGroupedHistos(plot_container)
-	self.setCanvasFrame(plot_container)
-	self.draw(plot_container)
+        self.prepareGroupedHistos(plot_container)
+        self.setCanvasFrame(plot_container)
+        self.draw(plot_container)
 
 
   def addShape(self, sampleName_, plot_container_, plotdef_):
@@ -439,6 +439,9 @@ class PlotFactory:
 	    shapeNameDown = cutName+"/"+nuisance['variablesDo'][variableName][0]+'/histo_' + sampleName
 	  else:
 	    shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleName
+	elif nuisance.get('kind')=='PDF':
+	  print "nuisance kine PDF will not be handled in plotter!!!!!!!!!"
+          continue
 	elif 'name' in nuisance:
 	  shapeNameUp = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisance['name']+"Up"
 	  shapeNameDown = cutName+"/"+variableName+'/histo_' + sampleName+"_"+nuisance['name']+"Down"
@@ -652,7 +655,8 @@ class PlotFactory:
 	  histos_grouped[sampleNameGroup].SetLineWidth(sampleConfiguration['lineWidth'])
 	if 'lineColor' in sampleConfiguration.keys():
 	  histos_grouped[sampleNameGroup].SetLineColor(sampleConfiguration['lineColor'])
-
+	if 'suppressNegative' in sampleConfiguration.keys() and sampleConfiguration['suppressNegative'] == True:
+	  self._fixNegativeBinAndError(histos_grouped[sampleNameGroup])
 
   def SaveBkgSumErrCentral(self, plot_container_):
 
@@ -1685,6 +1689,20 @@ class PlotFactory:
       out_histo.SetBinError(i,0)
     return out_histo
 
+  def _fixNegativeBinAndError(self, histogram_to_be_fixed):
+    # if a histogram has a bin < 0
+    # then put the bin content to 0
+    # and also if a histogram has uncertainties that go <0,
+    # then put the uncertainty to the maximum allowed
+
+    for ibin in range(1, histogram_to_be_fixed.GetNbinsX()+1) :
+      if histogram_to_be_fixed.GetBinContent(ibin) < 0 :
+	histogram_to_be_fixed.SetBinContent(ibin, 0) 
+
+    # the SetBinError does not allow asymmetric -> fine, maximum uncertainty set
+    for ibin in range(1, histogram_to_be_fixed.GetNbinsX()+1) :
+      if histogram_to_be_fixed.GetBinContent(ibin) - histogram_to_be_fixed.GetBinErrorLow(ibin) < 0 :
+	histogram_to_be_fixed.SetBinError(ibin, histogram_to_be_fixed.GetBinContent(n)) 
 
 
     

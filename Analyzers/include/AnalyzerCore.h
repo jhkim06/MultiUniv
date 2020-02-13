@@ -148,7 +148,8 @@ public:
   //==== EvtByEvt Btagging
   void BtaggingSFEvtbyEvt(std::vector<Jet> &jets, Jet::Tagger tagger, Jet::WP WP, int systematic, float &btag_sf, float &mistag_sf);
   void BtaggingSFEvtbyEvt(std::vector<Jet> &jets, Jet::Tagger tagger, Jet::WP WP, int systematic, float &btag_sf, std::vector<float> &mistag_sf);
- 
+  double BtaggingSFReshape(std::vector<Jet> &jets, Jet::Tagger tagger, Jet::WP WP, int systematic, std::vector<double> &BTag_SF_vector);
+
   //==== Using new PDF set
   PDFReweight *pdfReweight;
   double GetPDFWeight(LHAPDF::PDF* pdf_);

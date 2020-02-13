@@ -193,6 +193,8 @@ class ShapeFactory:
 
 		for sampleNuisName, configurationNuis in nuisance['samples'].iteritems() :
 		  if sampleNuisName ==  sampleName :
+		    sysNameUp = '_' + nuisance['name'] + 'Up'
+		    sysNameDo = '_' + nuisance['name'] + 'Down'
 		    #                                 the first weight is "up", the second is "down"
 		    newSampleWeightUp = sample['weight'] + '* (' + configurationNuis[0]  + ")"
 		    newSampleWeightDo = sample['weight'] + '* (' + configurationNuis[1]  + ")"
@@ -228,15 +230,9 @@ class ShapeFactory:
 		          outputsHistoDo = self._draw( newVariableNameDo[1], variable['range'], combine_cuts, [],            newSampleWeightDo, [],                totCut, sampleName, trees, columns, doFold, cutName, newVariableNameDo[0], sample, False, go1D, useTUnfoldBin, unfoldBinType, unfoldBinDefinition, sumwxHistX)
 
 		    if not newVariableNameUp==None:
-	              self.outFile.mkdir(cutName+"/"+newVariableNameUp[0])
-	              self.outFile.cd(cutName+"/"+newVariableNameUp[0])
 		      outputsHistoUp.Write()
-	              self.outFile.cd(cutName+"/"+variableName)
 		    if not newVariableNameDo==None:
-	              self.outFile.mkdir(cutName+"/"+newVariableNameDo[0])
-	              self.outFile.cd(cutName+"/"+newVariableNameDo[0])
 		      outputsHistoDo.Write()
-	              self.outFile.cd(cutName+"/"+variableName)
 
 	      elif nuisance['kind' ] == 'PDF' :
 		for sampleNuisName, pdfW in nuisance['samples'].iteritems() :

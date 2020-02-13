@@ -22,9 +22,11 @@ void Skim_K2::initializeAnalyzer(){
   }
   
   if( HasFlag("Test") ){
-    IsTest = true;
+    FlagTest = true;
     cout<<"[Skim_K2::initializeAnalyzer] Test, do not run systematic"<<endl;
   }
+  FlagMistag = HasFlag("Mistag");
+
   outfile->mkdir("recoTree");
   outfile->cd("recoTree");
 
@@ -34,7 +36,7 @@ void Skim_K2::initializeAnalyzer(){
 
   // disable branch
   if(fChain->GetEntries()>0){
-    newtree = fChain->CloneTree(0); // JH : What relation does this outfile have with the fChain(created by SetTreeName)?
+    newtree = fChain->GetTree()->CloneTree(0); // JH : What relation does this outfile have with the fChain(created by SetTreeName)?
     newtree->SetBranchStatus("fatjet*",0);
     newtree->SetBranchStatus("photon*",0);
   }
@@ -42,31 +44,42 @@ void Skim_K2::initializeAnalyzer(){
     newtree = fChain->CloneTree(-1); // JH : What relation does this outfile have with the fChain(created by SetTreeName)?
   }
   // New Branch
-  newtree->Branch("initial_dijet_m", &initial_dijet_m,"initial_dijet_m/D");
-  newtree->Branch("initial_dijet_m_JES_Up", &initial_dijet_m_JES_Up,"initial_dijet_m_JES_Up/D");
-  newtree->Branch("initial_dijet_m_JES_Do", &initial_dijet_m_JES_Do,"initial_dijet_m_JES_Do/D");
-  newtree->Branch("initial_dijet_m_JER_Up", &initial_dijet_m_JER_Up,"initial_dijet_m_JER_Up/D");
-  newtree->Branch("initial_dijet_m_JER_Do", &initial_dijet_m_JER_Do,"initial_dijet_m_JER_Do/D");
-  newtree->Branch("corrected_dijet_m", &corrected_dijet_m,"corrected_dijet_m/D");
-  newtree->Branch("corrected_dijet_m_JES_Up", &corrected_dijet_m_JES_Up,"corrected_dijet_m_JES_Up/D");
-  newtree->Branch("corrected_dijet_m_JES_Do", &corrected_dijet_m_JES_Do,"corrected_dijet_m_JES_Do/D");
-  newtree->Branch("corrected_dijet_m_JER_Up", &corrected_dijet_m_JER_Up,"corrected_dijet_m_JER_Up/D");
-  newtree->Branch("corrected_dijet_m_JER_Do", &corrected_dijet_m_JER_Do,"corrected_dijet_m_JER_Do/D");
-  newtree->Branch("fitted_dijet_m", &fitted_dijet_m,"fitted_dijet_m/D");
-  newtree->Branch("fitted_dijet_m_JES_Up", &fitted_dijet_m_JES_Up,"fitted_dijet_m_JES_Up/D");
-  newtree->Branch("fitted_dijet_m_JES_Do", &fitted_dijet_m_JES_Do,"fitted_dijet_m_JES_Do/D");
-  newtree->Branch("fitted_dijet_m_JER_Up", &fitted_dijet_m_JER_Up,"fitted_dijet_m_JER_Up/D");
-  newtree->Branch("fitted_dijet_m_JER_Do", &fitted_dijet_m_JER_Do,"fitted_dijet_m_JER_Do/D");
-  newtree->Branch("best_chi2", &best_chi2,"best_chi2/D");
-  newtree->Branch("best_chi2_JES_Up", &best_chi2_JES_Up,"best_chi2_JES_Up/D");
-  newtree->Branch("best_chi2_JES_Do", &best_chi2_JES_Do,"best_chi2_JES_Do/D");
-  newtree->Branch("best_chi2_JER_Up", &best_chi2_JER_Up,"best_chi2_JER_Up/D");
-  newtree->Branch("best_chi2_JER_Do", &best_chi2_JER_Do,"best_chi2_JER_Do/D");
-  newtree->Branch("fitter_status", &fitter_status,"fitter_status/I");
-  newtree->Branch("fitter_status_JES_Up", &fitter_status_JES_Up,"fitter_status_JES_Up/I");
-  newtree->Branch("fitter_status_JES_Do", &fitter_status_JES_Do,"fitter_status_JES_Do/I");
-  newtree->Branch("fitter_status_JER_Up", &fitter_status_JER_Up,"fitter_status_JER_Up/I");
-  newtree->Branch("fitter_status_JER_Do", &fitter_status_JER_Do,"fitter_status_JER_Do/I");
+  //--------
+  // To make branch for dijet mass, best_chi2, fitter_status
+  // for various mass(..., M090, M100, ...) and syst(JES/JER)
+  //--------
+  mass_points = {"M090to110","M120to150"};
+  JES_JER_syst = {"","JESUp","JESDown","JERUp","JERDown"};
+  // start nested loop
+  for(auto mass : mass_points){
+    TString dijet_branch_name_base = TString::Format("_dijet_%s",mass.Data());
+    TString chi2_branch_name_base = TString::Format("best_chi2_%s",mass.Data());
+    TString status_branch_name_base = TString::Format("fitter_status_%s",mass.Data());
+    for(auto syst : JES_JER_syst){
+      TString dijet_branch_name_base_syst = dijet_branch_name_base;
+      TString chi2_branch_name_base_syst = chi2_branch_name_base;
+      TString status_branch_name_base_syst = status_branch_name_base;
+      if(syst != ""){
+        dijet_branch_name_base_syst = dijet_branch_name_base_syst + "_" + syst;
+        chi2_branch_name_base_syst   = chi2_branch_name_base_syst + "_" + syst;
+        status_branch_name_base_syst = status_branch_name_base_syst + "_" + syst;
+      }
+      //cout << "Branch Name: " << dijet_branch_name_base_syst  << endl;
+      //cout << "Branch Name: " << chi2_branch_name_base_syst   << endl;
+      //cout << "Branch Name: " << status_branch_name_base_syst << endl;
+      TString dijet_branch_name_initial_dijet_m   = "initial" + dijet_branch_name_base_syst;
+      TString dijet_branch_name_corrected_dijet_m = "corrected" + dijet_branch_name_base_syst;
+      TString dijet_branch_name_fitted_dijet_m    = "fitted" + dijet_branch_name_base_syst;
+      newtree->Branch(dijet_branch_name_initial_dijet_m, &(initial_dijet_m[syst][mass]), dijet_branch_name_initial_dijet_m + "/D");
+      newtree->Branch(dijet_branch_name_corrected_dijet_m, &(corrected_dijet_m[syst][mass]), dijet_branch_name_corrected_dijet_m + "/D");
+      newtree->Branch(dijet_branch_name_fitted_dijet_m, &(fitted_dijet_m[syst][mass]), dijet_branch_name_fitted_dijet_m + "/D");
+
+      newtree->Branch(chi2_branch_name_base_syst, &(best_chi2[syst][mass]), chi2_branch_name_base_syst + "/D");
+      newtree->Branch(status_branch_name_base_syst, &(fitter_status[syst][mass]), status_branch_name_base_syst + "/I");
+    }
+  }
+  // end of nested loop
+  //--------
 
   newtree->Branch("hadronic_top_M", &hadronic_top_M, "hadronic_top_M/D");
   newtree->Branch("leptonic_top_M", &leptonic_top_M,"leptonic_top_M/D");
@@ -117,13 +130,31 @@ void Skim_K2::initializeAnalyzer(){
   newtree->Branch("MET_JES_Do", &MET_JES_Do, "MET_JES_Do/D");
   newtree->Branch("MET_JER_Up", &MET_JER_Up, "MET_JER_Up/D");
   newtree->Branch("MET_JER_Do", &MET_JER_Do, "MET_JER_Do/D");
+
+  newtree->Branch("MistagRate", &MistagRate, "MistagRate/D");
+  newtree->Branch("MistagRate_BTag_Up", &MistagRate_BTag_Up, "MistagRate_BTag_Up/D");
+  newtree->Branch("MistagRate_BTag_Do", &MistagRate_BTag_Do, "MistagRate_BTag_Do/D");
+  newtree->Branch("MistagRate_JES_Up", &MistagRate_JES_Up, "MistagRate_JES_Up/D");
+  newtree->Branch("MistagRate_JES_Do", &MistagRate_JES_Do, "MistagRate_JES_Do/D");
+  newtree->Branch("MistagRate_JER_Up", &MistagRate_JER_Up, "MistagRate_JER_Up/D");
+  newtree->Branch("MistagRate_JER_Do", &MistagRate_JER_Do, "MistagRate_JER_Do/D");
+
+  newtree->Branch("IsMistag",         &IsMistag,         "IsMistag/I");
+  newtree->Branch("IsMistag_BTag_Up", &IsMistag_BTag_Up, "IsMistag_BTag_Up/I");
+  newtree->Branch("IsMistag_BTag_Do", &IsMistag_BTag_Do, "IsMistag_BTag_Do/I");
+  newtree->Branch("IsMistag_JES_Up",  &IsMistag_JES_Up,  "IsMistag_JES_Up/I");
+  newtree->Branch("IsMistag_JES_Do",  &IsMistag_JES_Do,  "IsMistag_JES_Do/I");
+  newtree->Branch("IsMistag_JER_Up",  &IsMistag_JER_Up,  "IsMistag_JER_Up/I");
+  newtree->Branch("IsMistag_JER_Do",  &IsMistag_JER_Do,  "IsMistag_JER_Do/I");
+
   // setup btagger
   std::vector<Jet::Tagger> taggers = {Jet::DeepCSV};
   std::vector<Jet::WP> wps ={Jet::Medium};
+  //std::vector<Jet::WP> wps ={Jet::Tight};
 
   SetupBTagger(taggers, wps, true, true);
 
-  fitter_driver = new TKinFitterDriver(DataYear,true,MCSample); // true means use ML cut
+  fitter_driver = new TKinFitterDriver(DataYear,false,MCSample); // true means use ML cut
 }
 
 
@@ -143,108 +174,283 @@ void Skim_K2::executeEvent(){
   electrons=GetElectrons("passVetoID",15.,2.5);
   std::sort(electrons.begin(),electrons.end(),PtComparing);
 
+  jets = GetJets("tight", 30., 2.4, 0, 0);
+  jets = JetsVetoLeptonInside(jets, electrons, muons);
+  std::sort(jets.begin(), jets.end(), PtComparing);
+  if(!IsData && !FlagTest ){
+    jets_JES_Up = GetJets("tight", 30., 2.4, 1,0);
+    jets_JES_Do = GetJets("tight", 30., 2.4, -1, 0);
+    jets_JER_Up = GetJets("tight", 30., 2.4, 0, 1);
+    jets_JER_Do = GetJets("tight", 30., 2.4, 0, -1);
+    jets_JES_Up = JetsVetoLeptonInside(jets_JES_Up, electrons, muons);
+    jets_JES_Do = JetsVetoLeptonInside(jets_JES_Do, electrons, muons);
+    jets_JER_Up = JetsVetoLeptonInside(jets_JER_Up, electrons, muons);
+    jets_JER_Do = JetsVetoLeptonInside(jets_JER_Do, electrons, muons);
+    std::sort(jets_JES_Up.begin(), jets_JES_Up.end(), PtComparing);
+    std::sort(jets_JES_Do.begin(), jets_JES_Do.end(), PtComparing);
+    std::sort(jets_JER_Up.begin(), jets_JER_Up.end(), PtComparing);
+    std::sort(jets_JER_Do.begin(), jets_JER_Do.end(), PtComparing);
+  }
+
   this->executeEventByJESJER(0,0);
-  if(!IsData && !IsTest ){
+  if(!IsData && !FlagTest ){
     this->executeEventByJESJER(1,0);
     this->executeEventByJESJER(-1,0);
     this->executeEventByJESJER(0,1);
     this->executeEventByJESJER(0,-1);
   }
   newtree->Fill();
+
+  if(FlagMistag && !IsData ){
+  //TODO initialize nUpgrade* variables
+    this->calcUpgrade(0,0);   // estimate number of jets to be upgraded and mistag rate
+    //this->calcUpgrade(0,0,1);
+    //this->calcUpgrade(0,0,-1);
+    if(!FlagTest){            // will initialize nUpgraded
+      this->calcUpgrade(1,0); // estimate nUpgraded, mistagrate
+      this->calcUpgrade(-1,0);
+      this->calcUpgrade(0,1);
+      this->calcUpgrade(0,-1);
+    }
+    //cout << "after calcUpgrade" << endl;
+    while(nUpgraded < nUpgrade ||
+	  //nUpgraded_BTag_Up < nUpgrade_BTag_Up || 
+	  //nUpgraded_BTag_Do < nUpgrade_BTag_Do || 
+	  nUpgraded_JES_Up < nUpgrade_JES_Up || 
+          nUpgraded_JES_Do < nUpgrade_JES_Do ||
+          nUpgraded_JER_Up < nUpgrade_JER_Up ||
+          nUpgraded_JER_Do < nUpgrade_JER_Do
+         ){
+      //cout << "------------------------" << endl;
+      //cout << nUpgraded        << "   " <<  nUpgrade << endl;
+      //cout << nUpgraded_JES_Up << "   " <<  nUpgrade_JES_Up << endl;    
+      //cout << nUpgraded_JES_Do << "   " <<  nUpgrade_JES_Do << endl; 
+      //cout << nUpgraded_JER_Up << "   " <<  nUpgrade_JER_Up << endl;
+      //cout << nUpgraded_JER_Do << "   " <<  nUpgrade_JER_Do << endl;
+      //cout << "------------------------" << endl;
+      this->executeEventByJESJER(0,0);
+      this->executeEventByJESJER(0,0,1);
+      this->executeEventByJESJER(0,0,-1);
+      if(!FlagTest){
+        this->executeEventByJESJER(1,0);  // if nUpgraded* >= nUpgrade*
+        this->executeEventByJESJER(-1,0); // nbtag* will set to be zero
+        this->executeEventByJESJER(0,1);  // so as not to pass evt selection cut
+        this->executeEventByJESJER(0,-1); // even if copyed value stored in the tree.
+      }
+      //cout << "after run fitter in while loop which handle mistag" << endl;
+      newtree->Fill();
+    }
+  }
   delete evt;
 }
 
 
-void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
+void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down, int btag_up_down){
 
   //set pointers
-  double *p_initial_dijet_m, *p_corrected_dijet_m, *p_fitted_dijet_m, *p_best_chi2, *p_MET;
-  int *p_fitter_status, *p_njets, *p_nbtags;
+  double *p_MET;
+  std::vector<Jet> *p_jets;
+  std::map<TString, double> *p_best_chi2, *p_initial_dijet_m, *p_corrected_dijet_m, *p_fitted_dijet_m;
+  int *p_njets, *p_nbtags;
+  std::map<TString, int> *p_fitter_status;
   std::vector<double> *p_selected_jet_pt;
+  TString syst_string = "NULL";
+  // related to mistag
+  double *p_MistagRate;
+  std::map<unsigned int, double> *p_MapIdxMistagRate;
+  int *p_IsMistag;
+  unsigned int *p_nUpgraded, *p_nUpgrade;
+  std::map<unsigned int, unsigned int> *p_MapIdxUpgrade;
+
   if(em_shift_up_down==0 && res_shift_up_down==0){
-    p_initial_dijet_m = &initial_dijet_m;
-    p_corrected_dijet_m = &corrected_dijet_m;
-    p_fitted_dijet_m = &fitted_dijet_m;
-    p_best_chi2 = &best_chi2;
-    p_fitter_status = &fitter_status;
+    syst_string = "";
+    p_jets = &jets;
     p_selected_jet_pt = &selected_jet_pt;
     p_njets = &njets;
     p_nbtags = &nbtags;
     p_MET = &MET;
+
+    if(btag_up_down==0){
+      p_MistagRate = &MistagRate;
+      p_MapIdxMistagRate = &MapIdxMistagRate;
+      p_IsMistag = &IsMistag;
+      p_nUpgraded = &nUpgraded;
+      p_nUpgrade = &nUpgrade;
+      p_MapIdxUpgrade = &MapIdxUpgrade;
+    }
+    else if(btag_up_down==1){
+      p_MistagRate = &MistagRate_BTag_Up;
+      p_MapIdxMistagRate = &MapIdxMistagRate_BTag_Up;
+      p_IsMistag = &IsMistag_BTag_Up;
+      p_nUpgraded = &nUpgraded_BTag_Up;
+      p_nUpgrade = &nUpgrade_BTag_Up;
+      p_MapIdxUpgrade = &MapIdxUpgrade_BTag_Up;
+    }
+    else if(btag_up_down==-1){
+      p_MistagRate = &MistagRate_BTag_Do;
+      p_MapIdxMistagRate = &MapIdxMistagRate_BTag_Do;
+      p_IsMistag = &IsMistag_BTag_Do;
+      p_nUpgraded = &nUpgraded_BTag_Do;
+      p_nUpgrade = &nUpgrade_BTag_Do;
+      p_MapIdxUpgrade = &MapIdxUpgrade_BTag_Do;
+    }
+    else{
+      cout <<"[Skim_K2::executeEventByJESJER] not supported btag option" << endl;
+      exit(EXIT_FAILURE);
+    }
   }
   else if(em_shift_up_down==1 && res_shift_up_down==0){
-    p_initial_dijet_m = &initial_dijet_m_JES_Up;
-    p_corrected_dijet_m = &corrected_dijet_m_JES_Up;
-    p_fitted_dijet_m = &fitted_dijet_m_JES_Up;
-    p_best_chi2 = &best_chi2_JES_Up;
-    p_fitter_status = &fitter_status_JES_Up;
+    syst_string = "JESUp";
+    p_jets = &jets_JES_Up;
     p_selected_jet_pt = &selected_jet_pt_JES_Up;
     p_njets = &njets_JES_Up;
     p_nbtags = &nbtags_JES_Up;
     p_MET = &MET_JES_Up;
+
+    p_MistagRate = &MistagRate_JES_Up;
+    p_MapIdxMistagRate = &MapIdxMistagRate_JES_Up;
+    p_IsMistag = &IsMistag_JES_Up;
+    p_nUpgraded = &nUpgraded_JES_Up;
+    p_nUpgrade = &nUpgrade_JES_Up;
+    p_MapIdxUpgrade = &MapIdxUpgrade_JES_Up;
   }
   else if(em_shift_up_down==-1 && res_shift_up_down==0){
-    p_initial_dijet_m = &initial_dijet_m_JES_Do;
-    p_corrected_dijet_m = &corrected_dijet_m_JES_Do;
-    p_fitted_dijet_m = &fitted_dijet_m_JES_Do;
-    p_best_chi2 = &best_chi2_JES_Do;
-    p_fitter_status = &fitter_status_JES_Do;
+    syst_string = "JESDown";
+    p_jets = &jets_JES_Do;
     p_selected_jet_pt = &selected_jet_pt_JES_Do;
     p_njets = &njets_JES_Do;
     p_nbtags = &nbtags_JES_Do;
     p_MET = &MET_JES_Do;
+
+    p_MistagRate = &MistagRate_JES_Do;
+    p_MapIdxMistagRate = &MapIdxMistagRate_JES_Do;
+    p_IsMistag = &IsMistag_JES_Do;
+    p_nUpgraded = &nUpgraded_JES_Do;
+    p_nUpgrade = &nUpgrade_JES_Do;
+    p_MapIdxUpgrade = &MapIdxUpgrade_JES_Do;
   }
   else if(em_shift_up_down==0 && res_shift_up_down==1){
-    p_initial_dijet_m = &initial_dijet_m_JER_Up;
-    p_corrected_dijet_m = &corrected_dijet_m_JER_Up;
-    p_fitted_dijet_m = &fitted_dijet_m_JER_Up;
-    p_best_chi2 = &best_chi2_JER_Up;
-    p_fitter_status = &fitter_status_JER_Up;
+    syst_string = "JERUp";
+    p_jets = &jets_JER_Up;
     p_selected_jet_pt = &selected_jet_pt_JER_Up;
     p_njets = &njets_JER_Up;
     p_nbtags = &nbtags_JER_Up;
     p_MET = &MET_JER_Up;
+
+    p_MistagRate = &MistagRate_JER_Up;
+    p_MapIdxMistagRate = &MapIdxMistagRate_JER_Up;
+    p_IsMistag = &IsMistag_JER_Up;
+    p_nUpgraded = &nUpgraded_JER_Up;
+    p_nUpgrade = &nUpgrade_JER_Up;
+    p_MapIdxUpgrade = &MapIdxUpgrade_JER_Up;
   }
   else if(em_shift_up_down==0 && res_shift_up_down==-1){
-    p_initial_dijet_m = &initial_dijet_m_JER_Do;
-    p_corrected_dijet_m = &corrected_dijet_m_JER_Do;
-    p_fitted_dijet_m = &fitted_dijet_m_JER_Do;
-    p_best_chi2 = &best_chi2_JER_Do;
-    p_fitter_status = &fitter_status_JER_Do;
+    syst_string = "JERDown";
+    p_jets = &jets_JER_Do;
     p_selected_jet_pt = &selected_jet_pt_JER_Do;
     p_njets = &njets_JER_Do;
     p_nbtags = &nbtags_JER_Do;
     p_MET = &MET_JER_Do;
+
+    p_MistagRate = &MistagRate_JER_Do;
+    p_MapIdxMistagRate = &MapIdxMistagRate_JER_Do;
+    p_IsMistag = &IsMistag_JER_Do;
+    p_nUpgraded = &nUpgraded_JER_Do;
+    p_nUpgrade = &nUpgrade_JER_Do;
+    p_MapIdxUpgrade = &MapIdxUpgrade_JER_Do;
   }
   else{
-    cout <<"[Skim_K2::executeEventByJESJER] not supported option" << endl;
+    cout <<"[Skim_K2::executeEventByJESJER] not supported JES/JER option" << endl;
     exit(EXIT_FAILURE);
   }
 
-  // get jets
-  vector<Jet> jets = GetJets("tight", 30., 2.4, em_shift_up_down, res_shift_up_down); 
-  jets = JetsVetoLeptonInside(jets, electrons, muons);
-  std::sort(jets.begin(), jets.end(), PtComparing);
-  if(jets.size()<4){
-    return;
+  // assign dijet_m
+  if(syst_string != "NULL"){
+    p_initial_dijet_m = &(initial_dijet_m[syst_string]);
+    p_corrected_dijet_m = &(corrected_dijet_m[syst_string]);
+    p_fitted_dijet_m = &(fitted_dijet_m[syst_string]);
+    p_best_chi2 = &(best_chi2[syst_string]);
+    p_fitter_status = &(fitter_status[syst_string]);
+  }
+  else{
+    cout <<"[Skim_K2::executeEventByJESJER] syst_string is NULL" << endl;
+    exit(EXIT_FAILURE);
   }
 
+
+  if(p_jets->size()<4){
+    *p_nUpgrade = 0; // without this line infinite loop occur
+    return;
+  }
+  
   // set btag vector
   std::vector<bool> btag_vector_noSF;
   int nbtags_=0;
-  for(unsigned int ij = 0 ; ij < jets.size(); ij++){
-    if(IsBTagged(jets.at(ij), Jet::DeepCSV, Jet::Medium,false,0)){
+  for(unsigned int ij = 0 ; ij < p_jets->size(); ij++){
+
+    if(FlagMistag && (*p_nUpgraded>=*p_nUpgrade && *p_nUpgrade>0) ){
+      btag_vector_noSF.push_back(false);
+      continue;
+    }
+
+    if(IsBTagged(p_jets->at(ij), Jet::DeepCSV, Jet::Medium,false,0)){
+    //if(IsBTagged(p_jets->at(ij), Jet::DeepCSV, Jet::Tight,false,0)){
       btag_vector_noSF.push_back(true);
       nbtags_ += 1;
     }
     else{
       btag_vector_noSF.push_back(false);
     }
+  
   }
-  if(jets.size()!=btag_vector_noSF.size()){
-    cout <<"[Skim_K2::executeEventByJETJER] check jet vector size" << endl;
+  // first, make btag_vector as it was
+  // end then upgrade status
+  if(FlagMistag && *p_nUpgrade>0){
+    if(*p_nUpgraded<*p_nUpgrade){
+      //TODO MapInxUpgrade, nUpgraded should be replaced as pointer for systematic flags.
+      //also, if nUpgraded>=nUpgrade case will be handled
+      unsigned int idxUpgrade = (*p_MapIdxUpgrade)[*p_nUpgraded];
+      auto it_btag_vector = btag_vector_noSF.begin()+idxUpgrade;
+      if(it_btag_vector>=btag_vector_noSF.end()){
+        exit(1);
+	cout << "btag vector iterator out of range"<< endl;
+      }
+      if(*it_btag_vector==false){
+        *it_btag_vector = true;
+        nbtags_ += 1;
+      }
+      else{
+        exit(1);
+        cout << "upgrade tagging status with tagged jet" << endl;
+      }
+    }
+    else{
+      nbtags_ = 0;
+    }   
+  }
+
+  if(p_jets->size()!=btag_vector_noSF.size()){
+    cout <<"[Skim_K2::executeEventByJESJER] check jet vector size" << endl;
     exit(EXIT_FAILURE);
   }
+
+  if(FlagMistag && *p_nUpgrade>0){ // FlagMistag==true and nUpgrade is evaluated.
+    if(*p_nUpgraded<*p_nUpgrade){
+      *p_MistagRate = (*p_MapIdxMistagRate)[*p_nUpgraded];
+      //cout << "Mistag rate: " << *p_MistagRate << endl;
+      *p_IsMistag = 1;
+      *p_nUpgraded += 1;
+    }
+    else{
+      *p_MistagRate = 0.;
+      *p_IsMistag = -1;
+    }
+  }
+  else{ // FlagMistag==true but not upgrade case or FlagMistag==false
+    *p_MistagRate = 1.;
+    *p_IsMistag = 0;
+  }
+
   *p_nbtags = nbtags_;
   if(*p_nbtags<2){
     return;
@@ -256,9 +462,7 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
   Particle METv = evt->GetMETVector();
   //correct MET by JES/JER 
   if(em_shift_up_down!=0 || res_shift_up_down!=0){
-    vector<Jet> jets_nominal = GetJets("tight", 30., 2.4); 
-    jets_nominal = JetsVetoLeptonInside(jets_nominal, electrons, muons);
-    METv = UpdateMET(METv, jets_nominal, jets);
+    METv = UpdateMET(METv, jets, *p_jets);
   }
   // set lepton
   if(IsMu){
@@ -270,21 +474,38 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
   }
 
   // set fitter
-  fitter_driver->SetAllObjects(jets, 
+  fitter_driver->SetAllObjects(*p_jets, 
                                btag_vector_noSF,
                                lepton,
                                (TLorentzVector)METv
                               );
+  double pfMET_Type1_pt_norminal  = pfMET_Type1_pt_shifts->at(14);
+  double pfMET_Type1_pt_unclUp    = pfMET_Type1_pt_shifts->at(10);
+  double pfMET_Type1_pt_unclDo    = pfMET_Type1_pt_shifts->at(11);
+  double pfMET_Type1_pt_unclUp_diff    = fabs(pfMET_Type1_pt_norminal - pfMET_Type1_pt_unclUp); 
+  double pfMET_Type1_pt_unclDo_diff    = fabs(pfMET_Type1_pt_norminal - pfMET_Type1_pt_unclDo); 
+  double pfMET_Type1_phi_norminal = pfMET_Type1_phi_shifts->at(14);
+  double pfMET_Type1_phi_unclUp   = pfMET_Type1_phi_shifts->at(10);
+  double pfMET_Type1_phi_unclDo   = pfMET_Type1_phi_shifts->at(11);
+  double pfMET_Type1_phi_unclUp_diff   = fabs(pfMET_Type1_phi_norminal - pfMET_Type1_phi_unclUp);
+  double pfMET_Type1_phi_unclDo_diff   = fabs(pfMET_Type1_phi_norminal - pfMET_Type1_phi_unclDo);
+  double pfMET_pt_err  = pfMET_Type1_pt_unclUp_diff > pfMET_Type1_pt_unclDo_diff ? pfMET_Type1_pt_unclUp : pfMET_Type1_pt_unclDo;
+  double pfMET_phi_err = pfMET_Type1_phi_unclUp_diff > pfMET_Type1_phi_unclDo_diff ? pfMET_Type1_phi_unclUp : pfMET_Type1_phi_unclDo;
+  fitter_driver->SetMETShift(pfMET_pt_err, pfMET_phi_err);
   // find best chi2
-  fitter_driver->FindBestChi2Fit(false); // true means use only leading four jets
+  fitter_driver->FindBestChi2Fit(false); // true means use only leading 5 jets
 
   //std::vector<TKinFitterDriver::ResultContatiner> fit_result_vector = fitter_driver->GetResults();
 
-  *p_fitter_status = fitter_driver->GetBestStatus();
-  *p_initial_dijet_m = fitter_driver->GetBestInitialDijetMass();
-  *p_corrected_dijet_m = fitter_driver->GetBestCorrectedDijetMass();
-  *p_fitted_dijet_m = fitter_driver->GetBestFittedDijetMass();
-  *p_best_chi2 = fitter_driver->GetChi2();
+  for(auto mass : mass_points){
+    TString sample_label = "CHToCB_"+mass;
+    (*p_initial_dijet_m)[mass] = fitter_driver->GetBestInitialDijetMass(sample_label);
+    (*p_corrected_dijet_m)[mass] = fitter_driver->GetBestCorrectedDijetMass(sample_label);
+    (*p_fitted_dijet_m)[mass] = fitter_driver->GetBestFittedDijetMass(sample_label);
+    //cout << "fitted_dijet_M " << mass << " " << (*p_fitted_dijet_m)[mass] << endl;
+    (*p_best_chi2)[mass] = fitter_driver->GetBestChi2(sample_label);
+    (*p_fitter_status)[mass] = fitter_driver->GetBestStatus(sample_label);
+  }
 
   // nominal only
   if(em_shift_up_down==0 && res_shift_up_down==0){
@@ -310,23 +531,109 @@ void Skim_K2::executeEventByJESJER(int em_shift_up_down, int res_shift_up_down){
     selected_lepton_pt  = lepton.Pt();
     selected_lepton_eta = lepton.Eta();
     selected_lepton_phi = lepton.Phi();
-    for(auto& x : jets){
+    selected_jet_eta.clear();
+    selected_jet_phi.clear();
+    for(auto& x : *p_jets){
       selected_jet_eta.push_back(x.Eta());
       selected_jet_phi.push_back(x.Phi());
     }
   }
     
-  *p_njets= jets.size();
+  *p_njets= p_jets->size();
   *p_MET = METv.E();
-  for(auto& x : jets){
+  p_selected_jet_pt->clear();
+  for(auto& x : *p_jets){
     p_selected_jet_pt->push_back(x.Pt());
   }
 
 }
 
+void Skim_K2::calcUpgrade(int em_shift_up_down, int res_shift_up_down, int btag_up_down){
+  std::vector<Jet> *p_jets;
+  unsigned int *p_nUpgrade;
+  std::map<unsigned int, unsigned int> *p_MapIdxUpgrade;
+  std::map<unsigned int, double> *p_MapIdxMistagRate;
+  if(em_shift_up_down==0 && res_shift_up_down==0){
+    p_jets             = &jets;
+    if(btag_up_down==0){
+      p_nUpgrade         = &nUpgrade;
+      p_MapIdxUpgrade    = &MapIdxUpgrade;
+      p_MapIdxMistagRate = &MapIdxMistagRate;
+    }
+    else if(btag_up_down==1){
+      p_nUpgrade         = &nUpgrade_BTag_Up;
+      p_MapIdxUpgrade    = &MapIdxUpgrade_BTag_Up;
+      p_MapIdxMistagRate = &MapIdxMistagRate_BTag_Up;
+    }
+    else if(btag_up_down==-1){
+      p_nUpgrade         = &nUpgrade_BTag_Do;
+      p_MapIdxUpgrade    = &MapIdxUpgrade_BTag_Do;
+      p_MapIdxMistagRate = &MapIdxMistagRate_BTag_Do;
+    }
+    else{
+      cout <<"[void Skim_K2::calcUpgrade]" <<" wrong btag syst index " << endl;
+      exit(1);
+    }
+  }
+  else if(em_shift_up_down==1 && res_shift_up_down==0){
+    p_jets             = &jets_JES_Up;             
+    p_nUpgrade         = &nUpgrade_JES_Up;         
+    p_MapIdxUpgrade    = &MapIdxUpgrade_JES_Up;     
+    p_MapIdxMistagRate = &MapIdxMistagRate_JES_Up;
+  }
+  else if(em_shift_up_down==-1 && res_shift_up_down==0){
+    p_jets             = &jets_JES_Do;             
+    p_nUpgrade         = &nUpgrade_JES_Do;         
+    p_MapIdxUpgrade    = &MapIdxUpgrade_JES_Do;     
+    p_MapIdxMistagRate = &MapIdxMistagRate_JES_Do;
+  }
+  else if(em_shift_up_down==0 && res_shift_up_down==1){
+    p_jets             = &jets_JER_Up;             
+    p_nUpgrade         = &nUpgrade_JER_Up;         
+    p_MapIdxUpgrade    = &MapIdxUpgrade_JER_Up;     
+    p_MapIdxMistagRate = &MapIdxMistagRate_JER_Up;
+  }
+  else if(em_shift_up_down==0 && res_shift_up_down==-1){
+    p_jets             = &jets_JER_Do;             
+    p_nUpgrade         = &nUpgrade_JER_Do;         
+    p_MapIdxUpgrade    = &MapIdxUpgrade_JER_Do;     
+    p_MapIdxMistagRate = &MapIdxMistagRate_JER_Do;
+  }
+  else{
+    cout <<"[void Skim_K2::calcUpgrade]" <<" wrong JES/JER syst index " << endl;
+    exit(1);
+  }
+
+  // we need jets by systematic flag,
+  std::vector<float> mistag_vector;
+  float btag; // not used
+  BtaggingSFEvtbyEvt(*p_jets, Jet::DeepCSV, Jet::Medium, btag_up_down, btag,mistag_vector);
+  // after call make boolian vector whether 0. or not
+  std::vector<bool> btag_upgrade_vector;
+  std::map<unsigned int, unsigned int> map_idx_upgrade;
+  std::map<unsigned int, double> map_mistag_rate;
+  unsigned int n_btag_upgrade=0;
+  for(unsigned int i=0; i<mistag_vector.size(); i++){
+    float rate = mistag_vector.at(i);
+    if(rate==0){
+      btag_upgrade_vector.push_back(false);
+    }
+    else{
+      btag_upgrade_vector.push_back(true);
+      map_mistag_rate[i] = (double)rate;
+      map_idx_upgrade[n_btag_upgrade] =i;
+      n_btag_upgrade++;
+    }
+  }
+  // save
+  *p_nUpgrade = n_btag_upgrade;
+  *p_MapIdxUpgrade = map_idx_upgrade;
+  *p_MapIdxMistagRate = map_mistag_rate;
+
+}
 
 Skim_K2::Skim_K2(){
-  IsTest = false;
+  FlagTest = false;
 }
 
 
@@ -411,6 +718,11 @@ void Skim_K2::Clear(){
 
   muons.clear();
   electrons.clear();
+  jets.clear();
+  jets_JES_Up.clear();
+  jets_JES_Do.clear();
+  jets_JER_Up.clear();
+  jets_JER_Do.clear();
   hadronic_top_M_vector_success.clear();
   hadronic_top_M_vector_success.shrink_to_fit();
   hadronic_top_M_vector_fail.clear();
@@ -439,31 +751,26 @@ void Skim_K2::Clear(){
   selected_jet_eta.clear();
   selected_jet_phi.clear();
 
-  initial_dijet_m=-1;
-  initial_dijet_m_JES_Up=-1;
-  initial_dijet_m_JES_Do=-1;
-  initial_dijet_m_JER_Up=-1;
-  initial_dijet_m_JER_Do=-1;
-  corrected_dijet_m=-1;
-  corrected_dijet_m_JES_Up=-1;
-  corrected_dijet_m_JES_Do=-1;
-  corrected_dijet_m_JER_Up=-1;
-  corrected_dijet_m_JER_Do=-1;
-  fitted_dijet_m=-1;
-  fitted_dijet_m_JES_Up=-1;
-  fitted_dijet_m_JES_Do=-1;
-  fitted_dijet_m_JER_Up=-1;
-  fitted_dijet_m_JER_Do=-1;
-  best_chi2=-10;
-  best_chi2_JES_Up=-10;
-  best_chi2_JES_Do=-10;
-  best_chi2_JER_Up=-10;
-  best_chi2_JER_Do=-10;
-  fitter_status=-2;
-  fitter_status_JES_Up=-2;
-  fitter_status_JES_Do=-2;
-  fitter_status_JER_Up=-2;
-  fitter_status_JER_Do=-2;
+  //----------
+  // clear dijet mass
+  for(auto* map : {&initial_dijet_m, &corrected_dijet_m, &fitted_dijet_m}){
+    for(auto& value1 : *map){
+      for(auto& value2 : value1.second){
+        value2.second = -1;
+      }
+    }
+  }
+  for(auto& value1 : best_chi2){
+    for(auto& value2 : value1.second){
+      value2.second = -10;
+    }
+  }
+  for(auto& value1 : fitter_status){
+    for(auto& value2 : value1.second){
+      value2.second = -2;
+    }
+  }
+  //----------
 
   selected_lepton_pt=-1;
   selected_lepton_eta=-1;
@@ -486,5 +793,37 @@ void Skim_K2::Clear(){
   MET_JES_Do=-1;
   MET_JER_Up=-1;
   MET_JER_Do=-1;
+
+  nUpgrade=0;        
+  nUpgrade_BTag_Up=0;        
+  nUpgrade_BTag_Do=0;        
+  nUpgrade_JES_Up=0; 
+  nUpgrade_JES_Do=0; 
+  nUpgrade_JER_Up=0;
+  nUpgrade_JER_Do=0;
+  nUpgraded=0;       
+  nUpgraded_BTag_Up=0;       
+  nUpgraded_BTag_Do=0;       
+  nUpgraded_JES_Up=0;
+  nUpgraded_JES_Do=0;
+  nUpgraded_JER_Up=0;
+  nUpgraded_JER_Do=0;
+
+  MapIdxUpgrade.clear();
+  MapIdxUpgrade_BTag_Up.clear();
+  MapIdxUpgrade_BTag_Do.clear();
+  MapIdxUpgrade_JES_Up.clear();
+  MapIdxUpgrade_JES_Do.clear();
+  MapIdxUpgrade_JER_Up.clear();
+  MapIdxUpgrade_JER_Do.clear();
+
+  MapIdxMistagRate.clear();       
+  MapIdxMistagRate_BTag_Up.clear();       
+  MapIdxMistagRate_BTag_Do.clear();       
+  MapIdxMistagRate_JES_Up.clear();
+  MapIdxMistagRate_JES_Do.clear();
+  MapIdxMistagRate_JER_Up.clear();
+  MapIdxMistagRate_JER_Do.clear();
+
 
 }

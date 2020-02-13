@@ -29,8 +29,8 @@ class BTagSFUtil{
 
 
   // Functions used in IsTagged to determine tag rate with syst                                                                                                                                                                                                      
-  float GetJetSF(int JetFlavor, float JetPt, float JetEta);
-  float GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, TString iperiod);
+  float GetJetSF(int JetFlavor, float JetPt, float JetEta, float JetDscr=0);
+  float GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, float JetDscr, TString iperiod);
   float JetTagEfficiency(int JetFlavor, float JetPt, float JetEta);
 
 

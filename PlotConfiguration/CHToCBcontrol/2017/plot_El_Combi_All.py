@@ -6,13 +6,31 @@ from ROOT import kMagenta, kBlue, kCyan, kOrange, kYellow, kBlack, kRed, kViolet
 # style 0 : noFillColor
 # no nameHR --> using sample keyname intead
 
-groupPlot['TT'] = {
-    'nameHR' : "TT",
+groupPlot['tt'] = {
+    'nameHR' : "tt",
     'isSignal' : 0,
     'color':  kRed,
     'samples' : ['TTLL_powheg','TTLJ_powheg']
+    #'samples' : ['TTLL_powheg','TTLJ_powheg','ttbb']
     #'samples' : ['TTLL_powheg','TTLJ_powheg','TTJJ_powheg']
     }
+
+groupPlot['nontt'] = {
+    'nameHR' : "nontt",
+    'isSignal' : 0,
+    'color':  kMagenta,
+    #'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_NoFullyHad','SingleTop_tW_antitop_NoFullyHad','WJets_MG','DYJets', 'DYJets10to50_MG','WW_pythia','WZ_pythia','ZZ_pythia','ttW','ttZ','ttHTobb']
+    'samples' : ['SingleTop_sch_Lep','SingleTop_tch_top_Incl','SingleTop_tch_antitop_Incl','SingleTop_tW_top_NoFullyHad','SingleTop_tW_antitop_NoFullyHad','WJets_MG','DYJets', 'DYJets10to50_MG','WW_pythia','WZ_pythia','ZZ_pythia','ttW','ttZ']
+    }
+
+#groupPlot['QCD'] = {
+#    'nameHR' : "QCD",
+#    'isSignal' :0,
+#    'color': kCyan, #color is not defined yet
+#    'samples' : [ "%s_QCD"%(ele) for ele in groupPlot['tt']['samples'] + groupPlot['nontt']['samples']+["SingleElectron"] ],
+#    'suppressNegative' : True,
+#    }
+
 #
 #groupPlot['ttbb'] = {
 #    'nameHR' : "ttbb",
@@ -21,13 +39,7 @@ groupPlot['TT'] = {
 #    'samples' : ['ttbb']
 #    }
 #
-#groupPlot['ST'] = {
-#    'nameHR' : "ST",
-#    'isSignal' : 0,
-#    'color':  kMagenta,
-#    'samples' : ['SingleTop_sch_top','SingleTop_tch_top','SingleTop_tch_antitop','SingleTop_tW_top','SingleTop_tW_antitop']
-#    }
-#
+
 #groupPlot['VJ'] = {
 #    'nameHR' : "VJ",
 #    'isSignal' : 0,
@@ -50,32 +62,21 @@ groupPlot['TT'] = {
 #    'samples' : ['ttW','ttZ','ttH_bb']
 #    }
 #
-#'''
-#groupPlot['QCD'] = {
-#    'nameHR' : "QCD",
-#    'isSignal' :0,
-#    'color': kYellow, #color is not defined yet
-#    'style': 4050,
-#    'lineColor':807,
-#    'lineWidth':1,
-#    'samples' : ['SingleMuon_QCD','SingleElectron_QCD','TTLL_powheg_QCD','WJets_MG_QCD','DYJets_QCD','WW_pythia_QCD','WZ_pythia_QCD','ZZ_pythia_QCD']
-#    }
-#'''
 #
-#plot['DYJets'] = {
-#    'color': kYellow,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'style': 4050,
-#    }
-#
-#plot['DYJets10to50_MG'] = {
-#    'color': 418,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'style': 4050,
-#    }
-#
+plot['DYJets'] = {
+    'color': kYellow,
+    'isSignal' :0,
+    'isData': 0,
+    'style': 4050,
+    }
+
+plot['DYJets10to50_MG'] = {
+    'color': 418,
+    'isSignal' :0,
+    'isData': 0,
+    'style': 4050,
+    }
+
 plot['WJets_MG'] = {
     'color': kYellow,
     'isSignal' :0,
@@ -110,82 +111,82 @@ plot['TTLJ_powheg'] = {
 #    'isData': 0,
 #    'scale':1,
 #    }
-#
-#plot['SingleTop_sch_top'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['SingleTop_tch_top'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['SingleTop_tch_antitop'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['SingleTop_tW_top'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['SingleTop_tW_antitop'] = {
-#    'color': kMagenta,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['WZ_pythia'] = {
-#    'color': 450,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#plot['WW_pythia'] = {
-#    'color': 550,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#plot['ZZ_pythia'] = {
-#    'color': 550,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['ttW'] = {
+
+plot['SingleTop_sch_Lep'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tch_top_Incl'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tch_antitop_Incl'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tW_top_NoFullyHad'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['SingleTop_tW_antitop_NoFullyHad'] = {
+    'color': kMagenta,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['WZ_pythia'] = {
+    'color': 450,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+plot['WW_pythia'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+plot['ZZ_pythia'] = {
+    'color': 550,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['ttW'] = {
+    'color': kYellow,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+plot['ttZ'] = {
+    'color': kYellow,
+    'isSignal' :0,
+    'isData': 0,
+    'scale':1,
+    }
+
+#plot['ttHTobb'] = {
 #    'color': kYellow,
 #    'isSignal' :0,
 #    'isData': 0,
 #    'scale':1,
 #    }
-#
-#plot['ttZ'] = {
-#    'color': kYellow,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
-#plot['ttH_bb'] = {
-#    'color': kYellow,
-#    'isSignal' :0,
-#    'isData': 0,
-#    'scale':1,
-#    }
-#
+
 #plot['SingleMuon'] = {
 #    'nameHR' : "SingleMuon",
 #    'color':kBlack,
@@ -201,33 +202,14 @@ plot['SingleElectron'] = {
     'isData':1,
     'scale':1,
     }
-plot['CHToCB_M090'] = {
-    'nameHR' : "CH M090",
-    'color':kViolet,
-    'style':0,
-    'lineWidth':2,
-    'isSignal':3,
-    'isData':0,
-    'scale':1,
-    }
-plot['CHToCB_M120'] = {
-    'nameHR' : "CH M120",
-    'color':kViolet,
-    'style':0,
-    'lineWidth':2,
-    'isSignal':3,
-    'isData':0,
-    'scale':1,
-    }
-plot['CHToCB_M140'] = {
-    'nameHR' : "CH M140",
-    'color':kViolet,
-    'style':0,
-    'lineWidth':2,
-    'isSignal':3,
-    'isData':0,
-    'scale':1,
-    }
+#
+##plot_QCD = {}
+##for key, val in plot.iteritems():
+##  key_QCD = "%s_QCD"%(key)
+##  plot_QCD[key_QCD] = val.copy()
+##  plot_QCD[key_QCD]['isData'] = 0
+##plot.update(plot_QCD)
+
 
 
 legend['lumi'] = 'L = 41.5/fb'

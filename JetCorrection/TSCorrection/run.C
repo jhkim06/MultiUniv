@@ -1,4 +1,4 @@
-void run_Fitting_Resopnse();
+//void run_Fitting_Resopnse();
 void run_Fitting_Histogram();
 
 void run(){

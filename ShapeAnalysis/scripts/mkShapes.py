@@ -96,6 +96,18 @@ else:
   print 'You should have sample configuration file,  exiting...'
   exit()
 
+
+groupPlot = OrderedDict()
+plot = {}
+legend = {}
+if os.path.exists(opt.plotFile) :
+  handle = open(opt.plotFile,'r')
+  exec(handle)
+  handle.close()
+else:
+  print 'You should have plot configuration file,  exiting...'
+  exit()
+
 nuisances = {}
 if opt.nuisancesFile != '':
   if os.path.exists(opt.nuisancesFile):
@@ -132,8 +144,8 @@ string_JobStartTime =  JobStartTime.strftime('%Y-%m-%d %H:%M:%S')
 string_ThisTime = ""
 
 
-if SKFlatLogEmail=='':
-  print '[mkShapes] Put your email address in setup.sh'
+#if SKFlatLogEmail=='':
+#  print '[mkShapes] Put your email address in setup.sh'
 
 SendLogToWeb = True
 if SKFlatLogWeb=='' or SKFlatLogWebDir=='':

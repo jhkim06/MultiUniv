@@ -1,11 +1,40 @@
 from CommonPyTools.python.CommonTools import *
 
+variables['fitted_dijet_M090to110'] = {
+    'name': 'fitted_dijet_M090to110',
+    #'name': 'fitter_status_M090to110==0?fitted_dijet_M090to110:-1',
+    #'range':(40,20,150),
+    'range':(32,20,180),
+    'xaxis': 'm_{jj} [GeV]',
+    'yaxis': 'Events / 5GeV',
+    'fold' : 0
+    }
 
+variables['initial_dijet_M090to110'] = {
+    'name': 'initial_dijet_M090to110',
+    #'name': 'fitter_status_M090to110==0?fitted_dijet_M090to110:-1',
+    #'range':(40,20,150),
+    'range':(56,20,300),
+    'xaxis': 'm_{jj} [GeV]',
+    'yaxis': 'Events / 5GeV',
+    'fold' : 0
+    }
 
-variables['fitted_dijet_mass'] = {
-    'name': 'fitted_dijet_m',
-    'range':(40,20,150),
-    #'range':(36,0,180),
+variables['fitted_dijet_M120to150'] = {
+    'name': 'fitted_dijet_M120to150',
+    #'name': 'fitter_status_M120to150==0?fitted_dijet_M120to150:-1',
+    #'range':(40,20,150),
+    'range':(32,20,180),
+    'xaxis': 'm_{jj} [GeV]',
+    'yaxis': 'Events / 5GeV',
+    'fold' : 0
+    }
+
+variables['initial_dijet_M120to150'] = {
+    'name': 'initial_dijet_M120to150',
+    #'name': 'fitter_status_M090to110==0?fitted_dijet_M090to110:-1',
+    #'range':(40,20,150),
+    'range':(56,20,300),
     'xaxis': 'm_{jj} [GeV]',
     'yaxis': 'Events / 5GeV',
     'fold' : 0
@@ -35,14 +64,14 @@ variables['lepton_eta'] = {
     'fold' : 3
     }
 
-variables['lepton_phi'] = { 
-    'name': 'selected_lepton_phi',
-    'range':(60,-3.14,3.14),
-    'xaxis': 'lepton phi [GeV]',
-    'yaxis': 'Events',
-    'fold' : 3
-    }
-
+#variables['lepton_phi'] = { 
+#    'name': 'selected_lepton_phi',
+#    'range':(60,-3.14,3.14),
+#    'xaxis': 'lepton phi [GeV]',
+#    'yaxis': 'Events',
+#    'fold' : 3
+#    }
+#
 variables['1st_leading_jet_pt'] = { 
     'name': 'selected_jet_pt[0]',
     'range':(60,0,300),
@@ -51,6 +80,13 @@ variables['1st_leading_jet_pt'] = {
     'fold' : 3
     }
 
+variables['1st_leading_jet_csv'] = { 
+    'name': 'jet_DeepCSV[0]',
+    'range':(100,0,1),
+    'xaxis': '1st leading jet csv',
+    'yaxis': 'Events',
+    'fold' : 3
+    }
 variables['1st_leading_jet_eta'] = { 
     'name': 'selected_jet_eta[0]',
     'range':(60,-2.4,2.4),
@@ -59,87 +95,89 @@ variables['1st_leading_jet_eta'] = {
     'fold' : 3
     }
 
-variables['1st_leading_jet_phi'] = { 
-    'name': 'selected_jet_phi[0]',
-    'range':(60,-3.14,3.14),
-    'xaxis': '1st leading jet phi [GeV]',
-    'yaxis': 'Events',
-    'fold' : 3
-    }
-
-variables['2nd_leading_jet_pt'] = { 
-    'name': 'selected_jet_pt[1]',
-    'range':(60,0,300),
-    'xaxis': '2nd leading jet p_{T} [GeV]',
-    'yaxis': 'Events / 5GeV',
-    'fold' : 3
-    }
-
-variables['2nd_leading_jet_eta'] = { 
-    'name': 'selected_jet_eta[1]',
-    'range':(60,-2.4,2.4),
-    'xaxis': '2nd leading jet eta [GeV]',
-    'yaxis': 'Events',
-    'fold' : 3
-    }
-
-variables['2nd_leading_jet_phi'] = { 
-    'name': 'selected_jet_phi[1]',
-    'range':(60,-3.14,3.14),
-    'xaxis': '2nd leading jet phi [GeV]',
-    'yaxis': 'Events',
-    'fold' : 3
-    }
-
-variables['3rd_leading_jet_pt'] = { 
-    'name': 'selected_jet_pt[2]',
-    'range':(60,0,300),
-    'xaxis': '3rd leading jet p_{T} [GeV]',
-    'yaxis': 'Events / 5GeV',
-    'fold' : 3
-    }
-
-variables['3rd_leading_jet_eta'] = { 
-    'name': 'selected_jet_eta[2]',
-    'range':(60,-2.4,2.4),
-    'xaxis': '3rd leading jet eta [GeV]',
-    'yaxis': 'Events',
-    'fold' : 3
-    }
-
-variables['3rd_leading_jet_phi'] = { 
-    'name': 'selected_jet_phi[2]',
-    'range':(60,-3.14,3.14),
-    'xaxis': '3rd leading jet phi [GeV]',
-    'yaxis': 'Events',
-    'fold' : 3
-    }
-
-variables['4th_leading_jet_pt'] = { 
-    'name': 'selected_jet_pt[3]',
-    'range':(60,0,300),
-    'xaxis': '4th leading jet p_{T} [GeV]',
-    'yaxis': 'Events / 5GeV',
-    'fold' : 3
-    }
-
-variables['4th_leading_jet_eta'] = { 
-    'name': 'selected_jet_eta[3]',
-    'range':(60,-2.4,2.4),
-    'xaxis': '4th leading jet eta [GeV]',
-    'yaxis': 'Events',
-    'fold' : 3
-    }
-
-variables['4th_leading_jet_phi'] = { 
-    'name': 'selected_jet_phi[3]',
-    'range':(60,-3.14,3.14),
-    'xaxis': '4th leading jet phi [GeV]',
-    'yaxis': 'Events',
-    'fold' : 3
-    }
 
 
+#variables['1st_leading_jet_phi'] = { 
+#    'name': 'selected_jet_phi[0]',
+#    'range':(60,-3.14,3.14),
+#    'xaxis': '1st leading jet phi [GeV]',
+#    'yaxis': 'Events',
+#    'fold' : 3
+#    }
+#
+#variables['2nd_leading_jet_pt'] = { 
+#    'name': 'selected_jet_pt[1]',
+#    'range':(60,0,300),
+#    'xaxis': '2nd leading jet p_{T} [GeV]',
+#    'yaxis': 'Events / 5GeV',
+#    'fold' : 3
+#    }
+#
+#variables['2nd_leading_jet_eta'] = { 
+#    'name': 'selected_jet_eta[1]',
+#    'range':(60,-2.4,2.4),
+#    'xaxis': '2nd leading jet eta [GeV]',
+#    'yaxis': 'Events',
+#    'fold' : 3
+#    }
+#
+#variables['2nd_leading_jet_phi'] = { 
+#    'name': 'selected_jet_phi[1]',
+#    'range':(60,-3.14,3.14),
+#    'xaxis': '2nd leading jet phi [GeV]',
+#    'yaxis': 'Events',
+#    'fold' : 3
+#    }
+#
+#variables['3rd_leading_jet_pt'] = { 
+#    'name': 'selected_jet_pt[2]',
+#    'range':(60,0,300),
+#    'xaxis': '3rd leading jet p_{T} [GeV]',
+#    'yaxis': 'Events / 5GeV',
+#    'fold' : 3
+#    }
+#
+#variables['3rd_leading_jet_eta'] = { 
+#    'name': 'selected_jet_eta[2]',
+#    'range':(60,-2.4,2.4),
+#    'xaxis': '3rd leading jet eta [GeV]',
+#    'yaxis': 'Events',
+#    'fold' : 3
+#    }
+#
+#variables['3rd_leading_jet_phi'] = { 
+#    'name': 'selected_jet_phi[2]',
+#    'range':(60,-3.14,3.14),
+#    'xaxis': '3rd leading jet phi [GeV]',
+#    'yaxis': 'Events',
+#    'fold' : 3
+#    }
+#
+#variables['4th_leading_jet_pt'] = { 
+#    'name': 'selected_jet_pt[3]',
+#    'range':(60,0,300),
+#    'xaxis': '4th leading jet p_{T} [GeV]',
+#    'yaxis': 'Events / 5GeV',
+#    'fold' : 3
+#    }
+#
+#variables['4th_leading_jet_eta'] = { 
+#    'name': 'selected_jet_eta[3]',
+#    'range':(60,-2.4,2.4),
+#    'xaxis': '4th leading jet eta [GeV]',
+#    'yaxis': 'Events',
+#    'fold' : 3
+#    }
+#
+#variables['4th_leading_jet_phi'] = { 
+#    'name': 'selected_jet_phi[3]',
+#    'range':(60,-3.14,3.14),
+#    'xaxis': '4th leading jet phi [GeV]',
+#    'yaxis': 'Events',
+#    'fold' : 3
+#    }
+#
+#
 variables['njets'] = {
     'name': 'njets',
     'range':(6,4,10),
@@ -148,22 +186,23 @@ variables['njets'] = {
     'fold' : 3
     }
 
-variables['nbjets'] = {
-    'name': 'n_bjet_deepcsv_m_noSF',
+variables['nbtags'] = {
+    'name': 'nbtags',
     'range':(3,2,5),
     'xaxis': 'b jet multiplicity [GeV]',
     'yaxis': 'Events',
     'fold' : 3
     }
 
-variables['nPV'] = {
-    'name': 'nPV',
-    'range':(50,0,50),
-    'xaxis': 'nPv [GeV]',
-    'yaxis': 'Events',
-    'fold' : 3
-    }
 
+#variables['nPV'] = {
+#    'name': 'nPV',
+#    'range':(50,0,50),
+#    'xaxis': 'nPv [GeV]',
+#    'yaxis': 'Events',
+#    'fold' : 3
+#    }
+#
 variables['MET'] = {
     'name': 'MET',
     'range':(60,0,300),

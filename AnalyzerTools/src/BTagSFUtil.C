@@ -41,10 +41,32 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
   string SystematicFlagBC = "central";
   string SystematicFlagL  = "central";
   if (abs(SystematicIndex)<10) {
-    if (SystematicIndex==-1 || SystematicIndex==-2) SystematicFlagBC = "down";
-    else if (SystematicIndex==+1 || SystematicIndex==+2) SystematicFlagBC = "up";
-    else if (SystematicIndex==-3) SystematicFlagL = "down";
-    else if (SystematicIndex==+3) SystematicFlagL = "up";
+    if(OperatingPoint!="Reshaping"){
+      if (SystematicIndex==-1 || SystematicIndex==-2) SystematicFlagBC = "down";
+      else if (SystematicIndex==+1 || SystematicIndex==+2) SystematicFlagBC = "up";
+      else if (SystematicIndex==-3){ SystematicFlagL = "down"; }
+      else if (SystematicIndex==+3){ SystematicFlagL = "up"; }
+    }
+    else{
+      if (SystematicIndex==+1){ SystematicFlagL = "up_lfstats1";   SystematicFlagBC = "up_lfstats1";   }
+      else if (SystematicIndex==-1){ SystematicFlagL = "down_lfstats1"; SystematicFlagBC = "down_lfstats1"; }  
+      else if (SystematicIndex==+2){ SystematicFlagL = "up_lfstats2";   SystematicFlagBC = "up_lfstats2";   }
+      else if (SystematicIndex==-2){ SystematicFlagL = "down_lfstats2"; SystematicFlagBC = "down_lfstats2"; } 
+      else if (SystematicIndex==+3){ SystematicFlagL = "up_hf";         SystematicFlagBC = "up_hf";         }  
+      else if (SystematicIndex==-3){ SystematicFlagL = "down_hf";       SystematicFlagBC = "down_hf";       }
+      else if (SystematicIndex==+4){ SystematicFlagL = "up_lf";         SystematicFlagBC = "up_lf";         }  
+      else if (SystematicIndex==-4){ SystematicFlagL = "down_lf";       SystematicFlagBC = "down_lf";       }
+      else if (SystematicIndex==+5){ SystematicFlagL = "up_jes";        SystematicFlagBC = "up_jes";        }
+      else if (SystematicIndex==-5){ SystematicFlagL = "down_jes";      SystematicFlagBC = "down_jes";      }
+      else if (SystematicIndex==+6){ SystematicFlagL = "up_hfstats1";   SystematicFlagBC = "up_hfstats1";   }
+      else if (SystematicIndex==-6){ SystematicFlagL = "down_hfstats1"; SystematicFlagBC = "down_hfstats1"; }  
+      else if (SystematicIndex==+7){ SystematicFlagL = "up_hfstats2";   SystematicFlagBC = "up_hfstats2";   }
+      else if (SystematicIndex==-7){ SystematicFlagL = "down_hfstats2"; SystematicFlagBC = "down_hfstats2"; } 
+      else if (SystematicIndex==+8){ SystematicFlagL = "up_cferr1";     SystematicFlagBC = "up_cferr1";     }
+      else if (SystematicIndex==-8){ SystematicFlagL = "down_cferr1";   SystematicFlagBC = "down_cferr1";   }
+      else if (SystematicIndex==+9){ SystematicFlagL = "up_cferr2";     SystematicFlagBC = "up_cferr2";     }
+      else if (SystematicIndex==-9){ SystematicFlagL = "down_cferr2";   SystematicFlagBC = "down_cferr2";   }
+    }
   }
 
 
@@ -69,6 +91,7 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
       TString flavour_string = "Heavy Flavour"; 
       TString systematic_string = SystematicFlagBC;
       if(MeasurementType=="incl") { flavour_string = "Light Flavour"; systematic_string = SystematicFlagL;}
+      else if(MeasurementType=="iterativefit") { flavour_string = "Flavour"; systematic_string = SystematicFlagL;}
       cout << "[BTagSFUtil::initializeAnalyzer] " << flavour_string << " : Year = "  << DataYear << "  : OperatingPoint = " << OperatingPoint << " : TaggerCut = " << TaggerCut << " : Systematic " << systematic_string <<  endl;
       break;
     }
@@ -83,7 +106,7 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm,  TString Op
   if (OperatingPoint=="Loose")        {op = BTagEntry::OP_LOOSE;        TaggerOP += "_Loose";}
   if (OperatingPoint=="Medium")       {op = BTagEntry::OP_MEDIUM;        TaggerOP += "_Medium";}
   if (OperatingPoint=="Tight")        {op = BTagEntry::OP_TIGHT;        TaggerOP += "_Tight";}
-    
+  if (OperatingPoint=="Reshaping")    {op = BTagEntry::OP_RESHAPING;    TaggerOP += "_Reshaping";}
 
   //=== open histmap file to tell code which file to use depending on year/tagger
   ifstream in(btagpath+"/histmap.txt");
@@ -175,7 +198,7 @@ float BTagSFUtil::JetTagEfficiency(int JetFlavor, float JetPt, float JetEta) {
 
 
 
-float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
+float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta, float JetDscr) {
   float Btag_SF(-999.);
 
   //=== If chosen period dependant SF, then use lumi to weight
@@ -183,8 +206,8 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
   if (period_dependancy) {
     
     if(DataYear == 2016){
-      float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +TaggerName + "_272007_278808");
-      float Btag_SF_GH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +TaggerName + "_278820_284044");
+      float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr, "2016_" +TaggerName + "_272007_278808");
+      float Btag_SF_GH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr, "2016_" +TaggerName + "_278820_284044");
       
       double lumi_periodB = 5.929001722;
       double lumi_periodC = 2.645968083;
@@ -203,9 +226,9 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
     
     else if(DataYear == 2017){
 
-      float Btag_SF_B    = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +TaggerName + "_297046_299329");
-      float Btag_SF_CtoE = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +TaggerName + "_297020_304671");
-      float Btag_SF_EtoF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +TaggerName + "_304671_306462");
+      float Btag_SF_B    = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr, "2017_" +TaggerName + "_297046_299329");
+      float Btag_SF_CtoE = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr, "2017_" +TaggerName + "_297020_304671");
+      float Btag_SF_EtoF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr, "2017_" +TaggerName + "_304671_306462");
       
       /// lumi taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2017Analysis and brilcal 
       double lumi_periodB = 4.823;
@@ -231,15 +254,15 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
     //=== Access SF using Full data year, no periods
 
     if(DataYear == 2016){
-      float Btag_SF_BH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2016_" +TaggerName + "_272007_284044");
+      float Btag_SF_BH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr, "2016_" +TaggerName + "_272007_284044");
       return Btag_SF_BH;
     }
     else if(DataYear == 2017){
-      float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2017_" +TaggerName + "_297046_306462");
+      float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr,"2017_" +TaggerName + "_297046_306462");
       return Btag_SF_BF;
     }
     else if(DataYear == 2018){
-      float Btag_SF_AD = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, "2018_" +TaggerName + "_315252_325175");
+      float Btag_SF_AD = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, JetDscr,"2018_" +TaggerName + "_315252_325175");
       return Btag_SF_AD;
     }
 
@@ -249,7 +272,7 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
   return Btag_SF;
 }
 
-float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, TString tag_key) {
+float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, float JetDscr, TString tag_key) {
 
   /// https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco for pt range and systematic correlations
   float Btag_SF=1.;
@@ -268,19 +291,28 @@ float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetE
 
     //=== access b flavour reader
     reader_bf_it =    ReaderMap.find(tag_key+"_bc");
-    Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_B, JetEta, ThisJetPt);
+    if(reader_bf_it==ReaderMap.end()){
+      cout << "BTagSFUtil::GetJetSFPeriodDependant key not found,     " << tag_key+"_bc" << endl;
+    }
+    Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_B, JetEta, ThisJetPt, JetDscr);
   }
   else if (abs(JetFlavor)==4){ 
 
     //=== access c flavour reader    
     reader_bf_it = ReaderMap.find(tag_key+"_bc");
-    Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_C, JetEta, ThisJetPt);
+    if(reader_bf_it==ReaderMap.end()){
+      cout << "BTagSFUtil::GetJetSFPeriodDependant key not found,     " << tag_key+"_bc" << endl;
+    }
+    Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_C, JetEta, ThisJetPt, JetDscr);
   }
   else {
 
     //=== access light flavour reader
     reader_bf_it = ReaderMap.find(tag_key+"_l");
-    Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_UDSG, JetEta, ThisJetPt);
+    if(reader_bf_it==ReaderMap.end()){
+      cout << "BTagSFUtil::GetJetSFPeriodDependant key not found,     " << tag_key+"_l" << endl;
+    }
+    Btag_SF = reader_bf_it->second->eval(BTagEntry::FLAV_UDSG, JetEta, ThisJetPt, JetDscr);
 
   }
     

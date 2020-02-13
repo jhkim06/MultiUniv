@@ -65,12 +65,13 @@
 #mkPDfUncert.py --pycfg  configuration_Mu_Combi_All.py --overWrite --cleanUp
 
 #sleep 5s
-mkPlot.py --pycfg configuration_El_Combi_All.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_El_CombiAll/CHToCB_El_CombiAll.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
-mkPlot.py --pycfg configuration_Mu_Combi_All.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_Mu_CombiAll/CHToCB_Mu_CombiAll.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+#mkPlot.py --pycfg configuration_El_Combi_All.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_El_CombiAll/CHToCB_El_CombiAll.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
+#mkPlot.py --pycfg configuration_Mu_Combi_All.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_Mu_CombiAll/CHToCB_Mu_CombiAll.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=1
 
-
-#mkDatacards.py --pycfg configuration_El_Combi_M090.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_El_Combi/CHToCB_El_Combi.root
-#mkDatacards.py --pycfg configuration_Mu_Combi.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_Mu_Combi/CHToCB_Mu_Combi.root
-
+for mass in 090 120 140
+do
+  mkDatacards.py --pycfg configuration_El_Combi_M${mass}.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_El_CombiAll/CHToCB_El_CombiAll.root
+  mkDatacards.py --pycfg configuration_Mu_Combi_M${mass}.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_Mu_CombiAll/CHToCB_Mu_CombiAll.root
+done
 
 #mkDatacards.py --pycfg configuration_2b_Combi.py --inputFile=Output_MetFt_L_v2_TTSemiLep_v1_K2_v1_CHToCB_2b_Combi/CHToCB_2b_Combi.root 

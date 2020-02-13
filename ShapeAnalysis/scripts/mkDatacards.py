@@ -164,15 +164,19 @@ class DatacardFactory:
 		if sampleName in groupPlot:
 		  FlagIdx = 0
 		  for subSample in groupPlot[sampleName]['samples']:
-		    print 'for',subSample,'in groupPlot'
+		    #print 'for',subSample,'in groupPlot'
 		    if FlagIdx ==0:
 		      histo = self._getHisto(cutName, variableName, subSample)
-		      histo.SetNameTitle(sampleName,sampleName)
 		    else:
 		      histo_tmp = self._getHisto(cutName, variableName, subSample)
 		      print 'adding', subSample,'to',sampleName
 		      histo.Add(histo_tmp)
 		    FlagIdx +=1
+
+		  #suppress Negative
+		  if groupPlot[sampleName].get('suppressNegative')==True:
+		    self._fixNegativeBinAndError(histo)
+		  histo.SetName('histo_%s' %(sampleName))
 		else:
                   histo = self._getHisto(cutName, variableName, sampleName)
                 histo.SetDirectory(self._outFile)
@@ -227,8 +231,8 @@ class DatacardFactory:
               print '      headers..'
               card.write('## Shape input card\n')
         
-              card.write('imax 1 number of channels\n')
-              card.write('jmax * number of background\n')
+              card.write('imax * number of bins\n')
+              card.write('jmax * number of processes minus 1\n')
               card.write('kmax * number of nuisance parameters\n') 
               
               card.write('-'*100+'\n')
@@ -263,7 +267,7 @@ class DatacardFactory:
               card.write(''.join([tagNameToAppearInDatacard.ljust(columndef)] * (len(signals) + len(cut_backgrounds)))+'\n')
             
               card.write('process'.ljust(40))
-              card.write(''.join(name.ljust(columndef) for name in signals))
+              card.write(''.join(name.ljust(columndef) for name in signals ))
               card.write(''.join(name.ljust(columndef) for name in cut_backgrounds))
               card.write('\n')
 
@@ -329,16 +333,40 @@ class DatacardFactory:
                       if ('all' in nuisance and nuisance['all'] == 1) or \
                               ('samples' in nuisance and sampleName in nuisance['samples']) or \
                               ('samplesCuts' in nuisance and (sampleName, cutName) in nuisance['samplesCuts']):
-                        histo = self._getHisto(cutName, variableName, sampleName)
-                        histoUp = self._getHisto(cutName, variableName, sampleName, '_' + nuisance['name'] + 'Up') 
-                        histoDown = self._getHisto(cutName, variableName, sampleName, '_' + nuisance['name'] + 'Down')
+			if sampleName in groupPlot:
+			  subIdx = 0
+			  for subSample in groupPlot[sampleName]['samples']:
+			    if subIdx == 0:
+                              histo = self._getHisto(cutName, variableName, subSample)
+                              histoUp = self._getHisto(cutName, variableName, subSample, '_' + nuisance['name'] + 'Up') 
+                              histoDown = self._getHisto(cutName, variableName, subSample, '_' + nuisance['name'] + 'Down')
+			    else:
+                              histo_tmp = self._getHisto(cutName, variableName, subSample)
+                              histoUp_tmp = self._getHisto(cutName, variableName, subSample, '_' + nuisance['name'] + 'Up') 
+                              histoDown_tmp = self._getHisto(cutName, variableName, subSample, '_' + nuisance['name'] + 'Down')
+                              histo.Add(histo_tmp)
+			      histoUp.Add(histoUp_tmp)
+                              histoDown.Add(histoDown_tmp)
+			    subIdx += 1
+                          histo.SetName('histo_%s' %(sampleName))
+                          histoUp.SetName('histo_%s' %(sampleName+'_'+nuisance['name']+'Up')) 
+                          histoDown.SetName('histo_%s' %(sampleName+'_'+nuisance['name']+'Down'))
+			else:
+                          histo = self._getHisto(cutName, variableName, sampleName)
+                          histoUp = self._getHisto(cutName, variableName, sampleName, '_' + nuisance['name'] + 'Up') 
+                          histoDown = self._getHisto(cutName, variableName, sampleName, '_' + nuisance['name'] + 'Down')
 
                         if (not histoUp or not histoDown):
+                          print '########################################################################'
                           print 'Histogram for nuisance', nuisance['name'], 'on sample', sampleName, 'missing'
+                          print '########################################################################'
 
                           if self._skipMissingNuisance:
                             card.write(('-').ljust(columndef)) 
                             continue
+			  else:
+			    print 'Exiting....................................'
+			    exit()
 
                         histoIntegral = histo.Integral()
                         histoUpIntegral = histoUp.Integral()
@@ -506,7 +534,7 @@ class DatacardFactory:
                   raise RuntimeError('Invalid rateParam: number of samples != 1')
 
                 sampleName, initialValue = nuisance['samples'].items()[0]
-                if sampleName not in self._samples:
+                if sampleName not in self._samples and sampleName not in groupPlot:
                   raise RuntimeError('Invalid rateParam: unknown sample %s' % sampleName)
 
                 card.write(sampleName.ljust(20))
@@ -534,8 +562,39 @@ class DatacardFactory:
 
     # _____________________________________________________________________________
     def _saveNuisanceHistos(self, cutName, variableName, sampleName, suffixIn, suffixOut = None, symmetrize = False):
-        histoUp = self._getHisto(cutName, variableName, sampleName, suffixIn + 'Up')
-        histoDown = self._getHisto(cutName, variableName, sampleName, suffixIn + 'Down')
+        if sampleName in groupPlot:
+	  subIdx = 0
+	  for subSample in groupPlot[sampleName]['samples']:
+	    if subIdx == 0:
+	      histo = self._getHisto(cutName, variableName, subSample)
+              histoUp = self._getHisto(cutName, variableName, subSample, suffixIn + 'Up')
+              histoDown = self._getHisto(cutName, variableName, subSample, suffixIn + 'Down')
+	      if not histoUp:
+	        print("WARNING: histoUp is null object, instead use histo")
+	        histoUp =  histo.Clone()
+	      if not histoDown:
+		print("WARNING: histoDown is null object, instead use histo")
+	        histoDown = histo.Clone()
+	    else:
+              histo_tmp = self._getHisto(cutName, variableName, subSample)
+              histoUp_tmp = self._getHisto(cutName, variableName, subSample, suffixIn + 'Up')
+              histoDown_tmp = self._getHisto(cutName, variableName, subSample, suffixIn + 'Down')
+	      if histoUp_tmp:
+	        histoUp.Add(histoUp_tmp)
+	      else:
+	        print("WARNING: histoUp_tmp is null object, instead add histo_tmp")
+		histoUp.Add(histo_tmp)
+	      if histoDown_tmp:
+                histoDown.Add(histoDown_tmp)
+	      else:
+		print("WARNING: histoDown_tmp is null object, instead add histo_tmp")
+		histoDown.Add(histo_tmp)
+	    subIdx += 1
+	  histoUp.SetName('histo_%s' %(sampleName+suffixIn+'Up'))
+	  histoDown.SetName('histo_%s' %(sampleName+suffixIn+'Down'))
+	else:
+          histoUp = self._getHisto(cutName, variableName, sampleName, suffixIn + 'Up')
+          histoDown = self._getHisto(cutName, variableName, sampleName, suffixIn + 'Down')
 
         if not histoUp or not histoDown:
           print 'Up/down histogram for', cutName, variableName, sampleName, suffixIn, 'missing'
@@ -544,7 +603,18 @@ class DatacardFactory:
           # else let ROOT raise
 
         if symmetrize:
-          histoNom = self._getHisto(cutName, variableName, sampleName)
+	  if sampleName in groupPlot:
+	    subIdx = 0
+	    for subSample in groupPlot[sampleName]['samples']:
+	      if subIdx == 0:
+                histoNom = self._getHisto(cutName, variableName, subSample)
+	      else:
+                histoNom_tmp = self._getHisto(cutName, variableName, subSample)
+		histoNom.Add(histoNom_tmp)
+	      subIdx += 1
+	    histoNom.SetName('histo_%s' %(sampleName))
+	  else:
+            histoNom = self._getHisto(cutName, variableName, sampleName)
           histoDiff = histoUp.Clone('histoDiff')
           histoDiff.Add(histoDown, -1.)
           histoDiff.Scale(0.5)
@@ -584,6 +654,22 @@ class DatacardFactory:
       
         return histo
 
+    def _fixNegativeBinAndError(self, histogram_to_be_fixed):
+        # if a histogram has a bin < 0
+        # then put the bin content to 0
+        # and also if a histogram has uncertainties that go <0,
+        # then put the uncertainty to the maximum allowed
+  
+        for ibin in range(1, histogram_to_be_fixed.GetNbinsX()+1) :
+            if histogram_to_be_fixed.GetBinContent(ibin) < 0 :
+  	        histogram_to_be_fixed.SetBinContent(ibin, 0) 
+  
+        # the SetBinError does not allow asymmetric -> fine, maximum uncertainty set
+        for ibin in range(1, histogram_to_be_fixed.GetNbinsX()+1) :
+            if histogram_to_be_fixed.GetBinContent(ibin) - histogram_to_be_fixed.GetBinErrorLow(ibin) < 0 :
+  	        histogram_to_be_fixed.SetBinError(ibin, histogram_to_be_fixed.GetBinContent(ibin)) 
+  
+  
 
 if __name__ == '__main__':
     sys.argv = argv

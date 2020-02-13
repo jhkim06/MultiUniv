@@ -3,9 +3,9 @@
 TS_Correction_Core::TS_Correction_Core(){
 
   response["Pt"] = NULL;
-  response["Et"] = NULL;
-  response["Eta"] = NULL;
-  response["Phi"] = NULL;
+  //response["Et"] = NULL;
+  //response["Eta"] = NULL;
+  //response["Phi"] = NULL;
 
   flavour["uds"] = new TFormula("uds","abs(x[0])<4");
   flavour["udsc"] = new TFormula("udsc","abs(x[0])<5");
