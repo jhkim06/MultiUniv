@@ -1,0 +1,46 @@
+ID	SF	NUM_TightID_DEN_genTracks	RunAveraged_SF_ID.root	NUM_TightID_DEN_genTracks_eta_pt TH2D etapt
+ISO	SF	NUM_TightRelIso_DEN_TightIDandIPCut	RunAveraged_SF_ISO.root	NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt TH2D etapt
+ID	SF	NUM_HighPtID_DEN_genTracks	RunAveraged_SF_ID.root	NUM_HighPtID_DEN_genTracks_eta_pair_newTuneP_probe_pt TH2D etapt
+ISO	SF	NUM_LooseRelTkIso_DEN_HighPtIDandIPCut	RunAveraged_SF_ISO.root	NUM_LooseRelTkIso_DEN_HighPtIDandIPCut_eta_pair_newTuneP_probe_pt TH2D etapt
+ID	SF	NUM_MediumID_DEN_genTracks	RunAveraged_SF_ID.root	NUM_MediumID_DEN_genTracks_eta_pt TH2D etapt
+Trigger	Eff_DATA	IsoMu24_POGTight	RunAveraged_Eff_Trigger.root	IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/pt_abseta_DATA TH2D pteta
+Trigger	Eff_MC	IsoMu24_POGTight	RunAveraged_Eff_Trigger.root	IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesMC/pt_abseta_MC TH2D pteta
+Trigger	Eff_DATA	Mu50_POGHighPtLooseTrkIso	RunAveraged_Eff_Trigger.root	Mu50_OR_TkMu50_PtEtaBins/efficienciesDATA/pt_abseta_DATA TH2D pteta
+Trigger	Eff_MC	Mu50_POGHighPtLooseTrkIso	RunAveraged_Eff_Trigger.root	Mu50_OR_TkMu50_PtEtaBins/efficienciesMC/pt_abseta_MC TH2D pteta
+
+Trigger Eff_DATA Lead17_POGTight_BCDEF  MuonTriggerEfficiency_ISR_DoubleIsoMu17Mu8_IsoMu17leg_RunBCDEF.root     TriggerEff_ISR_BCDEF_Data TH2D etapt
+Trigger Eff_MC Lead17_POGTight_BCDEF    MuonTriggerEfficiency_ISR_DoubleIsoMu17Mu8_IsoMu17leg_RunBCDEF.root     TriggerEff_ISR_BCDEF_MC TH2D etapt
+Trigger Eff_DATA Lead17_POGTight_GH     MuonTriggerEfficiency_ISR_DoubleIsoMu17Mu8_IsoMu17leg_RunGH.root        TriggerEff_ISR_GH_Data TH2D etapt
+Trigger Eff_MC Lead17_POGTight_GH       MuonTriggerEfficiency_ISR_DoubleIsoMu17Mu8_IsoMu17leg_RunGH.root        TriggerEff_ISR_GH_MC TH2D etapt
+Trigger Eff_DATA Tail8_POGTight_BCDEF   MuonTriggerEfficiency_ISR_Mu8_OR_TkMu8_RunBCDEF.root    TriggerEff_ISR_BCDEF_Data TH2D etapt
+Trigger Eff_MC Tail8_POGTight_BCDEF     MuonTriggerEfficiency_ISR_Mu8_OR_TkMu8_RunBCDEF.root    TriggerEff_ISR_BCDEF_MC TH2D etapt
+Trigger Eff_DATA Tail8_POGTight_GH      MuonTriggerEfficiency_ISR_Mu8_OR_TkMu8_RunGH.root       TriggerEff_ISR_GH_Data TH2D etapt
+Trigger Eff_MC Tail8_POGTight_GH        MuonTriggerEfficiency_ISR_Mu8_OR_TkMu8_RunGH.root       TriggerEff_ISR_GH_MC TH2D etapt
+
+#############################################################
+### AFB study: Charge Separate
+#############################################################
+IDISO   Eff_DATA      MediumID_trkIso_QPlus_BCDEF           IDIso_Plus_BCDEF_2016_medTrkIsoLoose_v1.root        muonEffi_data_eta_pt    TH2D  etapt
+IDISO   Eff_DATA      MediumID_trkIso_QMinus_BCDEF          IDIso_Minus_BCDEF_2016_medTrkIsoLoose_v1.root       muonEffi_data_eta_pt    TH2D  etapt
+IDISO   Eff_DATA      MediumID_trkIso_QPlus_GH              IDIso_Plus_GH_2016_medTrkIsoLoose_v1.root           muonEffi_data_eta_pt    TH2D  etapt
+IDISO   Eff_DATA      MediumID_trkIso_QMinus_GH             IDIso_Minus_GH_2016_medTrkIsoLoose_v1.root          muonEffi_data_eta_pt    TH2D  etapt
+IDISO   Eff_MC        MediumID_trkIso_QPlus_BCDEF           IDIso_Plus_BCDEF_2016_medTrkIsoLoose_v1.root        muonEffi_mc_eta_pt    TH2D  etapt
+IDISO   Eff_MC        MediumID_trkIso_QMinus_BCDEF          IDIso_Minus_BCDEF_2016_medTrkIsoLoose_v1.root       muonEffi_mc_eta_pt    TH2D  etapt
+IDISO   Eff_MC        MediumID_trkIso_QPlus_GH              IDIso_Plus_GH_2016_medTrkIsoLoose_v1.root           muonEffi_mc_eta_pt    TH2D  etapt
+IDISO   Eff_MC        MediumID_trkIso_QMinus_GH             IDIso_Minus_GH_2016_medTrkIsoLoose_v1.root          muonEffi_mc_eta_pt    TH2D  etapt
+Trigger Eff_DATA      LeadMu17_MediumID_trkIso_QPlus_BCDEF  Mu17_Plus_BCDEF_2016_medTrkIsoLoose_v1.root         muonEffi_data_eta_pt    TH2D  etapt
+Trigger Eff_DATA      LeadMu17_MediumID_trkIso_QMinus_BCDEF Mu17_Minus_BCDEF_2016_medTrkIsoLoose_v1.root        muonEffi_data_eta_pt    TH2D  etapt
+Trigger Eff_DATA      LeadMu17_MediumID_trkIso_QPlus_GH     Mu17_Plus_GH_2016_medTrkIsoLoose_v1.root            muonEffi_data_eta_pt    TH2D  etapt
+Trigger Eff_DATA      LeadMu17_MediumID_trkIso_QMinus_GH    Mu17_Minus_GH_2016_medTrkIsoLoose_v1.root           muonEffi_data_eta_pt    TH2D  etapt
+Trigger Eff_DATA      TailMu8_MediumID_trkIso_QPlus_BCDEF   Mu8_Plus_BCDEF_2016_medTrkIsoLoose_v1.root          muonEffi_data_eta_pt    TH2D  etapt
+Trigger Eff_DATA      TailMu8_MediumID_trkIso_QMinus_BCDEF  Mu8_Minus_BCDEF_2016_medTrkIsoLoose_v1.root         muonEffi_data_eta_pt    TH2D  etapt
+Trigger Eff_DATA      TailMu8_MediumID_trkIso_QPlus_GH      Mu8_Plus_GH_2016_medTrkIsoLoose_v1.root             muonEffi_data_eta_pt    TH2D  etapt
+Trigger Eff_DATA      TailMu8_MediumID_trkIso_QMinus_GH     Mu8_Minus_GH_2016_medTrkIsoLoose_v1.root            muonEffi_data_eta_pt    TH2D  etapt
+Trigger Eff_MC        LeadMu17_MediumID_trkIso_QPlus_BCDEF  Mu17_Plus_BCDEF_2016_medTrkIsoLoose_v1.root         muonEffi_mc_eta_pt    TH2D  etapt
+Trigger Eff_MC        LeadMu17_MediumID_trkIso_QMinus_BCDEF Mu17_Minus_BCDEF_2016_medTrkIsoLoose_v1.root        muonEffi_mc_eta_pt    TH2D  etapt
+Trigger Eff_MC        LeadMu17_MediumID_trkIso_QPlus_GH     Mu17_Plus_GH_2016_medTrkIsoLoose_v1.root            muonEffi_mc_eta_pt    TH2D  etapt
+Trigger Eff_MC        LeadMu17_MediumID_trkIso_QMinus_GH    Mu17_Minus_GH_2016_medTrkIsoLoose_v1.root           muonEffi_mc_eta_pt    TH2D  etapt
+Trigger Eff_MC        TailMu8_MediumID_trkIso_QPlus_BCDEF   Mu8_Plus_BCDEF_2016_medTrkIsoLoose_v1.root          muonEffi_mc_eta_pt    TH2D  etapt
+Trigger Eff_MC        TailMu8_MediumID_trkIso_QMinus_BCDEF  Mu8_Minus_BCDEF_2016_medTrkIsoLoose_v1.root         muonEffi_mc_eta_pt    TH2D  etapt
+Trigger Eff_MC        TailMu8_MediumID_trkIso_QPlus_GH      Mu8_Plus_GH_2016_medTrkIsoLoose_v1.root             muonEffi_mc_eta_pt    TH2D  etapt
+Trigger Eff_MC        TailMu8_MediumID_trkIso_QMinus_GH     Mu8_Minus_GH_2016_medTrkIsoLoose_v1.root            muonEffi_mc_eta_pt    TH2D  etapt
