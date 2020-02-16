@@ -1,0 +1,6 @@
+HNPair_ElectronLooseNoIP	Electron_HNPair_ElectronLooseNoIP_FakeRates.root
+HNPair_ElectronLooseNoIP_PtCut	Electron_HNPair_ElectronLooseNoIP_PtCut_FakeRates.root
+HNPair	Electron_HNPair_FakeRates.root
+HNPair_PtCut	Electron_HNPair_PtCut_FakeRates.root
+HNWR	Electron_HNWR_FakeRates.root
+HNtypeI_V1 Electron_HNtypeI_FakeRates_isrFR_2017.root
