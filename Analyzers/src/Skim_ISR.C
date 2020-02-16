@@ -1608,8 +1608,8 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_SelVa
                 else if(DataYear==2017){
                     idSF_key =  "NUM_TightID_DEN_genTracks";
                     isoSF_key = "NUM_TightRelIso_DEN_TightIDandIPCut";
-                    leading_trig_key =    "";
-                    subleading_trig_key = "";
+                    leading_trig_key = "LeadMu17_POGTight";
+                    subleading_trig_key = "TailMu8_POGTight";
                 }
                 else if(DataYear==2018){
                     idSF_key =  "NUM_TightID_DEN_genTracks";
@@ -1645,8 +1645,8 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_SelVa
                     LeptonReco_SF = &MCCorrection::ElectronReco_SF;
                     LeptonID_SF   = &MCCorrection::ElectronID_SF;
                     idSF_key = "passMediumID";
-                    leading_trig_key =    "";
-                    subleading_trig_key = "";
+                    leading_trig_key =    "LeadEle23_MediumID";
+                    subleading_trig_key = "TailEle12_MediumID";
                 }
                 else if(DataYear==2018){
                     LeptonReco_SF = &MCCorrection::ElectronReco_SF;
