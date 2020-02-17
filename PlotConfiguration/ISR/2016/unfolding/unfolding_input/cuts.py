@@ -9,4 +9,4 @@ cuts['detector_level'] = 'evt_tag_dielectron_rec == 1 && evt_tag_analysisevnt_se
 cuts['detector_level_lepMomUp'] = 'evt_tag_dielectron_rec_LepMomScaleUp == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleUp == 1 '
 cuts['detector_level_lepMomDown'] = 'evt_tag_dielectron_rec_LepMomScaleDown == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleDown == 1 '
 cuts['detector_level_lepMomResUp'] = 'evt_tag_dielectron_rec_LepMomResUp == 1 && evt_tag_analysisevnt_sel_rec_LepMomResUp == 1 '
-cuts['detector_level_lepMomResDown'] = 'evt_tag_dielectron_rec_LepMomResDown == 1 && evt_tag_analysisevnt_sel_rec_LepMomResUpDown == 1 '
+cuts['detector_level_lepMomResDown'] = 'evt_tag_dielectron_rec_LepMomResDown == 1 && evt_tag_analysisevnt_sel_rec_LepMomResDown == 1 '

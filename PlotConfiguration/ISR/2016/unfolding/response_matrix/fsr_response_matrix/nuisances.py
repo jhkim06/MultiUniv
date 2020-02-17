@@ -11,33 +11,33 @@ alphaS_syst  = 'PDFWeights_AlphaS'
 pdfScale_syst  = 'PDFWeights_Scale'
 pdfErr_syst  = 'PDFWeights_Error'
 
-nuisances['alphaS'] = {
-    'name'	: 'AlphaS',
-    'kind'	: 'PDF',
-    'type'	: 'alphaS',
-    'samples'	: {
-      	'DYJets'	: alphaS_syst ,
-	'DYJets10to50'	: alphaS_syst ,
-	},
-}
-
-nuisances['pdfScale'] = {
-    'name'	: 'Scale',
-    'kind'	: 'PDF',
-    'type'	: 'Scale',
-    'samples'	: {
-      	'DYJets'	: pdfScale_syst ,
-      	'DYJets10to50'	: pdfScale_syst ,
-	},
-}
-
-nuisances['pdfErr'] = {
-    'name'	: 'PDFerror',
-    'kind'	: 'PDF',
-    'type'	: 'HESSIAN',
-    'samples'	: {
-      	'DYJets'	: pdfErr_syst ,
-      	'DYJets10to50'	: pdfErr_syst ,
-	},
-}
-
+#nuisances['alphaS'] = {
+#    'name'	: 'AlphaS',
+#    'kind'	: 'PDF',
+#    'type'	: 'alphaS',
+#    'samples'	: {
+#      	'DYJets'	: alphaS_syst ,
+#	'DYJets10to50'	: alphaS_syst ,
+#	},
+#}
+#
+#nuisances['pdfScale'] = {
+#    'name'	: 'Scale',
+#    'kind'	: 'PDF',
+#    'type'	: 'Scale',
+#    'samples'	: {
+#      	'DYJets'	: pdfScale_syst ,
+#      	'DYJets10to50'	: pdfScale_syst ,
+#	},
+#}
+#
+#nuisances['pdfErr'] = {
+#    'name'	: 'PDFerror',
+#    'kind'	: 'PDF',
+#    'type'	: 'HESSIAN',
+#    'samples'	: {
+#      	'DYJets'	: pdfErr_syst ,
+#      	'DYJets10to50'	: pdfErr_syst ,
+#	},
+#}
+#

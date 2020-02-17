@@ -10,10 +10,9 @@
 alphaS_syst  = 'PDFWeights_AlphaS'
 pdfScale_syst  = 'PDFWeights_Scale'
 pdfErr_syst  = 'PDFWeights_Error'
-#id_syst_ele = ['LepSF'+Nlep+'l_ele_'+eleWP+'_Up', 'LepSF'+Nlep+'l_ele_'+eleWP+'_Do']
 
 nuisances['alphaS'] = {
-    'name'	: 'alphaS',
+    'name'	: 'AlphaS',
     'kind'	: 'PDF',
     'type'	: 'alphaS',
     'samples'	: {
@@ -23,7 +22,7 @@ nuisances['alphaS'] = {
 }
 
 nuisances['pdfScale'] = {
-    'name'	: 'pdfScale',
+    'name'	: 'Scale',
     'kind'	: 'PDF',
     'type'	: 'Scale',
     'samples'	: {
@@ -33,7 +32,7 @@ nuisances['pdfScale'] = {
 }
 
 #nuisances['pdfErr'] = {
-#    'name'	: 'pdfErr',
+#    'name'	: 'PDFerror',
 #    'kind'	: 'PDF',
 #    'type'	: 'HESSIAN',
 #    'samples'	: {

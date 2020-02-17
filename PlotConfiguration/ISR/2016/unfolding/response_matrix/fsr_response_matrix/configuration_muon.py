@@ -5,7 +5,7 @@ Category    = 'SMP'
 Year        = '2016'
 InSkim      = 'ISR_v1'
 #InSkim      = 'ISR_generator_only_v1'
-Userflags   = 'ISR_response_FSR_Muon_unf'
+Userflags   = 'ISR_response_FSR_Muon_closureTest'
 treeName    = 'recoTree/SKFlat'
 
 samplesFile   = 'samples.py'

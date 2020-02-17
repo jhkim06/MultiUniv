@@ -22,7 +22,7 @@ rm JobCheck.log
 #for sample in DoubleMuon DoubleEG TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia
 #for sample in DoubleEG DoubleMuon TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
 #for sample in EGamma DoubleMuon DYJets10to50 DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
-for sample in DYJets DYJets10to50_MG 
+for sample in DYJets
 do
   echo $sample
   #mkGardener.py --Category SMP -a Skim_ISR -y 2016 -i $sample -n 50 --skimV 1 --userflags ISR --multiQueue
