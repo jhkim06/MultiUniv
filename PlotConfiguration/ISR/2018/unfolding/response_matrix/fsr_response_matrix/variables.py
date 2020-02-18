@@ -10,13 +10,14 @@ from Definitions import * # to use enumerate for unfolding histogram type
 
 # xaxis, yaxis to set title
 
-variables['hist_ptll_post_fsr'] = {
+# for FSR unfold closure test input 
+variables['hist_ptll'] = {
 
     'unfoldBinType': ISRUnfold.PtGen2DHist,
     'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
     'fold':   0,
     'range':  None,
-    'name':  'Get2DPtGenBinIndex(dilep_pt_gen_postfsr, dilep_mass_gen_postfsr)',
+    'name':  'Get2DPtGenBinIndex(dilep_pt_FSRgammaDRp1_gen_ispromptfinal, dilep_mass_FSRgammaDRp1_gen_ispromptfinal)',
     'xaxis': 'Mass p_{T} [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
@@ -24,105 +25,26 @@ variables['hist_ptll_post_fsr'] = {
     'go1D': True
 }
 
-variables['hist_mll_post_fsr'] = {
+variables['hist_mll'] = {
 
     'unfoldBinType': ISRUnfold.MassGen2DHist,
     'fold':   0,
     'range':  None,
-    'name':  'Get2DMassGenBinIndex(dilep_mass_gen_postfsr, dilep_pt_gen_postfsr)',
+    'name':  'Get2DMassGenBinIndex(dilep_mass_FSRgammaDRp1_gen_ispromptfinal, dilep_pt_FSRgammaDRp1_gen_ispromptfinal)',
     'xaxis': 'Mass [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
     'unfoldBinDefinition': "electron",
     'go1D': False
-}
-
-variables['hist_ptll_pre_fsr'] = {
-
-    'unfoldBinType': ISRUnfold.PtGen2DHist,
-    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
-    'fold':   0,
-    'range':  None,
-    'name':  'Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[9], dilep_mass_gen_lepton_matched_dressed_drX[9])',
-    'xaxis': 'Mass p_{T} [GeV]',
-    'yaxis': 'Events',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
-    'go1D': True
-}
-
-variables['hist_mll_pre_fsr'] = {
-
-    'unfoldBinType': ISRUnfold.MassGen2DHist,
-    'fold':   0,
-    'range':  None,
-    'name':  'Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[9], dilep_pt_gen_lepton_matched_dressed_drX[9])',
-    'xaxis': 'Mass [GeV]',
-    'yaxis': 'Events',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
-    'go1D': False
-}
-
-variables['mll_gen_post_fsr_pre_fsr_dRp1_response_matrix'] = {
-
-    'unfoldBinType': ISRUnfold.MassFSRMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DMassGenBinIndex(dilep_mass_gen_postfsr, dilep_pt_gen_postfsr):Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[0], dilep_pt_gen_lepton_matched_dressed_drX[0])',
-    'xaxis': 'Post FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
-    'go1D': False,
-    'isResMatrix':True
-}
-
-variables['ptll_gen_post_fsr_pre_fsr_dRp1_response_matrix'] = {
-
-    'unfoldBinType': ISRUnfold.PtFSRMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DPtGenBinIndex(dilep_pt_gen_postfsr, dilep_mass_gen_postfsr):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[0], dilep_mass_gen_lepton_matched_dressed_drX[0])',
-    'xaxis': 'Post FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
-    'go1D': False,
-    'isResMatrix':True
-}
-
-
-variables['mll_gen_post_fsr_pre_fsr_response_matrix'] = {
-
-    'unfoldBinType': ISRUnfold.MassFSRMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DMassGenBinIndex(dilep_mass_gen_postfsr, dilep_pt_gen_postfsr):Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[9], dilep_pt_gen_lepton_matched_dressed_drX[9])',
-    'xaxis': 'Post FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
-    'go1D': False,
-    'isResMatrix':True
-}
-
-variables['ptll_gen_post_fsr_pre_fsr_response_matrix'] = {
-
-    'unfoldBinType': ISRUnfold.PtFSRMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DPtGenBinIndex(dilep_pt_gen_postfsr, dilep_mass_gen_postfsr):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[9], dilep_mass_gen_lepton_matched_dressed_drX[9])',
-    'xaxis': 'Post FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "electron",
-    'go1D': False,
-    'isResMatrix':True
 }
 
 variables['ptll_gen_post_fsr_dRp1_pre_fsr_response_matrix'] = {
 
     'unfoldBinType': ISRUnfold.PtFSRMigrationM,
+    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
     'fold': 0,
     'range': None,
-    'name': 'Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[0], dilep_mass_gen_lepton_matched_dressed_drX[0]):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[9], dilep_mass_gen_lepton_matched_dressed_drX[9])',
+    'name': 'Get2DPtGenBinIndex(dilep_pt_FSRgammaDRp1_gen_ispromptfinal, dilep_mass_FSRgammaDRp1_gen_ispromptfinal):Get2DPtGenBinIndex(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal)',
     'xaxis': 'Post FSR',
     'useTUnfoldBin': True,
     'unfoldBinDefinition': "electron",
@@ -135,10 +57,28 @@ variables['mll_gen_post_fsr_dRp1_pre_fsr_response_matrix'] = {
     'unfoldBinType': ISRUnfold.MassFSRMigrationM,
     'fold': 0,
     'range': None,
-    'name': 'Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[0], dilep_pt_gen_lepton_matched_dressed_drX[0]):Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[9], dilep_pt_gen_lepton_matched_dressed_drX[9])',
+    'name': 'Get2DMassGenBinIndex(dilep_mass_FSRgammaDRp1_gen_ispromptfinal, dilep_pt_FSRgammaDRp1_gen_ispromptfinal):Get2DMassGenBinIndex(dilep_mass_FSRgamma_gen_ispromptfinal, dilep_pt_FSRgamma_gen_ispromptfinal)',
     'xaxis': 'Post FSR',
     'useTUnfoldBin': True,
     'unfoldBinDefinition': "electron",
     'go1D': False,
     'isResMatrix':True
 }
+
+variables['ptll'] = {
+    'name': 'dilep_pt_FSRgamma_gen_ispromptfinal',
+    'range':([0., 4., 8., 12., 18., 28., 40., 55., 75., 100.],),
+    'xaxis': ' p_{T}^{ee} [GeV]',
+    'yaxis': 'Events/ bin',
+    'go1D': False,
+    'fold' : 0
+    }
+
+variables['mll'] = {
+    'name': 'dilep_mass_FSRgamma_gen_ispromptfinal',
+    'range':([50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,126,133,141,150,160,171,185,200,218,240,268,300,350],),
+    'xaxis': ' m^{ee} [GeV]',
+    'yaxis': 'Events/ bin',
+    'go1D': False,
+    'fold' : 0
+    }
