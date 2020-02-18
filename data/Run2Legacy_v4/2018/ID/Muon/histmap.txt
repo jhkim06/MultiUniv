@@ -22,3 +22,5 @@ Trigger SF      LeadMu17_MediumID_trkIso_QPlus        Mu17_Plus_2018_medTrkIsoLo
 Trigger SF      LeadMu17_MediumID_trkIso_QMinus       Mu17_Minus_2018_medTrkIsoLoose_v1.root        muonEffi_mc_eta_pt    TH2D  etapt
 Trigger SF      TailMu8_MediumID_trkIso_QPlus         Mu8_Plus_2018_medTrkIsoLoose_v1.root          muonEffi_mc_eta_pt    TH2D  etapt
 Trigger SF      TailMu8_MediumID_trkIso_QMinus        Mu8_Minus_2018_medTrkIsoLoose_v1.root         muonEffi_mc_eta_pt    TH2D  etapt
+Trigger SF      LeadMu17_POGTight                     2018_Mu17syst.root                            SF_abseta_pt          TH2D etapt
+Trigger SF      LeadMu8_POGTight                      2018_Mu8syst.root                             SF_abseta_pt          TH2D etapt

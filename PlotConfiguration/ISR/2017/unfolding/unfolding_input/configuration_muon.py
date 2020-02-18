@@ -3,7 +3,7 @@ Analyzer    = 'mkShape'
 Outputdir   = 'Output_Muon'
 Category    = 'SMP'
 Year        = '2017'
-InSkim      = 'MetFt_L_v2_LL_v1_ISR_detector_only_v1_Eff_SF_v1'
+InSkim      = 'ISR_detector_only_v1'
 Userflags   = 'unfold_input_muon'
 treeName    = 'recoTree/SKFlat'
 
