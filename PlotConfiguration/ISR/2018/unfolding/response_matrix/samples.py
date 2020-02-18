@@ -7,7 +7,7 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_trigSF_rec * evt_weight_idSF_rec * evt_weight_recoSF_rec'
+McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec * evt_weight_idSF_rec * evt_weight_trigSF_rec'
 
 #McWeight = 'evt_weight_total_gen * evt_weight_total_rec * electron_double_idSF_passMediumID * electron_double_recoSF_passMediumID * electron_double_trigSF_DoubleElectron_passMediumID'
 
