@@ -340,6 +340,12 @@ public :
    vector<double>  *muon_PfNeutralHadronMiniIso;
    vector<double>  *muon_PfGammaMiniIso;
    vector<double>  *muon_PFSumPUMiniIso;
+   vector<double>  *LHE_Px;
+   vector<double>  *LHE_Py;
+   vector<double>  *LHE_Pz;
+   vector<double>  *LHE_E;
+   vector<int>     *LHE_Status;
+   vector<int>     *LHE_ID;
    vector<double>  *PDFWeights_Scale;
    vector<double>  *PDFWeights_Error;
    vector<double>  *PDFWeights_AlphaS;
@@ -677,6 +683,12 @@ public :
    TBranch        *b_muon_PfNeutralHadronMiniIso;   //!
    TBranch        *b_muon_PfGammaMiniIso;   //!
    TBranch        *b_muon_PFSumPUMiniIso;   //!
+   TBranch        *b_LHE_Px;   //!
+   TBranch        *b_LHE_Py;   //!
+   TBranch        *b_LHE_Pz;   //!
+   TBranch        *b_LHE_E;   //!
+   TBranch        *b_LHE_Status;   //!
+   TBranch        *b_LHE_ID;   //!
    TBranch        *b_PDFWeights_Scale;   //!
    TBranch        *b_PDFWeights_Error;   //!
    TBranch        *b_PDFWeights_AlphaS;   //!

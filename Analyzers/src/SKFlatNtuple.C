@@ -321,6 +321,12 @@ void SKFlatNtuple::Init()
    muon_PfNeutralHadronMiniIso = 0;
    muon_PfGammaMiniIso = 0;
    muon_PFSumPUMiniIso = 0;
+   LHE_Px = 0;
+   LHE_Py = 0;
+   LHE_Pz = 0;
+   LHE_E = 0;
+   LHE_Status = 0;
+   LHE_ID = 0;
    PDFWeights_Scale = 0;
    PDFWeights_Error = 0;
    PDFWeights_AlphaS = 0;
@@ -643,6 +649,12 @@ void SKFlatNtuple::Init()
    fChain->SetBranchAddress("muon_PFSumPUMiniIso", &muon_PFSumPUMiniIso, &b_muon_PFSumPUMiniIso);
 
    if(!IsDATA){
+   fChain->SetBranchAddress("LHE_Px", &LHE_Px, &b_LHE_Px);
+   fChain->SetBranchAddress("LHE_Py", &LHE_Py, &b_LHE_Py);
+   fChain->SetBranchAddress("LHE_Pz", &LHE_Pz, &b_LHE_Pz);
+   fChain->SetBranchAddress("LHE_E", &LHE_E, &b_LHE_E);
+   fChain->SetBranchAddress("LHE_Status", &LHE_Status, &b_LHE_Status);
+   fChain->SetBranchAddress("LHE_ID", &LHE_ID, &b_LHE_ID);
    fChain->SetBranchAddress("PDFWeights_Scale", &PDFWeights_Scale, &b_PDFWeights_Scale);
    fChain->SetBranchAddress("PDFWeights_Error", &PDFWeights_Error, &b_PDFWeights_Error);
    fChain->SetBranchAddress("PDFWeights_AlphaS", &PDFWeights_AlphaS, &b_PDFWeights_AlphaS);

@@ -4,7 +4,8 @@
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 
-struct Analysis_SelVariation {
+struct Analysis_SelVariation 
+{
 
     TString prefix;
 
@@ -223,6 +224,7 @@ private:
     vector<Electron> AllElectrons;
 
     std::vector<Gen>      gen_particles;
+    std::vector<LHE>      lhe_particles;
     std::vector<Gen>      gen_photons;
     std::vector<Muon>     muons;
     std::vector<Electron> electrons;
@@ -273,6 +275,7 @@ private:
 
     Gen gen_particle_ME, gen_antiparticle_ME;
     Gen gen_particle_status1, gen_antiparticle_status1;
+    LHE lhe_particle, lhe_antiparticle;
     int gen_particle_index_ME, gen_antiparticle_index_ME;
     int gen_particle_index_status1, gen_antiparticle_index_status1;
 
@@ -336,6 +339,8 @@ private:
     int n_lepton_isGammaMother_isPromptFinalState;
     int n_isPromptFinalState;
 
+    double dilep_pt_lhe   ;
+    double dilep_mass_lhe ;
     double dilep_pt_gen_prefsr   ;
     double dilep_mass_gen_prefsr ;
     double particle_pt_gen_prefsr ;
@@ -372,6 +377,8 @@ private:
     std::vector<bool> evt_tag_dielectron_fiducial_lepton_matched_dressed_drX;
     std::vector<bool> evt_tag_dimuon_fiducial_lepton_matched_dressed_drX;
 
+    bool evt_tag_dielectron_lhe;
+    bool evt_tag_dimuon_lhe;
     bool evt_tag_ditau_gen;
     bool evt_tag_dielectron_gen;
     bool evt_tag_dimuon_gen;

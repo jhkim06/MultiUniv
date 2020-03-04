@@ -8,6 +8,7 @@ from CommonPyTools.python.CommonTools import *
 #eleWP='mediumSelectiveQ'
 
 McWeight = 'evt_weight_total_gen'
+McWeight_forDY10to50 = 'evt_weight_total_gen * 1.0687524'
 
 #--------------------
 # MC
@@ -47,7 +48,7 @@ samples['DYJets'] = {
 samples['DYJets10to50'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
-    'weight' :McWeight,
+    'weight' :McWeight_forDY10to50,
     }
 
 #samples['ZToEE_M_50_120_powheg'] = {

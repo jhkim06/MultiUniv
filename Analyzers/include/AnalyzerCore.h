@@ -11,6 +11,7 @@
 #include "Event.h"
 #include "Particle.h"
 #include "Gen.h"
+#include "LHE.h"
 #include "Lepton.h"
 #include "Muon.h"
 #include "Electron.h"
@@ -82,6 +83,7 @@ public:
   std::vector<FatJet> GetFatJets(TString id, double ptmin, double fetamax);
 
   std::vector<Gen> GetGens();
+  std::vector<LHE> GetLHEs();
   void BHGetGens(std::vector<Gen>& out);
 
   //===================================================

@@ -700,6 +700,26 @@ void AnalyzerCore::BHGetGens(std::vector<Gen>& out ){
 
 }
 
+std::vector<LHE> AnalyzerCore::GetLHEs(){
+
+  std::vector<LHE> out;
+  if(IsDATA) return out;
+
+  for(unsigned int i=0; i<LHE_Px->size(); i++){
+
+    LHE lhe;
+
+    lhe.SetPxPyPzE(LHE_Px->at(i), LHE_Py->at(i), LHE_Pz->at(i), LHE_E->at(i));
+    lhe.SetIndexIDStatus(i, LHE_ID->at(i), LHE_Status->at(i));
+
+    out.push_back(lhe);
+
+  }
+
+  return out;
+
+}
+
 std::vector<Muon> AnalyzerCore::UseTunePMuon(std::vector<Muon> muons){
 
   std::vector<Muon> out;

@@ -7,9 +7,8 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-#McWeight = 'evt_weight_total_gen * evt_weight_total_rec * muon_double_idSF_POGTightWithTightIso * muon_double_isoSF_POGTightWithTightIso * muon_double_trigSF_DoubleMuon_POGTightWithTightIso'
 McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_isoSF_rec * evt_weight_idSF_rec * evt_weight_trigSF_rec'
-#McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
+McWeight_forDY10to50 = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_isoSF_rec * evt_weight_idSF_rec * evt_weight_trigSF_rec * 1.0687524'
 
 #--------------------    
 # MC
@@ -24,7 +23,7 @@ samples['DYJets@DYJetsToMuMu'] = {
 samples['DYJets10to50@DYJets10to50ToMuMu'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_dimuon_gen == 1',
-    'weight' :McWeight,
+    'weight' :McWeight_forDY10to50,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {
@@ -36,7 +35,7 @@ samples['DYJets@DYJetsToTauTau'] = {
 samples['DYJets10to50@DYJets10to50ToTauTau'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_ditau_gen == 1',
-    'weight' :McWeight,
+    'weight' :McWeight_forDY10to50,
     }
 
 samples['TTLL_powheg'] = {

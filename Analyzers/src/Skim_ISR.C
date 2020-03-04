@@ -120,6 +120,9 @@ void Skim_ISR::initializeAnalyzer(){
     if(save_generator_info)
     {
         // gen info
+        newtree->Branch("evt_tag_dimuon_lhe", &evt_tag_dimuon_lhe,"evt_tag_dimuon_lhe/O");
+        newtree->Branch("evt_tag_dielectron_lhe", &evt_tag_dielectron_lhe,"evt_tag_dielectron_lhe/O");
+
         newtree->Branch("evt_tag_ditau_gen", &evt_tag_ditau_gen,"evt_tag_ditau_gen/O");
         newtree->Branch("evt_tag_dielectron_gen", &evt_tag_dielectron_gen,"evt_tag_dielectron_gen/O");
         newtree->Branch("evt_tag_dimuon_gen", &evt_tag_dimuon_gen,"evt_tag_dimuon_gen/O");
@@ -144,6 +147,9 @@ void Skim_ISR::initializeAnalyzer(){
         newtree->Branch("antiparticle_pt_gen_prefsr", &antiparticle_pt_gen_prefsr,"antiparticle_pt_gen_prefsr/D");
         newtree->Branch("particle_eta_gen_prefsr", &particle_eta_gen_prefsr,"particle_eta_gen_prefsr/D");
         newtree->Branch("antiparticle_eta_gen_prefsr", &antiparticle_eta_gen_prefsr,"antiparticle_eta_gen_prefsr/D");
+
+        newtree->Branch("dilep_pt_lhe", &dilep_pt_lhe,"dilep_pt_lhe/D");
+        newtree->Branch("dilep_mass_lhe", &dilep_mass_lhe,"dilep_mass_lhe/D");
 
         newtree->Branch("dilep_pt_bare_gen_ispromptfinal", &dilep_pt_bare_gen_ispromptfinal,"dilep_pt_bare_gen_ispromptfinal/D");
         newtree->Branch("dilep_mass_bare_gen_ispromptfinal", &dilep_mass_bare_gen_ispromptfinal,"dilep_mass_bare_gen_ispromptfinal/D");
@@ -254,6 +260,7 @@ void Skim_ISR::executeEvent(){
 
     AllMuons.clear();
     AllElectrons.clear();
+
     muons.clear();
     electrons.clear();
     photons.clear();
@@ -282,6 +289,9 @@ void Skim_ISR::executeEvent(){
     subleadinglep_eta_rec = -999.;
 
     mother_id_of_prefsr_dilep = -999;
+
+    dilep_pt_lhe = -999.;
+    dilep_mass_lhe = -999.;
 
     dilep_pt_bare_gen_ispromptfinal = -999.;
     dilep_mass_bare_gen_ispromptfinal = -999.;
@@ -349,6 +359,8 @@ void Skim_ISR::executeEvent(){
     evt_tag_oppositecharge_sel_rec = 0;
     evt_tag_analysisevnt_sel_rec = 0;
 
+    evt_tag_dielectron_lhe = 0;
+    evt_tag_dimuon_lhe = 0;
     evt_tag_ditau_gen = 0;
     evt_tag_dielectron_gen = 0;
     evt_tag_dimuon_gen = 0;
@@ -378,16 +390,25 @@ void Skim_ISR::executeEvent(){
     if(!IsDATA){
         gen_particles.clear();
         gen_particles = GetGens();
+
+        lhe_particles.clear();
+        lhe_particles = GetLHEs();
     }
 
-    // generator level, only for Drell-Yan MC
+    ///////////////////////////////////////////////////////////////////////////////////////// 
+    //
+    //
+    // Generator level only for Drell-Yan
+    //
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////
     if((MCSample.Contains("DY") || MCSample.Contains("ZTo")) && save_generator_info )
     {
-
+        
         is_dimuon_gen = false;
         is_dielectron_gen = false;
         is_emu_gen = false;
-
+  
         pass_kinematic_cut_el_bare_gen = false;
         pass_kinematic_cut_mu_bare_gen = false;
 
@@ -429,21 +450,17 @@ void Skim_ISR::executeEvent(){
         gen_particle_index_status1    = -1;
         gen_antiparticle_index_status1 = -1;
 
-        // check isPromptFinalState()
-        // number of "isPromptFianlSate" leptons
-        // bool isPromptFinalState(const P &p) const;
-
         // loop over generator particles
         for( unsigned int i = 0; i < gen_particles.size(); i++)
         {
             int current_particle_id = gen_particles.at(i).PID();
 
-            // isPromptFinalState flagged gen particle
-            //
+            // isPromptFinalState() flagged gen particle
             if(gen_particles.at(i).isPromptFinalState())
             {
                 n_isPromptFinalState++;
 
+                // save electron and muon flagged as isPromptFinalState()
                 if(abs(current_particle_id) == 11 || abs(current_particle_id)==13)
                 {
                     n_lepton_isPromptFinalState++;
@@ -460,6 +477,7 @@ void Skim_ISR::executeEvent(){
 
                     if(gen_particles.at(i).MotherIndex() > 0)
                     {
+                        // count number of leptons from gen photon
                         if(gen_particles.at(gen_particles.at(i).MotherIndex()).PID() == 22)
                         {
                             n_lepton_isGammaMother_isPromptFinalState++;
@@ -516,16 +534,55 @@ void Skim_ISR::executeEvent(){
                 }
             }
 
+            // LHE info
+            bool tauLHEexist = false;
+            LHE temp_particle;
+            LHE temp_antiparticle;
+            for(int ilhe = 0; ilhe < (int) lhe_particles.size(); ilhe++)
+            {
+                if((abs(lhe_particles[ilhe].ID())==11||abs(lhe_particles[ilhe].ID())==13))
+                {
+                    if(temp_particle.ID() == 0 && lhe_particles[ilhe].ID() > 0)
+                    {
+                        temp_particle = lhe_particles[ilhe];
+
+                        if(lhe_particles[ilhe].ID() == 11) evt_tag_dielectron_lhe = 1;
+                        else evt_tag_dimuon_lhe = 1;  
+                    } 
+                    else if(temp_antiparticle.ID() == 0 && lhe_particles[ilhe].ID() < 0)
+                    {
+                        temp_antiparticle = lhe_particles[ilhe];
+
+                        if(lhe_particles[ilhe].ID() == -11) evt_tag_dielectron_lhe = 1;
+                        else evt_tag_dimuon_lhe = 1;  
+                    }
+                }
+
+                if(abs(lhe_particles[ilhe].ID())==15)
+                {
+                    tauLHEexist = true;
+                    break;
+                }
+            }
+            if(!tauLHEexist)
+            {
+                dilep_pt_lhe   = (temp_particle + temp_antiparticle).Pt();
+                dilep_mass_lhe = (temp_particle + temp_antiparticle).M();
+            }
+
             // particles associated matrix element (ME)
             if(gen_particles.at(i).isHardProcess())
             {
                 // consider only lepton
                 if( abs(current_particle_id) == 11 || abs(current_particle_id)==13 || abs(current_particle_id)==15 )
                 {
+                    
                     // first lepton from ME
-                    if(gen_lepton_from_hardprocess_found == false){
+                    if(gen_lepton_from_hardprocess_found == false)
+                    {
                         // tau found
-                        if(abs(current_particle_id) == 15){
+                        if(abs(current_particle_id) == 15)
+                        {
                             evt_tag_ditau_gen = 1;
                             // no further information needed for tautau case
                             break;
@@ -533,11 +590,13 @@ void Skim_ISR::executeEvent(){
 
                         gen_lepton_from_hardprocess_found = true;
 
-                        if(abs(current_particle_id) == 11){
+                        if(abs(current_particle_id) == 11)
+                        {
                             evt_tag_dielectron_gen = 1;
                             first_lepton_id_found_in_ME = current_particle_id;
                         }
-                        if(abs(current_particle_id) == 13){
+                        if(abs(current_particle_id) == 13)      
+                        {
                             evt_tag_dimuon_gen = 1;
                             first_lepton_id_found_in_ME = current_particle_id;
                         }
@@ -676,8 +735,8 @@ void Skim_ISR::executeEvent(){
             std::sort(gen_antilepton_isPromptFinalstate.begin(), gen_antilepton_isPromptFinalstate.end(), PtComparing);
             std::sort(gen_photon_isPromptFinalstate.begin(), gen_photon_isPromptFinalstate.end(), PtComparing);
 
-            // check PID of two leading leptons are the same to ensure they are from Drell-Yan process
-            // Note: mu+mu- and mu-->mu-, e-, e+ with decayed e- has the largest pt. then leading lepton pair is mu+ e-
+            // check PID of two LEADING leptons are the same to ensure they are from Drell-Yan process
+            // Note: mu+mu- and mu-->mu-, e-, e+ with decayed e- has the largest pt. then leading lepton pair can be mu+ e-
             if(abs(gen_lepton_isPromptFinalstate.at(0).PID()) == abs(gen_antilepton_isPromptFinalstate.at(0).PID()))
             {
 
@@ -732,7 +791,7 @@ void Skim_ISR::executeEvent(){
                 Gen photon_greater_DRp1_from_antilepton;
                 Gen photon_from_nonlepton;
 
-                //
+                // Add photons to the selected leptons
                 for(int i = 0; i < photon_size; i++)
                 {
                     if(gen_photon_isPromptFinalstate.at(i).MotherIndex() > 0)
@@ -786,6 +845,7 @@ void Skim_ISR::executeEvent(){
                 dilep_pt_FSRgammaDRp1_gen_ispromptfinal = dilep_isPromptFinalState.Pt();
                 dilep_mass_FSRgammaDRp1_gen_ispromptfinal = dilep_isPromptFinalState.M();
                 if(debug_) cout << "FSR photon (DR=0.1) summed pt, mass: " << dilep_pt_FSRgammaDRp1_gen_ispromptfinal << ", " << dilep_mass_FSRgammaDRp1_gen_ispromptfinal << endl;
+
                 // need to add FSR photon to lepton to check kinematic cuts
                 lep_isPromptFinalState += photon_less_DRp1_from_lepton;
                 antilep_isPromptFinalState += photon_less_DRp1_from_antilepton;
@@ -1913,10 +1973,12 @@ int Skim_ISR::getInitialMoterIndex(int mother_index, int initial_PID)
 
 void Skim_ISR::saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map){
 
-    if(current_index==mother_index){
+    if(current_index==mother_index)
+    {
        partindex_map.insert(std::make_pair(current_index, gen_particles.at(current_index).PID()));
     }
-    else{
+    else
+    {
          partindex_map.insert(std::make_pair(current_index, gen_particles.at(current_index).PID()));
          saveIndexToMap(gen_particles.at(current_index).MotherIndex(), mother_index, partindex_map);
     }
