@@ -178,9 +178,11 @@ public:
     void executeEventFromParameter(AnalyzerParameter param, Analysis_SelVariation * p_struct, bool fake_estimation = false, const int scale_res_sys = 0);
     void executeEvent();
     
-    int getInitialMoterIndex(int mother_index, int initial_PID);
     int findInitialMoterIndex(int mother_index, int current_index, bool same_flavor=true);
+    int findDYInitIndex(int l1_index, int l2_index);
     void saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map);
+    void saveIndexToVector(int current_index, int mother_index, std::vector<int> &partindex_vector);
+    bool isMatchedToDYIndexMap(int mother_index, int DYInitIndex, std::map<int,int> &partindex_map);  
     bool PassKinematicCuts(const Gen lep1, const Gen lep2, double leading_pt, double subleading_pt, double eta);
     void clearVariables();
 
@@ -212,6 +214,8 @@ private:
     double (MCCorrection::*LeptonISO_SF)(TString,double,double,int);
     double (MCCorrection::*LeptonReco_SF)(double,double,int);
 
+    double (MCCorrection::*PileUpWeight)(int,int);
+
     TString leading_trig_key, subleading_trig_key;
     TString DZfilter_key;
     TString idSF_key;
@@ -225,7 +229,6 @@ private:
 
     std::vector<Gen>      gen_particles;
     std::vector<LHE>      lhe_particles;
-    std::vector<Gen>      gen_photons;
     std::vector<Muon>     muons;
     std::vector<Electron> electrons;
     std::vector<Muon>     veto_muons;
@@ -239,9 +242,9 @@ private:
     std::vector<Gen> gen_photon_isPromptFinalstate;
     std::vector<Gen> leptons_postfsr;
 
-    bool is_dimuon_gen;
-    bool is_dielectron_gen;
-    bool is_emu_gen;
+    bool evt_tag_dimuon_promptfinal;
+    bool evt_tag_dielectron_promptfinal;
+    bool evt_tag_emu_promptfinal;
 
     bool pass_kinematic_cut_el_bare_gen;
     bool pass_kinematic_cut_mu_bare_gen;
@@ -258,28 +261,18 @@ private:
     double dilep_pt_bare_gen_ispromptfinal;
     double dilep_mass_bare_gen_ispromptfinal;
 
-    //double dilep_pt_allgamma_gen_ispromptfinal;
-    //double dilep_mass_allgamma_gen_ispromptfinal;
-    
     double dilep_pt_FSRgammaDRp1_gen_ispromptfinal;
     double dilep_mass_FSRgammaDRp1_gen_ispromptfinal;
 
     double dilep_pt_FSRgamma_gen_ispromptfinal;
     double dilep_mass_FSRgamma_gen_ispromptfinal;
 
-    //double dilep_pt_FSRlepton_FSRgamma_gen_ispromptfinal;
-    //double dilep_mass_FSRlepton_FSRgamma_gen_ispromptfinal;
-
     double dilep_pt_alllepton_FSRgamma_gen_ispromptfinal;
     double dilep_mass_alllepton_FSRgamma_gen_ispromptfinal;
 
-    Gen gen_particle_ME, gen_antiparticle_ME;
-    Gen gen_particle_status1, gen_antiparticle_status1;
     LHE lhe_particle, lhe_antiparticle;
     int gen_particle_index_ME, gen_antiparticle_index_ME;
     int gen_particle_index_status1, gen_antiparticle_index_status1;
-
-    double (MCCorrection::*PileUpWeight)(int,int);
 
     double Lep0PtCut;
     double Lep1PtCut;
@@ -334,10 +327,18 @@ private:
     double evt_weight_trigSFDZ_rec, evt_weight_trigSFDZ_up_rec, evt_weight_trigSFDZ_down_rec;
 
     // gen level variables
-    int mother_id_of_prefsr_dilep;
+    int dilep_motherID_hardprocess;
+    int dilep_motherID_myalgorithm;
     int n_lepton_isPromptFinalState;
+    int n_photon_notLeptonMother_isPromptFinalState;
+    int n_photon_isPromptFinalState;
     int n_lepton_isGammaMother_isPromptFinalState;
     int n_isPromptFinalState;
+    std::vector<Int_t> photon_motherID_isPromptFinalState; 
+    std::vector<Int_t> photon_motherID_isPromptFinalState_selected; 
+    std::vector<Bool_t> photon_matchedToLep_isPromptFinalState_selected; 
+    std::vector<Double_t> photon_dRtoParticle_isPromptFinalState_selected; 
+    std::vector<Double_t> photon_dRtoAntiParticle_isPromptFinalState_selected; 
 
     double dilep_pt_lhe   ;
     double dilep_mass_lhe ;
@@ -355,33 +356,19 @@ private:
     double particle_eta_gen_postfsr   ;
     double antiparticle_eta_gen_postfsr;
 
-    std::vector<Double_t> dilep_pt_gen_dressed_drX;
-    std::vector<Double_t> dilep_mass_gen_dressed_drX;
-    std::vector<Double_t> drX_gen_dressed;
-
-    std::vector<Double_t> dilep_pt_gen_lepton_matched_dressed_drX;
-    std::vector<Double_t> dilep_mass_gen_lepton_matched_dressed_drX;
-    std::vector<Double_t> drX_gen_lepton_matched_dressed;
-
-    std::vector<Double_t> photons_et_gen;
-    std::vector<Int_t> photons_mother_id_gen;
     std::vector<Double_t> photons_closest_dr_to_leptons_gen;
     std::vector<Double_t> lepton_matched_photons_closest_dr_to_leptons_gen;
 
     int  photon_n_gen;
     int  lepton_matched_photon_n_gen;
-    std::vector<double>  lepton_matched_photon_et_gen_drX;
     bool evt_tag_dielectron_fiducial_post_fsr;
     bool evt_tag_dimuon_fiducial_post_fsr;
 
-    std::vector<bool> evt_tag_dielectron_fiducial_lepton_matched_dressed_drX;
-    std::vector<bool> evt_tag_dimuon_fiducial_lepton_matched_dressed_drX;
-
     bool evt_tag_dielectron_lhe;
     bool evt_tag_dimuon_lhe;
-    bool evt_tag_ditau_gen;
-    bool evt_tag_dielectron_gen;
-    bool evt_tag_dimuon_gen;
+    bool evt_tag_ditau_hardprocess;
+    bool evt_tag_dielectron_hardprocess;
+    bool evt_tag_dimuon_hardprocess;
     bool evt_tag_dielectron_rec;
     bool evt_tag_dimuon_rec;
     bool evt_tag_bvetoed_rec;

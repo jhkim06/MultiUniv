@@ -1,12 +1,12 @@
 #include "Skim_ISR.h"
 
 void Skim_ISR::initializeAnalyzer(){
-    
+
     //=================================
     // Skim Types
     //=================================
 
-    debug_ = false;
+    debug_ = true;
     if( HasFlag("ISR_detector_only"))
     {
         save_detector_info = true;
@@ -123,24 +123,26 @@ void Skim_ISR::initializeAnalyzer(){
         newtree->Branch("evt_tag_dimuon_lhe", &evt_tag_dimuon_lhe,"evt_tag_dimuon_lhe/O");
         newtree->Branch("evt_tag_dielectron_lhe", &evt_tag_dielectron_lhe,"evt_tag_dielectron_lhe/O");
 
-        newtree->Branch("evt_tag_ditau_gen", &evt_tag_ditau_gen,"evt_tag_ditau_gen/O");
-        newtree->Branch("evt_tag_dielectron_gen", &evt_tag_dielectron_gen,"evt_tag_dielectron_gen/O");
-        newtree->Branch("evt_tag_dimuon_gen", &evt_tag_dimuon_gen,"evt_tag_dimuon_gen/O");
+        newtree->Branch("evt_tag_ditau_hardprocess", &evt_tag_ditau_hardprocess,"evt_tag_ditau_hardprocess/O");
+        newtree->Branch("evt_tag_dielectron_hardprocess", &evt_tag_dielectron_hardprocess,"evt_tag_dielectron_hardprocess/O");
+        newtree->Branch("evt_tag_dimuon_hardprocess", &evt_tag_dimuon_hardprocess,"evt_tag_dimuon_hardprocess/O");
 
+        newtree->Branch("photon_motherID_isPromptFinalState", &photon_motherID_isPromptFinalState);
+        newtree->Branch("photon_motherID_isPromptFinalState_selected", &photon_motherID_isPromptFinalState_selected);
+        newtree->Branch("photon_matchedToLep_isPromptFinalState_selected", &photon_matchedToLep_isPromptFinalState_selected);
+        newtree->Branch("photon_dRtoParticle_isPromptFinalState_selected", &photon_dRtoParticle_isPromptFinalState_selected);
+        newtree->Branch("photon_dRtoAntiParticle_isPromptFinalState_selected", &photon_dRtoAntiParticle_isPromptFinalState_selected);
+        newtree->Branch("n_photon_notLeptonMother_isPromptFinalState", &n_photon_notLeptonMother_isPromptFinalState, "n_photon_notLeptonMother_isPromptFinalState/I");
+        newtree->Branch("n_photon_isPromptFinalState", &n_photon_isPromptFinalState, "n_photon_isPromptFinalState/I");
         newtree->Branch("n_lepton_isPromptFinalState", &n_lepton_isPromptFinalState, "n_lepton_isPromptFinalState/I");
         newtree->Branch("n_isPromptFinalState", &n_isPromptFinalState, "n_isPromptFinalState/I");
         newtree->Branch("n_lepton_isGammaMother_isPromptFinalState", &n_lepton_isGammaMother_isPromptFinalState, "n_lepton_isGammaMother_isPromptFinalState/I");
 
-        newtree->Branch("photon_n_gen", &photon_n_gen,"photon_n_gen/I");
-        newtree->Branch("lepton_matched_photon_n_gen", &lepton_matched_photon_n_gen,"lepton_matched_photon_n_gen/I");
-        newtree->Branch("lepton_matched_photon_et_gen_drX", &lepton_matched_photon_et_gen_drX);
         newtree->Branch("evt_tag_dielectron_fiducial_post_fsr", &evt_tag_dielectron_fiducial_post_fsr,"evt_tag_dielectron_fiducial_post_fsr/O");
         newtree->Branch("evt_tag_dimuon_fiducial_post_fsr", &evt_tag_dimuon_fiducial_post_fsr,"evt_tag_dimuon_fiducial_post_fsr/O");
 
-        newtree->Branch("evt_tag_dielectron_fiducial_lepton_matched_dressed_drX", &evt_tag_dielectron_fiducial_lepton_matched_dressed_drX);
-        newtree->Branch("evt_tag_dimuon_fiducial_lepton_matched_dressed_drX", &evt_tag_dimuon_fiducial_lepton_matched_dressed_drX);
-
-        newtree->Branch("mother_id_of_prefsr_dilep", &mother_id_of_prefsr_dilep,"mother_id_of_prefsr_dilep/I");
+        newtree->Branch("dilep_motherID_hardprocess", &dilep_motherID_hardprocess,"dilep_motherID_hardprocess/I");
+        newtree->Branch("dilep_motherID_myalgorithm", &dilep_motherID_myalgorithm,"dilep_motherID_myalgorithm/I");
         newtree->Branch("dilep_pt_gen_prefsr", &dilep_pt_gen_prefsr,"dilep_pt_gen_prefsr/D");
         newtree->Branch("dilep_mass_gen_prefsr", &dilep_mass_gen_prefsr,"dilep_mass_gen_prefsr/D");
         newtree->Branch("particle_pt_gen_prefsr", &particle_pt_gen_prefsr,"particle_pt_gen_prefsr/D");
@@ -163,9 +165,9 @@ void Skim_ISR::initializeAnalyzer(){
         newtree->Branch("dilep_pt_alllepton_FSRgamma_gen_ispromptfinal", &dilep_pt_alllepton_FSRgamma_gen_ispromptfinal,"dilep_pt_alllepton_FSRgamma_gen_ispromptfinal/D");
         newtree->Branch("dilep_mass_alllepton_FSRgamma_gen_ispromptfinal", &dilep_mass_alllepton_FSRgamma_gen_ispromptfinal,"dilep_mass_alllepton_FSRgamma_gen_ispromptfinal/D");
 
-        newtree->Branch("is_dimuon_gen", &is_dimuon_gen, "is_dimuon_gen/O");
-        newtree->Branch("is_dielectron_gen", &is_dielectron_gen, "is_dielectron_gen/O");
-        newtree->Branch("is_emu_gen", &is_emu_gen, "is_emu_gen/O");
+        newtree->Branch("evt_tag_dimuon_promptfinal", &evt_tag_dimuon_promptfinal, "evt_tag_dimuon_promptfinal/O");
+        newtree->Branch("evt_tag_dielectron_promptfinal", &evt_tag_dielectron_promptfinal, "evt_tag_dielectron_promptfinal/O");
+        newtree->Branch("evt_tag_emu_promptfinal", &evt_tag_emu_promptfinal, "evt_tag_emu_promptfinal/O");
 
         newtree->Branch("pass_kinematic_cut_el_bare_gen", &pass_kinematic_cut_el_bare_gen, "pass_kinematic_cut_el_bare_gen/O");
         newtree->Branch("pass_kinematic_cut_mu_bare_gen", &pass_kinematic_cut_mu_bare_gen, "pass_kinematic_cut_mu_bare_gen/O");
@@ -185,18 +187,6 @@ void Skim_ISR::initializeAnalyzer(){
         newtree->Branch("antiparticle_pt_gen_postfsr", &antiparticle_pt_gen_postfsr,"antiparticle_pt_gen_postfsr/D");
         newtree->Branch("particle_eta_gen_postfsr", &particle_eta_gen_postfsr,"particle_eta_gen_postfsr/D");
         newtree->Branch("antiparticle_eta_gen_postfsr", &antiparticle_eta_gen_postfsr,"antiparticle_eta_gen_postfsr/D");
-
-        newtree->Branch("dilep_pt_gen_dressed_drX",&dilep_pt_gen_dressed_drX);
-        newtree->Branch("dilep_mass_gen_dressed_drX",&dilep_mass_gen_dressed_drX);
-        newtree->Branch("drX_gen_dressed",&drX_gen_dressed);
-        newtree->Branch("dilep_pt_gen_lepton_matched_dressed_drX",&dilep_pt_gen_lepton_matched_dressed_drX);
-        newtree->Branch("dilep_mass_gen_lepton_matched_dressed_drX",&dilep_mass_gen_lepton_matched_dressed_drX);
-        newtree->Branch("drX_gen_lepton_matched_dressed",&drX_gen_lepton_matched_dressed); // actually redundant
-
-        newtree->Branch("photons_et_gen",&photons_et_gen);
-        newtree->Branch("photons_mother_id_gen",&photons_mother_id_gen);
-        newtree->Branch("photons_closest_dr_to_leptons_gen",&photons_closest_dr_to_leptons_gen);
-        newtree->Branch("lepton_matched_photons_closest_dr_to_leptons_gen",&lepton_matched_photons_closest_dr_to_leptons_gen);
     }
 
     // clear vector residual
@@ -256,7 +246,8 @@ void Skim_ISR::initializeAnalyzer(){
     }
 }
 
-void Skim_ISR::executeEvent(){
+void Skim_ISR::executeEvent()
+{
 
     AllMuons.clear();
     AllElectrons.clear();
@@ -288,7 +279,8 @@ void Skim_ISR::executeEvent(){
     leadinglep_eta_rec    = -999.;
     subleadinglep_eta_rec = -999.;
 
-    mother_id_of_prefsr_dilep = -999;
+    dilep_motherID_hardprocess = -999;
+    dilep_motherID_myalgorithm = -999;
 
     dilep_pt_lhe = -999.;
     dilep_mass_lhe = -999.;
@@ -319,19 +311,6 @@ void Skim_ISR::executeEvent(){
     particle_eta_gen_postfsr     = -999.;
     antiparticle_eta_gen_postfsr     = -999.;
 
-    dilep_pt_gen_dressed_drX.clear();
-    dilep_mass_gen_dressed_drX.clear();
-    drX_gen_dressed.clear();
-
-    dilep_pt_gen_lepton_matched_dressed_drX.clear();
-    dilep_mass_gen_lepton_matched_dressed_drX.clear();
-    drX_gen_lepton_matched_dressed.clear();
-
-    photons_et_gen.clear();
-    photons_mother_id_gen.clear();
-    photons_closest_dr_to_leptons_gen.clear();
-    lepton_matched_photons_closest_dr_to_leptons_gen.clear();
-
     evt_weight_total_gen = 1.;
     evt_weight_total_rec = 1.;
     evt_weight_btag_rec = 1.;
@@ -361,21 +340,21 @@ void Skim_ISR::executeEvent(){
 
     evt_tag_dielectron_lhe = 0;
     evt_tag_dimuon_lhe = 0;
-    evt_tag_ditau_gen = 0;
-    evt_tag_dielectron_gen = 0;
-    evt_tag_dimuon_gen = 0;
+    evt_tag_ditau_hardprocess = 0;
+    evt_tag_dielectron_hardprocess = 0;
+    evt_tag_dimuon_hardprocess = 0;
     evt_tag_dielectron_rec = 0;
     evt_tag_dimuon_rec = 0;
     evt_tag_bvetoed_rec = 0;
 
     evt_tag_dielectron_fiducial_post_fsr = false;
     evt_tag_dimuon_fiducial_post_fsr = false;
-    photon_n_gen = 0;
-    lepton_matched_photon_n_gen = 0;
 
-    lepton_matched_photon_et_gen_drX.clear();
-    evt_tag_dielectron_fiducial_lepton_matched_dressed_drX.clear();
-    evt_tag_dimuon_fiducial_lepton_matched_dressed_drX.clear();
+    photon_motherID_isPromptFinalState.clear();
+    photon_motherID_isPromptFinalState_selected.clear();
+    photon_matchedToLep_isPromptFinalState_selected.clear();
+    photon_dRtoParticle_isPromptFinalState_selected.clear();
+    photon_dRtoAntiParticle_isPromptFinalState_selected.clear();
 
     evt = new Event;
     *evt = GetEvent();
@@ -395,20 +374,21 @@ void Skim_ISR::executeEvent(){
         lhe_particles = GetLHEs();
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////// 
+    /////////////////////////////////////////////////////////////////////////////////////////
     //
     //
-    // Generator level only for Drell-Yan
+    //                          Generator level only for Drell-Yan
     //
     //
     ////////////////////////////////////////////////////////////////////////////////////////
+
     if((MCSample.Contains("DY") || MCSample.Contains("ZTo")) && save_generator_info )
     {
-        
-        is_dimuon_gen = false;
-        is_dielectron_gen = false;
-        is_emu_gen = false;
-  
+
+        evt_tag_dimuon_promptfinal = false;
+        evt_tag_dielectron_promptfinal = false;
+        evt_tag_emu_promptfinal = false;
+
         pass_kinematic_cut_el_bare_gen = false;
         pass_kinematic_cut_mu_bare_gen = false;
 
@@ -427,6 +407,8 @@ void Skim_ISR::executeEvent(){
 
         Gen summed_lepton_photon_isPromptFinalState;
         n_isPromptFinalState = 0;
+        n_photon_notLeptonMother_isPromptFinalState = 0;
+        n_photon_isPromptFinalState = 0;
         n_lepton_isPromptFinalState = 0;
         n_lepton_isGammaMother_isPromptFinalState = 0;
 
@@ -435,12 +417,11 @@ void Skim_ISR::executeEvent(){
         {
             photos_used = true;
         }
+
         if(debug_)
         {
             cout << "Generator information for " + MCSample << endl;
         }
-
-        gen_photons.clear();
 
         bool gen_lepton_from_hardprocess_found = false;
         int first_lepton_id_found_in_ME = 0;
@@ -463,37 +444,42 @@ void Skim_ISR::executeEvent(){
                 // save electron and muon flagged as isPromptFinalState()
                 if(abs(current_particle_id) == 11 || abs(current_particle_id)==13)
                 {
-                    n_lepton_isPromptFinalState++;
-                    summed_lepton_photon_isPromptFinalState += gen_particles.at(i);
+                    // skip if the lepton is from proton
+                    if(abs(gen_particles.at(gen_particles.at(i).MotherIndex()).PID()) != 2212)
+                    {
+                        n_lepton_isPromptFinalState++;
+                        summed_lepton_photon_isPromptFinalState += gen_particles.at(i);
 
-                    if(current_particle_id > 0)
-                    {
-                        gen_lepton_isPromptFinalstate.push_back(gen_particles.at(i));
-                    }
-                    else
-                    {
-                        gen_antilepton_isPromptFinalstate.push_back(gen_particles.at(i));
-                    }
-
-                    if(gen_particles.at(i).MotherIndex() > 0)
-                    {
-                        // count number of leptons from gen photon
-                        if(gen_particles.at(gen_particles.at(i).MotherIndex()).PID() == 22)
+                        if(current_particle_id > 0)
                         {
-                            n_lepton_isGammaMother_isPromptFinalState++;
-                            if(abs(current_particle_id) == 13)
+                            gen_lepton_isPromptFinalstate.push_back(gen_particles.at(i));
+                        }
+                        else
+                        {
+                            gen_antilepton_isPromptFinalstate.push_back(gen_particles.at(i));
+                        }
+
+                        if(gen_particles.at(i).MotherIndex() > 0)
+                        {
+                            // count number of leptons from gen photon
+                            if(gen_particles.at(gen_particles.at(i).MotherIndex()).PID() == 22)
                             {
-                                if(debug_) cout << "gamma* to mu+ mu- case here!" << endl;
+                                n_lepton_isGammaMother_isPromptFinalState++;
+                                if(abs(current_particle_id) == 13)
+                                {
+                                    if(debug_) cout << "gamma* to mu+ mu- case here!" << endl;
+                                }
                             }
                         }
+                        // save lepton and anti-lepton into each seperate vector
+                        // and use the lepton with the highest pt
                     }
-                    // save lepton and anti-lepton into each seperate vector
-                    // and use the lepton with the highest pt
                 }
 
                 if(abs(current_particle_id) == 22)
                 {
-
+                    n_photon_isPromptFinalState++;
+                    photon_motherID_isPromptFinalState.push_back(gen_particles.at(gen_particles.at(i).MotherIndex()).PID());
                     gen_photon_isPromptFinalstate.push_back(gen_particles.at(i));
 
                     if(gen_particles.at(i).MotherIndex() > 0)
@@ -504,11 +490,13 @@ void Skim_ISR::executeEvent(){
                         }
                         else
                         {
+                            n_photon_notLeptonMother_isPromptFinalState++;
                             if(debug_) cout << "isPromptFinalState gamma not from lepton..." << endl;
                         }
                     }
                 }
             }
+            // for isPromptFinalState() flagged gen particles
 
             // print out gen particle info
             if(debug_)
@@ -547,14 +535,14 @@ void Skim_ISR::executeEvent(){
                         temp_particle = lhe_particles[ilhe];
 
                         if(lhe_particles[ilhe].ID() == 11) evt_tag_dielectron_lhe = 1;
-                        else evt_tag_dimuon_lhe = 1;  
-                    } 
+                        else evt_tag_dimuon_lhe = 1;
+                    }
                     else if(temp_antiparticle.ID() == 0 && lhe_particles[ilhe].ID() < 0)
                     {
                         temp_antiparticle = lhe_particles[ilhe];
 
                         if(lhe_particles[ilhe].ID() == -11) evt_tag_dielectron_lhe = 1;
-                        else evt_tag_dimuon_lhe = 1;  
+                        else evt_tag_dimuon_lhe = 1;
                     }
                 }
 
@@ -569,21 +557,22 @@ void Skim_ISR::executeEvent(){
                 dilep_pt_lhe   = (temp_particle + temp_antiparticle).Pt();
                 dilep_mass_lhe = (temp_particle + temp_antiparticle).M();
             }
+            // for LHE particle
 
-            // particles associated matrix element (ME)
+            // isHardProcess() particles
             if(gen_particles.at(i).isHardProcess())
             {
                 // consider only lepton
                 if( abs(current_particle_id) == 11 || abs(current_particle_id)==13 || abs(current_particle_id)==15 )
                 {
-                    
+
                     // first lepton from ME
                     if(gen_lepton_from_hardprocess_found == false)
                     {
                         // tau found
                         if(abs(current_particle_id) == 15)
                         {
-                            evt_tag_ditau_gen = 1;
+                            evt_tag_ditau_hardprocess = 1;
                             // no further information needed for tautau case
                             break;
                         }
@@ -592,101 +581,49 @@ void Skim_ISR::executeEvent(){
 
                         if(abs(current_particle_id) == 11)
                         {
-                            evt_tag_dielectron_gen = 1;
+                            evt_tag_dielectron_hardprocess = 1;
                             first_lepton_id_found_in_ME = current_particle_id;
                         }
-                        if(abs(current_particle_id) == 13)      
+                        if(abs(current_particle_id) == 13)
                         {
-                            evt_tag_dimuon_gen = 1;
+                            evt_tag_dimuon_hardprocess = 1;
                             first_lepton_id_found_in_ME = current_particle_id;
                         }
 
                         // save index
                         // particle
-                        if(current_particle_id > 0){
+                        if(current_particle_id > 0)
+                        {
                             gen_particle_index_ME = i;
-                            gen_particle_ME = gen_particles.at(i);
                         }
-                        else{
+                        else
+                        {
                             // antiparticle
                             gen_antiparticle_index_ME = i;
-                            gen_antiparticle_ME = gen_particles.at(i);
                         }
-
                     }
                     else
                     {
                         // first lepton already found, and now second lepton from ME
                         if( current_particle_id == -first_lepton_id_found_in_ME )
                         {
-
                             if(current_particle_id > 0)
                             {
                                 gen_particle_index_ME = i;
-                                gen_particle_ME = gen_particles.at(i);
                             }
                             else
                             {
                                 gen_antiparticle_index_ME = i;
-                                gen_antiparticle_ME = gen_particles.at(i);
                             }
 
                         }// found OS dilepton from ME
                     }
                 }// electron, muon, tau in ME
             }// ME
-
-            // collect status 1 particles with their mother index
-            if(gen_particles.at(i).Status() == 1)
-            {
-                int id_found_in_ME = 0;
-
-                // save all status 1 photons
-                if(current_particle_id==22)
-                {
-                    gen_photons.push_back(gen_particles.at(i));
-                }
-
-                if( abs(current_particle_id) == 11 || abs(current_particle_id)==13 )
-                {
-                    if(evt_tag_dielectron_gen)
-                    {
-                        id_found_in_ME = 11;
-                    }
-                    else if(evt_tag_dimuon_gen)
-                    {
-                        id_found_in_ME = 13;
-                    }
-                    else
-                    {
-                        // lepton not found yet in ME, so just skip current particle...
-                        // since no chance that current status 1 particle from leptons from ME
-                        // but there should be no such case
-                        continue;
-                    }
-
-                    // find the initial index of the current lepton (status 1 and prompt)
-                    // do this since there are cases
-                    // not from hardprocess leptons and stil status 1
-                    // basically the same with the firstCopy()
-                    int initial_index = findInitialMoterIndex( gen_particles.at(i).MotherIndex(), i);
-                    if(current_particle_id==id_found_in_ME && initial_index == gen_particle_index_ME)
-                    {
-                        gen_particle_status1 = gen_particles.at(i);
-                        gen_particle_index_status1 = i;
-                    }
-                    if(current_particle_id==-id_found_in_ME && initial_index == gen_antiparticle_index_ME)
-                    {
-                        gen_antiparticle_status1 = gen_particles.at(i);
-                        gen_antiparticle_index_status1 = i;
-                    }
-                }
-
-            }// status 1 particles
         }// gen particle loop
 
         // basic check for the selected dilpton pairs
-        if(!evt_tag_ditau_gen)
+        if(!evt_tag_ditau_hardprocess)
         {
 
             Gen dilep_isPromptFinalState;
@@ -708,29 +645,6 @@ void Skim_ISR::executeEvent(){
                 cout << "n_lepton_isGammaMother_isPromptFinalState: " << n_lepton_isGammaMother_isPromptFinalState << endl;
             }
 
-            if(gen_particles.at(gen_particle_index_ME).PID() != gen_particles.at(gen_particle_index_status1).PID() || gen_particles.at(gen_antiparticle_index_ME).PID() != gen_particles.at(gen_antiparticle_index_status1).PID())
-            {
-                cout << "dilepton pair not selected properly..." << endl;
-                exit(EXIT_FAILURE);
-            }
-
-            // save following info into output variables
-            mother_id_of_prefsr_dilep = gen_particles.at(gen_particles.at(gen_particle_index_ME).MotherIndex()).PID();
-
-            dilep_pt_gen_prefsr   = (gen_particles.at(gen_particle_index_ME) + gen_particles.at(gen_antiparticle_index_ME)).Pt();
-            dilep_mass_gen_prefsr = (gen_particles.at(gen_particle_index_ME) + gen_particles.at(gen_antiparticle_index_ME)).M();
-            particle_pt_gen_prefsr = gen_particles.at(gen_particle_index_ME).Pt();
-            antiparticle_pt_gen_prefsr = gen_particles.at(gen_antiparticle_index_ME).Pt();
-            particle_eta_gen_prefsr = gen_particles.at(gen_particle_index_ME).Eta();
-            antiparticle_eta_gen_prefsr = gen_particles.at(gen_antiparticle_index_ME).Eta();
-
-            dilep_pt_gen_postfsr   = (gen_particles.at(gen_particle_index_status1) + gen_particles.at(gen_antiparticle_index_status1)).Pt();
-            dilep_mass_gen_postfsr = (gen_particles.at(gen_particle_index_status1) + gen_particles.at(gen_antiparticle_index_status1)).M();
-            particle_pt_gen_postfsr     = gen_particles.at(gen_particle_index_status1).Pt();
-            antiparticle_pt_gen_postfsr     = gen_particles.at(gen_antiparticle_index_status1).Pt();
-            particle_eta_gen_postfsr     = gen_particles.at(gen_particle_index_status1).Eta();
-            antiparticle_eta_gen_postfsr     = gen_particles.at(gen_antiparticle_index_status1).Eta();
-
             std::sort(gen_lepton_isPromptFinalstate.begin(), gen_lepton_isPromptFinalstate.end(), PtComparing);
             std::sort(gen_antilepton_isPromptFinalstate.begin(), gen_antilepton_isPromptFinalstate.end(), PtComparing);
             std::sort(gen_photon_isPromptFinalstate.begin(), gen_photon_isPromptFinalstate.end(), PtComparing);
@@ -742,29 +656,41 @@ void Skim_ISR::executeEvent(){
 
                 if(abs(gen_lepton_isPromptFinalstate.at(0).PID()) == 11)
                 {
-                    is_dielectron_gen = true;
+                    evt_tag_dielectron_promptfinal = true;
                 }
 
                 if(abs(gen_lepton_isPromptFinalstate.at(0).PID()) == 13)
                 {
-                    is_dimuon_gen = true;
+                    evt_tag_dimuon_promptfinal = true;
                 }
+
+                
 
                 dilep_isPromptFinalState += gen_lepton_isPromptFinalstate.at(0);
                 dilep_isPromptFinalState += gen_antilepton_isPromptFinalstate.at(0);
                 dilep_pt_bare_gen_ispromptfinal = (dilep_isPromptFinalState).Pt();
                 dilep_mass_bare_gen_ispromptfinal = (dilep_isPromptFinalState).M();
 
-                int particle_index = findInitialMoterIndex(gen_lepton_isPromptFinalstate.at(0).MotherIndex(), gen_lepton_isPromptFinalstate.at(0).getIndex());
-                int antiparticle_index = findInitialMoterIndex(gen_antilepton_isPromptFinalstate.at(0).MotherIndex(), gen_antilepton_isPromptFinalstate.at(0).getIndex());
+                gen_particle_index_status1     = gen_lepton_isPromptFinalstate.at(0).getIndex();
+                gen_antiparticle_index_status1 = gen_antilepton_isPromptFinalstate.at(0).getIndex();
+                //cout << "gen_particle_index_status1: " << gen_particle_index_status1 << endl;
+                //cout << "gen_antiparticle_index_status1: " << gen_antiparticle_index_status1 << endl;
+                int particle_index =     findInitialMoterIndex(gen_lepton_isPromptFinalstate.at(0).MotherIndex(), gen_particle_index_status1);
+                int antiparticle_index = findInitialMoterIndex(gen_antilepton_isPromptFinalstate.at(0).MotherIndex(), gen_antiparticle_index_status1);
+                int DYInitIndex = findDYInitIndex(gen_particle_index_status1, gen_antiparticle_index_status1);
+                dilep_motherID_myalgorithm = gen_particles.at(DYInitIndex).PID();
+                //cout << "DYInitIndex: " << DYInitIndex << endl;
+
                 // cout << "particle_index: " << particle_index << endl;
                 // cout << "antiparticle_index: " << antiparticle_index << endl;
                 // if  PID(particle_index) != initial_PID then the selected lepton is the initial lepton
+                //if(particle_index != gen_particle_index_ME) cout << "Initial particle index different from gen_particle_index_ME " << endl;
+                //if(antiparticle_index != gen_antiparticle_index_ME) cout << "Initial antiparticle index different from gen_particle_index_ME " << endl;
 
-                // save index between status 1 and the initial ME lepton
+                // save index between status 1 and the DY initial index
                 std::map<int, int> index_map;
-                saveIndexToMap(gen_lepton_isPromptFinalstate.at(0).getIndex(),     particle_index,     index_map);
-                saveIndexToMap(gen_antilepton_isPromptFinalstate.at(0).getIndex(), antiparticle_index, index_map);
+                saveIndexToMap(gen_lepton_isPromptFinalstate.at(0).getIndex(),     DYInitIndex, index_map);
+                saveIndexToMap(gen_antilepton_isPromptFinalstate.at(0).getIndex(), DYInitIndex, index_map);
 
                 lep_isPromptFinalState += gen_lepton_isPromptFinalstate.at(0);
                 antilep_isPromptFinalState += gen_antilepton_isPromptFinalstate.at(0);
@@ -779,9 +705,6 @@ void Skim_ISR::executeEvent(){
                     cout << "dilepton pt, mass from the two leading leptons: " << dilep_pt_bare_gen_ispromptfinal << ", " << dilep_mass_bare_gen_ispromptfinal << endl;
                 }
 
-                //dilep_pt_allgamma_gen_ispromptfinal;
-                //dilep_mass_allgamma_gen_ispromptfinal;
-
                 int photon_size = gen_photon_isPromptFinalstate.size();
                 Gen photon_less_DRp1;
                 Gen photon_less_DRp1_from_lepton;
@@ -789,54 +712,59 @@ void Skim_ISR::executeEvent(){
                 Gen photon_greater_DRp1;
                 Gen photon_greater_DRp1_from_lepton;
                 Gen photon_greater_DRp1_from_antilepton;
-                Gen photon_from_nonlepton;
 
                 // Add photons to the selected leptons
                 for(int i = 0; i < photon_size; i++)
                 {
-                    if(gen_photon_isPromptFinalstate.at(i).MotherIndex() > 0)
+                    // photons only from the same lepton ID of the selected post FSR lepton
+                    double dr_lepton_gamma =     gen_lepton_isPromptFinalstate.at(0).DeltaR(gen_photon_isPromptFinalstate.at(i));
+                    double dr_antilepton_gamma = gen_antilepton_isPromptFinalstate.at(0).DeltaR(gen_photon_isPromptFinalstate.at(i));
+
+                    photon_motherID_isPromptFinalState_selected.push_back(gen_particles.at(gen_photon_isPromptFinalstate.at(i).MotherIndex()).PID());
+                    photon_dRtoParticle_isPromptFinalState_selected.push_back(dr_lepton_gamma);
+                    photon_dRtoAntiParticle_isPromptFinalState_selected.push_back(dr_antilepton_gamma);
+
+                    //if(index_map.find(gen_photon_isPromptFinalstate.at(i).MotherIndex()) != index_map.end())
+                    if(isMatchedToDYIndexMap(gen_photon_isPromptFinalstate.at(i).MotherIndex(), DYInitIndex, index_map))
+                        photon_matchedToLep_isPromptFinalState_selected.push_back(true);
+                    else
                     {
-                        // photons only from the same lepton ID of the selected post FSR lepton
-                        if((abs(gen_particles.at(gen_photon_isPromptFinalstate.at(i).MotherIndex()).PID()) == 11 && is_dielectron_gen)
-                            || (abs(gen_particles.at(gen_photon_isPromptFinalstate.at(i).MotherIndex()).PID()) == 13 && is_dimuon_gen))
+                        photon_matchedToLep_isPromptFinalState_selected.push_back(false);
+                        if(abs(gen_particles.at(gen_photon_isPromptFinalstate.at(i).MotherIndex()).PID()) == 11 || abs(gen_particles.at(gen_photon_isPromptFinalstate.at(i).MotherIndex()).PID()) == 13)
                         {
-                            double dr_lepton_gamma =     gen_lepton_isPromptFinalstate.at(0).DeltaR(gen_photon_isPromptFinalstate.at(i));
-                            double dr_antilepton_gamma = gen_antilepton_isPromptFinalstate.at(0).DeltaR(gen_photon_isPromptFinalstate.at(i));
+                            cout << "Photons from Lepton but Not Matched to any leptons... check!" << endl;
+                        }
 
-                            if(dr_lepton_gamma < 0.1 || dr_antilepton_gamma < 0.1)
-                            {
-                                photon_less_DRp1 += gen_photon_isPromptFinalstate.at(i);
+                    }
+                    if(dr_lepton_gamma < 0.1 || dr_antilepton_gamma < 0.1)
+                    {
+                        photon_less_DRp1 += gen_photon_isPromptFinalstate.at(i);
 
-                                if(dr_lepton_gamma < dr_antilepton_gamma)
-                                {
-                                    photon_less_DRp1_from_lepton += gen_photon_isPromptFinalstate.at(i);
-                                }
-                                else
-                                {
-                                    photon_less_DRp1_from_antilepton += gen_photon_isPromptFinalstate.at(i);
-                                }
-                            }
-                            else
-                            {
-                                // require photon from leptons decayed from the initial lepton 
-                                if(index_map.find(gen_photon_isPromptFinalstate.at(i).MotherIndex()) != index_map.end())
-                                {
-                                    photon_greater_DRp1 += gen_photon_isPromptFinalstate.at(i);
-
-                                    if(dr_lepton_gamma < dr_antilepton_gamma)
-                                    {
-                                        photon_greater_DRp1_from_lepton += gen_photon_isPromptFinalstate.at(i);
-                                    }
-                                    else
-                                    {
-                                        photon_greater_DRp1_from_antilepton += gen_photon_isPromptFinalstate.at(i);
-                                    }
-                                }
-                            }
+                        if(dr_lepton_gamma < dr_antilepton_gamma)
+                        {
+                            photon_less_DRp1_from_lepton += gen_photon_isPromptFinalstate.at(i);
                         }
                         else
                         {
-                            photon_from_nonlepton+=gen_photon_isPromptFinalstate.at(i);
+                            photon_less_DRp1_from_antilepton += gen_photon_isPromptFinalstate.at(i);
+                        }
+                    }
+                    else
+                    {
+                        // require photon from leptons decayed from the initial lepton
+                        //if(index_map.find(gen_photon_isPromptFinalstate.at(i).MotherIndex()) != index_map.end())
+                        if(isMatchedToDYIndexMap(gen_photon_isPromptFinalstate.at(i).MotherIndex(), DYInitIndex, index_map))
+                        {
+                            photon_greater_DRp1 += gen_photon_isPromptFinalstate.at(i);
+
+                            if(dr_lepton_gamma < dr_antilepton_gamma)
+                            {
+                                photon_greater_DRp1_from_lepton += gen_photon_isPromptFinalstate.at(i);
+                            }
+                            else
+                            {
+                                photon_greater_DRp1_from_antilepton += gen_photon_isPromptFinalstate.at(i);
+                            }
                         }
                     }
                 }
@@ -902,219 +830,56 @@ void Skim_ISR::executeEvent(){
                     }
                 }
             }
-            else{
+            else
+            {
                 // count this case
                 if(debug_) cout << "two leading lepton have different PID please check" << endl;
-                is_emu_gen = true;
+                evt_tag_emu_promptfinal = true;
             }
 
 
-            // save pre FSR leptons to check dR matching between gen and rec leptons
-            leptons_postfsr.push_back(gen_particles.at(gen_particle_index_status1));
-            leptons_postfsr.push_back(gen_particles.at(gen_antiparticle_index_status1));
+            dilep_motherID_hardprocess = gen_particles.at(gen_particles.at(gen_particle_index_ME).MotherIndex()).PID();
 
-            if( evt_tag_dielectron_gen == 1 && ((particle_pt_gen_postfsr > 25. && antiparticle_pt_gen_postfsr > 15.) || (particle_pt_gen_postfsr > 15. && antiparticle_pt_gen_postfsr > 25.)) && fabs(particle_eta_gen_postfsr) < 2.5 && fabs(antiparticle_eta_gen_postfsr) < 2.5 )
+            // HardProcess dilelpton
+            dilep_pt_gen_prefsr   = (gen_particles.at(gen_particle_index_ME) + gen_particles.at(gen_antiparticle_index_ME)).Pt();
+            dilep_mass_gen_prefsr = (gen_particles.at(gen_particle_index_ME) + gen_particles.at(gen_antiparticle_index_ME)).M();
+            particle_pt_gen_prefsr = gen_particles.at(gen_particle_index_ME).Pt();
+            antiparticle_pt_gen_prefsr = gen_particles.at(gen_antiparticle_index_ME).Pt();
+            particle_eta_gen_prefsr = gen_particles.at(gen_particle_index_ME).Eta();
+            antiparticle_eta_gen_prefsr = gen_particles.at(gen_antiparticle_index_ME).Eta();
+
+            if(!evt_tag_emu_promptfinal)
             {
-                evt_tag_dielectron_fiducial_post_fsr = true;
+                if(gen_particles.at(gen_particle_index_ME).PID() != gen_particles.at(gen_particle_index_status1).PID() || gen_particles.at(gen_antiparticle_index_ME).PID() != gen_particles.at(gen_antiparticle_index_status1).PID())
+                {
+                    cout << "dilepton pair not selected properly..." << endl;
+                }
+
+                dilep_pt_gen_postfsr   = (gen_particles.at(gen_particle_index_status1) + gen_particles.at(gen_antiparticle_index_status1)).Pt();
+                dilep_mass_gen_postfsr = (gen_particles.at(gen_particle_index_status1) + gen_particles.at(gen_antiparticle_index_status1)).M();
+                particle_pt_gen_postfsr     = gen_particles.at(gen_particle_index_status1).Pt();
+                antiparticle_pt_gen_postfsr     = gen_particles.at(gen_antiparticle_index_status1).Pt();
+                particle_eta_gen_postfsr     = gen_particles.at(gen_particle_index_status1).Eta();
+                antiparticle_eta_gen_postfsr     = gen_particles.at(gen_antiparticle_index_status1).Eta();
+
+                // save post FSR leptons to check dR matching between gen and rec leptons
+                leptons_postfsr.push_back(gen_particles.at(gen_particle_index_status1));
+                leptons_postfsr.push_back(gen_particles.at(gen_antiparticle_index_status1));
             }
-            else
-            {
-                evt_tag_dielectron_fiducial_post_fsr = false;
-            }
-
-            if( evt_tag_dimuon_gen == 1 && ((particle_pt_gen_postfsr > 20. && antiparticle_pt_gen_postfsr > 10.) || (particle_pt_gen_postfsr > 10. && antiparticle_pt_gen_postfsr > 20.)) && fabs(particle_eta_gen_postfsr) < 2.4 && fabs(antiparticle_eta_gen_postfsr) < 2.4 )
-            {
-                evt_tag_dimuon_fiducial_post_fsr = true;
-            }
-            else
-            {
-                evt_tag_dimuon_fiducial_post_fsr = false;
-            }
-
-            // Dilepton from dressed leptons for dR = X
-            TLorentzVector dilepton_p4_status1 = gen_particles.at(gen_particle_index_status1) + gen_particles.at(gen_antiparticle_index_status1);
-            std::map<Double_t, TLorentzVector> dilepton_gamma_p4_drX = {{0.1, dilepton_p4_status1},{0.2, dilepton_p4_status1}, {0.3, dilepton_p4_status1},
-                                                                        {0.5, dilepton_p4_status1},{0.7, dilepton_p4_status1}, {1., dilepton_p4_status1},
-                                                                        {2., dilepton_p4_status1}, {3., dilepton_p4_status1}, {5., dilepton_p4_status1}, {10, dilepton_p4_status1}};
-
-
-
-            std::map<Double_t, TLorentzVector> dilepton_lepton_matched_gamma_p4_drX = {{0.1, dilepton_p4_status1},{0.2, dilepton_p4_status1}, {0.3, dilepton_p4_status1},
-                                                                                       {0.5, dilepton_p4_status1},{0.7, dilepton_p4_status1}, {1., dilepton_p4_status1},
-                                                                                       {2., dilepton_p4_status1}, {3., dilepton_p4_status1}, {5., dilepton_p4_status1}, {10, dilepton_p4_status1}};
-
-
-            // dressed lepton for dR = X
-            TLorentzVector particle_p4_status1 = gen_particles.at(gen_particle_index_status1);
-            TLorentzVector antiparticle_p4_status1 = gen_particles.at(gen_antiparticle_index_status1);
-
-            std::map<Double_t, TLorentzVector> particle_lepton_matched_gamma_p4_drX = {{0.1, particle_p4_status1},{0.2, particle_p4_status1}, {0.3, particle_p4_status1},
-                                                                                       {0.5, particle_p4_status1},{0.7, particle_p4_status1}, {1., particle_p4_status1},
-                                                                                       {2., particle_p4_status1}, {3., particle_p4_status1}, {5., particle_p4_status1}, {10, particle_p4_status1}};
-
-            std::map<Double_t, TLorentzVector> antiparticle_lepton_matched_gamma_p4_drX = {{0.1, antiparticle_p4_status1},{0.2, antiparticle_p4_status1}, {0.3, antiparticle_p4_status1},
-                                                                                       {0.5, antiparticle_p4_status1},{0.7, antiparticle_p4_status1}, {1., antiparticle_p4_status1},
-                                                                                       {2., antiparticle_p4_status1}, {3., antiparticle_p4_status1}, {5., antiparticle_p4_status1}, {10, antiparticle_p4_status1}};
-
-            // added photons
-            TLorentzVector photon_sum_p4;
-            std::map<Double_t, TLorentzVector> photon_p4_drX = {{0.1, photon_sum_p4},{0.2, photon_sum_p4}, {0.3, photon_sum_p4},
-                                                                                       {0.5, photon_sum_p4},{0.7, photon_sum_p4}, {1., photon_sum_p4},
-                                                                                       {2., photon_sum_p4}, {3., photon_sum_p4}, {5., photon_sum_p4}, {10, photon_sum_p4}};
-
-            // save index between status 1 and the initial ME lepton
-            std::map<int, int> index_map;
-            saveIndexToMap(gen_particle_index_status1,     gen_particle_index_ME,     index_map);
-            saveIndexToMap(gen_antiparticle_index_status1, gen_antiparticle_index_ME, index_map);
-
-            // status 1 photons
-            unsigned int size_gen_photons = gen_photons.size();
-            photon_n_gen = size_gen_photons;
-            for(unsigned int iph = 0; iph < size_gen_photons; iph++)
-            {
-
-                photons_et_gen.push_back(gen_photons.at(iph).Pt());
-                photons_mother_id_gen.push_back( gen_particles.at(gen_photons.at(iph).MotherIndex()).PID() );
-
-                // find the closest delta R between photon and lepton and save it
-                Double_t dr_gamma_particle = gen_photons.at(iph).DeltaR( gen_particles.at(gen_particle_index_status1) );
-                Double_t dr_gamma_antiparticle = gen_photons.at(iph).DeltaR( gen_particles.at(gen_antiparticle_index_status1) );
-                Double_t dr_temp;
-
-                bool matched_to_particle = false;
-                if(dr_gamma_particle > dr_gamma_antiparticle)
-                {
-                    photons_closest_dr_to_leptons_gen.push_back(dr_gamma_antiparticle);
-                    dr_temp = dr_gamma_antiparticle;
-                }
-                else
-                {
-                    photons_closest_dr_to_leptons_gen.push_back(dr_gamma_particle);
-                    dr_temp = dr_gamma_particle;
-                    matched_to_particle = true;
-                }
-
-                if(!photos_used)
-                {
-                    // check if the current photon's mother is ME leptons or decaying leptons from them
-                    if( index_map.find(gen_photons.at(iph).MotherIndex()) != index_map.end() )
-                    {
-                        lepton_matched_photon_n_gen++;
-                        lepton_matched_photons_closest_dr_to_leptons_gen.push_back(dr_temp);
-                    }
-                }
-                else
-                {
-                    // PHOTOS
-                    if( gen_particles.at(gen_photons.at(iph).MotherIndex()).PID() == 23 )
-                    {
-                        lepton_matched_photon_n_gen++;
-                        lepton_matched_photons_closest_dr_to_leptons_gen.push_back(dr_temp);
-                    }
-                }
-
-                TLorentzVector photon_temp = gen_photons.at(iph);
-                for(std::map<Double_t, TLorentzVector>::iterator mapit = dilepton_gamma_p4_drX.begin(); mapit!=dilepton_gamma_p4_drX.end(); mapit++)
-                {
-                    if(dr_temp < mapit->first){
-                        // without requirement that the photon mother is decaying lepton from ME
-                        mapit->second += photon_temp;
-
-                        // only for photons sharing the same index with decaying lepton
-                        // this is the current way to correct FSR in ISR analysis
-                        if(!photos_used)
-                        {
-                            if( index_map.find(gen_photons.at(iph).MotherIndex()) != index_map.end() )
-                            {
-                                dilepton_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
-                                photon_p4_drX[mapit->first] += photon_temp;
-
-                                if(matched_to_particle)
-                                {
-                                    particle_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
-                                }
-                                else
-                                {
-                                    antiparticle_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
-                                }
-                            }
-                        }
-                        else
-                        {
-
-                            if( gen_particles.at(gen_photons.at(iph).MotherIndex()).PID() == 23 )
-                            {
-                                dilepton_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
-                                photon_p4_drX[mapit->first] += photon_temp;
-
-                                if(matched_to_particle)
-                                {
-                                    particle_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
-                                }
-                                else
-                                {
-                                    antiparticle_lepton_matched_gamma_p4_drX[mapit->first] += photon_temp;
-                                }
-                            }
-                        }// for PHOTOS
-                    }
-                }// loop for dilepton_gamma_p4_drX
-            }// loop over status 1 photons
-
-            for(std::map<Double_t, TLorentzVector>::iterator mapit = dilepton_gamma_p4_drX.begin(); mapit!=dilepton_gamma_p4_drX.end(); mapit++){
-                dilep_pt_gen_dressed_drX.push_back((mapit->second).Pt());
-                dilep_mass_gen_dressed_drX.push_back((mapit->second).M());
-                drX_gen_dressed.push_back(mapit->first);
-            }// loop for dilepton_gamma_p4_drX
-
-            for(std::map<Double_t, TLorentzVector>::iterator mapit = dilepton_lepton_matched_gamma_p4_drX.begin(); mapit!=dilepton_lepton_matched_gamma_p4_drX.end(); mapit++){
-                dilep_pt_gen_lepton_matched_dressed_drX.push_back((mapit->second).Pt());
-                dilep_mass_gen_lepton_matched_dressed_drX.push_back((mapit->second).M());
-                drX_gen_lepton_matched_dressed.push_back(mapit->first);
-            }// loop for dilepton_lepton_matched_gamma_p4_drX
-
-            std::map<Double_t, TLorentzVector>::iterator mapit_particle = particle_lepton_matched_gamma_p4_drX.begin();
-            std::map<Double_t, TLorentzVector>::iterator mapit_antiparticle = antiparticle_lepton_matched_gamma_p4_drX.begin();
-
-            for( ; mapit_particle!=particle_lepton_matched_gamma_p4_drX.end(); mapit_particle++, mapit_antiparticle++)
-            {
-                if( (((mapit_particle->second).Pt() > 25. && (mapit_antiparticle->second).Pt() > 15) || ((mapit_particle->second).Pt() > 15. && (mapit_antiparticle->second).Pt() > 25))  &&  fabs((mapit_particle->second).Eta()) < 2.5 && fabs((mapit_antiparticle->second).Eta()) < 2.5 )
-                {
-                    evt_tag_dielectron_fiducial_lepton_matched_dressed_drX.push_back(true);
-                }
-                else
-                {
-                    evt_tag_dielectron_fiducial_lepton_matched_dressed_drX.push_back(false);
-                }
-
-                if( (((mapit_particle->second).Pt() > 20. && (mapit_antiparticle->second).Pt() > 10) || ((mapit_particle->second).Pt() > 10. && (mapit_antiparticle->second).Pt() > 20))  &&  fabs((mapit_particle->second).Eta()) < 2.4 && fabs((mapit_antiparticle->second).Eta()) < 2.4 )
-                {
-                    evt_tag_dimuon_fiducial_lepton_matched_dressed_drX.push_back(true);
-                }
-                else
-                {
-                    evt_tag_dimuon_fiducial_lepton_matched_dressed_drX.push_back(false);
-                }
-            }// loop for particle_lepton_matched_gamma_p4_drX and antiparticle_lepton_matched_gamma_p4_drXX
-
-            for(std::map<Double_t, TLorentzVector>::iterator mapit = photon_p4_drX.begin(); mapit!=photon_p4_drX.end(); mapit++)
-            {
-                lepton_matched_photon_et_gen_drX.push_back((mapit->second).Pt());
-            }// loop for dilepton_lepton_matched_gamma_p4_drX
         }
 
         if(debug_){
-            if(evt_tag_dielectron_gen){
+            if(evt_tag_dielectron_hardprocess){
                 cout << "DY->ee event..." << endl;
             }
-            if(evt_tag_dimuon_gen){
+            if(evt_tag_dimuon_hardprocess){
                 cout << "DY->mumu event..." << endl;
             }
-            if(evt_tag_ditau_gen){
+            if(evt_tag_ditau_hardprocess){
                 cout << "DY->tautau event..." << endl;
             }
             // check further info for dielectron and dimuon events
-            if(!evt_tag_ditau_gen){
+            if(!evt_tag_ditau_hardprocess){
                 cout << "Leptons from hardprocess" << endl;
                 cout << "Lepton 1: " << endl;
                 cout << "ID: " << gen_particles.at(gen_particle_index_ME).PID() << " index: " << gen_particle_index_ME << endl;
@@ -1125,16 +890,6 @@ void Skim_ISR::executeEvent(){
                 cout << "\033[1;31mStatus 1 leptons\033[0m" << endl;
                 cout << "status 1 particles..." << endl;
                 cout << "particle index: " << gen_particle_index_status1 << " anti-particle index: " << gen_antiparticle_index_status1 << endl;;
-
-                if(fabs(dilep_pt_gen_lepton_matched_dressed_drX[9]-dilep_pt_FSRgamma_gen_ispromptfinal) > 1e-5)
-                {
-                    if(debug_) cout << "CHECK THIS EVENTS" << endl;
-                    cout << "dilep_pt_gen_lepton_matched_dressed_drX[9]: " << dilep_pt_gen_lepton_matched_dressed_drX[9] << endl;
-                    cout << "dilep_pt_FSRgamma_gen_ispromptfinal: " << dilep_pt_FSRgamma_gen_ispromptfinal << endl;
-
-                    cout << "dilep_mass_gen_lepton_matched_dressed_drX[9]: " << dilep_mass_gen_lepton_matched_dressed_drX[9] << endl;
-                    cout << "dilep_mass_FSRgamma_gen_ispromptfinal: " << dilep_mass_FSRgamma_gen_ispromptfinal << endl;
-                }
             }
         }
 
@@ -1501,9 +1256,9 @@ void Skim_ISR::executeEvent(){
 
             if(DZfilter_key != "")
             {
-                evt_weight_trigSFDZ_rec *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, 0); 
-                evt_weight_trigSFDZ_up_rec *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, 1); 
-                evt_weight_trigSFDZ_down_rec *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, -1); 
+                evt_weight_trigSFDZ_rec *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, 0);
+                evt_weight_trigSFDZ_up_rec *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, 1);
+                evt_weight_trigSFDZ_down_rec *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, -1);
             }
 
             // reco/id/iso SF
@@ -1770,9 +1525,9 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_SelVa
                 }
                 if(DZfilter_key != "")
                 {
-                    p_struct->evt_weight_trigSFDZ_rec_ *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, 0); 
-                    p_struct->evt_weight_trigSFDZ_up_rec_ *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, 1); 
-                    p_struct->evt_weight_trigSFDZ_down_rec_ *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, -1); 
+                    p_struct->evt_weight_trigSFDZ_rec_ *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, 0);
+                    p_struct->evt_weight_trigSFDZ_up_rec_ *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, 1);
+                    p_struct->evt_weight_trigSFDZ_down_rec_ *= mcCorr->ElectronDZfilter_SF(DZfilter_key, leps, nPV, -1);
                 }
 
                 // reco/id/iso SF
@@ -1929,58 +1684,97 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_SelVa
     }
 }
 
-int Skim_ISR::findInitialMoterIndex(int mother_index, int current_index, bool same_flavor){
+int Skim_ISR::findDYInitIndex(int l1_index, int l2_index)
+{
 
-    int init_index = -1;
-    // stop if reached te initial protons
-    if( fabs(gen_particles.at(current_index).PID()) == 2212 && gen_particles.at(current_index).MotherIndex() == -1){
-      return -1;
-    }
-    // stop if mother ID and current ID is different
-    else if((gen_particles.at(mother_index).PID() != gen_particles.at(current_index).PID()) && same_flavor){
-            return current_index;
-    }
-    else{
-        // call again
-        init_index = findInitialMoterIndex(gen_particles.at(mother_index).MotherIndex(), mother_index);
-    }
+    std::vector<int> l1_index_vector;
+    std::vector<int> l2_index_vector;
+    std::vector<int> v_intersection(100); 
+    std::vector<int>::iterator it;
 
-    return init_index;
+    saveIndexToVector(l1_index, 0, l1_index_vector);
+    saveIndexToVector(l2_index, 0, l2_index_vector);
+
+    std::sort (l1_index_vector.begin(), l1_index_vector.end()); 
+    std::sort (l2_index_vector.begin(), l2_index_vector.end());
+
+    it=std::set_intersection(l1_index_vector.begin(), l1_index_vector.end(),
+                             l2_index_vector.begin(), l2_index_vector.end(), v_intersection.begin());
+
+    v_intersection.resize(it-v_intersection.begin());
+    std::sort(v_intersection.begin(), v_intersection.end(), greater <>());
+
+    if(v_intersection.size() == 0)
+        return -1;
+    else
+        return v_intersection.at(0);
 }
 
-int Skim_ISR::getInitialMoterIndex(int mother_index, int initial_PID)
+int Skim_ISR::findInitialMoterIndex(int mother_index, int current_index, bool same_flavor)
 {
 
     int init_index = -1;
-    // stop if reached te initial protons
-    if(mother_index == -1)
-    {
-      return -1;
+    // stop if reached the incoming proton
+    if(current_index == 0 || current_index == 1){
+      return current_index;
     }
-    else if ((gen_particles.at(gen_particles.at(mother_index).MotherIndex()).PID() != gen_particles.at(mother_index).PID()) 
-            || (initial_PID != gen_particles.at(mother_index).PID()))
+    // stop if mother ID and current ID is different
+    else if((gen_particles.at(mother_index).PID() != gen_particles.at(current_index).PID()) && same_flavor)
     {
-        return mother_index;
+            return mother_index;
     }
     else
     {
         // call again
-        init_index = getInitialMoterIndex(gen_particles.at(mother_index).MotherIndex(), initial_PID);
+        init_index = findInitialMoterIndex(gen_particles.at(mother_index).MotherIndex(), mother_index);
     }
-
     return init_index;
 }
 
-void Skim_ISR::saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map){
+bool Skim_ISR::isMatchedToDYIndexMap(int mother_index, int DYInitIndex, std::map<int,int> &partindex_map) 
+{
 
-    if(current_index==mother_index)
+    if(mother_index < DYInitIndex)
+        return false;
+    else
     {
-       partindex_map.insert(std::make_pair(current_index, gen_particles.at(current_index).PID()));
+        if(partindex_map.find(mother_index) != partindex_map.end())
+        {
+            return true;
+        }
+        else
+        {
+            isMatchedToDYIndexMap(gen_particles.at(mother_index).MotherIndex(), DYInitIndex, partindex_map);
+        }
+    }
+    return false;
+}
+
+void Skim_ISR::saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map)
+{
+
+    if(current_index <= mother_index)
+    {
+       partindex_map.insert(std::make_pair(mother_index, gen_particles.at(mother_index).PID()));
     }
     else
     {
          partindex_map.insert(std::make_pair(current_index, gen_particles.at(current_index).PID()));
          saveIndexToMap(gen_particles.at(current_index).MotherIndex(), mother_index, partindex_map);
+    }
+}
+
+void Skim_ISR::saveIndexToVector(int current_index, int mother_index, std::vector<int> &partindex_vector)
+{
+
+    if(current_index <= mother_index)
+    {
+       partindex_vector.push_back(mother_index);
+    }
+    else
+    {
+         partindex_vector.push_back(current_index);
+         saveIndexToVector(gen_particles.at(current_index).MotherIndex(), mother_index, partindex_vector);
     }
 }
 
