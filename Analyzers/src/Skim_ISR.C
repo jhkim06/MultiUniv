@@ -6,7 +6,7 @@ void Skim_ISR::initializeAnalyzer(){
     // Skim Types
     //=================================
 
-    debug_ = true;
+    debug_ = false;
     if( HasFlag("ISR_detector_only"))
     {
         save_detector_info = true;
@@ -651,35 +651,61 @@ void Skim_ISR::executeEvent()
 
             // check PID of two LEADING leptons are the same to ensure they are from Drell-Yan process
             // Note: mu+mu- and mu-->mu-, e-, e+ with decayed e- has the largest pt. then leading lepton pair can be mu+ e-
-            if(abs(gen_lepton_isPromptFinalstate.at(0).PID()) == abs(gen_antilepton_isPromptFinalstate.at(0).PID()))
+            // FIXME consider all OS pairs
+           
+            int l1index = 0, l2index = 0;  
+            int DYInitIndex = 0;
+            const int lepton_size = gen_lepton_isPromptFinalstate.size();
+            const int antilepton_size = gen_antilepton_isPromptFinalstate.size();
+            bool dilep_set = false;
+            bool zvertex_found = false;
+
+            for(int il1 = 0; il1 < lepton_size; il1++)
+            {
+                for(int il2 = 0; il2 < antilepton_size; il2++)
+                {
+                    
+                    int DYInitIndex_ = findDYInitIndex(gen_lepton_isPromptFinalstate.at(il1).getIndex(), gen_antilepton_isPromptFinalstate.at(il2).getIndex(), zvertex_found);
+                    //cout << "il1: " << il1 << " il2: " << il2 << endl;
+                    //cout << "index1: " << gen_lepton_isPromptFinalstate.at(il1).getIndex() << " index2: " << gen_antilepton_isPromptFinalstate.at(il2).getIndex() << endl;
+                    //cout << "zvertex_found: " << zvertex_found << endl;
+                    if((!dilep_set && DYInitIndex_ != -1) || (zvertex_found && DYInitIndex_ != -1))
+                    {
+                        DYInitIndex = DYInitIndex_;
+                        l1index = il1;
+                        l2index = il2;
+                        dilep_set = true;
+                        zvertex_found = false;
+                    }
+                }
+            }
+
+            if(abs(gen_lepton_isPromptFinalstate.at(l1index).PID()) == abs(gen_antilepton_isPromptFinalstate.at(l2index).PID()))
             {
 
-                if(abs(gen_lepton_isPromptFinalstate.at(0).PID()) == 11)
+                if(abs(gen_lepton_isPromptFinalstate.at(l1index).PID()) == 11)
                 {
                     evt_tag_dielectron_promptfinal = true;
                 }
 
-                if(abs(gen_lepton_isPromptFinalstate.at(0).PID()) == 13)
+                if(abs(gen_lepton_isPromptFinalstate.at(l1index).PID()) == 13)
                 {
                     evt_tag_dimuon_promptfinal = true;
                 }
 
-                
-
-                dilep_isPromptFinalState += gen_lepton_isPromptFinalstate.at(0);
-                dilep_isPromptFinalState += gen_antilepton_isPromptFinalstate.at(0);
+                dilep_isPromptFinalState += gen_lepton_isPromptFinalstate.at(l1index);
+                dilep_isPromptFinalState += gen_antilepton_isPromptFinalstate.at(l2index);
                 dilep_pt_bare_gen_ispromptfinal = (dilep_isPromptFinalState).Pt();
                 dilep_mass_bare_gen_ispromptfinal = (dilep_isPromptFinalState).M();
 
-                gen_particle_index_status1     = gen_lepton_isPromptFinalstate.at(0).getIndex();
-                gen_antiparticle_index_status1 = gen_antilepton_isPromptFinalstate.at(0).getIndex();
-                //cout << "gen_particle_index_status1: " << gen_particle_index_status1 << endl;
-                //cout << "gen_antiparticle_index_status1: " << gen_antiparticle_index_status1 << endl;
-                int particle_index =     findInitialMoterIndex(gen_lepton_isPromptFinalstate.at(0).MotherIndex(), gen_particle_index_status1);
-                int antiparticle_index = findInitialMoterIndex(gen_antilepton_isPromptFinalstate.at(0).MotherIndex(), gen_antiparticle_index_status1);
-                int DYInitIndex = findDYInitIndex(gen_particle_index_status1, gen_antiparticle_index_status1);
+                gen_particle_index_status1     = gen_lepton_isPromptFinalstate.at(l1index).getIndex();
+                gen_antiparticle_index_status1 = gen_antilepton_isPromptFinalstate.at(l2index).getIndex();
+                if(debug_) cout << "gen_particle_index_status1: " << gen_particle_index_status1 << endl;
+                if(debug_) cout << "gen_antiparticle_index_status1: " << gen_antiparticle_index_status1 << endl;
+                int particle_index =     findInitialMoterIndex(gen_lepton_isPromptFinalstate.at(l1index).MotherIndex(), gen_particle_index_status1);
+                int antiparticle_index = findInitialMoterIndex(gen_antilepton_isPromptFinalstate.at(l2index).MotherIndex(), gen_antiparticle_index_status1);
                 dilep_motherID_myalgorithm = gen_particles.at(DYInitIndex).PID();
-                //cout << "DYInitIndex: " << DYInitIndex << endl;
+                if(debug_) cout << "DYInitIndex: " << DYInitIndex << endl;
 
                 // cout << "particle_index: " << particle_index << endl;
                 // cout << "antiparticle_index: " << antiparticle_index << endl;
@@ -689,11 +715,11 @@ void Skim_ISR::executeEvent()
 
                 // save index between status 1 and the DY initial index
                 std::map<int, int> index_map;
-                saveIndexToMap(gen_lepton_isPromptFinalstate.at(0).getIndex(),     DYInitIndex, index_map);
-                saveIndexToMap(gen_antilepton_isPromptFinalstate.at(0).getIndex(), DYInitIndex, index_map);
+                saveIndexToMap(gen_lepton_isPromptFinalstate.at(l1index).getIndex(),     DYInitIndex, index_map);
+                saveIndexToMap(gen_antilepton_isPromptFinalstate.at(l2index).getIndex(), DYInitIndex, index_map);
 
-                lep_isPromptFinalState += gen_lepton_isPromptFinalstate.at(0);
-                antilep_isPromptFinalState += gen_antilepton_isPromptFinalstate.at(0);
+                lep_isPromptFinalState += gen_lepton_isPromptFinalstate.at(l1index);
+                antilep_isPromptFinalState += gen_antilepton_isPromptFinalstate.at(l2index);
 
                 pass_kinematic_cut_mu_bare_gen = PassKinematicCuts(lep_isPromptFinalState, antilep_isPromptFinalState, leading_muon_pt, subleading_muon_pt, muon_eta);
                 pass_kinematic_cut_el_bare_gen = PassKinematicCuts(lep_isPromptFinalState, antilep_isPromptFinalState, leading_electron_pt, subleading_electron_pt, electron_eta);
@@ -716,9 +742,11 @@ void Skim_ISR::executeEvent()
                 // Add photons to the selected leptons
                 for(int i = 0; i < photon_size; i++)
                 {
+                    if(gen_particles.at(gen_photon_isPromptFinalstate.at(i).MotherIndex()).PID() == 2212) continue;
+
                     // photons only from the same lepton ID of the selected post FSR lepton
-                    double dr_lepton_gamma =     gen_lepton_isPromptFinalstate.at(0).DeltaR(gen_photon_isPromptFinalstate.at(i));
-                    double dr_antilepton_gamma = gen_antilepton_isPromptFinalstate.at(0).DeltaR(gen_photon_isPromptFinalstate.at(i));
+                    double dr_lepton_gamma =     gen_lepton_isPromptFinalstate.at(l1index).DeltaR(gen_photon_isPromptFinalstate.at(i));
+                    double dr_antilepton_gamma = gen_antilepton_isPromptFinalstate.at(l2index).DeltaR(gen_photon_isPromptFinalstate.at(i));
 
                     photon_motherID_isPromptFinalState_selected.push_back(gen_particles.at(gen_photon_isPromptFinalstate.at(i).MotherIndex()).PID());
                     photon_dRtoParticle_isPromptFinalState_selected.push_back(dr_lepton_gamma);
@@ -732,7 +760,14 @@ void Skim_ISR::executeEvent()
                         photon_matchedToLep_isPromptFinalState_selected.push_back(false);
                         if(abs(gen_particles.at(gen_photon_isPromptFinalstate.at(i).MotherIndex()).PID()) == 11 || abs(gen_particles.at(gen_photon_isPromptFinalstate.at(i).MotherIndex()).PID()) == 13)
                         {
+                            cout << "gen_photon_isPromptFinalstate.at(i).MotherIndex(): " << gen_photon_isPromptFinalstate.at(i).MotherIndex() << endl;
                             cout << "Photons from Lepton but Not Matched to any leptons... check!" << endl;
+
+                            if(debug_)
+                            {
+                                for (std::map<int,int>::iterator it=index_map.begin(); it!=index_map.end(); ++it)
+                                  std::cout << it->first << " => " << it->second << '\n';
+                            }
                         }
 
                     }
@@ -796,19 +831,16 @@ void Skim_ISR::executeEvent()
                     if(debug_) cout << "Hard process dilepton mass and QED FSR corrected mass are different" << endl;
                 }
 
-                int lepton_size = gen_lepton_isPromptFinalstate.size();
-                int antilepton_size = gen_antilepton_isPromptFinalstate.size();
-
-                // leading lepton already added to dilep_isPromptFinalState
-                for(int il = 1; il < lepton_size; il++)
+                for(int il = 0; il < lepton_size; il++)
                 {
+                    if(l1index == il) continue;
                     dilep_isPromptFinalState += gen_lepton_isPromptFinalstate.at(il);
                     lep_isPromptFinalState += gen_lepton_isPromptFinalstate.at(il);
                 }
 
-                // leading lepton already added to dilep_isPromptFinalState
-                for(int ial = 1; ial < antilepton_size; ial++)
+                for(int ial = 0; ial < antilepton_size; ial++)
                 {
+                    if(l2index == ial) continue;
                     dilep_isPromptFinalState += gen_antilepton_isPromptFinalstate.at(ial);
                     antilep_isPromptFinalState += gen_antilepton_isPromptFinalstate.at(ial);
                 }
@@ -1684,16 +1716,17 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_SelVa
     }
 }
 
-int Skim_ISR::findDYInitIndex(int l1_index, int l2_index)
+int Skim_ISR::findDYInitIndex(int l1_index, int l2_index, bool &zvertex)
 {
 
+    bool leptonVertex = false;
     std::vector<int> l1_index_vector;
     std::vector<int> l2_index_vector;
     std::vector<int> v_intersection(100); 
     std::vector<int>::iterator it;
 
-    saveIndexToVector(l1_index, 0, l1_index_vector);
-    saveIndexToVector(l2_index, 0, l2_index_vector);
+    saveIndexToVector(l1_index, 2, l1_index_vector);
+    saveIndexToVector(l2_index, 2, l2_index_vector);
 
     std::sort (l1_index_vector.begin(), l1_index_vector.end()); 
     std::sort (l2_index_vector.begin(), l2_index_vector.end());
@@ -1702,12 +1735,26 @@ int Skim_ISR::findDYInitIndex(int l1_index, int l2_index)
                              l2_index_vector.begin(), l2_index_vector.end(), v_intersection.begin());
 
     v_intersection.resize(it-v_intersection.begin());
-    std::sort(v_intersection.begin(), v_intersection.end(), greater <>());
+    std::sort(v_intersection.begin(), v_intersection.end());
+
+    //check intersection has lepton vertex...
+    //if so, return -1
+    int vsize = v_intersection.size();
+    
+    for(int i = 0; i < vsize; i++)
+    {
+        if(gen_particles.at(v_intersection.at(i)).PID() == 23) zvertex = true;
+        if(abs(gen_particles.at(v_intersection.at(i)).PID()) == 11 || abs(gen_particles.at(v_intersection.at(i)).PID()) == 13)
+            leptonVertex = true;
+    }
 
     if(v_intersection.size() == 0)
-        return -1;
+        return -1; 
     else
-        return v_intersection.at(0);
+        if(leptonVertex)
+            return -1;
+        else
+            return v_intersection.at(0);
 }
 
 int Skim_ISR::findInitialMoterIndex(int mother_index, int current_index, bool same_flavor)
@@ -1734,22 +1781,25 @@ int Skim_ISR::findInitialMoterIndex(int mother_index, int current_index, bool sa
 bool Skim_ISR::isMatchedToDYIndexMap(int mother_index, int DYInitIndex, std::map<int,int> &partindex_map) 
 {
 
+    bool temp = false;
+
     if(mother_index < DYInitIndex)
         return false;
     else
     {
-        if(partindex_map.find(mother_index) != partindex_map.end())
+        if(partindex_map.find(mother_index) != partindex_map.end() && (abs(gen_particles.at(mother_index).PID()) == 11 || abs(gen_particles.at(mother_index).PID()) == 13))
         {
             return true;
         }
         else
         {
-            isMatchedToDYIndexMap(gen_particles.at(mother_index).MotherIndex(), DYInitIndex, partindex_map);
+            temp = isMatchedToDYIndexMap(gen_particles.at(mother_index).MotherIndex(), DYInitIndex, partindex_map);
         }
     }
-    return false;
+    return temp;
 }
 
+                                                 // DY initial index
 void Skim_ISR::saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map)
 {
 
@@ -1767,14 +1817,15 @@ void Skim_ISR::saveIndexToMap(int current_index, int mother_index, std::map<int,
 void Skim_ISR::saveIndexToVector(int current_index, int mother_index, std::vector<int> &partindex_vector)
 {
 
+    int next_mother_index = gen_particles.at(current_index).MotherIndex();
     if(current_index <= mother_index)
     {
-       partindex_vector.push_back(mother_index);
+        partindex_vector.push_back(mother_index);
     }
     else
     {
-         partindex_vector.push_back(current_index);
-         saveIndexToVector(gen_particles.at(current_index).MotherIndex(), mother_index, partindex_vector);
+        partindex_vector.push_back(current_index);
+        saveIndexToVector(next_mother_index, mother_index, partindex_vector);
     }
 }
 

@@ -179,7 +179,7 @@ public:
     void executeEvent();
     
     int findInitialMoterIndex(int mother_index, int current_index, bool same_flavor=true);
-    int findDYInitIndex(int l1_index, int l2_index);
+    int findDYInitIndex(int l1_index, int l2_index, bool &zvertex);
     void saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map);
     void saveIndexToVector(int current_index, int mother_index, std::vector<int> &partindex_vector);
     bool isMatchedToDYIndexMap(int mother_index, int DYInitIndex, std::map<int,int> &partindex_map);  
