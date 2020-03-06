@@ -1733,7 +1733,7 @@ int Skim_ISR::findDYInitIndex(int l1_index, int l2_index, bool &zvertex)
                              l2_index_vector.begin(), l2_index_vector.end(), v_intersection.begin());
 
     v_intersection.resize(it-v_intersection.begin());
-    std::sort(v_intersection.begin(), v_intersection.end());
+    std::sort(v_intersection.begin(), v_intersection.end(), greater <>());
 
     //check intersection has lepton vertex...
     //if so, return -1
@@ -1795,13 +1795,16 @@ void Skim_ISR::saveIndexToVector(int current_index, int mother_index, std::vecto
 {
 
     int next_mother_index = gen_particles.at(current_index).MotherIndex();
-    if(current_index <= mother_index)
+    partindex_vector.push_back(current_index);
+    if(current_index <= mother_index || gen_particles.at(next_mother_index).PID() == 23)
     {
-        partindex_vector.push_back(mother_index);
+        if(current_index <= mother_index)
+            partindex_vector.push_back(mother_index);
+        else
+            partindex_vector.push_back(next_mother_index);
     }
     else
     {
-        partindex_vector.push_back(current_index);
         saveIndexToVector(next_mother_index, mother_index, partindex_vector);
     }
 }
