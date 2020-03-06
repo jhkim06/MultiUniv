@@ -178,7 +178,6 @@ public:
     void executeEventFromParameter(AnalyzerParameter param, Analysis_SelVariation * p_struct, bool fake_estimation = false, const int scale_res_sys = 0);
     void executeEvent();
     
-    int findInitialMoterIndex(int mother_index, int current_index, bool same_flavor=true);
     int findDYInitIndex(int l1_index, int l2_index, bool &zvertex);
     void saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map);
     void saveIndexToVector(int current_index, int mother_index, std::vector<int> &partindex_vector);

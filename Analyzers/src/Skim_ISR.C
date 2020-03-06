@@ -702,8 +702,6 @@ void Skim_ISR::executeEvent()
                 gen_antiparticle_index_status1 = gen_antilepton_isPromptFinalstate.at(l2index).getIndex();
                 if(debug_) cout << "gen_particle_index_status1: " << gen_particle_index_status1 << endl;
                 if(debug_) cout << "gen_antiparticle_index_status1: " << gen_antiparticle_index_status1 << endl;
-                int particle_index =     findInitialMoterIndex(gen_lepton_isPromptFinalstate.at(l1index).MotherIndex(), gen_particle_index_status1);
-                int antiparticle_index = findInitialMoterIndex(gen_antilepton_isPromptFinalstate.at(l2index).MotherIndex(), gen_antiparticle_index_status1);
                 dilep_motherID_myalgorithm = gen_particles.at(DYInitIndex).PID();
                 if(debug_) cout << "DYInitIndex: " << DYInitIndex << endl;
 
@@ -1755,27 +1753,6 @@ int Skim_ISR::findDYInitIndex(int l1_index, int l2_index, bool &zvertex)
             return -1;
         else
             return v_intersection.at(0);
-}
-
-int Skim_ISR::findInitialMoterIndex(int mother_index, int current_index, bool same_flavor)
-{
-
-    int init_index = -1;
-    // stop if reached the incoming proton
-    if(current_index == 0 || current_index == 1){
-      return current_index;
-    }
-    // stop if mother ID and current ID is different
-    else if((gen_particles.at(mother_index).PID() != gen_particles.at(current_index).PID()) && same_flavor)
-    {
-            return mother_index;
-    }
-    else
-    {
-        // call again
-        init_index = findInitialMoterIndex(gen_particles.at(mother_index).MotherIndex(), mother_index);
-    }
-    return init_index;
 }
 
 bool Skim_ISR::isMatchedToDYIndexMap(int mother_index, int DYInitIndex, std::map<int,int> &partindex_map) 
