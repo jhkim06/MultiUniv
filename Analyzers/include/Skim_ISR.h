@@ -40,7 +40,7 @@ struct Analysis_SelVariation
     double evt_weight_trigSF_rec_, evt_weight_trigSF_up_rec_, evt_weight_trigSF_down_rec_;
     double evt_weight_trigSFDZ_rec_, evt_weight_trigSFDZ_up_rec_, evt_weight_trigSFDZ_down_rec_;
 
-    // fake weight
+    // variables for fake estimation
     bool evt_tag_TT_rec_;
     bool evt_tag_TL_rec_;
     bool evt_tag_LL_rec_;
@@ -87,7 +87,7 @@ struct Analysis_SelVariation
     {
         evt_tag_analysisevnt_sel_rec_   = false;
         evt_tag_oppositecharge_sel_rec_ = false;
-        evt_tag_leptonpt_sel_rec_      = false;
+        evt_tag_leptonpt_sel_rec_       = false;
         evt_tag_leptoneta_sel_rec_      = false;
         evt_tag_dielectron_rec_         = false;
         evt_tag_dimuon_rec_             = false;
@@ -166,7 +166,7 @@ struct Analysis_SelVariation
     }
 
     void setBranch(TTree *tree);
-    void resetVariables();
+    void initVariables();
 
 };
 
@@ -232,7 +232,6 @@ private:
     std::vector<Electron> electrons;
     std::vector<Muon>     veto_muons;
     std::vector<Electron> veto_electrons;
-    std::vector<Photon>   photons;
     std::vector<Lepton*>  leps;
 
     // isPromptFinalstate gen particles
@@ -281,30 +280,7 @@ private:
     bool is_diel_tri_passed;
     bool is_dimu_tri_passed;
 
-    int additional_veto_mu_size;
-    int additional_veto_el_size;
-
-    int el1_ntuple_index;
-    int el2_ntuple_index;
-
-    int mu1_ntuple_index;
-    int mu2_ntuple_index;
-
-    double dilep_pt_rec;
-    double dilep_mass_rec;
-    double dilep_photon_mass_rec;
-    double leadinglep_pt_rec;
-    double subleadinglep_pt_rec;
-    double leadinglep_iso_rec;
-    double subleadinglep_iso_rec;
-    double leadinglep_eta_rec;
-    double subleadinglep_eta_rec;
-
-    bool evt_tag_leptonpt_sel_rec;
-    bool evt_tag_leptoneta_sel_rec;
-    bool evt_tag_oppositecharge_sel_rec;
-    bool evt_tag_analysisevnt_sel_rec;
-
+    Analysis_SelVariation* nominal_selection;
     Analysis_SelVariation* fake_estimation;
     Analysis_SelVariation* lepton_momentum_scale_up;
     Analysis_SelVariation* lepton_momentum_scale_down;
@@ -319,19 +295,12 @@ private:
     double evt_weight_l1prefire,  evt_weight_l1prefire_up,  evt_weight_l1prefire_down;
     double evt_weight_bveto,      evt_weight_bveto_up,      evt_weight_bveto_down;
 
-    double evt_weight_recoSF_rec, evt_weight_recoSF_up_rec, evt_weight_recoSF_down_rec;
-    double evt_weight_idSF_rec,   evt_weight_idSF_up_rec,   evt_weight_idSF_down_rec;
-    double evt_weight_isoSF_rec,  evt_weight_isoSF_up_rec,  evt_weight_isoSF_down_rec;
-    double evt_weight_trigSF_rec, evt_weight_trigSF_up_rec, evt_weight_trigSF_down_rec;
-    double evt_weight_trigSFDZ_rec, evt_weight_trigSFDZ_up_rec, evt_weight_trigSFDZ_down_rec;
-
     // gen level variables
     int dilep_motherID_hardprocess;
     int dilep_motherID_myalgorithm;
     int n_lepton_isPromptFinalState;
     int n_photon_notLeptonMother_isPromptFinalState;
     int n_photon_isPromptFinalState;
-    int n_lepton_isGammaMother_isPromptFinalState;
     int n_isPromptFinalState;
     std::vector<Int_t> photon_motherID_isPromptFinalState; 
     std::vector<Int_t> photon_motherID_isPromptFinalState_selected; 
@@ -368,8 +337,7 @@ private:
     bool evt_tag_ditau_hardprocess;
     bool evt_tag_dielectron_hardprocess;
     bool evt_tag_dimuon_hardprocess;
-    bool evt_tag_dielectron_rec;
-    bool evt_tag_dimuon_rec;
+
     bool evt_tag_bvetoed_rec;
 
 };
