@@ -22,6 +22,12 @@ void Skim_ISR::initializeAnalyzer(){
         save_detector_info = true;
         save_generator_info = true;
     }
+    else if(HasFlag("MakeZptCorrNtuple"))
+    {
+        save_detector_info = true;
+        save_generator_info = true;
+        make_zptcorr_ntuple = true;
+    }
     else
     {
         cout <<"[Skim_ISR::executeEvent] Not ready for this Flags ";
@@ -35,7 +41,15 @@ void Skim_ISR::initializeAnalyzer(){
 
     outfile->mkdir("recoTree");
     outfile->cd("recoTree");
-    newtree = fChain->CloneTree(0);
+
+    if(make_zptcorr_ntuple)
+    {
+        newtree = new TTree("SKFlat","SKFlat");
+    }
+    else
+    {
+        newtree = fChain->CloneTree(0); 
+    }
 
     newtree->Branch("evt_weight_total_gen", &evt_weight_total_gen,"evt_weight_total_gen/D");
 
@@ -63,23 +77,28 @@ void Skim_ISR::initializeAnalyzer(){
 
         // nominal
         nominal_selection = new Analysis_Variables("Nominal");
+        nominal_selection->setBranch(newtree);
+
+        if(!make_zptcorr_ntuple)
+        {
         fake_estimation = new Analysis_Variables("Fake");
         lepton_momentum_scale_up = new Analysis_Variables("LepMomScaleUp");
         lepton_momentum_scale_down = new Analysis_Variables("LepMomScaleDown");
         lepton_momentum_res_up = new Analysis_Variables("LepMomResUp");
         lepton_momentum_res_down = new Analysis_Variables("LepMomResDown");
 
-        nominal_selection->setBranch(newtree);
         fake_estimation->setBranch(newtree);
         lepton_momentum_scale_up->setBranch(newtree);
         lepton_momentum_scale_down->setBranch(newtree);
         lepton_momentum_res_up->setBranch(newtree);
         lepton_momentum_res_down->setBranch(newtree);
+        }
     }
 
     if(save_generator_info)
     {
         // gen info
+        // event categories
         newtree->Branch("evt_tag_dimuon_lhe", &evt_tag_dimuon_lhe,"evt_tag_dimuon_lhe/O");
         newtree->Branch("evt_tag_dielectron_lhe", &evt_tag_dielectron_lhe,"evt_tag_dielectron_lhe/O");
 
@@ -87,21 +106,30 @@ void Skim_ISR::initializeAnalyzer(){
         newtree->Branch("evt_tag_dielectron_hardprocess", &evt_tag_dielectron_hardprocess,"evt_tag_dielectron_hardprocess/O");
         newtree->Branch("evt_tag_dimuon_hardprocess", &evt_tag_dimuon_hardprocess,"evt_tag_dimuon_hardprocess/O");
 
-        newtree->Branch("photon_motherID_isPromptFinalState", &photon_motherID_isPromptFinalState);
+        newtree->Branch("evt_tag_dimuon_promptfinal", &evt_tag_dimuon_promptfinal, "evt_tag_dimuon_promptfinal/O");
+        newtree->Branch("evt_tag_dielectron_promptfinal", &evt_tag_dielectron_promptfinal, "evt_tag_dielectron_promptfinal/O");
+        newtree->Branch("evt_tag_emu_promptfinal", &evt_tag_emu_promptfinal, "evt_tag_emu_promptfinal/O");
+
+        if(!make_zptcorr_ntuple)
+        {
         newtree->Branch("photon_motherID_isPromptFinalState_selected", &photon_motherID_isPromptFinalState_selected);
         newtree->Branch("photon_matchedToLep_isPromptFinalState_selected", &photon_matchedToLep_isPromptFinalState_selected);
         newtree->Branch("photon_dRtoParticle_isPromptFinalState_selected", &photon_dRtoParticle_isPromptFinalState_selected);
         newtree->Branch("photon_dRtoAntiParticle_isPromptFinalState_selected", &photon_dRtoAntiParticle_isPromptFinalState_selected);
+        }
+
         newtree->Branch("n_photon_notLeptonMother_isPromptFinalState", &n_photon_notLeptonMother_isPromptFinalState, "n_photon_notLeptonMother_isPromptFinalState/I");
         newtree->Branch("n_photon_isPromptFinalState", &n_photon_isPromptFinalState, "n_photon_isPromptFinalState/I");
         newtree->Branch("n_lepton_isPromptFinalState", &n_lepton_isPromptFinalState, "n_lepton_isPromptFinalState/I");
         newtree->Branch("n_isPromptFinalState", &n_isPromptFinalState, "n_isPromptFinalState/I");
 
-        newtree->Branch("evt_tag_dielectron_fiducial_post_fsr", &evt_tag_dielectron_fiducial_post_fsr,"evt_tag_dielectron_fiducial_post_fsr/O");
-        newtree->Branch("evt_tag_dimuon_fiducial_post_fsr", &evt_tag_dimuon_fiducial_post_fsr,"evt_tag_dimuon_fiducial_post_fsr/O");
-
         newtree->Branch("dilep_motherID_hardprocess", &dilep_motherID_hardprocess,"dilep_motherID_hardprocess/I");
         newtree->Branch("dilep_motherID_myalgorithm", &dilep_motherID_myalgorithm,"dilep_motherID_myalgorithm/I");
+
+        // LHE
+        newtree->Branch("dilep_pt_lhe", &dilep_pt_lhe,"dilep_pt_lhe/D");
+        newtree->Branch("dilep_mass_lhe", &dilep_mass_lhe,"dilep_mass_lhe/D");
+        // flagged as HardProcess 
         newtree->Branch("dilep_pt_gen_prefsr", &dilep_pt_gen_prefsr,"dilep_pt_gen_prefsr/D");
         newtree->Branch("dilep_mass_gen_prefsr", &dilep_mass_gen_prefsr,"dilep_mass_gen_prefsr/D");
         newtree->Branch("particle_pt_gen_prefsr", &particle_pt_gen_prefsr,"particle_pt_gen_prefsr/D");
@@ -109,43 +137,28 @@ void Skim_ISR::initializeAnalyzer(){
         newtree->Branch("particle_eta_gen_prefsr", &particle_eta_gen_prefsr,"particle_eta_gen_prefsr/D");
         newtree->Branch("antiparticle_eta_gen_prefsr", &antiparticle_eta_gen_prefsr,"antiparticle_eta_gen_prefsr/D");
 
-        newtree->Branch("dilep_pt_lhe", &dilep_pt_lhe,"dilep_pt_lhe/D");
-        newtree->Branch("dilep_mass_lhe", &dilep_mass_lhe,"dilep_mass_lhe/D");
-
-        newtree->Branch("dilep_pt_bare_gen_ispromptfinal", &dilep_pt_bare_gen_ispromptfinal,"dilep_pt_bare_gen_ispromptfinal/D");
-        newtree->Branch("dilep_mass_bare_gen_ispromptfinal", &dilep_mass_bare_gen_ispromptfinal,"dilep_mass_bare_gen_ispromptfinal/D");
-
-        newtree->Branch("dilep_pt_FSRgammaDRp1_gen_ispromptfinal", &dilep_pt_FSRgammaDRp1_gen_ispromptfinal,"dilep_pt_FSRgammaDRp1_gen_ispromptfinal/D");
-        newtree->Branch("dilep_mass_FSRgammaDRp1_gen_ispromptfinal", &dilep_mass_FSRgammaDRp1_gen_ispromptfinal,"dilep_mass_FSRgammaDRp1_gen_ispromptfinal/D");
-
-        newtree->Branch("dilep_pt_FSRgamma_gen_ispromptfinal", &dilep_pt_FSRgamma_gen_ispromptfinal,"dilep_pt_FSRgamma_gen_ispromptfinal/D");
-        newtree->Branch("dilep_mass_FSRgamma_gen_ispromptfinal", &dilep_mass_FSRgamma_gen_ispromptfinal,"dilep_mass_FSRgamma_gen_ispromptfinal/D");
-
-        newtree->Branch("dilep_pt_alllepton_FSRgamma_gen_ispromptfinal", &dilep_pt_alllepton_FSRgamma_gen_ispromptfinal,"dilep_pt_alllepton_FSRgamma_gen_ispromptfinal/D");
-        newtree->Branch("dilep_mass_alllepton_FSRgamma_gen_ispromptfinal", &dilep_mass_alllepton_FSRgamma_gen_ispromptfinal,"dilep_mass_alllepton_FSRgamma_gen_ispromptfinal/D");
-
-        newtree->Branch("evt_tag_dimuon_promptfinal", &evt_tag_dimuon_promptfinal, "evt_tag_dimuon_promptfinal/O");
-        newtree->Branch("evt_tag_dielectron_promptfinal", &evt_tag_dielectron_promptfinal, "evt_tag_dielectron_promptfinal/O");
-        newtree->Branch("evt_tag_emu_promptfinal", &evt_tag_emu_promptfinal, "evt_tag_emu_promptfinal/O");
-
-        newtree->Branch("pass_kinematic_cut_el_bare_gen", &pass_kinematic_cut_el_bare_gen, "pass_kinematic_cut_el_bare_gen/O");
-        newtree->Branch("pass_kinematic_cut_mu_bare_gen", &pass_kinematic_cut_mu_bare_gen, "pass_kinematic_cut_mu_bare_gen/O");
-
-        newtree->Branch("pass_kinematic_cut_el_FSRgammaDRp1_gen", &pass_kinematic_cut_el_FSRgammaDRp1_gen, "pass_kinematic_cut_el_FSRgammaDRp1_gen/O");
-        newtree->Branch("pass_kinematic_cut_mu_FSRgammaDRp1_gen", &pass_kinematic_cut_mu_FSRgammaDRp1_gen, "pass_kinematic_cut_mu_FSRgammaDRp1_gen/O");
-
-        newtree->Branch("pass_kinematic_cut_el_FSRgamma_gen", &pass_kinematic_cut_el_FSRgamma_gen, "pass_kinematic_cut_el_FSRgamma_gen/O");
-        newtree->Branch("pass_kinematic_cut_mu_FSRgamma_gen", &pass_kinematic_cut_mu_FSRgamma_gen, "pass_kinematic_cut_mu_FSRgamma_gen/O");
-
-        newtree->Branch("pass_kinematic_cut_el_alllepton_FSRgamma_gen", &pass_kinematic_cut_el_alllepton_FSRgamma_gen, "pass_kinematic_cut_el_alllepton_FSRgamma_gen/O");
-        newtree->Branch("pass_kinematic_cut_mu_alllepton_FSRgamma_gen", &pass_kinematic_cut_mu_alllepton_FSRgamma_gen, "pass_kinematic_cut_mu_alllepton_FSRgamma_gen/O");
-
         newtree->Branch("dilep_pt_gen_postfsr", &dilep_pt_gen_postfsr,"dilep_pt_gen_postfsr/D");
         newtree->Branch("dilep_mass_gen_postfsr", &dilep_mass_gen_postfsr,"dilep_mass_gen_postfsr/D");
         newtree->Branch("particle_pt_gen_postfsr", &particle_pt_gen_postfsr,"particle_pt_gen_postfsr/D");
         newtree->Branch("antiparticle_pt_gen_postfsr", &antiparticle_pt_gen_postfsr,"antiparticle_pt_gen_postfsr/D");
         newtree->Branch("particle_eta_gen_postfsr", &particle_eta_gen_postfsr,"particle_eta_gen_postfsr/D");
         newtree->Branch("antiparticle_eta_gen_postfsr", &antiparticle_eta_gen_postfsr,"antiparticle_eta_gen_postfsr/D");
+
+        newtree->Branch("dilep_pt_FSRgammaDRp1_gen_ispromptfinal", &dilep_pt_FSRgammaDRp1_gen_ispromptfinal,"dilep_pt_FSRgammaDRp1_gen_ispromptfinal/D");
+        newtree->Branch("dilep_mass_FSRgammaDRp1_gen_ispromptfinal", &dilep_mass_FSRgammaDRp1_gen_ispromptfinal,"dilep_mass_FSRgammaDRp1_gen_ispromptfinal/D");
+        newtree->Branch("dilep_pt_FSRgamma_gen_ispromptfinal", &dilep_pt_FSRgamma_gen_ispromptfinal,"dilep_pt_FSRgamma_gen_ispromptfinal/D");
+        newtree->Branch("dilep_mass_FSRgamma_gen_ispromptfinal", &dilep_mass_FSRgamma_gen_ispromptfinal,"dilep_mass_FSRgamma_gen_ispromptfinal/D");
+        newtree->Branch("dilep_pt_alllepton_FSRgamma_gen_ispromptfinal", &dilep_pt_alllepton_FSRgamma_gen_ispromptfinal,"dilep_pt_alllepton_FSRgamma_gen_ispromptfinal/D");
+        newtree->Branch("dilep_mass_alllepton_FSRgamma_gen_ispromptfinal", &dilep_mass_alllepton_FSRgamma_gen_ispromptfinal,"dilep_mass_alllepton_FSRgamma_gen_ispromptfinal/D");
+
+        newtree->Branch("pass_kinematic_cut_el_bare_gen", &pass_kinematic_cut_el_bare_gen, "pass_kinematic_cut_el_bare_gen/O");
+        newtree->Branch("pass_kinematic_cut_mu_bare_gen", &pass_kinematic_cut_mu_bare_gen, "pass_kinematic_cut_mu_bare_gen/O");
+        newtree->Branch("pass_kinematic_cut_el_FSRgammaDRp1_gen", &pass_kinematic_cut_el_FSRgammaDRp1_gen, "pass_kinematic_cut_el_FSRgammaDRp1_gen/O");
+        newtree->Branch("pass_kinematic_cut_mu_FSRgammaDRp1_gen", &pass_kinematic_cut_mu_FSRgammaDRp1_gen, "pass_kinematic_cut_mu_FSRgammaDRp1_gen/O");
+        newtree->Branch("pass_kinematic_cut_el_FSRgamma_gen", &pass_kinematic_cut_el_FSRgamma_gen, "pass_kinematic_cut_el_FSRgamma_gen/O");
+        newtree->Branch("pass_kinematic_cut_mu_FSRgamma_gen", &pass_kinematic_cut_mu_FSRgamma_gen, "pass_kinematic_cut_mu_FSRgamma_gen/O");
+        newtree->Branch("pass_kinematic_cut_el_alllepton_FSRgamma_gen", &pass_kinematic_cut_el_alllepton_FSRgamma_gen, "pass_kinematic_cut_el_alllepton_FSRgamma_gen/O");
+        newtree->Branch("pass_kinematic_cut_mu_alllepton_FSRgamma_gen", &pass_kinematic_cut_mu_alllepton_FSRgamma_gen, "pass_kinematic_cut_mu_alllepton_FSRgamma_gen/O");
     }
 
     // clear vector residual
@@ -231,9 +244,6 @@ void Skim_ISR::executeEvent()
     dilep_pt_lhe = -999.;
     dilep_mass_lhe = -999.;
 
-    dilep_pt_bare_gen_ispromptfinal = -999.;
-    dilep_mass_bare_gen_ispromptfinal = -999.;
-
     dilep_pt_FSRgammaDRp1_gen_ispromptfinal = -999.;
     dilep_mass_FSRgammaDRp1_gen_ispromptfinal = -999.;
 
@@ -280,10 +290,6 @@ void Skim_ISR::executeEvent()
     evt_tag_dimuon_hardprocess = 0;
     evt_tag_bvetoed_rec = 0;
 
-    evt_tag_dielectron_fiducial_post_fsr = false;
-    evt_tag_dimuon_fiducial_post_fsr = false;
-
-    photon_motherID_isPromptFinalState.clear();
     photon_motherID_isPromptFinalState_selected.clear();
     photon_matchedToLep_isPromptFinalState_selected.clear();
     photon_dRtoParticle_isPromptFinalState_selected.clear();
@@ -397,7 +403,6 @@ void Skim_ISR::executeEvent()
                 if(abs(current_particle_id) == 22)
                 {
                     n_photon_isPromptFinalState++;
-                    photon_motherID_isPromptFinalState.push_back(gen_particles.at(gen_particles.at(i).MotherIndex()).PID());
                     gen_photon_isPromptFinalstate.push_back(gen_particles.at(i));
                 }
             }
@@ -600,8 +605,6 @@ void Skim_ISR::executeEvent()
 
                 dilep_isPromptFinalState += gen_lepton_isPromptFinalstate.at(l1index);
                 dilep_isPromptFinalState += gen_antilepton_isPromptFinalstate.at(l2index);
-                dilep_pt_bare_gen_ispromptfinal = (dilep_isPromptFinalState).Pt();
-                dilep_mass_bare_gen_ispromptfinal = (dilep_isPromptFinalState).M();
 
                 gen_particle_index_status1     = gen_lepton_isPromptFinalstate.at(l1index).getIndex();
                 gen_antiparticle_index_status1 = gen_antilepton_isPromptFinalstate.at(l2index).getIndex();
@@ -609,12 +612,6 @@ void Skim_ISR::executeEvent()
                 if(debug_) cout << "gen_antiparticle_index_status1: " << gen_antiparticle_index_status1 << endl;
                 dilep_motherID_myalgorithm = gen_particles.at(DYInitIndex).PID();
                 if(debug_) cout << "DYInitIndex: " << DYInitIndex << endl;
-
-                // cout << "particle_index: " << particle_index << endl;
-                // cout << "antiparticle_index: " << antiparticle_index << endl;
-                // if  PID(particle_index) != initial_PID then the selected lepton is the initial lepton
-                //if(particle_index != gen_particle_index_ME) cout << "Initial particle index different from gen_particle_index_ME " << endl;
-                //if(antiparticle_index != gen_antiparticle_index_ME) cout << "Initial antiparticle index different from gen_particle_index_ME " << endl;
 
                 // save index between status 1 and the DY initial index
                 std::map<int, int> index_map;
@@ -631,7 +628,7 @@ void Skim_ISR::executeEvent()
                 {
                     cout << "Hardprocess pt, mass: " << dilep_pt_gen_prefsr << ", " << dilep_mass_gen_prefsr << endl;
                     cout << "----------------------------------------------------------------------------------------------" << endl;
-                    cout << "dilepton pt, mass from the two leading leptons: " << dilep_pt_bare_gen_ispromptfinal << ", " << dilep_mass_bare_gen_ispromptfinal << endl;
+                    cout << "dilepton pt, mass from the two leading leptons: " << (dilep_isPromptFinalState).Pt() << ", " << (dilep_isPromptFinalState).M() << endl;
                 }
 
                 int photon_size = gen_photon_isPromptFinalstate.size();
@@ -645,7 +642,7 @@ void Skim_ISR::executeEvent()
                 // Add photons to the selected leptons
                 for(int i = 0; i < photon_size; i++)
                 {
-                    if(gen_particles.at(gen_photon_isPromptFinalstate.at(i).MotherIndex()).PID() == 2212) continue;
+                    //if(gen_particles.at(gen_photon_isPromptFinalstate.at(i).MotherIndex()).PID() == 2212) continue;
 
                     double dr_lepton_gamma =     gen_lepton_isPromptFinalstate.at(l1index).DeltaR(gen_photon_isPromptFinalstate.at(i));
                     double dr_antilepton_gamma = gen_antilepton_isPromptFinalstate.at(l2index).DeltaR(gen_photon_isPromptFinalstate.at(i));
@@ -654,7 +651,6 @@ void Skim_ISR::executeEvent()
                     photon_dRtoParticle_isPromptFinalState_selected.push_back(dr_lepton_gamma);
                     photon_dRtoAntiParticle_isPromptFinalState_selected.push_back(dr_antilepton_gamma);
 
-                    //if(index_map.find(gen_photon_isPromptFinalstate.at(i).MotherIndex()) != index_map.end())
                     if(isMatchedToDYIndexMap(gen_photon_isPromptFinalstate.at(i).MotherIndex(), DYInitIndex, index_map))
                         photon_matchedToLep_isPromptFinalState_selected.push_back(true);
                     else
@@ -689,7 +685,6 @@ void Skim_ISR::executeEvent()
                     else
                     {
                         // require photon from leptons decayed from the initial lepton
-                        //if(index_map.find(gen_photon_isPromptFinalstate.at(i).MotherIndex()) != index_map.end())
                         if(isMatchedToDYIndexMap(gen_photon_isPromptFinalstate.at(i).MotherIndex(), DYInitIndex, index_map))
                         {
                             photon_greater_DRp1 += gen_photon_isPromptFinalstate.at(i);
@@ -845,6 +840,13 @@ void Skim_ISR::executeEvent()
     // reconstruction level
     // PassMETFilter needed for ISR?
     // lets save tag for each selection cut
+    /////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                                     //
+    //                                                                                     //
+    //                             Reconstruction level                                    //
+    //                                                                                     //
+    //                                                                                     //
+    /////////////////////////////////////////////////////////////////////////////////////////
 
     if(PassMETFilter()) is_met_filter_passed = true;
 
@@ -932,17 +934,15 @@ void Skim_ISR::executeEvent()
     AllMuons = GetAllMuons();
     AllElectrons = GetAllElectrons();
 
-    IsMuMu = 0;
-    IsElEl = 0;
-    leps.clear();
-
+    clearVariables();
     AnalyzerParameter param;
 
-    nominal_selection->initVariables();                                                                                                                                                                                                                                                                               
+    nominal_selection->initVariables(); 
     executeEventFromParameter(param, nominal_selection, false, 0);
     param.Clear();
-    clearVariables();
 
+    if(!make_zptcorr_ntuple)
+    {
     // for fake estimation
     // set parameters
     // Muon ID
@@ -963,48 +963,32 @@ void Skim_ISR::executeEvent()
     param.Jet_ID = "tight";
     param.FatJet_ID = "tight";
 
-    IsMuMu = 0;
-    IsElEl = 0;
-    leps.clear();
-
+    clearVariables();
     fake_estimation->initVariables();
     executeEventFromParameter(param, fake_estimation, true);
     param.Clear();
-    clearVariables();
-
-    IsMuMu = 0;
-    IsElEl = 0;
-    leps.clear();
-    clearVariables();
 
     // for lepton momentum variation
+    clearVariables();
     lepton_momentum_scale_up->initVariables();
     executeEventFromParameter(param, lepton_momentum_scale_up, false, 1);
+    param.Clear();
 
-    IsMuMu = 0;
-    IsElEl = 0;
-    leps.clear();
     clearVariables();
-
     lepton_momentum_scale_down->initVariables();
     executeEventFromParameter(param, lepton_momentum_scale_down, false, 2);
+    param.Clear();
 
-    IsMuMu = 0;
-    IsElEl = 0;
-    leps.clear();
     clearVariables();
-
     lepton_momentum_res_up->initVariables();
     executeEventFromParameter(param, lepton_momentum_res_up, false, 3);
+    param.Clear();
 
-    IsMuMu = 0;
-    IsElEl = 0;
-    leps.clear();
     clearVariables();
-
     lepton_momentum_res_down->initVariables();
     executeEventFromParameter(param, lepton_momentum_res_down, false, 4);
-
+    param.Clear();
+    }
     newtree->Fill();
     delete evt;
 }
@@ -1043,7 +1027,6 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
 
     if(!is_fake_estimation)
     {
-
         // select analysis leptons
         vector<Muon> muons_         = GetMuons("POGTightWithTightIso", 7., 2.4, true, false, 0, 0, scale_res_sys);
         vector<Electron> electrons_ = GetElectrons("passMediumID",     9., 2.5, true, scale_res_sys);
@@ -1060,8 +1043,6 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
         if(muons_.size() == 2)
         {
             IsMuMu = 1;
-            p_struct->mu1_ntuple_index_ = muons_.at(0).getNtupleIndex();
-            p_struct->mu2_ntuple_index_ = muons_.at(1).getNtupleIndex();
 
             int veto_mu_size = veto_muons_.size();
             p_struct->additional_veto_mu_size_ = 0;
@@ -1076,8 +1057,6 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
         if(electrons_.size() == 2)
         {
             IsElEl = 1;
-            p_struct->el1_ntuple_index_ = electrons_.at(0).getNtupleIndex();
-            p_struct->el2_ntuple_index_ = electrons_.at(1).getNtupleIndex();
 
             int veto_el_size = veto_electrons_.size();
             p_struct->additional_veto_el_size_ = 0;
@@ -1496,10 +1475,6 @@ void Analysis_Variables::initVariables()
 
     additional_veto_mu_size_ = 0;
     additional_veto_el_size_ = 0;
-    el1_ntuple_index_ = -1;
-    el2_ntuple_index_ = -1;
-    mu1_ntuple_index_ = -1;
-    mu2_ntuple_index_ = -1;
 
     evt_tag_TT_rec_                 = false;
     evt_tag_TL_rec_                 = false;
@@ -1533,10 +1508,6 @@ void Analysis_Variables::setBranch(TTree *tree)
     tree->Branch(evt_tag_dimuon_rec_brname,                &evt_tag_dimuon_rec_);
     tree->Branch(additional_veto_mu_size_brname,           &additional_veto_mu_size_);
     tree->Branch(additional_veto_el_size_brname,           &additional_veto_el_size_);
-    tree->Branch(el1_ntuple_index_brname,                  &el1_ntuple_index_);
-    tree->Branch(el2_ntuple_index_brname,                  &el2_ntuple_index_);
-    tree->Branch(mu1_ntuple_index_brname,                  &mu1_ntuple_index_);
-    tree->Branch(mu2_ntuple_index_brname,                  &mu2_ntuple_index_);
     tree->Branch(evt_tag_TT_rec_brname,                    &evt_tag_TT_rec_);
     tree->Branch(evt_tag_TL_rec_brname,                    &evt_tag_TL_rec_);
     tree->Branch(evt_tag_LL_rec_brname,                    &evt_tag_LL_rec_);
@@ -1567,82 +1538,86 @@ void Analysis_Variables::setBranch(TTree *tree)
     tree->Branch(evt_weight_trigSFDZ_down_rec_brname,   &evt_weight_trigSFDZ_down_rec_);
 }
 
-Skim_ISR::Skim_ISR(){
-
+Skim_ISR::Skim_ISR()
+{
+    save_detector_info = false;
+    save_generator_info = false;
+    make_zptcorr_ntuple = false;
 }
 
-Skim_ISR::~Skim_ISR(){
+Skim_ISR::~Skim_ISR()
+{
 
 }
 
 void Skim_ISR::WriteHist()
 {
 
-  //outfile->mkdir("recoTree");
-  //outfile->cd("recoTree"); Already at Skim_ISR::initializeAnalyzer
-  newtree->AutoSave();
-  //newtree->Write();
-  outfile->cd();
-  for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
-    TString this_fullname=mapit->second->GetName();
-    TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
-    TString this_suffix=this_fullname(0,this_fullname.Last('/'));
-    TDirectory *dir = outfile->GetDirectory(this_suffix);
-    if(!dir){
-      outfile->mkdir(this_suffix);
+    //outfile->mkdir("recoTree");
+    //outfile->cd("recoTree"); Already at Skim_ISR::initializeAnalyzer
+    newtree->AutoSave();
+    //newtree->Write();
+    outfile->cd();
+    for(std::map< TString, TH1D* >::iterator mapit = maphist_TH1D.begin(); mapit!=maphist_TH1D.end(); mapit++){
+      TString this_fullname=mapit->second->GetName();
+      TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
+      TString this_suffix=this_fullname(0,this_fullname.Last('/'));
+      TDirectory *dir = outfile->GetDirectory(this_suffix);
+      if(!dir){
+        outfile->mkdir(this_suffix);
+      }
+      outfile->cd(this_suffix);
+      mapit->second->Write(this_name);
     }
-    outfile->cd(this_suffix);
-    mapit->second->Write(this_name);
-  }
-  for(std::map< TString, TH2D* >::iterator mapit = maphist_TH2D.begin(); mapit!=maphist_TH2D.end(); mapit++){
-    TString this_fullname=mapit->second->GetName();
-    TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
-    TString this_suffix=this_fullname(0,this_fullname.Last('/'));
-    TDirectory *dir = outfile->GetDirectory(this_suffix);
-    if(!dir){
-      outfile->mkdir(this_suffix);
-    }
-    outfile->cd(this_suffix);
-    mapit->second->Write(this_name);
-  }
-
-  outfile->cd();
-  for(std::map< TString, std::map<TString, TH1D*> >::iterator mapit=JSmaphist_TH1D.begin(); mapit!=JSmaphist_TH1D.end(); mapit++){
-
-    TString this_suffix = mapit->first;
-    std::map< TString, TH1D* > this_maphist = mapit->second;
-
-
-    TDirectory *dir = outfile->GetDirectory(this_suffix);
-    if(!dir){
-      outfile->mkdir(this_suffix);
-    }
-    outfile->cd(this_suffix);
-
-    for(std::map< TString, TH1D* >::iterator mapit = this_maphist.begin(); mapit!=this_maphist.end(); mapit++){
-      mapit->second->Write();
+    for(std::map< TString, TH2D* >::iterator mapit = maphist_TH2D.begin(); mapit!=maphist_TH2D.end(); mapit++){
+      TString this_fullname=mapit->second->GetName();
+      TString this_name=this_fullname(this_fullname.Last('/')+1,this_fullname.Length());
+      TString this_suffix=this_fullname(0,this_fullname.Last('/'));
+      TDirectory *dir = outfile->GetDirectory(this_suffix);
+      if(!dir){
+        outfile->mkdir(this_suffix);
+      }
+      outfile->cd(this_suffix);
+      mapit->second->Write(this_name);
     }
 
     outfile->cd();
+    for(std::map< TString, std::map<TString, TH1D*> >::iterator mapit=JSmaphist_TH1D.begin(); mapit!=JSmaphist_TH1D.end(); mapit++){
 
-  }
+      TString this_suffix = mapit->first;
+      std::map< TString, TH1D* > this_maphist = mapit->second;
 
-  for(std::map< TString, std::map<TString, TH2D*> >::iterator mapit=JSmaphist_TH2D.begin(); mapit!=JSmaphist_TH2D.end(); mapit++){
 
-    TString this_suffix = mapit->first;
-    std::map< TString, TH2D* > this_maphist = mapit->second;
+      TDirectory *dir = outfile->GetDirectory(this_suffix);
+      if(!dir){
+        outfile->mkdir(this_suffix);
+      }
+      outfile->cd(this_suffix);
 
-    TDirectory *dir = outfile->GetDirectory(this_suffix);
-    if(!dir){
-      outfile->mkdir(this_suffix);
+      for(std::map< TString, TH1D* >::iterator mapit = this_maphist.begin(); mapit!=this_maphist.end(); mapit++){
+        mapit->second->Write();
+      }
+
+      outfile->cd();
+
     }
-    outfile->cd(this_suffix);
 
-    for(std::map< TString, TH2D* >::iterator mapit = this_maphist.begin(); mapit!=this_maphist.end(); mapit++){
-      mapit->second->Write();
+    for(std::map< TString, std::map<TString, TH2D*> >::iterator mapit=JSmaphist_TH2D.begin(); mapit!=JSmaphist_TH2D.end(); mapit++){
+
+      TString this_suffix = mapit->first;
+      std::map< TString, TH2D* > this_maphist = mapit->second;
+
+      TDirectory *dir = outfile->GetDirectory(this_suffix);
+      if(!dir){
+        outfile->mkdir(this_suffix);
+      }
+      outfile->cd(this_suffix);
+
+      for(std::map< TString, TH2D* >::iterator mapit = this_maphist.begin(); mapit!=this_maphist.end(); mapit++){
+        mapit->second->Write();
+      }
+
+      outfile->cd();
     }
-
-    outfile->cd();
-  }
 }
 

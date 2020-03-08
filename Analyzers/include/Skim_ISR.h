@@ -6,7 +6,6 @@
 
 struct Analysis_Variables 
 {
-
     TString prefix;
 
     bool evt_tag_analysisevnt_sel_rec_;
@@ -18,12 +17,6 @@ struct Analysis_Variables
 
     int additional_veto_mu_size_;
     int additional_veto_el_size_;
-
-    int el1_ntuple_index_;
-    int el2_ntuple_index_;
-
-    int mu1_ntuple_index_;
-    int mu2_ntuple_index_;
 
     double dilep_pt_rec_;
     double dilep_mass_rec_;
@@ -57,10 +50,6 @@ struct Analysis_Variables
 
     TString additional_veto_mu_size_brname;
     TString additional_veto_el_size_brname;
-    TString el1_ntuple_index_brname;
-    TString el2_ntuple_index_brname;
-    TString mu1_ntuple_index_brname;
-    TString mu2_ntuple_index_brname;
 
     TString dilep_pt_rec_brname;
     TString dilep_mass_rec_brname;
@@ -94,10 +83,6 @@ struct Analysis_Variables
 
         additional_veto_mu_size_ = 0;
         additional_veto_el_size_ = 0;
-        el1_ntuple_index_ = -1;
-        el2_ntuple_index_ = -1;
-        mu1_ntuple_index_ = -1;
-        mu2_ntuple_index_ = -1;
 
         dilep_pt_rec_                   = -999.;
         dilep_mass_rec_                 = -999.;
@@ -129,10 +114,6 @@ struct Analysis_Variables
 
         additional_veto_mu_size_brname = "additional_veto_mu_size_" + prefix;
         additional_veto_el_size_brname = "additional_veto_el_size_" + prefix;;
-        el1_ntuple_index_brname        = "el1_ntuple_index_" + prefix;
-        el2_ntuple_index_brname        = "el2_ntuple_index_" + prefix;
-        mu1_ntuple_index_brname        = "mu1_ntuple_index_" + prefix;
-        mu2_ntuple_index_brname        = "mu2_ntuple_index_" + prefix;
 
         dilep_pt_rec_brname                 = "dilep_pt_rec_" + prefix;
         dilep_mass_rec_brname               = "dilep_mass_rec_" + prefix;
@@ -222,6 +203,7 @@ private:
 
     bool save_detector_info;
     bool save_generator_info;
+    bool make_zptcorr_ntuple;
 
     vector<Muon> AllMuons;
     vector<Electron> AllElectrons;
@@ -255,9 +237,6 @@ private:
 
     bool pass_kinematic_cut_el_alllepton_FSRgamma_gen;
     bool pass_kinematic_cut_mu_alllepton_FSRgamma_gen;
-
-    double dilep_pt_bare_gen_ispromptfinal;
-    double dilep_mass_bare_gen_ispromptfinal;
 
     double dilep_pt_FSRgammaDRp1_gen_ispromptfinal;
     double dilep_mass_FSRgammaDRp1_gen_ispromptfinal;
@@ -302,7 +281,6 @@ private:
     int n_photon_notLeptonMother_isPromptFinalState;
     int n_photon_isPromptFinalState;
     int n_isPromptFinalState;
-    std::vector<Int_t> photon_motherID_isPromptFinalState; 
     std::vector<Int_t> photon_motherID_isPromptFinalState_selected; 
     std::vector<Bool_t> photon_matchedToLep_isPromptFinalState_selected; 
     std::vector<Double_t> photon_dRtoParticle_isPromptFinalState_selected; 
@@ -329,7 +307,6 @@ private:
 
     int  photon_n_gen;
     int  lepton_matched_photon_n_gen;
-    bool evt_tag_dielectron_fiducial_post_fsr;
     bool evt_tag_dimuon_fiducial_post_fsr;
 
     bool evt_tag_dielectron_lhe;
