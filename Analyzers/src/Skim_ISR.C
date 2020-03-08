@@ -41,7 +41,6 @@ void Skim_ISR::initializeAnalyzer(){
 
     if(save_detector_info)
     {
-        // New Branch
         newtree->Branch("evt_weight_total_rec",  &evt_weight_total_rec, "evt_weight_total_rec/D");
 
         newtree->Branch("evt_weight_pureweight", &evt_weight_pureweight,"evt_weight_pureweight/D");
@@ -63,21 +62,17 @@ void Skim_ISR::initializeAnalyzer(){
         newtree->Branch("evt_tag_bvetoed_rec", &evt_tag_bvetoed_rec,"evt_tag_bvetoed_rec/O");
 
         // nominal
-        nominal_selection = new Analysis_SelVariation("Nominal");
+        nominal_selection = new Analysis_Variables("Nominal");
+        fake_estimation = new Analysis_Variables("Fake");
+        lepton_momentum_scale_up = new Analysis_Variables("LepMomScaleUp");
+        lepton_momentum_scale_down = new Analysis_Variables("LepMomScaleDown");
+        lepton_momentum_res_up = new Analysis_Variables("LepMomResUp");
+        lepton_momentum_res_down = new Analysis_Variables("LepMomResDown");
+
         nominal_selection->setBranch(newtree);
-
-        fake_estimation = new Analysis_SelVariation("Fake");
         fake_estimation->setBranch(newtree);
-
-        lepton_momentum_scale_up = new Analysis_SelVariation("LepMomScaleUp");
-        lepton_momentum_scale_down = new Analysis_SelVariation("LepMomScaleDown");
-
-        lepton_momentum_res_up = new Analysis_SelVariation("LepMomResUp");
-        lepton_momentum_res_down = new Analysis_SelVariation("LepMomResDown");
-
         lepton_momentum_scale_up->setBranch(newtree);
         lepton_momentum_scale_down->setBranch(newtree);
-
         lepton_momentum_res_up->setBranch(newtree);
         lepton_momentum_res_down->setBranch(newtree);
     }
@@ -158,8 +153,8 @@ void Skim_ISR::initializeAnalyzer(){
     DiElTrgs.clear();
 
     cout << "[Skim_ISR::initializeAnalyzer] Skim List====================== " << endl;
-    if(DataYear==2016){
-
+    if(DataYear==2016)
+    {
         SingleMuTrgs = {
           "HLT_IsoMu24_v",
           "HLT_IsoTkMu24_v"
@@ -180,7 +175,8 @@ void Skim_ISR::initializeAnalyzer(){
           "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"
         };
     }
-    else if(DataYear==2017){
+    else if(DataYear==2017)
+    {
         DiMuTrgs = {
           "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v",
         };
@@ -188,7 +184,8 @@ void Skim_ISR::initializeAnalyzer(){
           "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"
         };
     }
-    else if(DataYear==2018){
+    else if(DataYear==2018)
+    {
         DiMuTrgs = {
           "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v",
         };
@@ -196,16 +193,19 @@ void Skim_ISR::initializeAnalyzer(){
           "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v"
         };
     }
-    else{
+    else
+    {
         cout<<"[Skim_ISR::executeEvent] ERROR, this year "<<DataYear<<" is not prepared sorry, exiting..."<<endl;
         exit(EXIT_FAILURE);
     }
 
     cout << "\t"<<"doubleTrgs to skim = " << endl;
-    for(unsigned int i=0; i<DiMuTrgs.size(); i++){
+    for(unsigned int i=0; i<DiMuTrgs.size(); i++)
+    {
       cout << "\t" << DiMuTrgs.at(i) << endl;
     }
-    for(unsigned int i=0; i<DiElTrgs.size(); i++){
+    for(unsigned int i=0; i<DiElTrgs.size(); i++)
+    {
       cout << "\t" << DiElTrgs.at(i) << endl;
     }
 }
@@ -1035,7 +1035,7 @@ void Skim_ISR::clearVariables()
     leps.clear();
 }
 
-void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_SelVariation* p_struct, bool is_fake_estimation, const int scale_res_sys)
+void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Variables* p_struct, bool is_fake_estimation, const int scale_res_sys)
 {
 
     vector<Muon> this_AllMuons = AllMuons;
@@ -1485,9 +1485,8 @@ void Skim_ISR::saveIndexToVector(int current_index, int mother_index, std::vecto
 }
 
 
-void Analysis_SelVariation::initVariables()
+void Analysis_Variables::initVariables()
 {
-
     evt_tag_analysisevnt_sel_rec_   = false;
     evt_tag_oppositecharge_sel_rec_ = false;
     evt_tag_leptonpt_sel_rec_       = false;
@@ -1516,15 +1515,14 @@ void Analysis_SelVariation::initVariables()
     leadinglep_eta_rec_             = -999.;
     subleadinglep_eta_rec_          = -999.;
 
-    evt_weight_recoSF_rec_ = 1., evt_weight_recoSF_up_rec_ = 1., evt_weight_recoSF_down_rec_ = 1.;
-    evt_weight_idSF_rec_ = 1.,   evt_weight_idSF_up_rec_ = 1.,   evt_weight_idSF_down_rec_ = 1.;
-    evt_weight_isoSF_rec_ = 1.,  evt_weight_isoSF_up_rec_ = 1.,  evt_weight_isoSF_down_rec_ = 1.;
-    evt_weight_trigSF_rec_ = 1., evt_weight_trigSF_up_rec_ = 1., evt_weight_trigSF_down_rec_ = 1.;
-    evt_weight_trigSFDZ_rec_ = 1., evt_weight_trigSFDZ_up_rec_ = 1., evt_weight_trigSFDZ_down_rec_ = 1.;
-
+    evt_weight_recoSF_rec_ = 1.,        evt_weight_recoSF_up_rec_ = 1.,         evt_weight_recoSF_down_rec_ = 1.;
+    evt_weight_idSF_rec_ = 1.,          evt_weight_idSF_up_rec_ = 1.,           evt_weight_idSF_down_rec_ = 1.;
+    evt_weight_isoSF_rec_ = 1.,         evt_weight_isoSF_up_rec_ = 1.,          evt_weight_isoSF_down_rec_ = 1.;
+    evt_weight_trigSF_rec_ = 1.,        evt_weight_trigSF_up_rec_ = 1.,         evt_weight_trigSF_down_rec_ = 1.;
+    evt_weight_trigSFDZ_rec_ = 1.,      evt_weight_trigSFDZ_up_rec_ = 1.,       evt_weight_trigSFDZ_down_rec_ = 1.;
 }
 
-void Analysis_SelVariation::setBranch(TTree *tree)
+void Analysis_Variables::setBranch(TTree *tree)
 {
 
     tree->Branch(evt_tag_analysisevnt_sel_rec_brname,      &evt_tag_analysisevnt_sel_rec_);
@@ -1552,21 +1550,21 @@ void Analysis_SelVariation::setBranch(TTree *tree)
     tree->Branch(leadinglep_eta_rec_brname,                &leadinglep_eta_rec_);
     tree->Branch(subleadinglep_eta_rec_brname,             &subleadinglep_eta_rec_);
 
-    tree->Branch(evt_weight_recoSF_rec_brname, &evt_weight_recoSF_rec_);
-    tree->Branch(evt_weight_recoSF_up_rec_brname, &evt_weight_recoSF_up_rec_);
-    tree->Branch(evt_weight_recoSF_down_rec_brname, &evt_weight_recoSF_down_rec_);
-    tree->Branch(evt_weight_idSF_rec_brname, &evt_weight_idSF_rec_);
-    tree->Branch(evt_weight_idSF_up_rec_brname, &evt_weight_idSF_up_rec_);
-    tree->Branch(evt_weight_idSF_down_rec_brname, &evt_weight_idSF_down_rec_);
-    tree->Branch(evt_weight_isoSF_rec_brname, &evt_weight_isoSF_rec_);
-    tree->Branch(evt_weight_isoSF_up_rec_brname, &evt_weight_isoSF_up_rec_);
-    tree->Branch(evt_weight_isoSF_down_rec_brname, &evt_weight_isoSF_down_rec_);
-    tree->Branch(evt_weight_trigSF_rec_brname, &evt_weight_trigSF_rec_);
-    tree->Branch(evt_weight_trigSF_up_rec_brname, &evt_weight_trigSF_up_rec_);
-    tree->Branch(evt_weight_trigSF_down_rec_brname, &evt_weight_trigSF_down_rec_);
-    tree->Branch(evt_weight_trigSFDZ_rec_brname, &evt_weight_trigSFDZ_rec_);
-    tree->Branch(evt_weight_trigSFDZ_up_rec_brname, &evt_weight_trigSFDZ_up_rec_);
-    tree->Branch(evt_weight_trigSFDZ_down_rec_brname, &evt_weight_trigSFDZ_down_rec_);
+    tree->Branch(evt_weight_recoSF_rec_brname,          &evt_weight_recoSF_rec_);
+    tree->Branch(evt_weight_recoSF_up_rec_brname,       &evt_weight_recoSF_up_rec_);
+    tree->Branch(evt_weight_recoSF_down_rec_brname,     &evt_weight_recoSF_down_rec_);
+    tree->Branch(evt_weight_idSF_rec_brname,            &evt_weight_idSF_rec_);
+    tree->Branch(evt_weight_idSF_up_rec_brname,         &evt_weight_idSF_up_rec_);
+    tree->Branch(evt_weight_idSF_down_rec_brname,       &evt_weight_idSF_down_rec_);
+    tree->Branch(evt_weight_isoSF_rec_brname,           &evt_weight_isoSF_rec_);
+    tree->Branch(evt_weight_isoSF_up_rec_brname,        &evt_weight_isoSF_up_rec_);
+    tree->Branch(evt_weight_isoSF_down_rec_brname,      &evt_weight_isoSF_down_rec_);
+    tree->Branch(evt_weight_trigSF_rec_brname,          &evt_weight_trigSF_rec_);
+    tree->Branch(evt_weight_trigSF_up_rec_brname,       &evt_weight_trigSF_up_rec_);
+    tree->Branch(evt_weight_trigSF_down_rec_brname,     &evt_weight_trigSF_down_rec_);
+    tree->Branch(evt_weight_trigSFDZ_rec_brname,        &evt_weight_trigSFDZ_rec_);
+    tree->Branch(evt_weight_trigSFDZ_up_rec_brname,     &evt_weight_trigSFDZ_up_rec_);
+    tree->Branch(evt_weight_trigSFDZ_down_rec_brname,   &evt_weight_trigSFDZ_down_rec_);
 }
 
 Skim_ISR::Skim_ISR(){

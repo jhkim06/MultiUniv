@@ -4,7 +4,7 @@
 #include "AnalyzerCore.h"
 #include "RootHelper.h"
 
-struct Analysis_SelVariation 
+struct Analysis_Variables 
 {
 
     TString prefix;
@@ -83,7 +83,7 @@ struct Analysis_SelVariation
     TString evt_weight_TL_rec_brname;
     TString evt_weight_LL_rec_brname;
 
-    Analysis_SelVariation(TString prefix_ = "Fake"): prefix(prefix_) 
+    Analysis_Variables(TString prefix_ = "Fake"): prefix(prefix_) 
     {
         evt_tag_analysisevnt_sel_rec_   = false;
         evt_tag_oppositecharge_sel_rec_ = false;
@@ -175,7 +175,7 @@ class Skim_ISR : public AnalyzerCore {
 public:
 
     void initializeAnalyzer();
-    void executeEventFromParameter(AnalyzerParameter param, Analysis_SelVariation * p_struct, bool fake_estimation = false, const int scale_res_sys = 0);
+    void executeEventFromParameter(AnalyzerParameter param, Analysis_Variables * p_struct, bool fake_estimation = false, const int scale_res_sys = 0);
     void executeEvent();
     
     int findDYInitIndex(int l1_index, int l2_index, bool &zvertex);
@@ -280,12 +280,12 @@ private:
     bool is_diel_tri_passed;
     bool is_dimu_tri_passed;
 
-    Analysis_SelVariation* nominal_selection;
-    Analysis_SelVariation* fake_estimation;
-    Analysis_SelVariation* lepton_momentum_scale_up;
-    Analysis_SelVariation* lepton_momentum_scale_down;
-    Analysis_SelVariation* lepton_momentum_res_up;
-    Analysis_SelVariation* lepton_momentum_res_down;
+    Analysis_Variables* nominal_selection;
+    Analysis_Variables* fake_estimation;
+    Analysis_Variables* lepton_momentum_scale_up;
+    Analysis_Variables* lepton_momentum_scale_down;
+    Analysis_Variables* lepton_momentum_res_up;
+    Analysis_Variables* lepton_momentum_res_down;
 
     double evt_weight_total_gen;
     double evt_weight_total_rec;
