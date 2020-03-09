@@ -1,6 +1,7 @@
 #include "Skim_ISR.h"
 
-void Skim_ISR::initializeAnalyzer(){
+void Skim_ISR::initializeAnalyzer()
+{
 
     //=================================
     // Skim Types
@@ -109,6 +110,7 @@ void Skim_ISR::initializeAnalyzer(){
         newtree->Branch("evt_tag_dimuon_promptfinal", &evt_tag_dimuon_promptfinal, "evt_tag_dimuon_promptfinal/O");
         newtree->Branch("evt_tag_dielectron_promptfinal", &evt_tag_dielectron_promptfinal, "evt_tag_dielectron_promptfinal/O");
         newtree->Branch("evt_tag_emu_promptfinal", &evt_tag_emu_promptfinal, "evt_tag_emu_promptfinal/O");
+        newtree->Branch("evt_weight_zptcorr", &evt_weight_zptcorr,"evt_weight_zptcorr/D");
 
         if(!make_zptcorr_ntuple)
         {
@@ -326,6 +328,7 @@ void Skim_ISR::executeEvent()
     if((MCSample.Contains("DY") || MCSample.Contains("ZTo")) && save_generator_info )
     {
 
+        evt_weight_zptcorr = 1.;
         evt_tag_dimuon_promptfinal = false;
         evt_tag_dielectron_promptfinal = false;
         evt_tag_emu_promptfinal = false;
@@ -715,6 +718,9 @@ void Skim_ISR::executeEvent()
                 dilep_isPromptFinalState += photon_greater_DRp1;
                 dilep_pt_FSRgamma_gen_ispromptfinal = dilep_isPromptFinalState.Pt();
                 dilep_mass_FSRgamma_gen_ispromptfinal = dilep_isPromptFinalState.M();
+                // get ZpT reweight
+                if(evt_tag_dimuon_promptfinal) evt_weight_zptcorr = mcCorr->GetZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, Lepton::MUON);
+                if(evt_tag_dielectron_promptfinal) evt_weight_zptcorr = mcCorr->GetZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, Lepton::ELECTRON);  
 
                 lep_isPromptFinalState += photon_greater_DRp1_from_lepton;
                 antilep_isPromptFinalState += photon_greater_DRp1_from_antilepton;

@@ -20,6 +20,7 @@
 //
 namespace RootHelper {
   double GetBinContent4SF(TH2* hist, double valx, double valy, double sys);
+  double GetBinContent4SF(TH1* hist, double valx, double sys);
 }
 
 #endif

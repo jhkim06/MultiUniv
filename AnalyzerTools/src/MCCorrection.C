@@ -1,7 +1,7 @@
 #include "MCCorrection.h"
 #include "RootHelper.h"
 
-MCCorrection::MCCorrection() : 
+MCCorrection::MCCorrection() :
 IgnoreNoHist(false)
 {
 
@@ -113,7 +113,7 @@ void MCCorrection::ReadHistograms(){
     is >> a; // Jet, Photon
     is >> b; // <rootfilename>
     is >> c; // <histname>
-    
+
     TFile *file = new TFile(PrefirePath+b);
     map_hist_prefire[a + "_prefire"] = (TH2F *)file->Get(c);
   }
@@ -136,7 +136,7 @@ void MCCorrection::ReadHistograms(){
     is >> c; // rootfile name
 
     //if(DataYear == 2017 && a!=MCSample && a!="MC_2017" ) continue;
-    
+
     TFile *file = new TFile(PUReweightPath+c);
     cout<<"MCCorrection:: getting PU hist: "<<a+"_"+b<<endl;
     TString histName = a+"_"+b;
@@ -170,7 +170,7 @@ void MCCorrection::ReadHistograms(){
       is >> c; // rootfile name
 
       if(DataYear == 2017 && a!="DYJets") continue;
-      
+
       TFile *file = new TFile(PUReweightPath+c);
       cout<<"MCCorrection:: getting PU hist: "<<a+"_"+b<<endl;
       if((TH1D *)file->Get(a+"_"+b)) map_hist_pileup[a+"_"+b+"_pileup"] = (TH1D *)file->Get(a+"_"+b);
@@ -211,16 +211,7 @@ void MCCorrection::ReadHistograms(){
     is >> e; // hist name
     //cout<<a<<"\t"<<b<<"\t"<<c<<"\t"<<d<<"\t"<<e<<endl;
     TFile *fzpt = new TFile(ZpTweightPath + d);
-    //TString sflavour[2]={"muon","electron"};
-    //TH2D **hzpt=NULL,**hzpt_norm=NULL;
-    //for(int ifl=0;ifl<2;ifl++){
-    //if(ifl==0){
-    //  hzpt=&hzpt_muon;
-    //  hzpt_norm=&hzpt_norm_muon;
-    //}else if(ifl==1){
-    //  hzpt=&hzpt_electron;
-    //  hzpt_norm=&hzpt_norm_electron;
-    //}
+
     cout<<"number of iteration for Zpt correction: "<<c.Atoi()<<endl;
       for(int i=0;i<c.Atoi();i++){
         TH2D* this_hzpt=(TH2D*)fzpt->Get(Form("%s%d",e.Data(),i));
@@ -249,6 +240,50 @@ void MCCorrection::ReadHistograms(){
       }
     //}
   }
+
+    //=====================================
+    // ISR analysis ZpT weight maps
+    //=====================================
+    map_hist_ISRZpT.clear();
+    TString ISRZpTweightPath = datapath+"/"+TString::Itoa(DataYear,10)+"/ISRZpT/";
+
+    string ISRzptInline;
+    ifstream f_ISRzpt(ISRZpTweightPath + "histmap.txt");
+    if(!f_ISRzpt.is_open())
+    {
+      cout << "[MCCorrection:ISRZpT] no file "<<ISRZpTweightPath + "histmap.txt"  <<endl;
+      exit(EXIT_FAILURE);
+    }
+    while(getline(f_ISRzpt, ISRzptInline))
+    {
+        std::istringstream is( ISRzptInline );
+
+        TString tstring_elline = ISRzptInline;
+        if(tstring_elline.Contains("#")) continue;
+
+        TString a,b,c,d,e;
+        is >> a; // sample name
+        is >> b; // flavor
+        is >> c; // number of iteration
+        is >> d; // rootfile name
+        is >> e; // hist name
+        //cout<<a<<"\t"<<b<<"\t"<<c<<"\t"<<d<<"\t"<<e<<endl;
+        TFile *fzpt = new TFile(ISRZpTweightPath + d);
+          
+        cout<<"number of iteration for Zpt correction: "<<c.Atoi()<<endl;
+        TH1D* this_hzpt=(TH1D*)fzpt->Get(Form("%s%d",e.Data(), c.Atoi()));
+
+        if(!this_hzpt)
+        {
+          cout<<"[MCCorrection::SetupZPtWeight] No ZpT correction histogram for " << a << " " << b << endl;
+          exit(EXIT_FAILURE);
+        }
+        else
+        {
+            map_hist_ISRZpT[b]=this_hzpt;
+            cout<<"[MCCorrection::SetupZPtWeight] Set " << a << " " << b << " zptcor" << c << endl;
+        }
+    }
 
 }
 
@@ -287,7 +322,7 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
 
   //cout<<"MuonID_SF ID, eta, pt, sys:"<<ID<<" "<<eta<<" "<<pt<<" "<<sys<<endl;
   //cout<<"MuonID_SF varOrder:"<<_EtaPtOrder<<endl;
-  
+
   TH2F *this_hist = map_hist_Muon["ID_SF_"+ID];
   _EtaPtOrder = map_VarOrder_Muon["ID_SF_"+ID];
   if(!this_hist){
@@ -478,7 +513,7 @@ double MCCorrection::MuonTrigger_SF(TString ID, TString trig, std::vector<Muon> 
   if(ID=="Default") return 1.;
 
   double value = 1.;
-  
+
   if(trig=="IsoMu24" || trig=="IsoMu27" || trig=="Mu50"){
 
     double eff_DATA = 1.;
@@ -487,7 +522,7 @@ double MCCorrection::MuonTrigger_SF(TString ID, TString trig, std::vector<Muon> 
     // do we need loop over all muons? since this is for single muon trigger...
     for(unsigned int i=0; i<muons.size(); i++){
       eff_DATA *= ( 1.-MuonTrigger_Eff(ID, trig, 0, muons.at(i).Eta(), muons.at(i).MiniAODPt(), sys) );
-      eff_MC   *= ( 1.-MuonTrigger_Eff(ID, trig, 1, muons.at(i).Eta(), muons.at(i).MiniAODPt(), -sys) ); 
+      eff_MC   *= ( 1.-MuonTrigger_Eff(ID, trig, 1, muons.at(i).Eta(), muons.at(i).MiniAODPt(), -sys) );
     }
 
     eff_DATA = 1.-eff_DATA;
@@ -673,7 +708,7 @@ double MCCorrection::ElectronReco_SF(double sceta, double pt, int sys){
 double MCCorrection::ElectronDZfilter_SF(TString Key, const vector<Lepton*>& leps, int nvtx, int syst){
 
     double triggerSF=1.;
-    
+
     if( leps.size() < 2){
         return triggerSF;
     }
@@ -688,14 +723,14 @@ double MCCorrection::ElectronDZfilter_SF(TString Key, const vector<Lepton*>& lep
     double leading_eta = fabs(((Electron*)leps.at(0))->scEta());
     double subleading_eta = fabs(((Electron*)leps.at(1))->scEta());
 
-    int bb_be_ee; 
+    int bb_be_ee;
     if( leading_eta < 2. && subleading_eta < 2.)
         bb_be_ee = 0.5;
     else if (leading_eta < 2. && subleading_eta > 2.)
         bb_be_ee = 1.5;
     else if (leading_eta > 2. && subleading_eta < 2.)
         bb_be_ee = 1.5;
-    else 
+    else
         bb_be_ee = 2.5;
 
     triggerSF*=RootHelper::GetBinContent4SF(this_hist, bb_be_ee, nvtx, syst);
@@ -708,16 +743,16 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
 
   double photon_weight = 1.;
   double jet_weight = 1.;
-  
+
   TH2F *photon_hist = map_hist_prefire["Photon_prefire"];
   TH2F *jet_hist = map_hist_prefire["Jet_prefire"];
 
-  
+
   for(unsigned int i_pho = 0; i_pho < photons.size(); i_pho++){
     Photon current_photon = photons.at(i_pho);
     double eta = current_photon.scEta();
     double pt = current_photon.Pt();
-    
+
     int this_bin = photon_hist->FindBin(eta, pt);
 
     double this_eff = photon_hist->GetBinContent(this_bin);
@@ -726,12 +761,12 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
     double current_weight = 1. - (this_eff + (double)sys * this_efferr );;
     photon_weight = photon_weight * current_weight;
   }
-  
+
   for(unsigned int i_jet = 0; i_jet < jets.size(); i_jet++){
     Jet current_jet = jets.at(i_jet);
     double eta = current_jet.Eta();
     double pt = current_jet.Pt();
-    
+
     int this_bin = jet_hist->FindBin(eta, pt);
 
     double this_eff = jet_hist->GetBinContent(this_bin);
@@ -747,24 +782,24 @@ double MCCorrection::GetPrefireWeight(std::vector<Photon> photons, std::vector<J
 
 
 double MCCorrection::GetPileUpWeightBySampleName(int N_vtx, int syst){
-  
+
   int this_bin = N_vtx+1;
   if(N_vtx >= 100) this_bin=100;
 
   TString this_histname = MCSample;
-  if(MCSample.Contains("CHToCB_M")) 
+  if(MCSample.Contains("CHToCB_M"))
     this_histname="TTLJ_powheg"; //TODO: make pileup hist for signal
-  else if(MCSample.Contains("TT_herwig")) 
+  else if(MCSample.Contains("TT_herwig"))
     this_histname="TTLJ_powheg";
-  else if(MCSample.Contains("TTLJ_powheg")) 
+  else if(MCSample.Contains("TTLJ_powheg"))
     this_histname="TTLJ_powheg";
-  else if(MCSample.Contains("TTLL_powheg")) 
+  else if(MCSample.Contains("TTLL_powheg"))
     this_histname="TTLL_powheg";
-  else if(MCSample.Contains("TTJJ_powheg")) 
+  else if(MCSample.Contains("TTJJ_powheg"))
     this_histname="TTJJ_powheg";
-  else if(MCSample.Contains("TT_MG")) 
+  else if(MCSample.Contains("TT_MG"))
     this_histname="TTLJ_powheg";
-  else if(MCSample.Contains("ttbb")) 
+  else if(MCSample.Contains("ttbb"))
     this_histname="TTLJ_powheg";
   else if(MCSample.Contains("ttH")) //TODO: make pilup hist for ttH
     this_histname="TTLJ_powheg";
@@ -865,8 +900,8 @@ double MCCorrection::DiLeptonTrg_SF(TString IdKey0,TString IdKey1,const vector<L
   }else{
     cout <<"[MCCorrection::DiLeptonTrg_SF] Only for Muon or Electron"<<endl;
     exit(EXIT_FAILURE);
-  }    
-      
+  }
+
   double this_pt[2]={},this_eta[2]={};
   for(int i=0;i<2;i++){
     if(leps[i]->LeptonFlavour()==Lepton::MUON){
@@ -907,7 +942,7 @@ double MCCorrection::DiLeptonTrg_SF(TString IdKey0,TString IdKey1,const vector<L
 
     double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
     double WeightGtoH = (lumi_periodG+lumi_periodH)/total_lumi;
-    
+
     double triggerEff[4]={1.,1.,1.,1.};
     for(int i=0;i<4;i++){
       for(int il=0;il<2;il++){
@@ -928,7 +963,7 @@ double MCCorrection::DiLeptonTrg_SF(TString IdKey0,TString IdKey1,const vector<L
       triggerSF*=RootHelper::GetBinContent4SF(this_hist[i],this_eta[i],this_pt[i],sys);
     }
     return triggerSF;
-  }   
+  }
 }
 
 
@@ -949,10 +984,27 @@ double MCCorrection::GetZPtWeight(double zpt, double zrap, Lepton::Flavour flavo
   return valzptcor*valzptcor_norm;
 }
 
+double MCCorrection::GetZPtWeight(double zpt, Lepton::Flavour flavour)
+{
+    
+    double valzptcor=1.;
+    TH1* hzpt=NULL;
+    if(flavour==Lepton::MUON)
+    {
+      hzpt      = map_hist_ISRZpT["muon"];
+    }
+    else if(flavour==Lepton::ELECTRON)
+    {
+      hzpt      = map_hist_ISRZpT["electron"];
+    }
+    if(hzpt) valzptcor = RootHelper::GetBinContent4SF(hzpt,zpt,0);
+    return valzptcor;
+}
+
 double MCCorrection::GetTopPtReweight(const std::vector<double> *gen_pt_, const std::vector<int> *gen_PID_, const std::vector<int> *gen_status_){
 
   //==== ref: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting2017
-  //==== Only top quarks in SM ttbar events must be reweighted, 
+  //==== Only top quarks in SM ttbar events must be reweighted,
   //==== not single tops or tops from BSM production mechanisms.
   if(!MCSample.Contains("TT") || !MCSample.Contains("powheg")){
     return 1.;
@@ -988,7 +1040,7 @@ double MCCorrection::GetTopPtReweight(const std::vector<double> *gen_pt_, const 
 
 double MCCorrection::GetTopPtReweight(const std::vector<Gen> &gens){
   //==== ref: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting2017
-  //==== Only top quarks in SM ttbar events must be reweighted, 
+  //==== Only top quarks in SM ttbar events must be reweighted,
   //==== not single tops or tops from BSM production mechanisms.
   if(!MCSample.Contains("TT") || !MCSample.Contains("powheg")){
     return 1.;

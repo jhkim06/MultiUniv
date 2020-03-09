@@ -225,6 +225,7 @@ private:
     bool evt_tag_dimuon_promptfinal;
     bool evt_tag_dielectron_promptfinal;
     bool evt_tag_emu_promptfinal;
+    double evt_weight_zptcorr;
 
     bool pass_kinematic_cut_el_bare_gen;
     bool pass_kinematic_cut_mu_bare_gen;

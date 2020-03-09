@@ -62,9 +62,9 @@ public:
   double GetPileUpWeight(int N_vtx, int syst);
 
   std::map< TString, TH2D* > map_hist_ZpT;
+  std::map< TString, TH1D* > map_hist_ISRZpT;
   double GetZPtWeight(double zpt,double zrap,Lepton::Flavour flavour, TString sample="DYJets");
-
-  //TH2D *hzpt_muon,*hzpt_electron,*hzpt_norm_muon,*hzpt_norm_electron;
+  double GetZPtWeight(double zpt,Lepton::Flavour flavour);
 
   double DiLeptonTrg_SF(TString IdKey0,TString IdKey1,const vector<Lepton*>& leps,int sys);
 

@@ -28,6 +28,4 @@ double GetBinContent4SF(TH1* hist, double valx, double sys){
   if(valx>xmax) valx=xmax-0.001;
   return hist->GetBinContent(hist->FindBin(valx)) + sys*hist->GetBinError(hist->FindBin(valx));
 }
-
-
 }
