@@ -58,6 +58,7 @@ void Skim_ISR::initializeAnalyzer()
     {
         newtree->Branch("evt_weight_total_rec",  &evt_weight_total_rec, "evt_weight_total_rec/D");
 
+        newtree->Branch("evt_weight_zptcorr", &evt_weight_zptcorr,"evt_weight_zptcorr/D");
         newtree->Branch("evt_weight_pureweight", &evt_weight_pureweight,"evt_weight_pureweight/D");
         newtree->Branch("evt_weight_pureweight_up", &evt_weight_pureweight_up,"evt_weight_pureweight_up/D");
         newtree->Branch("evt_weight_pureweight_down", &evt_weight_pureweight_down,"evt_weight_pureweight_down/D");
@@ -110,7 +111,6 @@ void Skim_ISR::initializeAnalyzer()
         newtree->Branch("evt_tag_dimuon_promptfinal", &evt_tag_dimuon_promptfinal, "evt_tag_dimuon_promptfinal/O");
         newtree->Branch("evt_tag_dielectron_promptfinal", &evt_tag_dielectron_promptfinal, "evt_tag_dielectron_promptfinal/O");
         newtree->Branch("evt_tag_emu_promptfinal", &evt_tag_emu_promptfinal, "evt_tag_emu_promptfinal/O");
-        newtree->Branch("evt_weight_zptcorr", &evt_weight_zptcorr,"evt_weight_zptcorr/D");
 
         if(!make_zptcorr_ntuple)
         {
@@ -131,6 +131,7 @@ void Skim_ISR::initializeAnalyzer()
         // LHE
         newtree->Branch("dilep_pt_lhe", &dilep_pt_lhe,"dilep_pt_lhe/D");
         newtree->Branch("dilep_mass_lhe", &dilep_mass_lhe,"dilep_mass_lhe/D");
+        //TODO add LHE lepton pt eta 
         // flagged as HardProcess 
         newtree->Branch("dilep_pt_gen_prefsr", &dilep_pt_gen_prefsr,"dilep_pt_gen_prefsr/D");
         newtree->Branch("dilep_mass_gen_prefsr", &dilep_mass_gen_prefsr,"dilep_mass_gen_prefsr/D");
@@ -150,6 +151,8 @@ void Skim_ISR::initializeAnalyzer()
         newtree->Branch("dilep_mass_FSRgammaDRp1_gen_ispromptfinal", &dilep_mass_FSRgammaDRp1_gen_ispromptfinal,"dilep_mass_FSRgammaDRp1_gen_ispromptfinal/D");
         newtree->Branch("dilep_pt_FSRgamma_gen_ispromptfinal", &dilep_pt_FSRgamma_gen_ispromptfinal,"dilep_pt_FSRgamma_gen_ispromptfinal/D");
         newtree->Branch("dilep_mass_FSRgamma_gen_ispromptfinal", &dilep_mass_FSRgamma_gen_ispromptfinal,"dilep_mass_FSRgamma_gen_ispromptfinal/D");
+        newtree->Branch("dilep_pt_AllFSRgamma_gen_ispromptfinal", &dilep_pt_AllFSRgamma_gen_ispromptfinal,"dilep_pt_AllFSRgamma_gen_ispromptfinal/D");
+        newtree->Branch("dilep_mass_AllFSRgamma_gen_ispromptfinal", &dilep_mass_AllFSRgamma_gen_ispromptfinal,"dilep_mass_AllFSRgamma_gen_ispromptfinal/D");
         newtree->Branch("dilep_pt_alllepton_FSRgamma_gen_ispromptfinal", &dilep_pt_alllepton_FSRgamma_gen_ispromptfinal,"dilep_pt_alllepton_FSRgamma_gen_ispromptfinal/D");
         newtree->Branch("dilep_mass_alllepton_FSRgamma_gen_ispromptfinal", &dilep_mass_alllepton_FSRgamma_gen_ispromptfinal,"dilep_mass_alllepton_FSRgamma_gen_ispromptfinal/D");
 
@@ -252,6 +255,9 @@ void Skim_ISR::executeEvent()
     dilep_pt_FSRgamma_gen_ispromptfinal = -999.;
     dilep_mass_FSRgamma_gen_ispromptfinal = -999.;
 
+    dilep_pt_AllFSRgamma_gen_ispromptfinal = -999.;
+    dilep_mass_AllFSRgamma_gen_ispromptfinal = -999.;
+
     dilep_pt_alllepton_FSRgamma_gen_ispromptfinal = -999.;
     dilep_mass_alllepton_FSRgamma_gen_ispromptfinal = -999.;
 
@@ -268,6 +274,8 @@ void Skim_ISR::executeEvent()
     antiparticle_pt_gen_postfsr     = -999.;
     particle_eta_gen_postfsr     = -999.;
     antiparticle_eta_gen_postfsr     = -999.;
+
+    evt_weight_zptcorr = 1.;
 
     evt_weight_total_gen = 1.;
     evt_weight_total_rec = 1.;
@@ -328,7 +336,6 @@ void Skim_ISR::executeEvent()
     if((MCSample.Contains("DY") || MCSample.Contains("ZTo")) && save_generator_info )
     {
 
-        evt_weight_zptcorr = 1.;
         evt_tag_dimuon_promptfinal = false;
         evt_tag_dielectron_promptfinal = false;
         evt_tag_emu_promptfinal = false;
@@ -465,6 +472,7 @@ void Skim_ISR::executeEvent()
                     break;
                 }
             }
+
             if(!tauLHEexist)
             {
                 dilep_pt_lhe   = (temp_particle + temp_antiparticle).Pt();
@@ -639,6 +647,7 @@ void Skim_ISR::executeEvent()
                 Gen photon_less_DRp1_from_lepton;
                 Gen photon_less_DRp1_from_antilepton;
                 Gen photon_greater_DRp1;
+                Gen photon_greater_DRp1_nonLeptonMother;
                 Gen photon_greater_DRp1_from_lepton;
                 Gen photon_greater_DRp1_from_antilepton;
 
@@ -653,6 +662,14 @@ void Skim_ISR::executeEvent()
                     photon_motherID_isPromptFinalState_selected.push_back(gen_particles.at(gen_photon_isPromptFinalstate.at(i).MotherIndex()).PID());
                     photon_dRtoParticle_isPromptFinalState_selected.push_back(dr_lepton_gamma);
                     photon_dRtoAntiParticle_isPromptFinalState_selected.push_back(dr_antilepton_gamma);
+
+                    if(debug_)
+                    {
+                        if(abs(gen_particles.at(gen_photon_isPromptFinalstate.at(i).MotherIndex()).PID()) < 10)
+                        {
+                            cout << "PHOTON'S MOTHER is QUARK" << endl;
+                        }
+                    }
 
                     if(isMatchedToDYIndexMap(gen_photon_isPromptFinalstate.at(i).MotherIndex(), DYInitIndex, index_map))
                         photon_matchedToLep_isPromptFinalState_selected.push_back(true);
@@ -701,6 +718,10 @@ void Skim_ISR::executeEvent()
                                 photon_greater_DRp1_from_antilepton += gen_photon_isPromptFinalstate.at(i);
                             }
                         }
+                        else
+                        {
+                            photon_greater_DRp1_nonLeptonMother += gen_photon_isPromptFinalstate.at(i);
+                        }
                     }
                 }
 
@@ -718,9 +739,10 @@ void Skim_ISR::executeEvent()
                 dilep_isPromptFinalState += photon_greater_DRp1;
                 dilep_pt_FSRgamma_gen_ispromptfinal = dilep_isPromptFinalState.Pt();
                 dilep_mass_FSRgamma_gen_ispromptfinal = dilep_isPromptFinalState.M();
-                // get ZpT reweight
-                if(evt_tag_dimuon_promptfinal) evt_weight_zptcorr = mcCorr->GetZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, Lepton::MUON);
-                if(evt_tag_dielectron_promptfinal) evt_weight_zptcorr = mcCorr->GetZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, Lepton::ELECTRON);  
+
+                dilep_pt_AllFSRgamma_gen_ispromptfinal = (dilep_isPromptFinalState+photon_greater_DRp1_nonLeptonMother).Pt();
+                dilep_mass_AllFSRgamma_gen_ispromptfinal = (dilep_isPromptFinalState+photon_greater_DRp1_nonLeptonMother).M();
+
 
                 lep_isPromptFinalState += photon_greater_DRp1_from_lepton;
                 antilep_isPromptFinalState += photon_greater_DRp1_from_antilepton;
@@ -729,7 +751,7 @@ void Skim_ISR::executeEvent()
                 if(debug_) cout << "FSR photon summed pt, mass: " << dilep_pt_FSRgamma_gen_ispromptfinal << ", " << dilep_mass_FSRgamma_gen_ispromptfinal << endl;
                 // need to add FSR photon to lepton to check kinematic cuts
 
-                if(fabs(dilep_mass_gen_prefsr-dilep_mass_FSRgamma_gen_ispromptfinal) > 1e-5)
+                if(fabs(dilep_mass_gen_prefsr-dilep_mass_FSRgamma_gen_ispromptfinal) > 1e-4)
                 {
                     if(debug_) cout << "Hard process dilepton mass and QED FSR corrected mass are different" << endl;
                 }
@@ -750,7 +772,6 @@ void Skim_ISR::executeEvent()
 
                 dilep_pt_alllepton_FSRgamma_gen_ispromptfinal = dilep_isPromptFinalState.Pt();
                 dilep_mass_alllepton_FSRgamma_gen_ispromptfinal = dilep_isPromptFinalState.M();
-                if(debug_) cout << "Add all remaining leptons pt, mass: " << dilep_pt_alllepton_FSRgamma_gen_ispromptfinal << ", " << dilep_mass_alllepton_FSRgamma_gen_ispromptfinal << endl;
 
                 pass_kinematic_cut_mu_alllepton_FSRgamma_gen = PassKinematicCuts(lep_isPromptFinalState, antilep_isPromptFinalState, leading_muon_pt, subleading_muon_pt, muon_eta);
                 pass_kinematic_cut_el_alllepton_FSRgamma_gen = PassKinematicCuts(lep_isPromptFinalState, antilep_isPromptFinalState, leading_electron_pt, subleading_electron_pt, electron_eta);
@@ -781,14 +802,31 @@ void Skim_ISR::executeEvent()
             antiparticle_pt_gen_prefsr = gen_particles.at(gen_antiparticle_index_ME).Pt();
             particle_eta_gen_prefsr = gen_particles.at(gen_particle_index_ME).Eta();
             antiparticle_eta_gen_prefsr = gen_particles.at(gen_antiparticle_index_ME).Eta();
+            if(debug_)
+            {
+                cout << "Dilepton mass: " << dilep_mass_gen_prefsr << endl;
+            }
+
 
             if(!evt_tag_emu_promptfinal)
             {
+                if(debug_)
+                {
                 if(gen_particles.at(gen_particle_index_ME).PID() != gen_particles.at(gen_particle_index_status1).PID() || 
                     gen_particles.at(gen_antiparticle_index_ME).PID() != gen_particles.at(gen_antiparticle_index_status1).PID())
                 {
                     // TODO count the number of this case
                     cout << "dilepton pair not selected properly..." << endl;
+                }
+                // check dilep mass between hardprocess and my algorithm
+                if(fabs(dilep_mass_alllepton_FSRgamma_gen_ispromptfinal-dilep_mass_gen_prefsr) > 1e-4)
+                {
+                    cout << "CHECK THIS EVENTS!" << endl;
+                    cout << "Dilept using hard process different from my algorithm." << endl;
+                    cout << "delta: " << fabs(dilep_mass_alllepton_FSRgamma_gen_ispromptfinal-dilep_mass_gen_prefsr) << endl;
+                    cout << "dilep_mass_alllepton_FSRgamma_gen_ispromptfinal: " << dilep_mass_alllepton_FSRgamma_gen_ispromptfinal << endl;
+                    cout << "dilep_mass_gen_prefsr: " << dilep_mass_gen_prefsr << endl;
+                }
                 }
 
                 dilep_pt_gen_postfsr   = (gen_particles.at(gen_particle_index_status1) + gen_particles.at(gen_antiparticle_index_status1)).Pt();
@@ -949,6 +987,14 @@ void Skim_ISR::executeEvent()
 
     if(!make_zptcorr_ntuple)
     {
+
+        // get ZpT reweight
+        if((MCSample.Contains("DY") || MCSample.Contains("ZTo")) && dilep_pt_FSRgamma_gen_ispromptfinal != -999.)     
+        {
+            if(nominal_selection->evt_tag_dimuon_rec_ == true)     evt_weight_zptcorr = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, nominal_selection->dilep_mass_rec_, Lepton::MUON);
+            if(nominal_selection->evt_tag_dielectron_rec_ == true) evt_weight_zptcorr = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, nominal_selection->dilep_mass_rec_, Lepton::ELECTRON);
+        }
+
     // for fake estimation
     // set parameters
     // Muon ID
@@ -1204,6 +1250,8 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
             p_struct->dilep_pt_rec_          = (*(leps.at(0))+*(leps.at(1))).Pt();
             p_struct->dilep_mass_rec_        = (*(leps.at(0))+*(leps.at(1))).M();
 
+            //TODO get Zpt Reweight
+
             if(p_struct->evt_tag_leptonpt_sel_rec_ && p_struct->evt_tag_leptoneta_sel_rec_ && p_struct->evt_tag_oppositecharge_sel_rec_ && evt_tag_bvetoed_rec)
             {
                 p_struct->evt_tag_analysisevnt_sel_rec_ = 1;
@@ -1350,6 +1398,8 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
             p_struct->subleadinglep_eta_rec_ = leps.at(1)->Eta();
             p_struct->dilep_pt_rec_ =          (*(leps.at(0))+*(leps.at(1))).Pt();
             p_struct->dilep_mass_rec_ =        (*(leps.at(0))+*(leps.at(1))).M();
+
+            //TODO get Zpt Reweight
 
             if(p_struct->evt_tag_leptonpt_sel_rec_ && p_struct->evt_tag_leptoneta_sel_rec_ && evt_tag_bvetoed_rec)
                 p_struct->evt_tag_analysisevnt_sel_rec_ = 1;

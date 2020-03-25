@@ -241,6 +241,7 @@ void MCCorrection::ReadHistograms(){
     //}
   }
 
+
     //=====================================
     // ISR analysis ZpT weight maps
     //=====================================
@@ -261,12 +262,13 @@ void MCCorrection::ReadHistograms(){
         TString tstring_elline = ISRzptInline;
         if(tstring_elline.Contains("#")) continue;
 
-        TString a,b,c,d,e;
+        TString a,b,c,d,e,f;
         is >> a; // sample name
         is >> b; // flavor
         is >> c; // number of iteration
         is >> d; // rootfile name
         is >> e; // hist name
+        is >> f; // mass bin name
         //cout<<a<<"\t"<<b<<"\t"<<c<<"\t"<<d<<"\t"<<e<<endl;
         TFile *fzpt = new TFile(ISRZpTweightPath + d);
           
@@ -280,7 +282,7 @@ void MCCorrection::ReadHistograms(){
         }
         else
         {
-            map_hist_ISRZpT[b]=this_hzpt;
+            map_hist_ISRZpT[b+"_"+f]=this_hzpt;
             cout<<"[MCCorrection::SetupZPtWeight] Set " << a << " " << b << " zptcor" << c << endl;
         }
     }
@@ -984,18 +986,67 @@ double MCCorrection::GetZPtWeight(double zpt, double zrap, Lepton::Flavour flavo
   return valzptcor*valzptcor_norm;
 }
 
-double MCCorrection::GetZPtWeight(double zpt, Lepton::Flavour flavour)
+double MCCorrection::GetISRZPtWeight(double zpt, double zmass, Lepton::Flavour flavour)
 {
-    
+     
     double valzptcor=1.;
     TH1* hzpt=NULL;
     if(flavour==Lepton::MUON)
     {
-      hzpt      = map_hist_ISRZpT["muon"];
+        //hzpt = map_hist_ISRZpT["muon"];
+        if(zmass > 40 && zmass < 60)
+        {
+            hzpt = map_hist_ISRZpT["muon_m40to60"];
+        }
+        else if(zmass > 60 && zmass < 80)
+        {
+            hzpt = map_hist_ISRZpT["muon_m60to80"];
+        }
+        else if(zmass > 80 && zmass < 100)
+        {
+            hzpt = map_hist_ISRZpT["muon_m80to100"];
+        }
+        else if(zmass > 100 && zmass < 200)
+        {
+            hzpt = map_hist_ISRZpT["muon_m80to100"];
+        }
+        else if(zmass > 200 && zmass < 350)
+        {
+            hzpt = map_hist_ISRZpT["muon_m80to100"];
+        }
+        else
+        {
+            return 1.;
+        }
+        
     }
     else if(flavour==Lepton::ELECTRON)
     {
-      hzpt      = map_hist_ISRZpT["electron"];
+        //hzpt      = map_hist_ISRZpT["electron"];
+        if(zmass > 50 && zmass < 65)
+        {
+            hzpt = map_hist_ISRZpT["electron_m50to65"];
+        }
+        else if(zmass > 65 && zmass < 80)
+        {
+            hzpt = map_hist_ISRZpT["electron_m65to80"];
+        }
+        else if(zmass > 80 && zmass < 100)
+        {
+            hzpt = map_hist_ISRZpT["electron_m80to100"];
+        }
+        else if(zmass > 100 && zmass < 200)
+        {
+            hzpt = map_hist_ISRZpT["electron_m80to100"];
+        }
+        else if(zmass > 200 && zmass < 350)
+        {
+            hzpt = map_hist_ISRZpT["electron_m80to100"];
+        }
+        else
+        {
+            return 1.;
+        }
     }
     if(hzpt) valzptcor = RootHelper::GetBinContent4SF(hzpt,zpt,0);
     return valzptcor;

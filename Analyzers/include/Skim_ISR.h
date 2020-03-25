@@ -245,6 +245,9 @@ private:
     double dilep_pt_FSRgamma_gen_ispromptfinal;
     double dilep_mass_FSRgamma_gen_ispromptfinal;
 
+    double dilep_pt_AllFSRgamma_gen_ispromptfinal;
+    double dilep_mass_AllFSRgamma_gen_ispromptfinal;
+
     double dilep_pt_alllepton_FSRgamma_gen_ispromptfinal;
     double dilep_mass_alllepton_FSRgamma_gen_ispromptfinal;
 

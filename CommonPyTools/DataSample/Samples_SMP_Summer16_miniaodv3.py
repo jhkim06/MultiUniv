@@ -12,7 +12,7 @@ sampleInfo = {
 'DY3Jets_MG'		:{'name' :'DY3JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8',	'xsec': 102.3,	'nMC':5857441.000000,	'Nsum': 5857441.000000 },
 'DY4Jets_MG'		:{'name' :'DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8',	'xsec': 54.52,	'nMC':4197868.000000,	'Nsum': 4197868.000000 },
 'DYJets'		:{'name' :'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8',	'xsec': 6225.42,	'nMC':120777245,	'Nsum': 80924255 },
-'DYJets10to50'		:{'name' :'DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8',	'xsec': 18610,	'nMC':40364234,	'Nsum': 29374008 },
+'DYJets10to50'		:{'name' :'DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8',	'xsec': 18610,	'nMC':67981236,	'Nsum': 49469812 },
 'ZToEE_M_50_120_powheg'		:{'name' :'ZToEE_NNPDF30_13TeV-powheg_M_50_120',	        'xsec': 1975.,	'nMC':2998400.,	'Nsum': 2998400.},
 'ZToEE_M_120_200_powheg'		:{'name' :'ZToEE_NNPDF30_13TeV-powheg_M_120_200',	'xsec': 19.32,	'nMC':100000.,	'Nsum': 100000.},
 'ZToEE_M_200_400_powheg'		:{'name' :'ZToEE_NNPDF30_13TeV-powheg_M_200_400',	'xsec': 2.73,	'nMC':99200.,	'Nsum': 99200.},
