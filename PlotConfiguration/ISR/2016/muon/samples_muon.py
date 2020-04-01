@@ -5,6 +5,7 @@ from CommonPyTools.python.CommonTools import *
 ###########################
 
 McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_isoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal'
+McWeightZptWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_isoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal * evt_weight_zptcorr'
 
 #--------------------    
 # MC
@@ -14,14 +15,14 @@ samples['DYJets@DYJetsToMuMu'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_dimuon_hardprocess == 1',
-    'weight' :McWeight,
+    'weight' :McWeightZptWeight,
     }
 
 samples['DYJets10to50@DYJets10to50ToMuMu'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_dimuon_hardprocess == 1',
-    'weight' :McWeight,
+    'weight' :McWeightZptWeight,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {

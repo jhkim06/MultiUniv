@@ -17,9 +17,15 @@ variables['ptll'] = {
     'xaxis': 'pt_{ll} [GeV]',
     'fold' : 0
     }
-variables['ptll_variable_bin'] = {                                                                                                                                                                
+variables['ptll_variable_bin'] = {
     'name': 'dilep_pt_rec_Nominal',
     'range': ([0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12., 13., 14., 16., 18., 20., 22., 25., 28., 32., 37., 43., 50., 60., 72., 85., 100.],),
+    'xaxis': 'pt_{ll} [GeV]',
+    'fold' : 0
+    }
+variables['ptll_variable_wider_bin'] = {
+    'name': 'dilep_pt_rec_Nominal',
+    'range': ([0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 35., 45., 55., 65., 75., 85., 100.],),
     'xaxis': 'pt_{ll} [GeV]',
     'fold' : 0
     }

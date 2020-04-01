@@ -15,7 +15,7 @@
 
 rm JobCheck.log
 
-for sample in DYJets10to50 
+for sample in DYJets200to400 
 #for sample in ZToMuMu_M_50_120_powheg ZToMuMu_M_120_200_powheg ZToMuMu_M_200_400_powheg
 #for sample in TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia
 #for sample in DYFSR_PHOTOS DYFSR_PYTHIA DY_MuMu_FSR_PYTHIA DY_MuMu_FSR_PHOTOS 

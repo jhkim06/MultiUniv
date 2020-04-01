@@ -49,7 +49,7 @@ void Skim_ISR::initializeAnalyzer()
     }
     else
     {
-        newtree = fChain->CloneTree(0); 
+        newtree = fChain->CloneTree(0);
     }
 
     newtree->Branch("evt_weight_total_gen", &evt_weight_total_gen,"evt_weight_total_gen/D");
@@ -58,7 +58,6 @@ void Skim_ISR::initializeAnalyzer()
     {
         newtree->Branch("evt_weight_total_rec",  &evt_weight_total_rec, "evt_weight_total_rec/D");
 
-        newtree->Branch("evt_weight_zptcorr", &evt_weight_zptcorr,"evt_weight_zptcorr/D");
         newtree->Branch("evt_weight_pureweight", &evt_weight_pureweight,"evt_weight_pureweight/D");
         newtree->Branch("evt_weight_pureweight_up", &evt_weight_pureweight_up,"evt_weight_pureweight_up/D");
         newtree->Branch("evt_weight_pureweight_down", &evt_weight_pureweight_down,"evt_weight_pureweight_down/D");
@@ -131,8 +130,8 @@ void Skim_ISR::initializeAnalyzer()
         // LHE
         newtree->Branch("dilep_pt_lhe", &dilep_pt_lhe,"dilep_pt_lhe/D");
         newtree->Branch("dilep_mass_lhe", &dilep_mass_lhe,"dilep_mass_lhe/D");
-        //TODO add LHE lepton pt eta 
-        // flagged as HardProcess 
+        //TODO add LHE lepton pt eta
+        // flagged as HardProcess
         newtree->Branch("dilep_pt_gen_prefsr", &dilep_pt_gen_prefsr,"dilep_pt_gen_prefsr/D");
         newtree->Branch("dilep_mass_gen_prefsr", &dilep_mass_gen_prefsr,"dilep_mass_gen_prefsr/D");
         newtree->Branch("particle_pt_gen_prefsr", &particle_pt_gen_prefsr,"particle_pt_gen_prefsr/D");
@@ -274,8 +273,6 @@ void Skim_ISR::executeEvent()
     antiparticle_pt_gen_postfsr     = -999.;
     particle_eta_gen_postfsr     = -999.;
     antiparticle_eta_gen_postfsr     = -999.;
-
-    evt_weight_zptcorr = 1.;
 
     evt_weight_total_gen = 1.;
     evt_weight_total_rec = 1.;
@@ -526,7 +523,7 @@ void Skim_ISR::executeEvent()
                     // second lepton flagged as HardProcess
                     else
                     {
-                        // found opposite-sign dilepton both flagged as HardProcess  
+                        // found opposite-sign dilepton both flagged as HardProcess
                         if( current_particle_id == -first_lepton_id_found_in_ME )
                         {
                             if(current_particle_id > 0)
@@ -570,9 +567,9 @@ void Skim_ISR::executeEvent()
             std::sort(gen_antilepton_isPromptFinalstate.begin(), gen_antilepton_isPromptFinalstate.end(), PtComparing);
             std::sort(gen_photon_isPromptFinalstate.begin(), gen_photon_isPromptFinalstate.end(), PtComparing);
 
-           
+
             int DYInitIndex = 0;
-            int l1index = 0, l2index = 0;  
+            int l1index = 0, l2index = 0;
             const int lepton_size = gen_lepton_isPromptFinalstate.size();
             const int antilepton_size = gen_antilepton_isPromptFinalstate.size();
             bool dilep_set = false;
@@ -582,7 +579,7 @@ void Skim_ISR::executeEvent()
             {
                 for(int il2 = 0; il2 < antilepton_size; il2++)
                 {
-                    
+
                     int DYInitIndex_ = findDYInitIndex(gen_lepton_isPromptFinalstate.at(il1).getIndex(), gen_antilepton_isPromptFinalstate.at(il2).getIndex(), zvertex_found);
                     //cout << "il1: " << il1 << " il2: " << il2 << endl;
                     //cout << "index1: " << gen_lepton_isPromptFinalstate.at(il1).getIndex() << " index2: " << gen_antilepton_isPromptFinalstate.at(il2).getIndex() << endl;
@@ -812,7 +809,7 @@ void Skim_ISR::executeEvent()
             {
                 if(debug_)
                 {
-                if(gen_particles.at(gen_particle_index_ME).PID() != gen_particles.at(gen_particle_index_status1).PID() || 
+                if(gen_particles.at(gen_particle_index_ME).PID() != gen_particles.at(gen_particle_index_status1).PID() ||
                     gen_particles.at(gen_antiparticle_index_ME).PID() != gen_particles.at(gen_antiparticle_index_status1).PID())
                 {
                     // TODO count the number of this case
@@ -981,65 +978,59 @@ void Skim_ISR::executeEvent()
     clearVariables();
     AnalyzerParameter param;
 
-    nominal_selection->initVariables(); 
+    nominal_selection->initVariables();
     executeEventFromParameter(param, nominal_selection, false, 0);
     param.Clear();
 
     if(!make_zptcorr_ntuple)
     {
 
-        // get ZpT reweight
-        if((MCSample.Contains("DY") || MCSample.Contains("ZTo")) && dilep_pt_FSRgamma_gen_ispromptfinal != -999.)     
-        {
-            if(nominal_selection->evt_tag_dimuon_rec_ == true)     evt_weight_zptcorr = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, nominal_selection->dilep_mass_rec_, Lepton::MUON);
-            if(nominal_selection->evt_tag_dielectron_rec_ == true) evt_weight_zptcorr = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, nominal_selection->dilep_mass_rec_, Lepton::ELECTRON);
-        }
+        //---------------------- for fake estimation
+        // set parameters
+        // Muon ID
+        param.Muon_Tight_ID = "HNTight";
+        param.Muon_ID = "HNLoose";
+        param.Muon_FR_ID = "HNtypeI_V1";     // ID name in histmap_Muon.txt
+        param.Muon_FR_Key = "AwayJetPt40";   // histname
+        param.Muon_UsePtCone = true;
 
-    // for fake estimation
-    // set parameters
-    // Muon ID
-    param.Muon_Tight_ID = "HNTight";
-    param.Muon_ID = "HNLoose";
-    param.Muon_FR_ID = "HNtypeI_V1";     // ID name in histmap_Muon.txt
-    param.Muon_FR_Key = "AwayJetPt40";   // histname
-    param.Muon_UsePtCone = true;
+        // Electron ID
+        param.Electron_Tight_ID = "ISRTight";
+        param.Electron_ID = "ISRLoose";
+        param.Electron_FR_ID = "HNtypeI_V1";     // ID name in histmap_Electron.txt
+        param.Electron_FR_Key = "AwayJetPt40";   // histname
+        param.Electron_UsePtCone = true;
 
-    // Electron ID
-    param.Electron_Tight_ID = "ISRTight";
-    param.Electron_ID = "ISRLoose";
-    param.Electron_FR_ID = "HNtypeI_V1";     // ID name in histmap_Electron.txt
-    param.Electron_FR_Key = "AwayJetPt40";   // histname
-    param.Electron_UsePtCone = true;
+        // Jet ID
+        param.Jet_ID = "tight";
+        param.FatJet_ID = "tight";
 
-    // Jet ID
-    param.Jet_ID = "tight";
-    param.FatJet_ID = "tight";
+        clearVariables();
+        fake_estimation->initVariables();
+        executeEventFromParameter(param, fake_estimation, true);
+        param.Clear();
+        //---------------------------------------------------------------//
 
-    clearVariables();
-    fake_estimation->initVariables();
-    executeEventFromParameter(param, fake_estimation, true);
-    param.Clear();
+        // for lepton momentum variation
+        clearVariables();
+        lepton_momentum_scale_up->initVariables();
+        executeEventFromParameter(param, lepton_momentum_scale_up, false, 1);
+        param.Clear();
 
-    // for lepton momentum variation
-    clearVariables();
-    lepton_momentum_scale_up->initVariables();
-    executeEventFromParameter(param, lepton_momentum_scale_up, false, 1);
-    param.Clear();
+        clearVariables();
+        lepton_momentum_scale_down->initVariables();
+        executeEventFromParameter(param, lepton_momentum_scale_down, false, 2);
+        param.Clear();
 
-    clearVariables();
-    lepton_momentum_scale_down->initVariables();
-    executeEventFromParameter(param, lepton_momentum_scale_down, false, 2);
-    param.Clear();
+        clearVariables();
+        lepton_momentum_res_up->initVariables();
+        executeEventFromParameter(param, lepton_momentum_res_up, false, 3);
+        param.Clear();
 
-    clearVariables();
-    lepton_momentum_res_up->initVariables();
-    executeEventFromParameter(param, lepton_momentum_res_up, false, 3);
-    param.Clear();
-
-    clearVariables();
-    lepton_momentum_res_down->initVariables();
-    executeEventFromParameter(param, lepton_momentum_res_down, false, 4);
-    param.Clear();
+        clearVariables();
+        lepton_momentum_res_down->initVariables();
+        executeEventFromParameter(param, lepton_momentum_res_down, false, 4);
+        param.Clear();
     }
     newtree->Fill();
     delete evt;
@@ -1100,7 +1091,7 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
             p_struct->additional_veto_mu_size_ = 0;
             for(int i = 0; i < veto_mu_size; i++)
             {
-                if(muons_.at(0).getNtupleIndex() != veto_muons_.at(i).getNtupleIndex() && 
+                if(muons_.at(0).getNtupleIndex() != veto_muons_.at(i).getNtupleIndex() &&
                     muons_.at(1).getNtupleIndex() != veto_muons_.at(i).getNtupleIndex())
                     p_struct->additional_veto_mu_size_++;
             }
@@ -1114,7 +1105,7 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
             p_struct->additional_veto_el_size_ = 0;
             for(int i = 0; i < veto_el_size; i++)
             {
-                if(electrons_.at(0).getNtupleIndex() != veto_electrons_.at(i).getNtupleIndex() && 
+                if(electrons_.at(0).getNtupleIndex() != veto_electrons_.at(i).getNtupleIndex() &&
                     electrons_.at(1).getNtupleIndex() != veto_electrons_.at(i).getNtupleIndex())
                     p_struct->additional_veto_el_size_++;
             }
@@ -1140,7 +1131,7 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
                     isoSF_key = "NUM_TightRelIso_DEN_TightIDandIPCut";
                     leading_trig_key =    "Lead17_POGTight";
                     subleading_trig_key = "Tail8_POGTight";
-                    DZfilter_key = ""; 
+                    DZfilter_key = "";
                 }
                 else if(DataYear==2017)
                 {
@@ -1148,7 +1139,7 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
                     isoSF_key = "NUM_TightRelIso_DEN_TightIDandIPCut";
                     leading_trig_key = "LeadMu17_POGTight";
                     subleading_trig_key = "TailMu8_POGTight";
-                    DZfilter_key = ""; 
+                    DZfilter_key = "";
                 }
                 else if(DataYear==2018)
                 {
@@ -1156,7 +1147,7 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
                     isoSF_key = "NUM_TightRelIso_DEN_TightIDandIPCut";
                     leading_trig_key =    "LeadMu17_POGTight";
                     subleading_trig_key = "LeadMu8_POGTight";
-                    DZfilter_key = ""; 
+                    DZfilter_key = "";
                 }
                 else
                 {
@@ -1181,7 +1172,7 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
                     idSF_key = "passMediumID";
                     leading_trig_key =    "LeadEle23_MediumID";
                     subleading_trig_key = "TailEle12_MediumID";
-                    DZfilter_key = "DZfilter"; 
+                    DZfilter_key = "DZfilter";
                 }
                 else if(DataYear==2017)
                 {
@@ -1222,7 +1213,7 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
                 Electron *el1 = (Electron *)( leps.at(0) );
                 Electron *el2 = (Electron *)( leps.at(1) );
 
-                if((fabs(el1->scEta()) < 1.4442 || fabs(el1->scEta()) > 1.566) && (fabs(el2->scEta()) < 1.4442 || fabs(el2->scEta()) > 1.566) && 
+                if((fabs(el1->scEta()) < 1.4442 || fabs(el1->scEta()) > 1.566) && (fabs(el2->scEta()) < 1.4442 || fabs(el2->scEta()) > 1.566) &&
                     fabs(el1->scEta()) < LepEtaCut && fabs(el2->scEta()) < LepEtaCut)
                 {
                     p_struct->evt_tag_leptoneta_sel_rec_ = 1;
@@ -1250,7 +1241,16 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
             p_struct->dilep_pt_rec_          = (*(leps.at(0))+*(leps.at(1))).Pt();
             p_struct->dilep_mass_rec_        = (*(leps.at(0))+*(leps.at(1))).M();
 
-            //TODO get Zpt Reweight
+            if(!make_zptcorr_ntuple)
+            {
+
+                // get ZpT reweight
+                if((MCSample.Contains("DY") || MCSample.Contains("ZTo")) && dilep_pt_FSRgamma_gen_ispromptfinal != -999.)
+                {
+                    if(p_struct->evt_tag_dimuon_rec_ == true)     p_struct->evt_weight_zptcorr_ = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, p_struct->dilep_mass_rec_, Lepton::MUON);
+                    if(p_struct->evt_tag_dielectron_rec_ == true) p_struct->evt_weight_zptcorr_ = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, p_struct->dilep_mass_rec_, Lepton::ELECTRON);
+                }
+            }
 
             if(p_struct->evt_tag_leptonpt_sel_rec_ && p_struct->evt_tag_leptoneta_sel_rec_ && p_struct->evt_tag_oppositecharge_sel_rec_ && evt_tag_bvetoed_rec)
             {
@@ -1335,9 +1335,11 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
           electrons_.at(i).SetPtCone(this_ptcone);
         }
 
-        if(IsMuMu == 1){
+        if(IsMuMu == 1)
+        {
 
-            if(evt->PassTrigger(DiMuTrgs) ){
+            if(evt->PassTrigger(DiMuTrgs) )
+            {
                 leps=MakeLeptonPointerVector(muons_);
                 p_struct->evt_tag_dimuon_rec_ = 1;
                 Lep0PtCut = 20.;
@@ -1347,9 +1349,11 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
             }
         }
 
-        if(IsElEl == 1){
+        if(IsElEl == 1)
+        {
 
-            if(evt->PassTrigger(DiElTrgs) ){
+            if(evt->PassTrigger(DiElTrgs) )
+            {
                 leps=MakeLeptonPointerVector(electrons_);
                 p_struct->evt_tag_dielectron_rec_ = 1;
                 Lep0PtCut = 25.;
@@ -1399,7 +1403,16 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
             p_struct->dilep_pt_rec_ =          (*(leps.at(0))+*(leps.at(1))).Pt();
             p_struct->dilep_mass_rec_ =        (*(leps.at(0))+*(leps.at(1))).M();
 
-            //TODO get Zpt Reweight
+            if(!make_zptcorr_ntuple)
+            {
+                // get ZpT reweight
+                if((MCSample.Contains("DY") || MCSample.Contains("ZTo")) && dilep_pt_FSRgamma_gen_ispromptfinal != -999.)
+                {
+                    if(p_struct->evt_tag_dimuon_rec_ == true)     p_struct->evt_weight_zptcorr_ = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, p_struct->dilep_mass_rec_, Lepton::MUON);
+                    if(p_struct->evt_tag_dielectron_rec_ == true) p_struct->evt_weight_zptcorr_ = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, p_struct->dilep_mass_rec_, Lepton::ELECTRON);
+                }
+            }
+
 
             if(p_struct->evt_tag_leptonpt_sel_rec_ && p_struct->evt_tag_leptoneta_sel_rec_ && evt_tag_bvetoed_rec)
                 p_struct->evt_tag_analysisevnt_sel_rec_ = 1;
@@ -1430,13 +1443,13 @@ int Skim_ISR::findDYInitIndex(int l1_index, int l2_index, bool &zvertex)
     bool leptonVertex = false;
     std::vector<int> l1_index_vector;
     std::vector<int> l2_index_vector;
-    std::vector<int> v_intersection(100); 
+    std::vector<int> v_intersection(100);
     std::vector<int>::iterator it;
 
     saveIndexToVector(l1_index, 2, l1_index_vector);
     saveIndexToVector(l2_index, 2, l2_index_vector);
 
-    std::sort (l1_index_vector.begin(), l1_index_vector.end()); 
+    std::sort (l1_index_vector.begin(), l1_index_vector.end());
     std::sort (l2_index_vector.begin(), l2_index_vector.end());
 
     it=std::set_intersection(l1_index_vector.begin(), l1_index_vector.end(),
@@ -1448,7 +1461,7 @@ int Skim_ISR::findDYInitIndex(int l1_index, int l2_index, bool &zvertex)
     //check intersection has lepton vertex...
     //if so, return -1
     int vsize = v_intersection.size();
-    
+
     for(int i = 0; i < vsize; i++)
     {
         if(gen_particles.at(v_intersection.at(i)).PID() == 23) zvertex = true;
@@ -1457,7 +1470,7 @@ int Skim_ISR::findDYInitIndex(int l1_index, int l2_index, bool &zvertex)
     }
 
     if(v_intersection.size() == 0)
-        return -1; 
+        return -1;
     else
         if(leptonVertex)
             return -1;
@@ -1465,7 +1478,7 @@ int Skim_ISR::findDYInitIndex(int l1_index, int l2_index, bool &zvertex)
             return v_intersection.at(0);
 }
 
-bool Skim_ISR::isMatchedToDYIndexMap(int mother_index, int DYInitIndex, std::map<int,int> &partindex_map) 
+bool Skim_ISR::isMatchedToDYIndexMap(int mother_index, int DYInitIndex, std::map<int,int> &partindex_map)
 {
 
     bool temp = false;
@@ -1545,6 +1558,7 @@ void Analysis_Variables::initVariables()
     subleadinglep_pt_rec_           = -999.;
     leadinglep_eta_rec_             = -999.;
     subleadinglep_eta_rec_          = -999.;
+    evt_weight_zptcorr_             = 1.;
 
     evt_weight_recoSF_rec_ = 1.,        evt_weight_recoSF_up_rec_ = 1.,         evt_weight_recoSF_down_rec_ = 1.;
     evt_weight_idSF_rec_ = 1.,          evt_weight_idSF_up_rec_ = 1.,           evt_weight_idSF_down_rec_ = 1.;
@@ -1576,6 +1590,7 @@ void Analysis_Variables::setBranch(TTree *tree)
     tree->Branch(subleadinglep_pt_rec_brname,              &subleadinglep_pt_rec_);
     tree->Branch(leadinglep_eta_rec_brname,                &leadinglep_eta_rec_);
     tree->Branch(subleadinglep_eta_rec_brname,             &subleadinglep_eta_rec_);
+    tree->Branch(evt_weight_zptcorr_brname,                &evt_weight_zptcorr_);
 
     tree->Branch(evt_weight_recoSF_rec_brname,          &evt_weight_recoSF_rec_);
     tree->Branch(evt_weight_recoSF_up_rec_brname,       &evt_weight_recoSF_up_rec_);

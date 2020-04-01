@@ -26,6 +26,7 @@ struct Analysis_Variables
     double leadinglep_eta_rec_;
     double subleadinglep_eta_rec_;
     double leadingphoton_lep_dr_rec_;
+    double evt_weight_zptcorr_;
 
     double evt_weight_recoSF_rec_, evt_weight_recoSF_up_rec_, evt_weight_recoSF_down_rec_;
     double evt_weight_idSF_rec_,   evt_weight_idSF_up_rec_,   evt_weight_idSF_down_rec_;
@@ -57,6 +58,7 @@ struct Analysis_Variables
     TString subleadinglep_pt_rec_brname;
     TString leadinglep_eta_rec_brname;
     TString subleadinglep_eta_rec_brname;
+    TString evt_weight_zptcorr_brname;
 
     TString evt_weight_recoSF_rec_brname, evt_weight_recoSF_up_rec_brname, evt_weight_recoSF_down_rec_brname;
     TString evt_weight_idSF_rec_brname,   evt_weight_idSF_up_rec_brname,   evt_weight_idSF_down_rec_brname;
@@ -84,6 +86,7 @@ struct Analysis_Variables
         additional_veto_mu_size_ = 0;
         additional_veto_el_size_ = 0;
 
+        evt_weight_zptcorr_             = 1.;
         dilep_pt_rec_                   = -999.;
         dilep_mass_rec_                 = -999.;
         leadinglep_pt_rec_              = -999.;
@@ -98,10 +101,10 @@ struct Analysis_Variables
         evt_weight_TL_rec_           = 1.;
         evt_weight_LL_rec_           = 1.;
 
-        evt_weight_recoSF_rec_ = 1., evt_weight_recoSF_up_rec_ = 1., evt_weight_recoSF_down_rec_ = 1.;
-        evt_weight_idSF_rec_ = 1.,   evt_weight_idSF_up_rec_ = 1.,   evt_weight_idSF_down_rec_ = 1.;
-        evt_weight_isoSF_rec_ = 1.,  evt_weight_isoSF_up_rec_ = 1.,  evt_weight_isoSF_down_rec_ = 1.;
-        evt_weight_trigSF_rec_ = 1., evt_weight_trigSF_up_rec_ = 1., evt_weight_trigSF_down_rec_ = 1.;
+        evt_weight_recoSF_rec_ = 1.,   evt_weight_recoSF_up_rec_ = 1.,   evt_weight_recoSF_down_rec_ = 1.;
+        evt_weight_idSF_rec_ = 1.,     evt_weight_idSF_up_rec_ = 1.,     evt_weight_idSF_down_rec_ = 1.;
+        evt_weight_isoSF_rec_ = 1.,    evt_weight_isoSF_up_rec_ = 1.,    evt_weight_isoSF_down_rec_ = 1.;
+        evt_weight_trigSF_rec_ = 1.,   evt_weight_trigSF_up_rec_ = 1.,   evt_weight_trigSF_down_rec_ = 1.;
         evt_weight_trigSFDZ_rec_ = 1., evt_weight_trigSFDZ_up_rec_ = 1., evt_weight_trigSFDZ_down_rec_ = 1.;
 
         // initialize branch names
@@ -115,6 +118,7 @@ struct Analysis_Variables
         additional_veto_mu_size_brname = "additional_veto_mu_size_" + prefix;
         additional_veto_el_size_brname = "additional_veto_el_size_" + prefix;;
 
+        evt_weight_zptcorr_brname                 = "evt_weight_zptcorr_" + prefix;
         dilep_pt_rec_brname                 = "dilep_pt_rec_" + prefix;
         dilep_mass_rec_brname               = "dilep_mass_rec_" + prefix;
         leadinglep_pt_rec_brname            = "leadinglep_pt_rec_" + prefix;
@@ -225,7 +229,6 @@ private:
     bool evt_tag_dimuon_promptfinal;
     bool evt_tag_dielectron_promptfinal;
     bool evt_tag_emu_promptfinal;
-    double evt_weight_zptcorr;
 
     bool pass_kinematic_cut_el_bare_gen;
     bool pass_kinematic_cut_mu_bare_gen;
