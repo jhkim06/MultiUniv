@@ -1,16 +1,8 @@
 from CommonPyTools.python.CommonTools import *
 
-###########################
-# Number of Leptons and WP
-###########################
-
-#Nlep='2'
-#eleWP='mediumSelectiveQ'
-
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec * evt_weight_idSF_rec * evt_weight_trigSF_rec' 
-
-#McWeight = 'evt_weight_total_gen * evt_weight_total_rec'
-#McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
+#McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal * evt_weight_trigSFDZ_rec_Nominal / evt_weight_bveto'
+McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal'
+McWeightZptCorr = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal * evt_weight_zptcorr_Nominal'
 
 #--------------------    
 # MC
@@ -18,25 +10,25 @@ McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec 
 
 samples['DYJets@DYJetsToEE'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_dielectron_gen == 1',
+    'cut'    :'evt_tag_dielectron_hardprocess == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets10to50_MG@DYJets10to50ToEE'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_dielectron_gen == 1',
+    'cut'    :'evt_tag_dielectron_hardprocess == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_ditau_gen == 1',
+    'cut'    :'evt_tag_ditau_hardprocess == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets10to50_MG@DYJets10to50ToTauTau'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_ditau_gen == 1',
+    'cut'    :'evt_tag_ditau_hardprocess == 1',
     'weight' :McWeight,
     }
 

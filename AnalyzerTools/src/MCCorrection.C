@@ -241,7 +241,7 @@ void MCCorrection::ReadHistograms(){
     //}
   }
 
-
+/*
     //=====================================
     // ISR analysis ZpT weight maps
     //=====================================
@@ -286,7 +286,7 @@ void MCCorrection::ReadHistograms(){
             cout<<"[MCCorrection::SetupZPtWeight] Set " << a << " " << b << " zptcor" << c << endl;
         }
     }
-
+*/
 }
 
 MCCorrection::~MCCorrection(){
@@ -998,21 +998,17 @@ double MCCorrection::GetISRZPtWeight(double zpt, double zmass, Lepton::Flavour f
         {
             hzpt = map_hist_ISRZpT["muon_m40to60"];
         }
-        else if(zmass > 60 && zmass < 80)
+        else if(zmass > 60 && zmass < 81)
         {
-            hzpt = map_hist_ISRZpT["muon_m60to80"];
+            hzpt = map_hist_ISRZpT["muon_m60to81"];
         }
-        else if(zmass > 80 && zmass < 100)
+        else if(zmass > 81 && zmass < 101)
         {
-            hzpt = map_hist_ISRZpT["muon_m80to100"];
+            hzpt = map_hist_ISRZpT["muon_m81to101"];
         }
-        else if(zmass > 100 && zmass < 200)
+        else if(zmass > 101 && zmass < 320)
         {
-            hzpt = map_hist_ISRZpT["muon_m80to100"];
-        }
-        else if(zmass > 200 && zmass < 350)
-        {
-            hzpt = map_hist_ISRZpT["muon_m80to100"];
+            hzpt = map_hist_ISRZpT["muon_m101to320"];
         }
         else
         {
@@ -1023,25 +1019,21 @@ double MCCorrection::GetISRZPtWeight(double zpt, double zmass, Lepton::Flavour f
     else if(flavour==Lepton::ELECTRON)
     {
         //hzpt      = map_hist_ISRZpT["electron"];
-        if(zmass > 50 && zmass < 65)
+        if(zmass > 50 && zmass < 64)
         {
-            hzpt = map_hist_ISRZpT["electron_m50to65"];
+            hzpt = map_hist_ISRZpT["electron_m50to64"];
         }
-        else if(zmass > 65 && zmass < 80)
+        else if(zmass > 64 && zmass < 81)
         {
-            hzpt = map_hist_ISRZpT["electron_m65to80"];
+            hzpt = map_hist_ISRZpT["electron_m64to81"];
         }
-        else if(zmass > 80 && zmass < 100)
+        else if(zmass > 81 && zmass < 101)
         {
-            hzpt = map_hist_ISRZpT["electron_m80to100"];
+            hzpt = map_hist_ISRZpT["electron_m81to101"];
         }
-        else if(zmass > 100 && zmass < 200)
+        else if(zmass > 101 && zmass < 320)
         {
-            hzpt = map_hist_ISRZpT["electron_m80to100"];
-        }
-        else if(zmass > 200 && zmass < 350)
-        {
-            hzpt = map_hist_ISRZpT["electron_m80to100"];
+            hzpt = map_hist_ISRZpT["electron_m101to320"];
         }
         else
         {

@@ -21,11 +21,10 @@ const int nptbin_wide=9;
 double ptbin_wide[nptbin_wide+1]={0., 4., 8., 12., 18., 28., 40., 55., 75., 100.};
 
 const int nmassbin_forPt = 5;
-const Double_t massbin_forPt_muon[nmassbin_forPt+1] =     {40,60,80,100,200,350};
-const Double_t massbin_forPt_electron[nmassbin_forPt+1] = {50,65,80,100,200,350};
-
-const int nmassbin_forPt_preFSR = 10;
-const Double_t massbin_forPt_preFSR[nmassbin_forPt_preFSR+1] = {50,60,70,80,90,100,110,150,200,300,350};
+const int nmassbin_forPt_v2 = 5;
+const Double_t massbin_forPt[nmassbin_forPt_v2 +1] =     {40, 60, 81, 101, 200, 320};
+const Double_t massbin_forPt_muon[nmassbin_forPt+1] =     {40,60,81,101,200,320};
+const Double_t massbin_forPt_electron[nmassbin_forPt+1] = {50,64,81,101,200,320};
 
 const int nptbin_forMass = 1;
 const Double_t ptbin_forMass[nptbin_forMass+1] = {0,100};
@@ -41,12 +40,14 @@ const int nmassbin_wide_electron = 27;
 const Double_t massbin_fine_electron[nmassbin_fine_electron+1] = {50,52.5,55,57.5,60,62.5,65,67.5,70,72.5,75,77.5,80,82.5,85,87.5,90,92.5,95,97.5,100,102.5,105,107.5,110,112.5,115,117.5,120,123,126,129.5,133,137,141,145.5,150,155,160,165.5,171,178,185,192.5,200,209,218,229,240,254,268,284,300,325,350};
 const Double_t massbin_wide_electron[nmassbin_wide_electron+1] = {50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,126,133,141,150,160,171,185,200,218,240,268,300,350};
 
+const int nmassbin = 41;
+const Double_t massbin[nmassbin+1] =     {15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 64, 68, 72, 76, 81, 86, 91, 96, 101, 106, 110, 115, 120, 126, 133, 141, 150, 160, 171, 185, 200, 220, 243, 273, 320, 380, 440, 510, 600, 700, 830, 1000};
 
 // set bin definitions
 void SetPtBinningRec(TString channel = "electron"){
 
  ptBinningRec= new TUnfoldBinning("Rec_Pt");
- ptBinningRec->AddAxis("pt",nptbin_fine,ptbin_fine,false,true);
+ ptBinningRec->AddAxis("pt",nptbin_wide,ptbin_wide,false,true);
  if( channel.CompareTo("electron") == 0 ) ptBinningRec->AddAxis("mass", nmassbin_forPt, massbin_forPt_electron, true, true);
  if( channel.CompareTo("muon") == 0 )     ptBinningRec->AddAxis("mass", nmassbin_forPt, massbin_forPt_muon, true, true);
 }
@@ -54,25 +55,25 @@ void SetPtBinningRec(TString channel = "electron"){
 void SetPtBinningGen(TString channel = "electron"){
 
  ptBinningGen=(new TUnfoldBinning("Gen_Pt"));
- ptBinningGen->AddAxis("pt",nptbin_wide,ptbin_wide,false,true);
- if( channel.CompareTo("electron") == 0 ) ptBinningGen->AddAxis("mass", nmassbin_forPt, massbin_forPt_electron, true, true);
- if( channel.CompareTo("muon") == 0 )     ptBinningGen->AddAxis("mass", nmassbin_forPt, massbin_forPt_muon, true, true);
+ ptBinningGen->AddAxis("pt",nptbin_wide,ptbin_wide,false, true);
+ if( channel.CompareTo("electron") == 0 ) ptBinningGen->AddAxis("mass", nmassbin_forPt,massbin_forPt_electron, true, true);
+ if( channel.CompareTo("muon") == 0 )     ptBinningGen->AddAxis("mass", nmassbin_forPt,massbin_forPt_muon, true, true);
 }
 
 void SetMassBinningRec(TString channel = "electron"){
 
  massBinningRec=(new TUnfoldBinning("Rec_Mass"));
- if( channel.CompareTo("electron") == 0 ) massBinningRec->AddAxis("mass", nmassbin_fine_electron, massbin_fine_electron, true, true);
- if( channel.CompareTo("muon") == 0 )     massBinningRec->AddAxis("mass", nmassbin_fine_muon,     massbin_fine_muon, true, true);
- massBinningRec->AddAxis("pt", nptbin_forMass,  ptbin_forMass, false, true);
+ if( channel.CompareTo("electron") == 0 ) massBinningRec->AddAxis("mass", nmassbin, massbin, false, false);
+ if( channel.CompareTo("muon") == 0 )     massBinningRec->AddAxis("mass", nmassbin, massbin, false, false);
+ massBinningRec->AddAxis("pt", nptbin_forMass,  ptbin_forMass, false, false);
 }
 
 void SetMassBinningGen(TString channel = "electron"){
 
  massBinningGen=(new TUnfoldBinning("Gen_Mass"));
- if( channel.CompareTo("electron") == 0 ) massBinningGen->AddAxis("mass", nmassbin_wide_electron, massbin_wide_electron, true, true);
- if( channel.CompareTo("muon") == 0 )     massBinningGen->AddAxis("mass", nmassbin_wide_muon,     massbin_wide_muon,     true, true);
- massBinningGen->AddAxis("pt", nptbin_forMass,  ptbin_forMass, false, true);
+ if( channel.CompareTo("electron") == 0 ) massBinningGen->AddAxis("mass", nmassbin, massbin, false, false);
+ if( channel.CompareTo("muon") == 0 )     massBinningGen->AddAxis("mass", nmassbin, massbin, false, false);
+ massBinningGen->AddAxis("pt", nptbin_forMass,  ptbin_forMass, false, false);
 }
 
 /////////////////// functions to be used in the TTree::Draw() ////////////////////////////////////

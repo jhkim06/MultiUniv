@@ -48,7 +48,7 @@ samples['DYJets'] = {
 samples['DYJets10to50'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
-    'weight' :McWeight_forDY10to50,
+    'weight' :McWeight,
     }
 
 #samples['ZToEE_M_50_120_powheg'] = {

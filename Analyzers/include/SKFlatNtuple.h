@@ -346,6 +346,12 @@ public :
    vector<double>  *LHE_E;
    vector<int>     *LHE_Status;
    vector<int>     *LHE_ID;
+   vector<double>  *lhe_pt;
+   vector<double>  *lhe_eta;
+   vector<double>  *lhe_phi;
+   vector<double>  *lhe_mass;
+   vector<double>     *lhe_status;
+   vector<double>     *lhe_PID;
    vector<double>  *PDFWeights_Scale;
    vector<double>  *PDFWeights_Error;
    vector<double>  *PDFWeights_AlphaS;
@@ -689,6 +695,12 @@ public :
    TBranch        *b_LHE_E;   //!
    TBranch        *b_LHE_Status;   //!
    TBranch        *b_LHE_ID;   //!
+   TBranch        *b_lhe_pt;   //!
+   TBranch        *b_lhe_eta;   //!
+   TBranch        *b_lhe_phi;   //!
+   TBranch        *b_lhe_mass;   //!
+   TBranch        *b_lhe_status;   //!
+   TBranch        *b_lhe_PID;   //!
    TBranch        *b_PDFWeights_Scale;   //!
    TBranch        *b_PDFWeights_Error;   //!
    TBranch        *b_PDFWeights_AlphaS;   //!

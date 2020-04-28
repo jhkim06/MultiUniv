@@ -7,22 +7,22 @@ from CommonPyTools.python.CommonTools import *
 McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal * evt_weight_trigSFDZ_rec_Nominal'
 McWeightZptWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal * evt_weight_trigSFDZ_rec_Nominal * evt_weight_zptcorr'
 
-#--------------------    
+#--------------------
 # MC
-#--------------------    
+#--------------------
 
 samples['DYJets@DYJetsToEE'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_dielectron_hardprocess == 1',
-    'weight' :McWeightZptWeight,
+    'weight' :McWeight,
     }
 
 samples['DYJets10to50@DYJets10to50ToEE'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_dielectron_hardprocess == 1',
-    'weight' :McWeightZptWeight,
+    'weight' :McWeight,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {
@@ -36,6 +36,18 @@ samples['DYJets10to50@DYJets10to50ToTauTau'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_ditau_hardprocess == 1',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_tW_antitop_Incl'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'cut'    :'',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_tW_top_Incl'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'cut'    :'',
     'weight' :McWeight,
     }
 

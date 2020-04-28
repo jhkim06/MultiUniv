@@ -327,6 +327,12 @@ void SKFlatNtuple::Init()
    LHE_E = 0;
    LHE_Status = 0;
    LHE_ID = 0;
+   lhe_pt = 0;
+   lhe_eta = 0;
+   lhe_phi = 0;
+   lhe_mass = 0;
+   lhe_status = 0;
+   lhe_PID = 0;
    PDFWeights_Scale = 0;
    PDFWeights_Error = 0;
    PDFWeights_AlphaS = 0;
@@ -655,6 +661,12 @@ void SKFlatNtuple::Init()
    fChain->SetBranchAddress("LHE_E", &LHE_E, &b_LHE_E);
    fChain->SetBranchAddress("LHE_Status", &LHE_Status, &b_LHE_Status);
    fChain->SetBranchAddress("LHE_ID", &LHE_ID, &b_LHE_ID);
+   fChain->SetBranchAddress("lhe_pt", &lhe_pt, &b_lhe_pt);
+   fChain->SetBranchAddress("lhe_eta", &lhe_eta, &b_lhe_eta);
+   fChain->SetBranchAddress("lhe_phi", &lhe_phi, &b_lhe_phi);
+   fChain->SetBranchAddress("lhe_mass", &lhe_mass, &b_lhe_mass);
+   fChain->SetBranchAddress("lhe_status", &lhe_status, &b_lhe_status);
+   fChain->SetBranchAddress("lhe_PID", &lhe_PID, &b_lhe_PID);
    fChain->SetBranchAddress("PDFWeights_Scale", &PDFWeights_Scale, &b_PDFWeights_Scale);
    fChain->SetBranchAddress("PDFWeights_Error", &PDFWeights_Error, &b_PDFWeights_Error);
    fChain->SetBranchAddress("PDFWeights_AlphaS", &PDFWeights_AlphaS, &b_PDFWeights_AlphaS);

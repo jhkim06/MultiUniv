@@ -10,20 +10,27 @@ McWeight = 'evt_weight_total_gen'
 # MC
 #--------------------
 
-samples['DYJets'] = {
-    'skim'   :'ISR_v1', # use default skim defined in configuration.py
+samples['DYFSR_PYTHIA'] = {
+    'skim'   :'ISR_generator_only_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'',
     'weight' :McWeight,
     }
 
-samples['DYJets10to50'] = {
-    'skim'   :'ISR_v1', # use default skim defined in configuration.py
-    'combine_cuts' : True,
-    'cut'    :'',
-    'weight' :McWeight,
-    }
-
+#samples['DYJets'] = {
+#    'skim'   :'ISR_v1', # use default skim defined in configuration.py
+#    'combine_cuts' : True,
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['DYJets10to50'] = {
+#    'skim'   :'ISR_v1', # use default skim defined in configuration.py
+#    'combine_cuts' : True,
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+#
 #samples['DYJets_MG'] = {
 #    'skim'   :'ISR_v1', # use default skim defined in configuration.py
 #    'combine_cuts' : True,

@@ -7,22 +7,22 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-FakeRate = 'evt_weight_LL_rec_Fake' 
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake' 
-McWeightZptReweight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake * evt_weight_zptcorr'
+FakeRate = 'evt_weight_LL_rec_Fake'
+McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake'
+McWeightZptReweight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake * evt_weight_zptcorr_Fake'
 
-#--------------------    
+#--------------------
 # MC
-#--------------------    
+#--------------------
 
-samples['DYJets@DYJetsToElEl'] = {
+samples['DYJets@DYJetsToEE'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_dielectron_hardprocess == 1',
     'weight' :McWeightZptReweight,
     }
 
-samples['DYJets10to50_MG@DYJets10to50ToElEl'] = {
+samples['DYJets10to50@DYJets10to50ToEE'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_dielectron_hardprocess == 1',
@@ -36,10 +36,22 @@ samples['DYJets@DYJetsToTauTau'] = {
     'weight' :McWeight,
     }
 
-samples['DYJets10to50_MG@DYJets10to50ToTauTau'] = {
+samples['DYJets10to50@DYJets10to50ToTauTau'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_ditau_hardprocess == 1',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_tW_antitop_Incl'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'cut'    :'',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_tW_top_Incl'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'cut'    :'',
     'weight' :McWeight,
     }
 
@@ -97,17 +109,17 @@ samples['DoubleEG'] = {
 #    'weight' :'1',
 #    }
 
-#--------------------    
+#--------------------
 # DATA driven QCD
 #--------------------
 '''
-samples['DoubleEG_FakeElEl'] = {
-    'skim'   :'MetFt_L_v0_LL_v0_ElElOrElElFake_v2_Eff_SF_v1', #TODO: this skim is not exist currently
+samples['DoubleEG_FakeEE'] = {
+    'skim'   :'MetFt_L_v0_LL_v0_EEOrEEFake_v2_Eff_SF_v1', #TODO: this skim is not exist currently
     'weight' :'1',
     }
 
-samples['DobuleMuon_FakeElEl'] = {
-    'skim'   :'MetFt_L_v0_LL_v0_ElElOrElElFake_v2_Eff_SF_v1', #TODO: this skim is not exist currently
+samples['DobuleMuon_FakeEE'] = {
+    'skim'   :'MetFt_L_v0_LL_v0_EEOrEEFake_v2_Eff_SF_v1', #TODO: this skim is not exist currently
     'weight' :'1',
     }
 '''

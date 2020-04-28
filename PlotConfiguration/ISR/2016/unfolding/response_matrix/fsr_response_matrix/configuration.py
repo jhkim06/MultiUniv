@@ -5,7 +5,7 @@ Category    = 'SMP'
 Year        = '2016'
 InSkim      = 'ISR_v1'
 #InSkim      = 'ISR_generator_only_v1'
-Userflags   = 'ISR_response_closureTest'
+Userflags   = 'ISR_response_FSR'
 treeName    = 'recoTree/SKFlat'
 #treeName    = 'GEN/SKFlat'
 

@@ -705,15 +705,32 @@ std::vector<LHE> AnalyzerCore::GetLHEs(){
   std::vector<LHE> out;
   if(IsDATA) return out;
 
-  for(unsigned int i=0; i<LHE_Px->size(); i++){
+  if(!OnlyGenLevel)
+  {
+    for(unsigned int i=0; i<LHE_Px->size(); i++)
+    {
 
-    LHE lhe;
+      LHE lhe;
 
-    lhe.SetPxPyPzE(LHE_Px->at(i), LHE_Py->at(i), LHE_Pz->at(i), LHE_E->at(i));
-    lhe.SetIndexIDStatus(i, LHE_ID->at(i), LHE_Status->at(i));
+      lhe.SetPxPyPzE(LHE_Px->at(i), LHE_Py->at(i), LHE_Pz->at(i), LHE_E->at(i));
+      lhe.SetIndexIDStatus(i, LHE_ID->at(i), LHE_Status->at(i));
 
-    out.push_back(lhe);
+      out.push_back(lhe);
 
+    } 
+  }
+  else
+  {
+    for(unsigned int i=0; i<lhe_pt->size(); i++)
+    {
+        
+      LHE lhe;
+
+      lhe.SetPtEtaPhiM(lhe_pt->at(i), lhe_eta->at(i), lhe_phi->at(i), lhe_mass->at(i));
+      lhe.SetIndexIDStatus(i, lhe_PID->at(i), lhe_status->at(i));
+      out.push_back(lhe);
+
+    } 
   }
 
   return out;

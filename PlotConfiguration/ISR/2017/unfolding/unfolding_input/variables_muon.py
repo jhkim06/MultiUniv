@@ -10,26 +10,26 @@ from Definitions import * # to use enumerate for unfolding histogram type
 
 # xaxis, yaxis to set title
 
-variables['hist_ptll'] = {
+variables['Pt'] = {
 
-    'unfoldBinType': ISRUnfold.PtRec2DHist, 
+    'unfoldBinType': ISRUnfold.PtRec2DHist,
     'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
-    'fold':   0, 
-    'range':  None, 
-    'name':  'Get2DPtRecBinIndex(dilep_pt_rec, dilep_mass_rec)', 
-    'xaxis': 'Mass p_{T} [GeV]', 
+    'fold':   0,
+    'range':  None,
+    'name':  'Get2DPtRecBinIndex(dilep_pt_rec_Nominal, dilep_mass_rec_Nominal)',
+    'xaxis': 'Mass p_{T} [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
     'unfoldBinDefinition': "muon",
     'go1D': True
 }
 
-variables['hist_mll'] = {
+variables['Mass'] = {
 
     'unfoldBinType': ISRUnfold.MassRec2DHist,
     'fold':   0,
     'range':  None,
-    'name':  'Get2DMassRecBinIndex(dilep_mass_rec, dilep_pt_rec)',
+    'name':  'Get2DMassRecBinIndex(dilep_mass_rec_Nominal, dilep_pt_rec_Nominal)',
     'xaxis': 'Mass [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
@@ -37,56 +37,65 @@ variables['hist_mll'] = {
     'go1D': False
 }
 
-variables['hist_ptll_lepMomDown'] = {
+variables['Mass_1D'] = {
 
-    'unfoldBinType': ISRUnfold.PtRec2DHist, 
-    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
-    'fold':   0, 
-    'range':  None, 
-    'name':  'Get2DPtRecBinIndex(dilep_pt_rec_LepMomScaleDown, dilep_mass_rec_LepMomScaleDown)', 
-    'xaxis': 'Mass p_{T} [GeV]', 
-    'yaxis': 'Events',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
-    'go1D': True
-}
-
-variables['hist_mll_lepMomDown'] = {
-
-    'unfoldBinType': ISRUnfold.MassRec2DHist,
     'fold':   0,
-    'range':  None,
-    'name':  'Get2DMassRecBinIndex(dilep_mass_rec_LepMomScaleDown, dilep_pt_rec_LepMomScaleDown)',
+    'range':  ([15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 64, 68, 72, 76, 81, 86, 91, 96, 101, 106, 110, 115, 120, 126, 133, 141, 150, 160, 171, 185, 200, 220, 243, 273, 320, 380, 440, 510, 600, 700, 830, 1000, 1500, 3000],),
+    'name':  'dilep_mass_rec_Nominal',
     'xaxis': 'Mass [GeV]',
     'yaxis': 'Events',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
-    'go1D': False
 }
 
-variables['hist_ptll_lepMomUp'] = {
-
-    'unfoldBinType': ISRUnfold.PtRec2DHist, 
-    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
-    'fold':   0, 
-    'range':  None, 
-    'name':  'Get2DPtRecBinIndex(dilep_pt_rec_LepMomScaleUp, dilep_mass_rec_LepMomScaleUp)', 
-    'xaxis': 'Mass p_{T} [GeV]', 
-    'yaxis': 'Events',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
-    'go1D': True
-}
-
-variables['hist_mll_lepMomUp'] = {
-
-    'unfoldBinType': ISRUnfold.MassRec2DHist,
-    'fold':   0,
-    'range':  None,
-    'name':  'Get2DMassRecBinIndex(dilep_mass_rec_LepMomScaleUp, dilep_pt_rec_LepMomScaleUp)',
-    'xaxis': 'Mass [GeV]',
-    'yaxis': 'Events',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
-    'go1D': False
-}
+#variables['hist_ptll_lepMomDown'] = {
+#
+#    'unfoldBinType': ISRUnfold.PtRec2DHist,
+#    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
+#    'fold':   0,
+#    'range':  None,
+#    'name':  'Get2DPtRecBinIndex(dilep_pt_rec_LepMomScaleDown, dilep_mass_rec_LepMomScaleDown)',
+#    'xaxis': 'Mass p_{T} [GeV]',
+#    'yaxis': 'Events',
+#    'useTUnfoldBin': True,
+#    'unfoldBinDefinition': "muon",
+#    'go1D': True
+#}
+#
+#variables['hist_mll_lepMomDown'] = {
+#
+#    'unfoldBinType': ISRUnfold.MassRec2DHist,
+#    'fold':   0,
+#    'range':  None,
+#    'name':  'Get2DMassRecBinIndex(dilep_mass_rec_LepMomScaleDown, dilep_pt_rec_LepMomScaleDown)',
+#    'xaxis': 'Mass [GeV]',
+#    'yaxis': 'Events',
+#    'useTUnfoldBin': True,
+#    'unfoldBinDefinition': "muon",
+#    'go1D': False
+#}
+#
+#variables['hist_ptll_lepMomUp'] = {
+#
+#    'unfoldBinType': ISRUnfold.PtRec2DHist,
+#    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
+#    'fold':   0,
+#    'range':  None,
+#    'name':  'Get2DPtRecBinIndex(dilep_pt_rec_LepMomScaleUp, dilep_mass_rec_LepMomScaleUp)',
+#    'xaxis': 'Mass p_{T} [GeV]',
+#    'yaxis': 'Events',
+#    'useTUnfoldBin': True,
+#    'unfoldBinDefinition': "muon",
+#    'go1D': True
+#}
+#
+#variables['hist_mll_lepMomUp'] = {
+#
+#    'unfoldBinType': ISRUnfold.MassRec2DHist,
+#    'fold':   0,
+#    'range':  None,
+#    'name':  'Get2DMassRecBinIndex(dilep_mass_rec_LepMomScaleUp, dilep_pt_rec_LepMomScaleUp)',
+#    'xaxis': 'Mass [GeV]',
+#    'yaxis': 'Events',
+#    'useTUnfoldBin': True,
+#    'unfoldBinDefinition': "muon",
+#    'go1D': False
+#}

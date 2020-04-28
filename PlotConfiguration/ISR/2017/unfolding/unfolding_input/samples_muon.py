@@ -7,35 +7,35 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_isoSF_rec * evt_weight_idSF_rec * evt_weight_trigSF_rec'
+McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_isoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal'
+McWeightZptCorr = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_isoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal * evt_weight_zptcorr_Nominal'
+McWeight_forDY10to50 = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_isoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal * 1.0687524'
 
-#McWeight = 'evt_weight_total_gen * evt_weight_total_rec'
-
-#--------------------    
+#--------------------
 # MC
-#--------------------    
+#--------------------
 
 samples['DYJets@DYJetsToMuMu'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_dimuon_gen == 1',
+    'cut'    :'evt_tag_dimuon_hardprocess == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets10to50_MG@DYJets10to50ToMuMu'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_dimuon_gen == 1',
+    'cut'    :'evt_tag_dimuon_hardprocess == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_ditau_gen == 1',
+    'cut'    :'evt_tag_ditau_hardprocess == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets10to50_MG@DYJets10to50ToTauTau'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_ditau_gen == 1',
+    'cut'    :'evt_tag_ditau_hardprocess == 1',
     'weight' :McWeight,
     }
 
@@ -74,7 +74,7 @@ samples['DoubleMuon'] = {
     'cut'    :'',
     'weight' :'1',
     }
-#--------------------    
+#--------------------
 # DATA driven QCD
 #--------------------
 '''

@@ -38,6 +38,8 @@ sampleInfo = {
 'SingleTop_sch_Lep'		:{'name' :'ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1',	'xsec': 1.907,	'nMC':1000000,	'Nsum': 622990 },
 'SingleTop_tW_antitop_NoFullyHad'		:{'name' :'ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1',	'xsec': 19.20,	'nMC':8681541,	'Nsum': 8681541 },
 'SingleTop_tW_top_NoFullyHad'		:{'name' :'ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1',	'xsec': 19.20,	'nMC':8681495,	'Nsum': 8681495 },
+'SingleTop_tW_antitop_Incl'		:{'name' :'ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1',	'xsec': 38.09,	'nMC':6933094,	'Nsum': 6933094 },
+'SingleTop_tW_top_Incl'		:{'name' :'ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1',	'xsec': 38.09,	'nMC':6952830,	'Nsum': 6952830.0},
 'SingleTop_tch_antitop_Incl'		:{'name' :'ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1',	'xsec': 67.91,	'nMC':38811017,	'Nsum': 38811017 },
 'SingleTop_tch_top_Incl'		:{'name' :'ST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1',	'xsec': 113.3,	'nMC':67105876,	'Nsum': 67105876 },
 'TTG'		:{'name' :'TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8',	'xsec': 3.697,	'nMC':14748853,	'Nsum': 4774447 },
