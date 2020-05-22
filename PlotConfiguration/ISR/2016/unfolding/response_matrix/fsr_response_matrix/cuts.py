@@ -4,7 +4,8 @@ sys.path.insert(0,SKFlat_WD+'/CommonTools/include')
 from Definitions import *
 
 # supercut will be applied last in the cuts
-supercut = 'evt_tag_dielectron_lhe == 1 &&  evt_tag_dielectron_promptfinal == 1'
+#supercut = 'evt_tag_dielectron_lhe == 1 &&  evt_tag_dielectron_promptfinal == 1'
+supercut = 'evt_tag_dielectron_lhe == 1'
 
 # dressed level distribution
 cuts['fiducial_phase_dRp1'] = 'pass_kinematic_cut_el_FSRgammaDRp1_gen == 1 '

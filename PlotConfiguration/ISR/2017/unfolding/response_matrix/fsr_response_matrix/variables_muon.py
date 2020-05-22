@@ -5,71 +5,54 @@ SKFlat_WD = os.getenv('SKFlat_WD')
 sys.path.insert(0,SKFlat_WD+'/CommonTools/include')
 from Definitions import * # to use enumerate for unfolding histogram type
 
-#columns=['ALL'] # To read all
-#columns=['diLep_Ch','diLep_m','diLep_pt','diLep_passSelectiveQ','IdSF_Q_Up','IdSF_Q_Do','IdSF_Q','baseW','PUweight','trgSF_Q','recoSF','IsoSF','ZPtCor','trgSF_Q_Up','trgSF_Q_Do','PDFWeights_AlphaS']
+# for FSR unfold closure test input 
+#variables['hist_ptll'] = {
+#
+#    'unfoldBinType': ISRUnfold.PtGen2DHist,
+#    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
+#    'fold':   0,
+#    'range':  None,
+#    'name':  'Get2DPtGenBinIndex(dilep_pt_FSRgammaDRp1_gen_ispromptfinal, dilep_mass_FSRgammaDRp1_gen_ispromptfinal)',
+#    'xaxis': 'Mass p_{T} [GeV]',
+#    'yaxis': 'Events',
+#    'useTUnfoldBin': True,
+#    'unfoldBinDefinition': "muon",
+#    'go1D': True
+#}
+#
+#variables['hist_mll'] = {
+#
+#    'unfoldBinType': ISRUnfold.MassGen2DHist,
+#    'fold':   0,
+#    'range':  None,
+#    'name':  'Get2DMassGenBinIndex(dilep_mass_FSRgammaDRp1_gen_ispromptfinal, dilep_pt_FSRgammaDRp1_gen_ispromptfinal)',
+#    'xaxis': 'Mass [GeV]',
+#    'yaxis': 'Events',
+#    'useTUnfoldBin': True,
+#    'unfoldBinDefinition': "muon",
+#    'go1D': False
+#}
 
-# xaxis, yaxis to set title
+variables['Pt_ResMatrix_Dressed_DRp1_Dressed_DR4PI'] = {
 
-variables['hist_ptll_post_fsr'] = {
-
-    'unfoldBinType': ISRUnfold.PtGen2DHist,
+    'unfoldBinType': ISRUnfold.PtFSRMigrationM,
     'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
-    'fold':   0,
-    'range':  None,
-    'name':  'Get2DPtGenBinIndex(dilep_pt_gen_postfsr, dilep_mass_gen_postfsr)',
-    'xaxis': 'Mass p_{T} [GeV]',
-    'yaxis': 'Events',
+    'fold': 0,
+    'range': None,
+    'name': 'Get2DPtGenBinIndex(dilep_pt_FSRgammaDRp1_gen_ispromptfinal, dilep_mass_FSRgammaDRp1_gen_ispromptfinal):Get2DPtGenBinIndex(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal)',
+    'xaxis': 'Post FSR',
     'useTUnfoldBin': True,
     'unfoldBinDefinition': "muon",
-    'go1D': True
+    'go1D': False,
+    'isResMatrix':True
 }
 
-variables['hist_mll_post_fsr'] = {
-
-    'unfoldBinType': ISRUnfold.MassGen2DHist,
-    'fold':   0,
-    'range':  None,
-    'name':  'Get2DMassGenBinIndex(dilep_mass_gen_postfsr, dilep_pt_gen_postfsr)',
-    'xaxis': 'Mass [GeV]',
-    'yaxis': 'Events',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
-    'go1D': False
-}
-
-variables['hist_ptll_pre_fsr'] = {
-
-    'unfoldBinType': ISRUnfold.PtGen2DHist,
-    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
-    'fold':   0,
-    'range':  None,
-    'name':  'Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[9], dilep_mass_gen_lepton_matched_dressed_drX[9])',
-    'xaxis': 'Mass p_{T} [GeV]',
-    'yaxis': 'Events',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
-    'go1D': True
-}
-
-variables['hist_mll_pre_fsr'] = {
-
-    'unfoldBinType': ISRUnfold.MassGen2DHist,
-    'fold':   0,
-    'range':  None,
-    'name':  'Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[9], dilep_pt_gen_lepton_matched_dressed_drX[9])',
-    'xaxis': 'Mass [GeV]',
-    'yaxis': 'Events',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
-    'go1D': False
-}
-
-variables['mll_gen_post_fsr_pre_fsr_dRp1_response_matrix'] = {
+variables['Mass_ResMatrix_Dressed_DRp1_Dressed_DR4PI'] = {
 
     'unfoldBinType': ISRUnfold.MassFSRMigrationM,
     'fold': 0,
     'range': None,
-    'name': 'Get2DMassGenBinIndex(dilep_mass_gen_postfsr, dilep_pt_gen_postfsr):Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[0], dilep_pt_gen_lepton_matched_dressed_drX[0])',
+    'name': 'Get2DMassGenBinIndex(dilep_mass_FSRgammaDRp1_gen_ispromptfinal, dilep_pt_FSRgammaDRp1_gen_ispromptfinal):Get2DMassGenBinIndex(dilep_mass_FSRgamma_gen_ispromptfinal, dilep_pt_FSRgamma_gen_ispromptfinal)',
     'xaxis': 'Post FSR',
     'useTUnfoldBin': True,
     'unfoldBinDefinition': "muon",
@@ -77,68 +60,29 @@ variables['mll_gen_post_fsr_pre_fsr_dRp1_response_matrix'] = {
     'isResMatrix':True
 }
 
-variables['ptll_gen_post_fsr_pre_fsr_dRp1_response_matrix'] = {
+#variables['ptll'] = {
+#    'name': 'dilep_pt_FSRgamma_gen_ispromptfinal',
+#    'range':([0., 4., 8., 12., 18., 28., 40., 55., 75., 100.],),
+#    'xaxis': ' p_{T}^{ee} [GeV]',
+#    'yaxis': 'Events/ bin',
+#    'go1D': False,
+#    'fold' : 0
+#    }
+#
+#variables['mll'] = {
+#    'name': 'dilep_mass_FSRgamma_gen_ispromptfinal',
+#    'range':([40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,126,133,141,150,160,171,185,200,218,240,268,300,350],),
+#    'xaxis': ' m^{ee} [GeV]',
+#    'yaxis': 'Events/ bin',
+#    'go1D': False,
+#    'fold' : 0
+#    }
 
-    'unfoldBinType': ISRUnfold.PtFSRMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DPtGenBinIndex(dilep_pt_gen_postfsr, dilep_mass_gen_postfsr):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[0], dilep_mass_gen_lepton_matched_dressed_drX[0])',
-    'xaxis': 'Post FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
+variables['mll'] = {
+    'name': 'dilep_mass_FSRgamma_gen_ispromptfinal',
+    'range':([15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 64, 68, 72, 76, 81, 86, 91, 96, 101, 106, 110, 115, 120, 126, 133, 141, 150, 160, 171, 185, 200, 220, 243, 273, 320, 380, 440, 510, 600, 700, 830, 1000, 1500, 3000],),
+    'xaxis': ' m^{ee} [GeV]',
+    'yaxis': 'Events/ bin',
     'go1D': False,
-    'isResMatrix':True
-}
-
-variables['ptll_gen_post_fsr_dRp1_pre_fsr_response_matrix'] = {
-
-    'unfoldBinType': ISRUnfold.PtFSRMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[0], dilep_mass_gen_lepton_matched_dressed_drX[0]):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[9], dilep_mass_gen_lepton_matched_dressed_drX[9])',
-    'xaxis': 'Post FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
-    'go1D': False,
-    'isResMatrix':True
-}
-
-variables['mll_gen_post_fsr_dRp1_pre_fsr_response_matrix'] = {
-
-    'unfoldBinType': ISRUnfold.MassFSRMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[0], dilep_pt_gen_lepton_matched_dressed_drX[0]):Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[9], dilep_pt_gen_lepton_matched_dressed_drX[9])',
-    'xaxis': 'Post FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
-    'go1D': False,
-    'isResMatrix':True
-}
-
-
-variables['mll_gen_post_fsr_pre_fsr_response_matrix'] = {
-
-    'unfoldBinType': ISRUnfold.MassFSRMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DMassGenBinIndex(dilep_mass_gen_postfsr, dilep_pt_gen_postfsr):Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[9], dilep_pt_gen_lepton_matched_dressed_drX[9])',
-    'xaxis': 'Post FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
-    'go1D': False,
-    'isResMatrix':True
-}
-
-variables['ptll_gen_post_fsr_pre_fsr_response_matrix'] = {
-
-    'unfoldBinType': ISRUnfold.PtFSRMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DPtGenBinIndex(dilep_pt_gen_postfsr, dilep_mass_gen_postfsr):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[9], dilep_mass_gen_lepton_matched_dressed_drX[9])',
-    'xaxis': 'Post FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
-    'go1D': False,
-    'isResMatrix':True
-}
+    'fold' : 0
+    }

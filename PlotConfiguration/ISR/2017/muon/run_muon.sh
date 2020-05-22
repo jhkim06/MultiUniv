@@ -50,10 +50,10 @@
 
 
 
-#mkShapes.py --pycfg  configuration_muon.py -n 50 --nTotFiles 0  --overWrite --doBatch --multiQueue  
+mkShapes.py --pycfg  configuration_muon.py -n 50 --nTotFiles 0  --overWrite --doBatch --multiQueue  
 #mkShapes.py --pycfg  configuration.py -n 300 --nTotFiles 0  --overWrite --doBatch  
 
-mkShapes.py --pycfg  configuration_muon.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp
+#mkShapes.py --pycfg  configuration_muon.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp
 
 #mkPDfUncert.py --pycfg configuration_muon.py --overWrite --cleanUp
 #mkPlot.py --pycfg configuration_muon.py --inputFile=Output_Electron_control_SFapplied_ISR_detector_only_v2_Eff_SF_v1_ISR_detector_plots_muon/ISR_detector_plots_muon.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=0 --minLogCratio=2 --maxLogCratio=5000 

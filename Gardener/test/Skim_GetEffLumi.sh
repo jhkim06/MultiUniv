@@ -15,12 +15,12 @@
 
 rm JobCheck.log
 
-for sample in SingleTop_tW_top_Incl 
+for sample in DYJets200to400
 #for sample in DoubleEG DoubleMuon DYJets10to50 DYJets TTLL_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 
 do
   echo $sample
   #mkGardener.py --Category SMP -a GetEffLumi -y 2016 -i $sample -n 50 --skimV 1 --multiQueue --OnlyGenLevel --treeDir GEN
-  mkGardener.py --Category SMP -a GetEffLumi -y 2016 -i $sample -n 50 --skimV 1 --multiQueue 
+  mkGardener.py --Category SMP -a GetEffLumi -y 2018 -i $sample -n 50 --skimV 1 --multiQueue 
 done
 
 #for sample in DoubleEG DoubleMuon DYJets10to50_MG DYJets TT_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 

@@ -5,7 +5,7 @@ from Definitions import *
 
 supercut = '1==1'
 
-cuts['Detector'] = 'evt_tag_dielectron_rec_Nominal == 1 && evt_tag_analysisevnt_sel_rec_Nominal == 1 '
+cuts['Detector'] = 'evt_tag_dielectron_rec_Nominal == 1 && evt_tag_analysisevnt_sel_rec_Nominal == 1 && dilep_mass_rec_Nominal > 10. && dilep_mass_rec_Nominal < 330.'
 #cuts['detector_level'] = 'evt_tag_dielectron_rec_Nominal == 1 && evt_tag_leptonpt_sel_rec_Nominal == 1 && evt_tag_leptoneta_sel_rec_Nominal == 1 && additional_veto_el_size_Nominal == 0 && additional_veto_mu_size_Nominal == 0 && leadinglep_pt_rec_Nominal > 28. && subleadinglep_pt_rec_Nominal > 17.'
 
 #cuts['detector_level_lepMomUp'] = 'evt_tag_dielectron_rec_LepMomScaleUp == 1 && evt_tag_analysisevnt_sel_rec_LepMomScaleUp == 1 '

@@ -7,10 +7,8 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec * evt_weight_idSF_rec * evt_weight_trigSF_rec'
-
-#McWeight = 'evt_weight_total_gen * evt_weight_total_rec'
-#McWeight = 'baseW*PUweight*trgSF*recoSF*IdSF*IsoSF*ZPtCor'
+McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal'
+#McWeight = 'evt_weight_total_gen'
 
 #--------------------    
 # MC
@@ -27,6 +25,24 @@ samples['DYJets10to50_MG'] = {
     'cut'    :'',
     'weight' :McWeight,
     }
+
+#samples['ZToEE_M_50_120_powheg'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['ZToEE_M_120_200_powheg'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['ZToEE_M_200_400_powheg'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
 
 #--------------------    
 # DATA driven QCD

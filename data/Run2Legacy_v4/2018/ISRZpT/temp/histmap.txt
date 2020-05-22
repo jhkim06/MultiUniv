@@ -1,0 +1,11 @@
+# sample flavor       number_iter          rootfile                                     histname         massbin_name
+DYJets    muon             10             ZptWeight_muon_m80to100.root		        ZptWeight_iter  m80to100
+DYJets    electron         10             ZptWeight_electron_m80to100.root		ZptWeight_iter  m80to100
+DYJets    muon             10             ZptWeight_muon_m40to60.root		        ZptWeight_iter  m40to60
+DYJets    electron         10             ZptWeight_electron_m50to65.root		ZptWeight_iter  m50to65
+DYJets    muon             10             ZptWeight_muon_m60to80.root		        ZptWeight_iter  m60to80
+DYJets    electron         10             ZptWeight_electron_m65to80.root		ZptWeight_iter  m65to80
+DYJets    muon             10             ZptWeight_muon_m100to200.root		        ZptWeight_iter  m100to200
+DYJets    electron         10             ZptWeight_electron_m100to200.root		ZptWeight_iter  m100to200
+DYJets    muon             10             ZptWeight_muon_m200to350.root		        ZptWeight_iter  m200to350
+DYJets    electron         10             ZptWeight_electron_m200to350.root		ZptWeight_iter  m200to350

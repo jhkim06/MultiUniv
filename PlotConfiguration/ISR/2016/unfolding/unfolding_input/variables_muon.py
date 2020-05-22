@@ -46,6 +46,33 @@ variables['Mass_1D'] = {
     'yaxis': 'Events',
 }
 
+variables['Pt_1D'] = {
+
+    'fold':   0,
+    'range':  (100, 0, 100),
+    'name':  'dilep_pt_rec_Nominal',
+    'xaxis': 'Pt [GeV]',
+    'yaxis': 'Events',
+}
+
+variables['Pt_1D_bin1'] = {
+
+    'fold':   0,
+    'range':  ([0., 4., 8., 12., 18., 28., 40., 55., 75., 100.],),
+    'name':  'dilep_pt_rec_Nominal',
+    'xaxis': 'Pt [GeV]',
+    'yaxis': 'Events',
+}
+
+variables['Pt_1D_bin2'] = {
+
+    'fold':   0,
+    'range':  ([0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 35., 45., 55., 65., 75., 85., 100.],),
+    'name':  'dilep_pt_rec_Nominal',
+    'xaxis': 'Pt [GeV]',
+    'yaxis': 'Events',
+}
+
 #variables['hist_ptll_lepMomDown'] = {
 #
 #    'unfoldBinType': ISRUnfold.PtRec2DHist,

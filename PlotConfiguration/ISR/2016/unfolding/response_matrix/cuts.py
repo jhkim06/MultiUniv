@@ -4,11 +4,12 @@ sys.path.insert(0,SKFlat_WD+'/CommonTools/include')
 from Definitions import *
 
 # supercut will be applied last in the cuts
-supercut = 'evt_tag_dielectron_promptfinal == 1 &&  evt_tag_dielectron_promptfinal == 1'
+#supercut = 'evt_tag_dielectron_promptfinal == 1 &&  evt_tag_dielectron_promptfinal == 1'
+supercut = 'evt_tag_dielectron_promptfinal == 1'
 
 # detector distribution
-#cuts['detector_level'] = 'evt_tag_dielectron_rec == 1 && evt_tag_analysisevnt_sel_rec == 1 '
-#cuts['detector_level_DY_Fake'] = 'evt_tag_dielectron_rec == 1 && evt_tag_analysisevnt_sel_rec == 1 && pass_kinematic_cut_el_FSRgammaDRp1_gen == 0'
+cuts['detector_level'] = 'evt_tag_dielectron_rec_Nominal == 1 && evt_tag_analysisevnt_sel_rec_Nominal == 1 '
+cuts['detector_level_DY_Fake'] = 'evt_tag_dielectron_rec_Nominal == 1 && evt_tag_analysisevnt_sel_rec_Nominal == 1 && pass_kinematic_cut_el_FSRgammaDRp1_gen == 0 && && dilep_mass_rec_Nominal > 10.'
 
 # for closure test
 #cuts['detector_level_unfold_split_p2'] = 'evt_tag_dielectron_rec == 1 && evt_tag_analysisevnt_sel_rec == 1 && (Entry$%10 > 7) '

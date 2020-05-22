@@ -6,6 +6,8 @@ from CommonPyTools.python.CommonTools import *
 
 FakeRate = 'evt_weight_LL_rec_Fake' 
 McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake' 
+McWeight_forDY10to50 = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake * 1.0687524' 
+McWeightZptReweight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake * evt_weight_zptcorr_Fake'
 
 #--------------------    
 # MC
@@ -14,28 +16,28 @@ McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake
 samples['DYJets@DYJetsToMuMu'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
-    'cut'    :'evt_tag_dimuon_gen == 1',
-    'weight' :McWeight,
+    'cut'    :'evt_tag_dimuon_hardprocess == 1',
+    'weight' :McWeightZptReweight,
     }
 
 samples['DYJets10to50_MG@DYJets10to50ToMuMu'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
-    'cut'    :'evt_tag_dimuon_gen == 1',
-    'weight' :McWeight,
+    'cut'    :'evt_tag_dimuon_hardprocess == 1',
+    'weight' :McWeightZptReweight,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
-    'cut'    :'evt_tag_ditau_gen == 1',
+    'cut'    :'evt_tag_ditau_hardprocess == 1',
     'weight' :McWeight,
     }
 
 samples['DYJets10to50_MG@DYJets10to50ToTauTau'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
-    'cut'    :'evt_tag_ditau_gen == 1',
+    'cut'    :'evt_tag_ditau_hardprocess == 1',
     'weight' :McWeight,
     }
 

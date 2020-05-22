@@ -5,6 +5,7 @@ sampleInfo = {
 'DY3Jets_MG'		:{'name' :'DY3JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8',	'xsec': 102.3,	'nMC':1149467,	'Nsum': 1147725 },
 'DY4Jets_MG'		:{'name' :'DY4JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8',	'xsec': 54.52,	'nMC':4328648,	'Nsum': 4317756 },
 'DYJets'		:{'name' :'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8',	'xsec': 6077.22,	'nMC':209747524,	'Nsum': 142142566 },
+'DYJets200to400'                :{'name' :'DYJetsToLL_M-200to400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8',      'xsec': 7.67,   'nMC':2893179,   'Nsum': 1865323.0},
 'DYJets10to50_MG'		:{'name' :'DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8',	'xsec': 18610,	'nMC':79058069.0,	'Nsum': 78994955.0 },
 'SingleTop_sch_Lep'		:{'name' :'ST_s-channel_4f_leptonDecays_TuneCP5_PSweights_13TeV-amcatnlo-pythia8',	'xsec': 3.36,	'nMC':9914948,	'Nsum': 6185062 },
 'SingleTop_tW_antitop_NoFullyHad'		:{'name' :'ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8',	'xsec': 19.2,	'nMC':5635539,	'Nsum': 5592819 },

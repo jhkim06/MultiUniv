@@ -314,7 +314,10 @@ class ShapeFactory:
 
         if len(sample_cut) != 0 :
               if combine_cuts: 
-                  globalCut = "(" + totCut + " && " + sample_cut + ") * (" + global_weight + ")"
+                    
+                  #globalCut = "(" + totCut + " && " + sample_cut + ") * (" + global_weight + ")"
+                  totCut = sample_cut + " && " + totCut
+                  globalCut = "(" + totCut + ") * (" + global_weight + ")"
               else :
                   globalCut = "(" + sample_cut + ") * (" + global_weight + ")"
 
@@ -335,9 +338,8 @@ class ShapeFactory:
                     tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:3]) + "&& !(" + "&&".join(totCut.split("&&")[3:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') 
                     # Fill bin zero for efficiency correction: gen_weight * ( 1 - ( rec_weight) ): i.e., efficiency correction
                     tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut + ")*(" + global_weight.split("*")[0] + "*(1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
-
-                    # Fake events: passed Rec Sel but fail to pass Gen Sel
-                    #tree.Draw("var.split(":")[0]"+":0" + ">>+"+shapeName, "(" + totCut.split("&&")[0] + " && " + "&&".join(totCut.split("&&")[2:]) + "&& !(" + "&&".join(totCut.split("&&")[1]) + "))*(" + global_weight +")", 'goff') 
+                    # Fake events: passed Rec Sel but failed to pass Gen Sel
+                    #tree.Draw(var.split(":")[0]+":0" + ">>+"+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + " && " + "&&".join(totCut.split("&&")[3:]) + " && !(" + totCut.split("&&")[2] + "))*(" + global_weight +")", 'goff') 
 
                 else:
                     tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+") *" + sumwxHistX, 'goff')
@@ -385,7 +387,7 @@ class ShapeFactory:
             hTotalFinalName = 'hmcMassGenRec'
     
         if sysName == None:
-            hTotalFinalName = hTotalFinalName + "nominal"
+            hTotalFinalName = hTotalFinalName
 
     if sysName != None: hTotalFinalName = hTotalFinalName + sysName
 

@@ -18,13 +18,13 @@ McWeight_forDY10to50 = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight
 samples['DYJets@DYJetsToMuMu'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_dimuon_hardprocess == 1',
-    'weight' :McWeightZptCorr,
+    'weight' :McWeight,
     }
 
 samples['DYJets10to50@DYJets10to50ToMuMu'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_dimuon_hardprocess == 1',
-    'weight' :McWeightZptCorr,
+    'weight' :McWeight,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {

@@ -10,19 +10,25 @@ from CommonPyTools.python.CommonTools import *
 McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal * evt_weight_trigSFDZ_rec_Nominal'
 #McWeight = 'evt_weight_total_gen'
 
-#--------------------    
+#--------------------
 # MC
-#--------------------    
+#--------------------
+
+samples['DYJets200to400'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'cut'    :'dilep_mass_FSRgamma_gen_ispromptfinal > 200',
+    'weight' :McWeight,
+    }
 
 samples['DYJets'] = {
     'skim'   :'', # use default skim defined in configuration.py
-    'cut'    :'',
+    'cut'    :'dilep_mass_FSRgamma_gen_ispromptfinal < 200',
     'weight' :McWeight,
     }
 
 samples['DYJets10to50'] = {
     'skim'   :'', # use default skim defined in configuration.py
-    'cut'    :'',
+    'cut'    :'1',
     'weight' :McWeight,
     }
 
@@ -44,7 +50,7 @@ samples['DYJets10to50'] = {
 #    'weight' :McWeight,
 #    }
 
-#--------------------    
+#--------------------
 # DATA driven QCD
 #--------------------
 

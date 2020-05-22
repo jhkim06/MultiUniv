@@ -73,7 +73,6 @@ void Skim_ISR::initializeAnalyzer()
         newtree->Branch("is_met_filter_passed", &is_met_filter_passed,"is_met_filter_passed/O");
         newtree->Branch("is_diel_tri_passed", &is_diel_tri_passed,"is_diel_tri_passed/O");
         newtree->Branch("is_dimu_tri_passed", &is_dimu_tri_passed,"is_dimu_tri_passed/O");
-
         newtree->Branch("evt_tag_bvetoed_rec", &evt_tag_bvetoed_rec,"evt_tag_bvetoed_rec/O");
 
         // nominal

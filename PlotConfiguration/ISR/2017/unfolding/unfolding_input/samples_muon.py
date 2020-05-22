@@ -15,9 +15,16 @@ McWeight_forDY10to50 = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight
 # MC
 #--------------------
 
+samples['DYJets200to400@DYJets200to400ToMuMu'] = {
+    'skim'   :'ISR_v1', # use default skim defined in configuration.py
+    'cut'    :'evt_tag_dimuon_hardprocess == 1 && dilep_mass_FSRgamma_gen_ispromptfinal > 200',
+    'weight' :McWeight,
+    }
+
 samples['DYJets@DYJetsToMuMu'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_dimuon_hardprocess == 1',
+    'cut'    :'evt_tag_dimuon_hardprocess == 1 && dilep_mass_FSRgamma_gen_ispromptfinal < 200',
+    #'cut'    :'evt_tag_dimuon_hardprocess == 1',
     'weight' :McWeight,
     }
 
@@ -29,7 +36,8 @@ samples['DYJets10to50_MG@DYJets10to50ToMuMu'] = {
 
 samples['DYJets@DYJetsToTauTau'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
-    'cut'    :'evt_tag_ditau_hardprocess == 1',
+    'cut'    :'evt_tag_ditau_hardprocess == 1 && dilep_mass_FSRgamma_gen_ispromptfinal < 200',
+    #'cut'    :'evt_tag_ditau_hardprocess == 1',
     'weight' :McWeight,
     }
 

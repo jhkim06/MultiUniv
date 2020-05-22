@@ -38,16 +38,21 @@ McWeight_forDY10to50 = 'evt_weight_total_gen * 1.0687524'
 #    'cut'    :'',
 #    'weight' :McWeight,
 #    }
+samples['DYJets200to400'] = {                                                                                                                                                                                                                                                                                                 
+    'skim'   :'', # use default skim defined in configuration.py                                                                                                                                                                                                                                                              
+    'cut'    :'dilep_mass_FSRgamma_gen_ispromptfinal > 200',                                                                                                                                                                                                                                                                  
+    'weight' :McWeight,                                                                                                                                                                                                                                                                                                       
+    }  
 
 samples['DYJets'] = {
     'skim'   :'', # use default skim defined in configuration.py
-    'cut'    :'',
+    'cut'    :'dilep_mass_FSRgamma_gen_ispromptfinal < 200',
     'weight' :McWeight,
     }
 
 samples['DYJets10to50'] = {
     'skim'   :'', # use default skim defined in configuration.py
-    'cut'    :'',
+    'cut'    :'1',
     'weight' :McWeight,
     }
 
