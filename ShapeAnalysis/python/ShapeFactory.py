@@ -335,7 +335,7 @@ class ShapeFactory:
 
                 if sumwxHistX is None:              
                     # Fill not selected but generated events, for the case the size of PtRec is not zero: i.e., acceptance correction
-                    #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+")", 'goff') 
+                    tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+")", 'goff') 
                     # Fill bin zero for efficiency correction: gen_weight * ( 1 - ( rec_weight) ): i.e., efficiency correction
                     tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut + ")*(" + "*".join(global_weight.split("*")[0:2]) + "*(1-(" + "*".join(global_weight.split("*")[2:])  +")))", 'goff')
                     # Fake events: passed Rec Sel but failed to pass Gen Sel
@@ -507,8 +507,8 @@ class ShapeFactory:
               # Caution: if the vector size of branch in an event is zero, the event is just skipped  
 
               # Fill not selected but generated events, for the case the size of PtRec is not zero: i.e., acceptance correction
-              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_AlphaS[0]))", 'goff')
-              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_AlphaS[1]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_AlphaS[0]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_AlphaS[1]))", 'goff')
 
               # Fill not selected but generated events, for the case the size of PtRec is zero
               #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + "*".join(global_weight.split("*")[0:2])+")", 'goff')
@@ -607,12 +607,12 @@ class ShapeFactory:
               # Caution: if the vector size of branch in an event is zero, the event is just skipped  
 
               # Fill not selected but generated events, for the case the size of PtRec is not zero: i.e., acceptance correction
-              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameAUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[1]))", 'goff')
-              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameADo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[2]))", 'goff')
-              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[3]))", 'goff')
-              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[6]))", 'goff')
-              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[4]))", 'goff')
-              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[8]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameAUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[1]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameADo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[2]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[3]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[6]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[4]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[8]))", 'goff')
 
               # Fill not selected but generated events, for the case the size of PtRec is zero
               #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + "*".join(global_weight.split("*")[0:2])+")", 'goff')
@@ -719,7 +719,7 @@ class ShapeFactory:
                 # Caution: if the vector size of branch in an event is zero, the event is just skipped  
 
                 # Fill not selected but generated events, for the case the size of PtRec is not zero: i.e., acceptance correction
-                #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Error[" + str(idx) + "]))", 'goff')
+                tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Error[" + str(idx) + "]))", 'goff')
 
                 # Fill not selected but generated events, for the case the size of PtRec is zero
                 #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + "*".join(global_weight.split("*")[0:2])+")", 'goff')
