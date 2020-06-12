@@ -4,27 +4,27 @@ from CommonPyTools.python.CommonTools import *
 # Number of Leptons and WP
 ###########################
 
-FakeRate = 'evt_weight_LL_rec_Fake' 
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake' 
-McWeight_forDY10to50 = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake * 1.0687524' 
+FakeRate = 'evt_weight_LL_rec_Fake'
+McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake'
+McWeight_forDY10to50 = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake * 1.0687524'
 McWeightZptReweight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake * evt_weight_zptcorr_Fake'
 
-#--------------------    
+#--------------------
 # MC
-#--------------------    
+#--------------------
 
 samples['DYJets@DYJetsToMuMu'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_dimuon_hardprocess == 1',
-    'weight' :McWeightZptReweight,
+    'weight' :McWeight,
     }
 
 samples['DYJets10to50@DYJets10to50ToMuMu'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_dimuon_hardprocess == 1',
-    'weight' :McWeightZptReweight,
+    'weight' :McWeight,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {
@@ -41,17 +41,17 @@ samples['DYJets10to50@DYJets10to50ToTauTau'] = {
     'weight' :McWeight,
     }
 
-samples['SingleTop_tW_antitop_Incl'] = {                                                                                                                                                     
-    'skim'   :'', # use default skim defined in configuration.py                                                                                                                             
-    'cut'    :'',                                                                                                                                                                            
-    'weight' :McWeight,                                                                                                                                                                      
-    }                                                                                                                                                                                        
-                                                                                                                                                                                             
-samples['SingleTop_tW_top_Incl'] = {                                                                                                                                                         
-    'skim'   :'', # use default skim defined in configuration.py                                                                                                                             
-    'cut'    :'',                                                                                                                                                                            
-    'weight' :McWeight,                                                                                                                                                                      
-    }     
+samples['SingleTop_tW_antitop_Incl'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'cut'    :'',
+    'weight' :McWeight,
+    }
+
+samples['SingleTop_tW_top_Incl'] = {
+    'skim'   :'', # use default skim defined in configuration.py
+    'cut'    :'',
+    'weight' :McWeight,
+    }
 
 samples['TTLL_powheg'] = {
     'skim'   :'', # use default skim defined in configuration.py

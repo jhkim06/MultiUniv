@@ -21,7 +21,7 @@ variables['Pt'] = {
     'xaxis': 'Mass p_{T} [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
+    'unfoldBinDefinition': ("muon","CoarseCoarse"),
     'go1D': True
 }
 
@@ -34,35 +34,63 @@ variables['Mass'] = {
     'xaxis': 'Mass [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
+    'unfoldBinDefinition': ("muon","CoarseCoarse"),
     'go1D': False
 }
 
-#variables['hist_ptll_lepMomUp'] = {
-#
-#    'unfoldBinType': ISRUnfold.PtRec2DHist,
-#    'fold':   0,
-#    'range':  None,
-#    'name':  'Get2DPtRecBinIndex(dilep_pt_rec_LepMomScaleUp, dilep_mass_rec_LepMomScaleUp)',
-#    'xaxis': 'Mass p_{T} [GeV]',
-#    'yaxis': 'Events',
-#    'useTUnfoldBin': True,
-#    'unfoldBinDefinition': "muon",
-#    'go1D': True
-#}
-#
-#variables['hist_mll_lepMomUp'] = {
-#
-#    'unfoldBinType': ISRUnfold.MassRec2DHist,
-#    'fold':   0,
-#    'range':  None,
-#    'name':  'Get2DMassRecBinIndex(dilep_mass_rec_LepMomScaleUp, dilep_pt_rec_LepMomScaleUp)',
-#    'xaxis': 'Mass [GeV]',
-#    'yaxis': 'Events',
-#    'useTUnfoldBin': True,
-#    'unfoldBinDefinition': "muon",
-#    'go1D': False
-#}
+variables['Pt_FineCoarse'] = {
+
+    'unfoldBinType': ISRUnfold.PtRec2DHist,
+    'fold':   0,
+    'range':  None,
+    'name':  'Get2DPtRecBinIndex(dilep_pt_rec_Nominal, dilep_mass_rec_Nominal)',
+    'xaxis': 'Mass p_{T} [GeV]',
+    'yaxis': 'Events',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("muon","FineCoarse"),
+    'go1D': True
+}
+
+variables['Mass_FineCoarse'] = {
+
+    'unfoldBinType': ISRUnfold.MassRec2DHist,
+    'fold':   0,
+    'range':  None,
+    'name':  'Get2DMassRecBinIndex(dilep_mass_rec_Nominal, dilep_pt_rec_Nominal)',
+    'xaxis': 'Mass [GeV]',
+    'yaxis': 'Events',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("muon","FineCoarse"),
+    'go1D': False
+}
+
+variables['PtGen_FineCoarse'] = {
+
+    'unfoldBinType': ISRUnfold.PtGen2DHist,
+    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
+    'fold':   0,
+    'range':  None,
+    'name':  'Get2DPtGenBinIndex(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal)',
+    'xaxis': 'Mass p_{T} [GeV]',
+    'yaxis': 'Events',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("muon","FineCoarse"),
+    'go1D': True
+}
+
+variables['MassGen_FineCoarse'] = {
+
+    'unfoldBinType': ISRUnfold.MassGen2DHist,
+    'fold':   0,
+    'range':  None,
+    'name':  'Get2DMassGenBinIndex(dilep_mass_FSRgamma_gen_ispromptfinal, dilep_pt_FSRgamma_gen_ispromptfinal)',
+    'xaxis': 'Mass [GeV]',
+    'yaxis': 'Events',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("muon","FineCoarse"),
+    'go1D': False
+}
+
 
 variables['Mass_ResMatrix_Detector_Dressed_DRp1'] = {
 
@@ -72,7 +100,7 @@ variables['Mass_ResMatrix_Detector_Dressed_DRp1'] = {
     'name': 'Get2DMassRecBinIndex(dilep_mass_rec_Nominal, dilep_pt_rec_Nominal):Get2DMassGenBinIndex(dilep_mass_FSRgammaDRp1_gen_ispromptfinal, dilep_pt_FSRgammaDRp1_gen_ispromptfinal)',
     'xaxis': 'Pre FSR',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
+    'unfoldBinDefinition': ("muon","CoarseCoarse"),
     'go1D': False,
     'isResMatrix':True
 }
@@ -85,7 +113,7 @@ variables['Pt_ResMatrix_Detector_Dressed_DRp1'] = {
     'name': 'Get2DPtRecBinIndex(dilep_pt_rec_Nominal, dilep_mass_rec_Nominal):Get2DPtGenBinIndex(dilep_pt_FSRgammaDRp1_gen_ispromptfinal, dilep_mass_FSRgammaDRp1_gen_ispromptfinal)',
     'xaxis': 'Pre FSR',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
+    'unfoldBinDefinition': ("muon","CoarseCoarse"),
     'go1D': False,
     'isResMatrix':True
 }
@@ -98,7 +126,7 @@ variables['Mass_ResMatrix_Detector_Dressed_DR4PI'] = {
     'name': 'Get2DMassRecBinIndex(dilep_mass_rec_Nominal, dilep_pt_rec_Nominal):Get2DMassGenBinIndex(dilep_mass_FSRgamma_gen_ispromptfinal, dilep_pt_FSRgamma_gen_ispromptfinal)',
     'xaxis': 'Pre FSR',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
+    'unfoldBinDefinition': ("muon","CoarseCoarse"),
     'go1D': False,
     'isResMatrix':True
 }
@@ -111,86 +139,61 @@ variables['Pt_ResMatrix_Detector_Dressed_DR4PI'] = {
     'name': 'Get2DPtRecBinIndex(dilep_pt_rec_Nominal, dilep_mass_rec_Nominal):Get2DPtGenBinIndex(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal)',
     'xaxis': 'Pre FSR',
     'useTUnfoldBin': True,
-    'unfoldBinDefinition': "muon",
+    'unfoldBinDefinition': ("muon","CoarseCoarse"),
     'go1D': False,
     'isResMatrix':True
 }
 
-#variables['hist_ptll_lepMomDown'] = {
-#
-#    'unfoldBinType': ISRUnfold.PtRec2DHist,
-#    'fold':   0,
-#    'range':  None,
-#    'name':  'Get2DPtRecBinIndex(dilep_pt_rec_LepMomScaleDown, dilep_mass_rec_LepMomScaleDown)',
-#    'xaxis': 'Mass p_{T} [GeV]',
-#    'yaxis': 'Events',
-#    'useTUnfoldBin': True,
-#    'unfoldBinDefinition': "muon",
-#    'go1D': True
-#}
-#
-#variables['hist_mll_lepMomDown'] = {
-#
-#    'unfoldBinType': ISRUnfold.MassRec2DHist,
-#    'fold':   0,
-#    'range':  None,
-#    'name':  'Get2DMassRecBinIndex(dilep_mass_rec_LepMomScaleDown, dilep_pt_rec_LepMomScaleDown)',
-#    'xaxis': 'Mass [GeV]',
-#    'yaxis': 'Events',
-#    'useTUnfoldBin': True,
-#    'unfoldBinDefinition': "muon",
-#    'go1D': False
-#}
+# Different bin definitions
+variables['Mass_ResMatrix_Detector_Dressed_DRp1_FineCoarse'] = {
 
+    'unfoldBinType': ISRUnfold.MassMigrationM,
+    'fold': 0,
+    'range': None,
+    'name': 'Get2DMassRecBinIndex(dilep_mass_rec_Nominal, dilep_pt_rec_Nominal):Get2DMassGenBinIndex(dilep_mass_FSRgammaDRp1_gen_ispromptfinal, dilep_pt_FSRgammaDRp1_gen_ispromptfinal)',
+    'xaxis': 'Pre FSR',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("muon","FineCoarse"),
+    'go1D': False,
+    'isResMatrix':True
+}
 
-#variables['mll_rec_gen_dressed_dRp1_response_matrix_lepMomUp'] = {
-#
-#    'unfoldBinType': ISRUnfold.MassMigrationM,
-#    'fold': 0,
-#    'range': None,
-#    'name': 'Get2DMassRecBinIndex(dilep_mass_rec_LepMomScaleUp, dilep_pt_rec_LepMomScaleUp):Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[0], dilep_pt_gen_lepton_matched_dressed_drX[0])',
-#    'xaxis': 'Pre FSR',
-#    'useTUnfoldBin': True,
-#    'unfoldBinDefinition': "muon",
-#    'go1D': False,
-#    'isResMatrix':True
-#}
-#
-#variables['ptll_rec_gen_dressed_dRp1_response_matrix_lepMomUp'] = {
-#
-#    'unfoldBinType': ISRUnfold.PtMigrationM,
-#    'fold': 0,
-#    'range': None,
-#    'name': 'Get2DPtRecBinIndex(dilep_pt_rec_LepMomScaleUp, dilep_mass_rec_LepMomScaleUp):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[0], dilep_mass_gen_lepton_matched_dressed_drX[0])',
-#    'xaxis': 'Pre FSR',
-#    'useTUnfoldBin': True,
-#    'unfoldBinDefinition': "muon",
-#    'go1D': False,
-#    'isResMatrix':True
-#}
-#
-#variables['mll_rec_gen_dressed_dRp1_response_matrix_lepMomDown'] = {
-#
-#    'unfoldBinType': ISRUnfold.MassMigrationM,
-#    'fold': 0,
-#    'range': None,
-#    'name': 'Get2DMassRecBinIndex(dilep_mass_rec_LepMomScaleDown, dilep_pt_rec_LepMomScaleDown):Get2DMassGenBinIndex(dilep_mass_gen_lepton_matched_dressed_drX[0], dilep_pt_gen_lepton_matched_dressed_drX[0])',
-#    'xaxis': 'Pre FSR',
-#    'useTUnfoldBin': True,
-#    'unfoldBinDefinition': "muon",
-#    'go1D': False,
-#    'isResMatrix':True
-#}
-#
-#variables['ptll_rec_gen_dressed_dRp1_response_matrix_lepMomDown'] = {
-#
-#    'unfoldBinType': ISRUnfold.PtMigrationM,
-#    'fold': 0,
-#    'range': None,
-#    'name': 'Get2DPtRecBinIndex(dilep_pt_rec_LepMomScaleDown, dilep_mass_rec_LepMomScaleDown):Get2DPtGenBinIndex(dilep_pt_gen_lepton_matched_dressed_drX[0], dilep_mass_gen_lepton_matched_dressed_drX[0])',
-#    'xaxis': 'Pre FSR',
-#    'useTUnfoldBin': True,
-#    'unfoldBinDefinition': "muon",
-#    'go1D': False,
-#    'isResMatrix':True
-#}
+variables['Pt_ResMatrix_Detector_Dressed_DRp1_FineCoarse'] = {
+
+    'unfoldBinType': ISRUnfold.PtMigrationM,
+    'fold': 0,
+    'range': None,
+    'name': 'Get2DPtRecBinIndex(dilep_pt_rec_Nominal, dilep_mass_rec_Nominal):Get2DPtGenBinIndex(dilep_pt_FSRgammaDRp1_gen_ispromptfinal, dilep_mass_FSRgammaDRp1_gen_ispromptfinal)',
+    'xaxis': 'Pre FSR',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("muon","FineCoarse"),
+    'go1D': False,
+    'isResMatrix':True
+}
+
+variables['Mass_ResMatrix_Detector_Dressed_DR4PI_FineCoarse'] = {
+
+    'unfoldBinType': ISRUnfold.MassMigrationM,
+    'fold': 0,
+    'range': None,
+    'name': 'Get2DMassRecBinIndex(dilep_mass_rec_Nominal, dilep_pt_rec_Nominal):Get2DMassGenBinIndex(dilep_mass_FSRgamma_gen_ispromptfinal, dilep_pt_FSRgamma_gen_ispromptfinal)',
+    'xaxis': 'Pre FSR',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("muon","FineCoarse"),
+    'go1D': False,
+    'isResMatrix':True
+}
+
+variables['Pt_ResMatrix_Detector_Dressed_DR4PI_FineCoarse'] = {
+
+    'unfoldBinType': ISRUnfold.PtMigrationM,
+    'fold': 0,
+    'range': None,
+    'name': 'Get2DPtRecBinIndex(dilep_pt_rec_Nominal, dilep_mass_rec_Nominal):Get2DPtGenBinIndex(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal)',
+    'xaxis': 'Pre FSR',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("muon","FineCoarse"),
+    'go1D': False,
+    'isResMatrix':True
+}
+

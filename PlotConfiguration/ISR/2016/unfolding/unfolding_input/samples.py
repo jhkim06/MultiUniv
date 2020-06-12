@@ -1,8 +1,8 @@
 from CommonPyTools.python.CommonTools import *
 
-#McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal * evt_weight_trigSFDZ_rec_Nominal / evt_weight_bveto'
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal * evt_weight_trigSFDZ_rec_Nominal'
-McWeightZptCorr = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal * evt_weight_trigSFDZ_rec_Nominal * evt_weight_zptcorr_Nominal'
+#McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec_NoLepMomCorr * evt_weight_idSF_rec_NoLepMomCorr * evt_weight_trigSF_rec_NoLepMomCorr * evt_weight_trigSFDZ_rec_NoLepMomCorr / evt_weight_bveto'
+McWeight        = 'evt_weight_total_gen * 1. *             evt_weight_total_rec * evt_weight_recoSF_rec_NoLepMomCorr * evt_weight_idSF_rec_NoLepMomCorr * evt_weight_trigSF_rec_NoLepMomCorr * evt_weight_trigSFDZ_rec_NoLepMomCorr'
+McWeightZptCorr = 'evt_weight_total_gen * zptweight_muon * evt_weight_total_rec * evt_weight_recoSF_rec_NoLepMomCorr * evt_weight_idSF_rec_NoLepMomCorr * evt_weight_trigSF_rec_NoLepMomCorr * evt_weight_trigSFDZ_rec_NoLepMomCorr'
 
 #--------------------
 # MC
@@ -18,13 +18,13 @@ samples['DYJets@DYJetsToEE'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     #'cut'    :'evt_tag_dielectron_hardprocess == 1 && dilep_mass_FSRgamma_gen_ispromptfinal < 200',
     'cut'    :'evt_tag_dielectron_hardprocess == 1',
-    'weight' :McWeight,
+    'weight' :McWeightZptCorr,
     }
 
 samples['DYJets10to50@DYJets10to50ToEE'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'cut'    :'evt_tag_dielectron_hardprocess == 1',
-    'weight' :McWeight,
+    'weight' :McWeightZptCorr,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {
@@ -40,17 +40,17 @@ samples['DYJets10to50@DYJets10to50ToTauTau'] = {
     'weight' :McWeight,
     }
 
-samples['SingleTop_tW_antitop_Incl'] = {
-    'skim'   :'', # use default skim defined in configuration.py
-    'cut'    :'',
-    'weight' :McWeight,
-    }
-
-samples['SingleTop_tW_top_Incl'] = {
-    'skim'   :'', # use default skim defined in configuration.py
-    'cut'    :'',
-    'weight' :McWeight,
-    }
+#samples['SingleTop_tW_antitop_Incl'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
+#
+#samples['SingleTop_tW_top_Incl'] = {
+#    'skim'   :'', # use default skim defined in configuration.py
+#    'cut'    :'',
+#    'weight' :McWeight,
+#    }
 
 samples['TTLL_powheg'] = {
     'skim'   :'', # use default skim defined in configuration.py

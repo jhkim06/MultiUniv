@@ -19,14 +19,14 @@ samples['DYJets@DYJetsToEE'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_dielectron_hardprocess == 1',
-    'weight' :McWeightZptReweight,
+    'weight' :McWeight,
     }
 
 samples['DYJets10to50@DYJets10to50ToEE'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_dielectron_hardprocess == 1',
-    'weight' :McWeightZptReweight,
+    'weight' :McWeight,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {

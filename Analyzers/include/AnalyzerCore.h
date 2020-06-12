@@ -5,6 +5,7 @@
 #include "TString.h"
 #include "TMath.h"
 #include "TProfile.h"
+#include "TUnfoldBinning.h"
 #include <sstream>      
 
 #include "SKFlatNtuple.h"
@@ -206,6 +207,7 @@ public:
   TH1D* GetHist1D(TString histname);
   TH2D* GetHist2D(TString histname);
 
+  void FillHist(TString histname, TUnfoldBinning* bindef, int binIndex, double weight);
   void FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max);
   void FillHist(TString histname, double value, double weight, int n_bin, double *xbins);
   void FillHist(TString histname,

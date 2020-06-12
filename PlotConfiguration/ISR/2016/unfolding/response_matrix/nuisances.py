@@ -22,7 +22,7 @@ pdfErr_syst  = 'PDFWeights_Error'
 #    'kind'	: 'weight',
 #    'type'	: 'shape',
 #    'samples'	: {
-#      	'DYJets'	        : trg_syst ,
+#      	'DYJets'	: trg_syst ,
 #      	'DYJets10to50'	: trg_syst ,
 #	},
 #}
@@ -77,7 +77,7 @@ pdfErr_syst  = 'PDFWeights_Error'
 #        'DYJets10to50'      : pileup_syst ,
 #        },
 #}
-
+#
 #nuisances['alphaS'] = {
 #    'name'	: 'AlphaS',
 #    'kind'	: 'PDF',
@@ -98,13 +98,13 @@ pdfErr_syst  = 'PDFWeights_Error'
 #	},
 #}
 #
-#nuisances['pdfErr'] = {
-#    'name'	: 'PDFerror',
-#    'kind'	: 'PDF',
-#    'type'	: 'HESSIAN',
-#    'samples'	: {
-#      	'DYJets'	: pdfErr_syst ,
-#      	'DYJets10to50'	: pdfErr_syst ,
-#	},
-#}
-#
+##nuisances['pdfErr'] = {
+##    'name'	: 'PDFerror',
+##    'kind'	: 'PDF',
+##    'type'	: 'HESSIAN',
+##    'samples'	: {
+##      	'DYJets'	: pdfErr_syst ,
+##      	'DYJets10to50'	: pdfErr_syst ,
+##	},
+##}
+##

@@ -12,6 +12,7 @@
 #include "TH2D.h"
 #include "TGraph.h"
 #include "TGraphAsymmErrors.h"
+#include "TUnfoldBinning.h"
 
 #include "Lepton.h"
 #include "Muon.h"
@@ -27,6 +28,7 @@ public:
   MCCorrection();
   ~MCCorrection();
 
+  TFile* f_muon_idsf;
   void ReadHistograms();
 
   TString MCSample;
@@ -38,6 +40,7 @@ public:
   bool IgnoreNoHist;
 
   double MuonID_SF(TString ID, double eta, double pt, int sys=0);
+  double MuonID_SF(TString ID, double eta, double pt, int sys, TString variationPostfix);
   double MuonIDISO_RD_SF(TString ID, double eta, double pt, int sys=0);
   double MuonIDISO_SF(TString ID, double eta, double pt, int sys=0);
   double MuonISO_SF(TString ID, double eta, double pt, int sys=0);

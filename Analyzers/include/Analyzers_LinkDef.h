@@ -16,6 +16,7 @@
 #pragma link C++ class Skim_DiLep+;
 #pragma link C++ class SMP_Validation+;
 #pragma link C++ class Skim_ISR+;
+#pragma link C++ class Skim_ISRHist+;
 #pragma link C++ class Skim_Efficiency+;
 #pragma link C++ class Skim_DiLep_AFBtemp+;
 

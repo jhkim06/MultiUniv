@@ -81,17 +81,19 @@ void Skim_ISR::initializeAnalyzer()
 
         if(!make_zptcorr_ntuple)
         {
-        fake_estimation = new Analysis_Variables("Fake");
-        lepton_momentum_scale_up = new Analysis_Variables("LepMomScaleUp");
-        lepton_momentum_scale_down = new Analysis_Variables("LepMomScaleDown");
-        lepton_momentum_res_up = new Analysis_Variables("LepMomResUp");
-        lepton_momentum_res_down = new Analysis_Variables("LepMomResDown");
+            fake_estimation = new Analysis_Variables("Fake");
+            lepton_momentum_scale_up = new Analysis_Variables("LepMomScaleUp");
+            lepton_momentum_scale_down = new Analysis_Variables("LepMomScaleDown");
+            lepton_momentum_res_up = new Analysis_Variables("LepMomResUp");
+            lepton_momentum_res_down = new Analysis_Variables("LepMomResDown");
+            without_lepton_momentum = new Analysis_Variables("NoLepMomCorr");
 
-        fake_estimation->setBranch(newtree);
-        lepton_momentum_scale_up->setBranch(newtree);
-        lepton_momentum_scale_down->setBranch(newtree);
-        lepton_momentum_res_up->setBranch(newtree);
-        lepton_momentum_res_down->setBranch(newtree);
+            fake_estimation->setBranch(newtree);
+            lepton_momentum_scale_up->setBranch(newtree);
+            lepton_momentum_scale_down->setBranch(newtree);
+            lepton_momentum_res_up->setBranch(newtree);
+            lepton_momentum_res_down->setBranch(newtree);
+            without_lepton_momentum->setBranch(newtree);
         }
     }
 
@@ -112,11 +114,15 @@ void Skim_ISR::initializeAnalyzer()
 
         if(!make_zptcorr_ntuple)
         {
-        newtree->Branch("photon_motherID_isPromptFinalState_selected", &photon_motherID_isPromptFinalState_selected);
-        newtree->Branch("photon_matchedToLep_isPromptFinalState_selected", &photon_matchedToLep_isPromptFinalState_selected);
-        newtree->Branch("photon_dRtoParticle_isPromptFinalState_selected", &photon_dRtoParticle_isPromptFinalState_selected);
-        newtree->Branch("photon_dRtoAntiParticle_isPromptFinalState_selected", &photon_dRtoAntiParticle_isPromptFinalState_selected);
+            newtree->Branch("photon_motherID_isPromptFinalState_selected", &photon_motherID_isPromptFinalState_selected);
+            newtree->Branch("photon_matchedToLep_isPromptFinalState_selected", &photon_matchedToLep_isPromptFinalState_selected);
+            newtree->Branch("photon_dRtoParticle_isPromptFinalState_selected", &photon_dRtoParticle_isPromptFinalState_selected);
+            newtree->Branch("photon_dRtoAntiParticle_isPromptFinalState_selected", &photon_dRtoAntiParticle_isPromptFinalState_selected);
         }
+
+        // TODO Add Z pT weight!
+        newtree->Branch("zptweight_muon", &zptweight_muon, "zptweight_muon/D");
+        newtree->Branch("zptweight_electron", &zptweight_electron, "zptweight_electron/D");
 
         newtree->Branch("n_photon_notLeptonMother_isPromptFinalState", &n_photon_notLeptonMother_isPromptFinalState, "n_photon_notLeptonMother_isPromptFinalState/I");
         newtree->Branch("n_photon_isPromptFinalState", &n_photon_isPromptFinalState, "n_photon_isPromptFinalState/I");
@@ -356,6 +362,9 @@ void Skim_ISR::executeEvent()
         n_photon_notLeptonMother_isPromptFinalState = 0;
         n_photon_isPromptFinalState = 0;
         n_lepton_isPromptFinalState = 0;
+
+        zptweight_muon = 1.;
+        zptweight_electron = 1.;
 
         bool photos_used = false;
         if(MCSample.Contains("PHOTOS"))
@@ -742,6 +751,9 @@ void Skim_ISR::executeEvent()
                 dilep_pt_FSRgamma_gen_ispromptfinal = dilep_isPromptFinalState.Pt();
                 dilep_mass_FSRgamma_gen_ispromptfinal = dilep_isPromptFinalState.M();
 
+                zptweight_muon = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal, Lepton::MUON);
+                zptweight_electron = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal, Lepton::ELECTRON);
+
                 dilep_pt_AllFSRgamma_gen_ispromptfinal = (dilep_isPromptFinalState+photon_greater_DRp1_nonLeptonMother).Pt();
                 dilep_mass_AllFSRgamma_gen_ispromptfinal = (dilep_isPromptFinalState+photon_greater_DRp1_nonLeptonMother).M();
 
@@ -1037,6 +1049,11 @@ void Skim_ISR::executeEvent()
         lepton_momentum_res_down->initVariables();
         executeEventFromParameter(param, lepton_momentum_res_down, false, 4);
         param.Clear();
+
+        clearVariables();
+        without_lepton_momentum->initVariables();
+        executeEventFromParameter(param, without_lepton_momentum, false, 0, false);
+        param.Clear();
     }
     newtree->Fill();
     delete evt;
@@ -1068,7 +1085,7 @@ void Skim_ISR::clearVariables()
     leps.clear();
 }
 
-void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Variables* p_struct, bool is_fake_estimation, const int scale_res_sys)
+void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Variables* p_struct, bool is_fake_estimation, const int scale_res_sys, bool apply_lep_corr)
 {
 
     vector<Muon> this_AllMuons = AllMuons;
@@ -1077,11 +1094,11 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
     if(!is_fake_estimation)
     {
         // select analysis leptons
-        vector<Muon> muons_         = GetMuons("POGTightWithTightIso", 7., 2.4, true, false, 0, 0, scale_res_sys);
-        vector<Electron> electrons_ = GetElectrons("passMediumID",     9., 2.5, true, scale_res_sys);
+        vector<Muon> muons_         = GetMuons("POGTightWithTightIso", 7., 2.4, apply_lep_corr, false, 0, 0, scale_res_sys);
+        vector<Electron> electrons_ = GetElectrons("passMediumID",     9., 2.5, apply_lep_corr, scale_res_sys);
 
-        vector<Muon> veto_muons_         = GetMuons("POGLooseWithLooseIso", 7., 2.4, true, false, 0, 0, scale_res_sys);
-        vector<Electron> veto_electrons_ = GetElectrons("passVetoID",       9., 2.5, true, scale_res_sys);
+        vector<Muon> veto_muons_         = GetMuons("POGLooseWithLooseIso", 7., 2.4, apply_lep_corr, false, 0, 0, scale_res_sys);
+        vector<Electron> veto_electrons_ = GetElectrons("passVetoID",       9., 2.5, apply_lep_corr, scale_res_sys);
 
         std::sort(muons_.begin(), muons_.end(), PtComparing);
         std::sort(electrons_.begin(), electrons_.end(), PtComparing);
@@ -1247,17 +1264,6 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
             p_struct->dilep_pt_rec_          = (*(leps.at(0))+*(leps.at(1))).Pt();
             p_struct->dilep_mass_rec_        = (*(leps.at(0))+*(leps.at(1))).M();
 
-            if(!make_zptcorr_ntuple)
-            {
-
-                // get ZpT reweight
-                if((MCSample.Contains("DY") || MCSample.Contains("ZTo")) && dilep_pt_FSRgamma_gen_ispromptfinal != -999.)
-                {
-                    if(p_struct->evt_tag_dimuon_rec_ == true)     p_struct->evt_weight_zptcorr_ = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, p_struct->dilep_mass_rec_, Lepton::MUON);
-                    if(p_struct->evt_tag_dielectron_rec_ == true) p_struct->evt_weight_zptcorr_ = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, p_struct->dilep_mass_rec_, Lepton::ELECTRON);
-                }
-            }
-
             if(p_struct->evt_tag_leptonpt_sel_rec_ && p_struct->evt_tag_leptoneta_sel_rec_ && p_struct->evt_tag_oppositecharge_sel_rec_ && evt_tag_bvetoed_rec)
             {
                 p_struct->evt_tag_analysisevnt_sel_rec_ = 1;
@@ -1408,17 +1414,6 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
             p_struct->subleadinglep_eta_rec_ = leps.at(1)->Eta();
             p_struct->dilep_pt_rec_ =          (*(leps.at(0))+*(leps.at(1))).Pt();
             p_struct->dilep_mass_rec_ =        (*(leps.at(0))+*(leps.at(1))).M();
-
-            if(!make_zptcorr_ntuple)
-            {
-                // get ZpT reweight
-                if((MCSample.Contains("DY") || MCSample.Contains("ZTo")) && dilep_pt_FSRgamma_gen_ispromptfinal != -999.)
-                {
-                    if(p_struct->evt_tag_dimuon_rec_ == true)     p_struct->evt_weight_zptcorr_ = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, p_struct->dilep_mass_rec_, Lepton::MUON);
-                    if(p_struct->evt_tag_dielectron_rec_ == true) p_struct->evt_weight_zptcorr_ = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, p_struct->dilep_mass_rec_, Lepton::ELECTRON);
-                }
-            }
-
 
             if(p_struct->evt_tag_leptonpt_sel_rec_ && p_struct->evt_tag_leptoneta_sel_rec_ && evt_tag_bvetoed_rec)
                 p_struct->evt_tag_analysisevnt_sel_rec_ = 1;
@@ -1580,7 +1575,6 @@ void Analysis_Variables::initVariables()
     subleadinglep_pt_rec_           = -999.;
     leadinglep_eta_rec_             = -999.;
     subleadinglep_eta_rec_          = -999.;
-    evt_weight_zptcorr_             = 1.;
 
     evt_weight_recoSF_rec_ = 1.,        evt_weight_recoSF_up_rec_ = 1.,         evt_weight_recoSF_down_rec_ = 1.;
     evt_weight_idSF_rec_ = 1.,          evt_weight_idSF_up_rec_ = 1.,           evt_weight_idSF_down_rec_ = 1.;
@@ -1612,7 +1606,6 @@ void Analysis_Variables::setBranch(TTree *tree)
     tree->Branch(subleadinglep_pt_rec_brname,              &subleadinglep_pt_rec_);
     tree->Branch(leadinglep_eta_rec_brname,                &leadinglep_eta_rec_);
     tree->Branch(subleadinglep_eta_rec_brname,             &subleadinglep_eta_rec_);
-    tree->Branch(evt_weight_zptcorr_brname,                &evt_weight_zptcorr_);
 
     tree->Branch(evt_weight_recoSF_rec_brname,          &evt_weight_recoSF_rec_);
     tree->Branch(evt_weight_recoSF_up_rec_brname,       &evt_weight_recoSF_up_rec_);

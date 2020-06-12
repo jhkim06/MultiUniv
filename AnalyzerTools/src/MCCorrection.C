@@ -11,9 +11,10 @@ void MCCorrection::ReadHistograms(){
 
   TString datapath = getenv("DATA_DIR");
 
-
   //==== ID/Trigger
   TString IDpath = datapath+"/"+TString::Itoa(DataYear,10)+"/ID/";
+
+  f_muon_idsf = new TFile(datapath+"/"+TString::Itoa(DataYear,10)+"/ID/Muon/RunAveraged_SF_ID_.root", "READ");
 
   // for electron
   string elline;
@@ -271,7 +272,7 @@ void MCCorrection::ReadHistograms(){
         is >> f; // mass bin name
         //cout<<a<<"\t"<<b<<"\t"<<c<<"\t"<<d<<"\t"<<e<<endl;
         TFile *fzpt = new TFile(ISRZpTweightPath + d);
-          
+
         cout<<"number of iteration for Zpt correction: "<<c.Atoi()<<endl;
         TH1D* this_hzpt=(TH1D*)fzpt->Get(Form("%s%d",e.Data(), c.Atoi()));
 
@@ -325,8 +326,10 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
   //cout<<"MuonID_SF ID, eta, pt, sys:"<<ID<<" "<<eta<<" "<<pt<<" "<<sys<<endl;
   //cout<<"MuonID_SF varOrder:"<<_EtaPtOrder<<endl;
 
+  //
   TH2F *this_hist = map_hist_Muon["ID_SF_"+ID];
   _EtaPtOrder = map_VarOrder_Muon["ID_SF_"+ID];
+
   if(!this_hist){
     if(IgnoreNoHist) return 1.;
     else{
@@ -353,6 +356,41 @@ double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys){
   //return value+double(sys)*error;
   //nenver reachs here.
   return 1;
+}
+
+double MCCorrection::MuonID_SF(TString ID, double eta, double pt, int sys, TString variationPostfix){
+
+  if(ID=="Default") return 1.;
+  //
+  TH2F *this_hist = map_hist_Muon["ID_SF_"+ID];
+  _EtaPtOrder = map_VarOrder_Muon["ID_SF_"+ID];
+
+  if(variationPostfix != "")
+  {
+    TString divider = "_";
+    this_hist = (TH2F*) f_muon_idsf->Get(this_hist->GetName()+divider+variationPostfix);
+  }
+
+  if(!this_hist){
+    if(IgnoreNoHist) return 1.;
+    else{
+      cout << "[MCCorrection::MuonID_SF] No "<<"ID_SF_"+ID<<endl;
+      exit(EXIT_FAILURE);
+    }
+  }
+
+  double sf_ = 1.;
+  if(_EtaPtOrder == "etapt"){
+    sf_ = RootHelper::GetBinContent4SF(this_hist, eta, pt, sys);
+  }
+  else if(_EtaPtOrder == "pteta"){
+    sf_ = RootHelper::GetBinContent4SF(this_hist, pt, eta, sys);
+  }else{
+    cout<<"[MCCorrection::MuonID_SF] wrong etaPtOrder:"<<_EtaPtOrder<<endl;
+    exit(EXIT_FAILURE);
+  }
+  delete this_hist;
+  return sf_;
 }
 
 double MCCorrection::MuonISO_SF(TString ID, double eta, double pt, int sys){
@@ -988,60 +1026,62 @@ double MCCorrection::GetZPtWeight(double zpt, double zrap, Lepton::Flavour flavo
 
 double MCCorrection::GetISRZPtWeight(double zpt, double zmass, Lepton::Flavour flavour)
 {
-     
-    double valzptcor=1.;
+    //
+    const int nPtBinZptWeight=22;
+    double ptBinZptWeight[nPtBinZptWeight+1]={0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 42, 50, 60, 72, 85, 100};
+    const int nMassBinZptWeightforPt_electron = 3;                                                                                                                                       const int nMassBinZptWeightforPt_muon = 3;                                                                                                                                           const Double_t massBinZptWeightforPt_muon[nMassBinZptWeightforPt_muon+1] = {40, 81, 101, 320};
+    const Double_t massBinZptWeightforPt_electron[nMassBinZptWeightforPt_electron+1] = {50, 81, 101, 320};
+
+    TUnfoldBinning* ptBinningRec = NULL;
+    ptBinningRec= new TUnfoldBinning("Rec_Pt"); 
+    ptBinningRec->AddAxis("pt",nPtBinZptWeight,ptBinZptWeight,false,false);
+
     TH1* hzpt=NULL;
+
+    if(zpt > 100.)
+    {   
+        zpt =  99.5;
+    }
+
     if(flavour==Lepton::MUON)
     {
-        //hzpt = map_hist_ISRZpT["muon"];
-        if(zmass > 40 && zmass < 60)
-        {
-            hzpt = map_hist_ISRZpT["muon_m40to60"];
-        }
-        else if(zmass > 60 && zmass < 81)
-        {
-            hzpt = map_hist_ISRZpT["muon_m60to81"];
-        }
-        else if(zmass > 81 && zmass < 101)
-        {
-            hzpt = map_hist_ISRZpT["muon_m81to101"];
-        }
-        else if(zmass > 101 && zmass < 320)
-        {
-            hzpt = map_hist_ISRZpT["muon_m101to320"];
-        }
-        else
-        {
-            return 1.;
-        }
+        ptBinningRec->AddAxis("mass", nMassBinZptWeightforPt_muon, massBinZptWeightforPt_muon, false, false); 
+        hzpt = map_hist_ISRZpT["muon_m40to320"];
         
+        if(zmass < massBinZptWeightforPt_muon[0])
+        {
+            zmass = massBinZptWeightforPt_muon[0] + 0.5;
+        }
+        else if(zmass > massBinZptWeightforPt_muon[nMassBinZptWeightforPt_muon])
+        {
+            zmass = massBinZptWeightforPt_muon[nMassBinZptWeightforPt_muon] - 0.5;
+        }
     }
-    else if(flavour==Lepton::ELECTRON)
+    else 
     {
-        //hzpt      = map_hist_ISRZpT["electron"];
-        if(zmass > 50 && zmass < 64)
+        ptBinningRec->AddAxis("mass", nMassBinZptWeightforPt_electron, massBinZptWeightforPt_electron, false, false);
+        hzpt = map_hist_ISRZpT["electron_m50to320"];
+
+        if(zmass < massBinZptWeightforPt_electron[0])
         {
-            hzpt = map_hist_ISRZpT["electron_m50to64"];
+            zmass = massBinZptWeightforPt_electron[0] + 0.5;
         }
-        else if(zmass > 64 && zmass < 81)
+        else if(zmass > massBinZptWeightforPt_electron[nMassBinZptWeightforPt_electron])
         {
-            hzpt = map_hist_ISRZpT["electron_m64to81"];
-        }
-        else if(zmass > 81 && zmass < 101)
-        {
-            hzpt = map_hist_ISRZpT["electron_m81to101"];
-        }
-        else if(zmass > 101 && zmass < 320)
-        {
-            hzpt = map_hist_ISRZpT["electron_m101to320"];
-        }
-        else
-        {
-            return 1.;
+            zmass = massBinZptWeightforPt_electron[nMassBinZptWeightforPt_electron] - 0.5;
         }
     }
-    if(hzpt) valzptcor = RootHelper::GetBinContent4SF(hzpt,zpt,0);
-    return valzptcor;
+    int binIndex = ptBinningRec->GetGlobalBinNumber(zpt, zmass);
+
+    double zptcor=1.;
+    if(hzpt)
+        zptcor = RootHelper::GetBinContent4SF(hzpt,binIndex,0);
+
+    if(zptcor <= 0.)
+        zptcor = 1.; 
+
+    delete ptBinningRec;
+    return zptcor;
 }
 
 double MCCorrection::GetTopPtReweight(const std::vector<double> *gen_pt_, const std::vector<int> *gen_PID_, const std::vector<int> *gen_status_){

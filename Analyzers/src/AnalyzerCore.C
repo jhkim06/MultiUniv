@@ -2281,6 +2281,18 @@ TH2D* AnalyzerCore::GetHist2D(TString histname){
 
 }
 
+void AnalyzerCore::FillHist(TString histname, TUnfoldBinning* bindef, int binIndex, double weight)
+{
+
+    TH1D *this_hist = GetHist1D(histname);
+    if(!this_hist )
+    {
+        this_hist = (TH1D*) bindef->CreateHistogram(histname);
+        maphist_TH1D[histname] = this_hist;
+    }
+    this_hist->Fill(binIndex, weight);
+}
+
 void AnalyzerCore::FillHist(TString histname, double value, double weight, int n_bin, double x_min, double x_max){
 
   TH1D *this_hist = GetHist1D(histname);

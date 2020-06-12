@@ -335,22 +335,22 @@ class ShapeFactory:
 
                 if sumwxHistX is None:              
                     # Fill not selected but generated events, for the case the size of PtRec is not zero: i.e., acceptance correction
-                    tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:3]) + "&& !(" + "&&".join(totCut.split("&&")[3:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') 
+                    #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+")", 'goff') 
                     # Fill bin zero for efficiency correction: gen_weight * ( 1 - ( rec_weight) ): i.e., efficiency correction
-                    tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut + ")*(" + global_weight.split("*")[0] + "*(1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
+                    tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut + ")*(" + "*".join(global_weight.split("*")[0:2]) + "*(1-(" + "*".join(global_weight.split("*")[2:])  +")))", 'goff')
                     # Fake events: passed Rec Sel but failed to pass Gen Sel
-                    #tree.Draw(var.split(":")[0]+":0" + ">>+"+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + " && " + "&&".join(totCut.split("&&")[3:]) + " && !(" + totCut.split("&&")[2] + "))*(" + global_weight +")", 'goff') 
+                    #tree.Draw(var.split(":")[0]+":0" + ">>+"+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + " && " + "&&".join(totCut.split("&&")[4:]) + " && !(" + totCut.split("&&")[2] + "))*(" + global_weight +")", 'goff') 
 
                 else:
-                    tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+") *" + sumwxHistX, 'goff')
-                    tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut + ")*(" + global_weight.split("*")[0] + "*(1-(" + "*".join(global_weight.split("*")[1:])  +")) *" + sumwxHistX, 'goff')
+                    tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+") *" + sumwxHistX, 'goff')
+                    tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut + ")*(" + "*".join(global_weight.split("*")[0:2]) + "*(1-(" + "*".join(global_weight.split("*")[2:])  +")) *" + sumwxHistX, 'goff')
 
             if unfoldBinType == ISRUnfold.MassFSRMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM:
                 # for FSR response, consider only acceptance correction
                 if sumwxHistX is None:              
-                    tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:3]) + "&& !(" + "&&".join(totCut.split("&&")[3:]) + "))*(" + global_weight.split("*")[0]+")", 'goff') 
+                    tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+")", 'goff') 
                 else:
-                    tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+") *" + sumwxHistX, 'goff') 
+                    tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+") *" + sumwxHistX, 'goff') 
 
         nTries = shape.Integral()
         #print ' entries after cut    >> ',entries,' integral:', nTries
@@ -507,21 +507,21 @@ class ShapeFactory:
               # Caution: if the vector size of branch in an event is zero, the event is just skipped  
 
               # Fill not selected but generated events, for the case the size of PtRec is not zero: i.e., acceptance correction
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameDo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_AlphaS[0]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_AlphaS[1]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_AlphaS[0]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_AlphaS[1]))", 'goff')
 
               # Fill not selected but generated events, for the case the size of PtRec is zero
-              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + global_weight.split("*")[0]+")", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + "*".join(global_weight.split("*")[0:2])+")", 'goff')
               #
 
               # Fill bin zero for efficiency correction: gen_weight * ( 1 - ( rec_weight) ): i.e., efficiency correction
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameDo, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_AlphaS[0]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameUp, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_AlphaS[1]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameDo, "(" + totCut + ")*(" + "*".join(global_weight.split("*")[0:2]) + " * (PDFWeights_AlphaS[0]) * (1-(" + "*".join(global_weight.split("*")[2:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameUp, "(" + totCut + ")*(" + "*".join(global_weight.split("*")[0:2]) + " * (PDFWeights_AlphaS[1]) * (1-(" + "*".join(global_weight.split("*")[2:])  +")))", 'goff')
 
           if unfoldBinType == ISRUnfold.MassFSRMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM:
               # for FSR response, consider only acceptance correction
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameDo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_AlphaS[0]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_AlphaS[1]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_AlphaS[0]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_AlphaS[1]))", 'goff')
 
 
         nTriesUp = shapeUp.Integral()
@@ -607,32 +607,32 @@ class ShapeFactory:
               # Caution: if the vector size of branch in an event is zero, the event is just skipped  
 
               # Fill not selected but generated events, for the case the size of PtRec is not zero: i.e., acceptance correction
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameAUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[1]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameADo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[2]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[3]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBDo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[6]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[4]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABDo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[8]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameAUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[1]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameADo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[2]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[3]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[6]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[4]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[8]))", 'goff')
 
               # Fill not selected but generated events, for the case the size of PtRec is zero
-              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + global_weight.split("*")[0]+")", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + "*".join(global_weight.split("*")[0:2])+")", 'goff')
               #
               # Fill bin zero for efficiency correction: gen_weight * ( 1 - ( rec_weight) ): i.e., efficiency correction
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameAUp, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Scale[1]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameADo, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Scale[2]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBUp, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Scale[3]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBDo, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Scale[6]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABUp, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Scale[4]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABDo, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Scale[8]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameAUp, "(" + totCut + ")*(" + "*".join(global_weight.split("*")[0:2]) + " * (PDFWeights_Scale[1]) * (1-(" + "*".join(global_weight.split("*")[2:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameADo, "(" + totCut + ")*(" + "*".join(global_weight.split("*")[0:2]) + " * (PDFWeights_Scale[2]) * (1-(" + "*".join(global_weight.split("*")[2:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBUp, "(" + totCut + ")*(" + "*".join(global_weight.split("*")[0:2]) + " * (PDFWeights_Scale[3]) * (1-(" + "*".join(global_weight.split("*")[2:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBDo, "(" + totCut + ")*(" + "*".join(global_weight.split("*")[0:2]) + " * (PDFWeights_Scale[6]) * (1-(" + "*".join(global_weight.split("*")[2:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABUp, "(" + totCut + ")*(" + "*".join(global_weight.split("*")[0:2]) + " * (PDFWeights_Scale[4]) * (1-(" + "*".join(global_weight.split("*")[2:])  +")))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABDo, "(" + totCut + ")*(" + "*".join(global_weight.split("*")[0:2]) + " * (PDFWeights_Scale[8]) * (1-(" + "*".join(global_weight.split("*")[2:])  +")))", 'goff')
 
           if unfoldBinType == ISRUnfold.MassFSRMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM:
               # for FSR response, consider only acceptance correction
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameAUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[1]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameADo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[2]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[3]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBDo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[6]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABUp, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[4]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABDo, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Scale[8]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameAUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[1]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameADo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[2]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[3]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[6]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[4]))", 'goff')
+              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[8]))", 'goff')
 
         
         nTriesAUp = shapeAUp.Integral()
@@ -719,18 +719,18 @@ class ShapeFactory:
                 # Caution: if the vector size of branch in an event is zero, the event is just skipped  
 
                 # Fill not selected but generated events, for the case the size of PtRec is not zero: i.e., acceptance correction
-                tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Error[" + str(idx) + "]))", 'goff')
+                #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Error[" + str(idx) + "]))", 'goff')
 
                 # Fill not selected but generated events, for the case the size of PtRec is zero
-                #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + global_weight.split("*")[0]+")", 'goff')
+                #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut.split("&&")[0] + "&& (@ptRec.size()==0))*(" + "*".join(global_weight.split("*")[0:2])+")", 'goff')
                 #
 
                 # Fill bin zero for efficiency correction: gen_weight * ( 1 - ( rec_weight) ): i.e., efficiency correction
-                tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut + ")*(" + global_weight.split("*")[0] + " * (PDFWeights_Error[" + str(idx) + "]) * (1-(" + "*".join(global_weight.split("*")[1:])  +")))", 'goff')
+                tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + totCut + ")*(" + "*".join(global_weight.split("*")[0:2]) + " * (PDFWeights_Error[" + str(idx) + "]) * (1-(" + "*".join(global_weight.split("*")[2:])  +")))", 'goff')
 
             if unfoldBinType == ISRUnfold.MassFSRMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM:
                 # for FSR response, consider only acceptance correction
-                tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + global_weight.split("*")[0]+" * (PDFWeights_Error[" + str(idx) + "]))", 'goff')
+                tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Error[" + str(idx) + "]))", 'goff')
 
           nTries = shape.Integral()
           if nTries == 0 :
@@ -1059,17 +1059,11 @@ class ShapeFactory:
         return hclass(name, name, *hargs)
 
     elif useTUnfoldBin :
-        # use TUnfoldBinnig
-        if unfoldBinDefinition == None:
-            rt.SetMassBinningRec()
-            rt.SetPtBinningRec()
-            rt.SetMassBinningGen()
-            rt.SetPtBinningGen()
-        else :
-            rt.SetMassBinningRec(unfoldBinDefinition)
-            rt.SetPtBinningRec(unfoldBinDefinition)
-            rt.SetMassBinningGen(unfoldBinDefinition)
-            rt.SetPtBinningGen(unfoldBinDefinition)
+        # Use TUnfoldBinnig
+        rt.SetMassBinningRec()
+        rt.SetPtBinningRec(unfoldBinDefinition)
+        rt.SetMassBinningGen()
+        rt.SetPtBinningGen(unfoldBinDefinition)
 
         if unfoldBinType == ISRUnfold.PtRec2DHist:     return rt.get2DHistogramPtRec(name) 
         if unfoldBinType == ISRUnfold.PtGen2DHist:     return rt.get2DHistogramPtGen(name) 

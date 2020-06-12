@@ -26,7 +26,6 @@ struct Analysis_Variables
     double leadinglep_eta_rec_;
     double subleadinglep_eta_rec_;
     double leadingphoton_lep_dr_rec_;
-    double evt_weight_zptcorr_;
 
     double evt_weight_recoSF_rec_, evt_weight_recoSF_up_rec_, evt_weight_recoSF_down_rec_;
     double evt_weight_idSF_rec_,   evt_weight_idSF_up_rec_,   evt_weight_idSF_down_rec_;
@@ -58,7 +57,6 @@ struct Analysis_Variables
     TString subleadinglep_pt_rec_brname;
     TString leadinglep_eta_rec_brname;
     TString subleadinglep_eta_rec_brname;
-    TString evt_weight_zptcorr_brname;
 
     TString evt_weight_recoSF_rec_brname, evt_weight_recoSF_up_rec_brname, evt_weight_recoSF_down_rec_brname;
     TString evt_weight_idSF_rec_brname,   evt_weight_idSF_up_rec_brname,   evt_weight_idSF_down_rec_brname;
@@ -86,7 +84,6 @@ struct Analysis_Variables
         additional_veto_mu_size_ = 0;
         additional_veto_el_size_ = 0;
 
-        evt_weight_zptcorr_             = 1.;
         dilep_pt_rec_                   = -999.;
         dilep_mass_rec_                 = -999.;
         leadinglep_pt_rec_              = -999.;
@@ -118,7 +115,6 @@ struct Analysis_Variables
         additional_veto_mu_size_brname = "additional_veto_mu_size_" + prefix;
         additional_veto_el_size_brname = "additional_veto_el_size_" + prefix;;
 
-        evt_weight_zptcorr_brname                 = "evt_weight_zptcorr_" + prefix;
         dilep_pt_rec_brname                 = "dilep_pt_rec_" + prefix;
         dilep_mass_rec_brname               = "dilep_mass_rec_" + prefix;
         leadinglep_pt_rec_brname            = "leadinglep_pt_rec_" + prefix;
@@ -160,7 +156,7 @@ class Skim_ISR : public AnalyzerCore {
 public:
 
     void initializeAnalyzer();
-    void executeEventFromParameter(AnalyzerParameter param, Analysis_Variables * p_struct, bool fake_estimation = false, const int scale_res_sys = 0);
+    void executeEventFromParameter(AnalyzerParameter param, Analysis_Variables * p_struct, bool fake_estimation = false, const int scale_res_sys = 0, bool apply_lep_corr = true);
     void executeEvent();
     
     int findDYInitIndex(int l1_index, int l2_index, bool &zvertex);
@@ -268,6 +264,7 @@ private:
 
     Analysis_Variables* nominal_selection;
     Analysis_Variables* fake_estimation;
+    Analysis_Variables* without_lepton_momentum;
     Analysis_Variables* lepton_momentum_scale_up;
     Analysis_Variables* lepton_momentum_scale_down;
     Analysis_Variables* lepton_momentum_res_up;
@@ -292,6 +289,9 @@ private:
     std::vector<Bool_t> photon_matchedToLep_isPromptFinalState_selected; 
     std::vector<Double_t> photon_dRtoParticle_isPromptFinalState_selected; 
     std::vector<Double_t> photon_dRtoAntiParticle_isPromptFinalState_selected; 
+
+    double zptweight_muon;
+    double zptweight_electron;
 
     double dilep_pt_lhe   ;
     double dilep_mass_lhe ;
