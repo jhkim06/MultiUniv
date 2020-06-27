@@ -4,7 +4,7 @@ Outputdir   = 'Output_Muon'
 Category    = 'SMP'
 Year        = '2018'
 InSkim      = 'ISR_detector_only_v1'
-Userflags   = 'unfold_input_muon'
+Userflags   = 'unfold_input'
 treeName    = 'recoTree/SKFlat'
 
 samplesFile   = 'samples_muon.py'

@@ -751,8 +751,11 @@ void Skim_ISR::executeEvent()
                 dilep_pt_FSRgamma_gen_ispromptfinal = dilep_isPromptFinalState.Pt();
                 dilep_mass_FSRgamma_gen_ispromptfinal = dilep_isPromptFinalState.M();
 
-                zptweight_muon = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal, Lepton::MUON);
-                zptweight_electron = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal, Lepton::ELECTRON);
+                if(DataYear==2016)
+                {
+                    zptweight_muon = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal, Lepton::MUON);
+                    zptweight_electron = mcCorr->GetISRZPtWeight(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal, Lepton::ELECTRON);
+                }
 
                 dilep_pt_AllFSRgamma_gen_ispromptfinal = (dilep_isPromptFinalState+photon_greater_DRp1_nonLeptonMother).Pt();
                 dilep_mass_AllFSRgamma_gen_ispromptfinal = (dilep_isPromptFinalState+photon_greater_DRp1_nonLeptonMother).M();

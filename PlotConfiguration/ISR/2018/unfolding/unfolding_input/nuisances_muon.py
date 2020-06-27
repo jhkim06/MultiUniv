@@ -7,9 +7,9 @@
 #    }
 
 ########## Efficiency and Energy Scale
-trg_syst = ['evt_weight_trigSF_up_rec/evt_weight_trigSF_rec', 'evt_weight_trigSF_down_rec/evt_weight_trigSF_rec']
-id_syst  = ['evt_weight_idSF_up_rec/evt_weight_idSF_rec', 'evt_weight_idSF_down_rec/evt_weight_idSF_rec']
-iso_syst = ['evt_weight_isoSF_up_rec/evt_weight_isoSF_rec','evt_weight_isoSF_down_rec/evt_weight_isoSF_rec']
+trg_syst = ['evt_weight_trigSF_up_rec_Nominal/evt_weight_trigSF_rec_Nominal', 'evt_weight_trigSF_down_rec_Nominal/evt_weight_trigSF_rec_Nominal']
+id_syst  = ['evt_weight_idSF_up_rec_Nominal/evt_weight_idSF_rec_Nominal', 'evt_weight_idSF_down_rec_Nominal/evt_weight_idSF_rec_Nominal']
+iso_syst = ['evt_weight_isoSF_up_rec_Nominal/evt_weight_isoSF_rec_Nominal','evt_weight_isoSF_down_rec_Nominal/evt_weight_isoSF_rec_Nominal']
 l1prefire_syst = ['evt_weight_l1prefire_up/evt_weight_l1prefire','evt_weight_l1prefire_down/evt_weight_l1prefire']
 pileup_syst = ['evt_weight_pureweight_up/evt_weight_pureweight','evt_weight_pureweight_down/evt_weight_pureweight']
 alphaS_syst  = 'PDFWeights_AlphaS'
@@ -137,20 +137,20 @@ nuisances['pdfScale'] = {
 	},
 }
 
-#nuisances['pdfErr'] = {
-#    'name'	: 'PDFerror',
-#    'kind'	: 'PDF',
-#    'type'	: 'HESSIAN',
-#    'samples'	: {
-#        'DYJetsToMuMu'          : pdfErr_syst ,
-#        'DYJets10to50ToMuMu'    : pdfErr_syst ,
-#        'DYJetsToTauTau'        : pdfErr_syst ,
-#        'DYJets10to50ToTauTau'  : pdfErr_syst ,
-#        'TTLL_powheg'           : pdfErr_syst ,
-#        'WJets_MG'              : pdfErr_syst ,
-#        'WW_pythia'             : pdfErr_syst ,
-#        'WZ_pythia'             : pdfErr_syst ,
-#        'ZZ_pythia'             : pdfErr_syst ,
-#	},
-#}
+nuisances['pdfErr'] = {
+    'name'	: 'PDFerror',
+    'kind'	: 'PDF',
+    'type'	: 'HESSIAN',
+    'samples'	: {
+        'DYJetsToMuMu'          : pdfErr_syst ,
+        'DYJets10to50ToMuMu'    : pdfErr_syst ,
+        'DYJetsToTauTau'        : pdfErr_syst ,
+        'DYJets10to50ToTauTau'  : pdfErr_syst ,
+        'TTLL_powheg'           : pdfErr_syst ,
+        'WJets_MG'              : pdfErr_syst ,
+        'WW_pythia'             : pdfErr_syst ,
+        'WZ_pythia'             : pdfErr_syst ,
+        'ZZ_pythia'             : pdfErr_syst ,
+	},
+}
 

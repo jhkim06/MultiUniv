@@ -76,6 +76,9 @@ void SetPtBinningRec(std::pair<TString, TString>& binDef)
     else if(binDef.second == "FineFine")
     {
         //
+        ptBinningRec->AddAxis("pt",nptBinFine,ptBinFine,false,true);
+        if( binDef.first == "electron") ptBinningRec->AddAxis("mass", nMassBinforPt_electron, massBinforPt_electron, true, true);
+        if( binDef.first == "muon")     ptBinningRec->AddAxis("mass", nMassBinforPt_muon, massBinforPt_muon, true, true);
     }
     else if(binDef.second == "ZptWeight")
     {
@@ -112,6 +115,9 @@ void SetPtBinningGen(std::pair<TString, TString>& binDef)
     else if(binDef.second == "FineFine")
     {
         //
+        ptBinningGen->AddAxis("pt",nptBinFine,ptBinFine,false, true);
+        if( binDef.first == "electron") ptBinningGen->AddAxis("mass", nMassBinforPt_electron,massBinforPt_electron, true, true);
+        if( binDef.first == "muon")     ptBinningGen->AddAxis("mass", nMassBinforPt_muon,massBinforPt_muon, true, true);
     }
     else
     {

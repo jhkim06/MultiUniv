@@ -7,8 +7,8 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_recoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal'
-#McWeight = 'evt_weight_total_gen'
+McWeight = 'evt_weight_total_gen * 1. * evt_weight_total_rec * evt_weight_recoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal'
+GenMcWeight = 'evt_weight_total_gen'
 
 #--------------------    
 # MC
@@ -44,18 +44,3 @@ samples['DYJets10to50_MG'] = {
 #    'weight' :McWeight,
 #    }
 
-#--------------------    
-# DATA driven QCD
-#--------------------
-
-'''
-samples['DoubleEG_FakeElEl'] = {
-    'skim'   :'MetFt_L_v0_LL_v0_MuMuOrElElFake_v1', #TODO: this skim is not exist currently
-    'weight' :'1',
-    }
-
-samples['DobuleElectron_FakeMuMu'] = {
-    'skim'   :'MetFt_L_v0_LL_v0_MuMuOrElElFake_v1', #TODO: this skim is not exist currently
-    'weight' :'1',
-    }
-'''

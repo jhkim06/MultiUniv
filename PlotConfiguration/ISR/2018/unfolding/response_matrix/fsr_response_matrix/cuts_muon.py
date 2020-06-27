@@ -4,22 +4,21 @@ sys.path.insert(0,SKFlat_WD+'/CommonTools/include')
 from Definitions import *
 
 # supercut will be applied last in the cuts
-#supercut = 'evt_tag_dimuon_lhe == 1 &&  evt_tag_dimuon_promptfinal == 1'
-supercut = 'evt_tag_dimuon_lhe == 1'
+supercut = 'evt_tag_dimuon_promptfinal == 1 && dilep_mass_FSRgamma_gen_ispromptfinal < 380. && dilep_pt_FSRgamma_gen_ispromptfinal < 110'
 
-# dressed level distribution
-cuts['fiducial_phase_dRp1'] = 'pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1 '
-
-#cuts['fiducial_phase_dRp1_split_p2'] = 'pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1 && (Entry$%10 > 7)'                                                                                                                                                                         
+#cuts['fiducial_phase_dRp1_split_p2'] = 'pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1 && (Entry$%10 > 7)'
 #cuts['fiducial_phase_dRp1_split_p5'] = 'pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1 && (Entry$%2 == 0)'
 
 # matrix
-cuts['Dressed_DRp1_Dressed_DR4PI_FullPhase'] = 'evt_tag_dimuon_promptfinal == 1 && pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1 '
-cuts['Dressed_DRp1_Dressed_DR4PI_Fiducial'] = 'pass_kinematic_cut_mu_FSRgamma_gen == 1 && pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1 '
-cuts['Dimuon'] = " 1 "
+cuts['Dressed_DRp1_Dressed_DR4PI_Fiducial'] = 'pass_kinematic_cut_mu_FSRgamma_gen == 1 && pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1 && evt_tag_dimuon_rec_Nominal == 1 && evt_tag_analysisevnt_sel_rec_Nominal == 1 && dilep_mass_rec_Nominal < 380. && dilep_pt_rec_Nominal < 110.'
+cuts['Dressed_DRp1_Dressed_DR4PI_FullPhase'] = '1 && pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1 && evt_tag_dimuon_rec_Nominal == 1 && evt_tag_analysisevnt_sel_rec_Nominal == 1 && dilep_mass_rec_Nominal < 380. && dilep_pt_rec_Nominal < 110.'
 
-#cuts['full_phase_dRp1_split_p8'] = '(is_dimuon_gen == 1)*(Entry$%10 < 8) && pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1'                                                                                                                                                    
-#cuts['full_phase_dRp1_split_p5'] = '(is_dimuon_gen == 1)*(Entry$%2 == 1) && pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1' 
+#cuts['Dressed_DRp1_Dressed_DR4PI_Fiducial'] = 'pass_kinematic_cut_mu_FSRgamma_gen == 1 && pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1'
+#cuts['Dressed_DRp1_Dressed_DR4PI_FullPhase'] = '1 && pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1'
+
+
+#cuts['full_phase_dRp1_split_p8'] = '(is_dimuon_gen == 1)*(Entry$%10 < 8) && pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1'
+#cuts['full_phase_dRp1_split_p5'] = '(is_dimuon_gen == 1)*(Entry$%2 == 1) && pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1'
 
 #massCut_low  = ["40.", "60.", "80.", "100.", "200."]
 #massCut_high = ["60.", "80.", "100.", "200.", "350."]

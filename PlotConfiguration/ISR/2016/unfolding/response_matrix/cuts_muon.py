@@ -9,12 +9,13 @@ supercut = 'evt_tag_dimuon_promptfinal == 1 && dilep_mass_FSRgamma_gen_ispromptf
 
 #
 cuts['detector_level_DY_Fake'] = 'evt_tag_dimuon_rec_Nominal == 1 && evt_tag_analysisevnt_sel_rec_Nominal == 1 && pass_kinematic_cut_mu_FSRgamma_gen == 0 && dilep_mass_rec_Nominal > 10. && dilep_mass_rec_Nominal < 380. && dilep_pt_rec_Nominal < 110.'
-
+#
 # Matrix
 cuts['Detector_Dressed_DRp1_Fiducial'] = 'pass_kinematic_cut_mu_FSRgammaDRp1_gen == 1 && evt_tag_dimuon_rec_Nominal == 1 && evt_tag_analysisevnt_sel_rec_Nominal == 1 && dilep_mass_rec_Nominal < 380. && dilep_pt_rec_Nominal < 110.'
 cuts['Detector_Dressed_DRp1_FullPhase'] = 'evt_tag_dimuon_promptfinal == 1 && evt_tag_dimuon_rec_Nominal == 1 && evt_tag_analysisevnt_sel_rec_Nominal == 1 && dilep_mass_rec_Nominal < 380. && dilep_pt_rec_Nominal < 110.'
 cuts['Detector_Dressed_DR4PI_FullPhase'] = 'evt_tag_dimuon_promptfinal == 1 && evt_tag_dimuon_rec_Nominal == 1 && evt_tag_analysisevnt_sel_rec_Nominal == 1 && dilep_mass_rec_Nominal < 380. && dilep_pt_rec_Nominal < 110.'
 cuts['Detector_Dressed_DR4PI_Fiducial'] = 'pass_kinematic_cut_mu_FSRgamma_gen == 1 && evt_tag_dimuon_rec_Nominal == 1 && evt_tag_analysisevnt_sel_rec_Nominal == 1 && dilep_mass_rec_Nominal > 10. && dilep_mass_rec_Nominal < 380. && dilep_pt_rec_Nominal < 110.'
+
 
 # For acceptance correction
 #cuts['FullPhase'] = 'evt_tag_dimuon_promptfinal == 1'

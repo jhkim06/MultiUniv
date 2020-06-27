@@ -348,7 +348,8 @@ class ShapeFactory:
             if unfoldBinType == ISRUnfold.MassFSRMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM:
                 # for FSR response, consider only acceptance correction
                 if sumwxHistX is None:              
-                    tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+")", 'goff') 
+                    #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+")", 'goff') 
+                    pass
                 else:
                     tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:2]) + "&& !(" + "&&".join(totCut.split("&&")[2:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+") *" + sumwxHistX, 'goff') 
 
@@ -520,8 +521,9 @@ class ShapeFactory:
 
           if unfoldBinType == ISRUnfold.MassFSRMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM:
               # for FSR response, consider only acceptance correction
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_AlphaS[0]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_AlphaS[1]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_AlphaS[0]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_AlphaS[1]))", 'goff')
+              pass
 
 
         nTriesUp = shapeUp.Integral()
@@ -627,12 +629,13 @@ class ShapeFactory:
 
           if unfoldBinType == ISRUnfold.MassFSRMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM:
               # for FSR response, consider only acceptance correction
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameAUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[1]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameADo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[2]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[3]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[6]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[4]))", 'goff')
-              tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[8]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameAUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[1]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameADo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[2]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[3]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameBDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[6]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABUp, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[4]))", 'goff')
+              #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeNameABDo, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Scale[8]))", 'goff')
+              pass
 
         
         nTriesAUp = shapeAUp.Integral()
@@ -730,7 +733,8 @@ class ShapeFactory:
 
             if unfoldBinType == ISRUnfold.MassFSRMigrationM or unfoldBinType == ISRUnfold.PtFSRMigrationM:
                 # for FSR response, consider only acceptance correction
-                tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Error[" + str(idx) + "]))", 'goff')
+                #tree.Draw( "0:"+var.split(":")[1] +'>>+'+shapeName, "(" + "&&".join(totCut.split("&&")[0:4]) + "&& !(" + "&&".join(totCut.split("&&")[4:]) + "))*(" + "*".join(global_weight.split("*")[0:2])+" * (PDFWeights_Error[" + str(idx) + "]))", 'goff')
+                pass
 
           nTries = shape.Integral()
           if nTries == 0 :
