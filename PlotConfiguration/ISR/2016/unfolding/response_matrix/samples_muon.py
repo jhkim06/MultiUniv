@@ -4,9 +4,9 @@ from CommonPyTools.python.CommonTools import *
 # Number of Leptons and WP
 ###########################
 
-McWeight        = 'evt_weight_total_gen * 1. *             evt_weight_total_rec * evt_weight_isoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal'
-McWeightZptCorr = 'evt_weight_total_gen * zptweight_muon * evt_weight_total_rec * evt_weight_isoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal'
-GenMcWeightZptCorr = 'evt_weight_total_gen'
+McWeight             = 'evt_weight_total_gen * 1. *             evt_weight_total_rec * evt_weight_isoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal'
+McWeightZptCorr      = 'evt_weight_total_gen * zptweight_muon * evt_weight_total_rec * evt_weight_isoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal'
+GenMcWeightZptCorr   = 'evt_weight_total_gen'
 McWeight_forDY10to50 = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_isoSF_rec * evt_weight_idSF_rec * evt_weight_trigSF_rec * 1.0687524'
 
 #--------------------
@@ -22,13 +22,13 @@ McWeight_forDY10to50 = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight
 samples['DYJets'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
-    'weight' :McWeight,
+    'weight' :McWeightZptCorr,
     }
 
 samples['DYJets10to50'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
-    'weight' :McWeight,
+    'weight' :McWeightZptCorr,
     }
 
 #samples['ZToMuMu_M_50_120_powheg'] = {
