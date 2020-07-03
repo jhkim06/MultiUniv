@@ -1029,7 +1029,9 @@ double MCCorrection::GetISRZPtWeight(double zpt, double zmass, Lepton::Flavour f
     //
     const int nPtBinZptWeight=22;
     double ptBinZptWeight[nPtBinZptWeight+1]={0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 42, 50, 60, 72, 85, 100};
-    const int nMassBinZptWeightforPt_electron = 3;                                                                                                                                       const int nMassBinZptWeightforPt_muon = 3;                                                                                                                                           const Double_t massBinZptWeightforPt_muon[nMassBinZptWeightforPt_muon+1] = {40, 81, 101, 320};
+    const int nMassBinZptWeightforPt_electron = 3;
+    const int nMassBinZptWeightforPt_muon = 3;
+    const Double_t massBinZptWeightforPt_muon[nMassBinZptWeightforPt_muon+1] = {40, 81, 101, 320};
     const Double_t massBinZptWeightforPt_electron[nMassBinZptWeightforPt_electron+1] = {50, 81, 101, 320};
 
     TUnfoldBinning* ptBinningRec = NULL;

@@ -19,14 +19,14 @@ samples['DYJets@DYJetsToEE'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_dielectron_hardprocess == 1',
-    'weight' :McWeightZptReweight,
+    'weight' :McWeight,
     }
 
 samples['DYJets10to50_MG@DYJets10to50ToEE'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
     'combine_cuts' : True,
     'cut'    :'evt_tag_dielectron_hardprocess == 1',
-    'weight' :McWeightZptReweight,
+    'weight' :McWeight,
     }
 
 samples['DYJets@DYJetsToTauTau'] = {
@@ -85,29 +85,3 @@ samples['EGamma'] = {
     'weight' :FakeRate,
     }
 
-#samples['DoubleMuon@DoubleMuonQCDFakeRate'] = {
-#    'skim'   :'ISR_fake_rate_v2_Eff_SF_v1',
-#    'combine_cuts' : False,
-#    'cut'    :'evt_tag_analysisevnt_sel_rec == 1 && evt_tag_dielectron_rec == 1 && evt_tag_dielectron_rec == 0 && dilep_pt_rec < 100. && dilep_mass_rec > 40.',
-#    'weight' :FakeRate,
-#    }
-
-#samples['DoubleMuon'] = {
-#    'skim'   :'',
-#    'weight' :'1',
-#    }
-
-#--------------------
-# DATA driven QCD
-#--------------------
-'''
-samples['DoubleEG_FakeEE'] = {
-    'skim'   :'MetFt_L_v0_LL_v0_EEOrEEFake_v2_Eff_SF_v1', #TODO: this skim is not exist currently
-    'weight' :'1',
-    }
-
-samples['DobuleMuon_FakeEE'] = {
-    'skim'   :'MetFt_L_v0_LL_v0_EEOrEEFake_v2_Eff_SF_v1', #TODO: this skim is not exist currently
-    'weight' :'1',
-    }
-'''

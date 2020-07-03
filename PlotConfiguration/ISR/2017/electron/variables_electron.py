@@ -5,12 +5,6 @@ SKFlat_WD = os.getenv('SKFlat_WD')
 sys.path.insert(0,SKFlat_WD+'/CommonTools/include')
 from Definitions import * # to use enumerate for unfolding histogram type
 
-variables['mll_5GeVBin'] = {
-    'name': 'dilep_mass_rec_Nominal',
-    'range': (60, 50, 350),
-    'xaxis': 'm_{ll} [GeV]',
-    'fold' : 0
-    }
 variables['mll'] = {
     'name': 'dilep_mass_rec_Nominal',
     'range': (800, 0, 400),
@@ -23,12 +17,6 @@ variables['ptll'] = {
     'xaxis': 'pt_{ll} [GeV]',
     'fold' : 0
     }
-variables['ptll_mll'] = {
-    'name': 'dilep_pt_rec_Nominal:dilep_mass_rec_Nominal',
-    'range': ([50., 65., 80., 100., 200., 350.],[0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 35., 45., 55., 65., 75., 85., 100.]),
-    'xaxis': 'pt_{ll} [GeV]',
-    'fold' : 0
-    }
 variables['ptll_variable_bin'] = {
     'name': 'dilep_pt_rec_Nominal',
     'range': ([0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12., 13., 14., 16., 18., 20., 22., 25., 28., 32., 37., 43., 50., 60., 72., 85., 100.],),
@@ -37,7 +25,7 @@ variables['ptll_variable_bin'] = {
     }
 variables['ptll_variable_wider_bin'] = {
     'name': 'dilep_pt_rec_Nominal',
-    'range': ([0., 2., 4., 6., 8., 10., 12., 14., 16., 18., 20., 22., 25., 28., 32., 38., 46., 54., 62., 72., 85., 100.],),
+    'range': ([0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 35., 45., 55., 65., 75., 85., 100.],),
     'xaxis': 'pt_{ll} [GeV]',
     'fold' : 0
     }
@@ -54,3 +42,29 @@ variables['mll_variable_bin'] = {
     'go1D':  True,
     'fold' : 0
     }
+variables['ptll_mll'] = {
+
+    'unfoldBinType': ISRUnfold.PtRec2DHist,
+    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
+    'fold':   0,
+    'range':  None,
+    'name':  'Get2DPtRecBinIndex(dilep_pt_rec_Nominal, dilep_mass_rec_Nominal)',
+    'xaxis': 'Mass p_{T} [GeV]',
+    'yaxis': 'Events',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("electron", "ZptWeight"),
+    'go1D': True
+}
+
+variables['ptll_mll_analysis'] = {
+
+    'unfoldBinType': ISRUnfold.PtRec2DHist,
+    'fold':   0,
+    'range':  None,
+    'name':  'Get2DPtRecBinIndex(dilep_pt_rec_Nominal, dilep_mass_rec_Nominal)',
+    'xaxis': 'Mass p_{T} [GeV]',
+    'yaxis': 'Events',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("electron", "FineCoarse"),
+    'go1D': True
+}

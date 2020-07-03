@@ -62,10 +62,10 @@
 
 #checkMakeShapeBatch.py -y 2017 -n 300 --nTotFiles 0 --RundirBase /data6/Users/salee/SKFlatRunlog/ --SkimName MetFt_L_v0_LL_v0_MuMuOrElEl_v1_PDF
 
-#mkShapes.py --pycfg  configuration.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp
+mkShapes.py --pycfg  configuration.py -n 50 --nTotFiles 0  --overWrite --doHadd --cleanUp
 
 #mkPDfUncert.py --pycfg configuration.py --overWrite --cleanUp
-mkPlot.py --pycfg configuration.py --inputFile=Output_control_SFapplied_ISR_detector_only_v1_ISR_detector_plots/ISR_detector_plots.root  --minLogC=10 --maxLogC=1000 --showIntegralLegend=0 --minLogCratio=2 --maxLogCratio=5000 
+#mkPlot.py --pycfg configuration.py --inputFile=Output_control_SFapplied_ISR_detector_only_v1_ISR_detector_plots/ISR_detector_plots.root  --minLogC=10 --maxLogC=1000 --showIntegralLegend=0 --minLogCratio=2 --maxLogCratio=5000 
 #mkPlot.py --pycfg configuration.py --inputFile=Output_control_SFapplied_test_ISR_detector_only_v2_Eff_SF_v1_ISR_detector_plots/muon_histo.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=0 --minLogCratio=2 --maxLogCratio=5000 
 #mkPlot.py --pycfg configuration.py --inputFile=Output_control_ISR_detector_only_v2_ISR_detector_plots/ISR_detector_plots.root  --minLogC=1 --maxLogC=1000 --showIntegralLegend=0 --minLogCratio=2 --maxLogCratio=5000 
 #scp -r Plot_AlPhaS lxplus.cern.ch:www/

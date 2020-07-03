@@ -1064,9 +1064,9 @@ class ShapeFactory:
 
     elif useTUnfoldBin :
         # Use TUnfoldBinnig
-        rt.SetMassBinningRec()
+        rt.SetMassBinningRec(unfoldBinDefinition)
         rt.SetPtBinningRec(unfoldBinDefinition)
-        rt.SetMassBinningGen()
+        rt.SetMassBinningGen(unfoldBinDefinition)
         rt.SetPtBinningGen(unfoldBinDefinition)
 
         if unfoldBinType == ISRUnfold.PtRec2DHist:     return rt.get2DHistogramPtRec(name) 

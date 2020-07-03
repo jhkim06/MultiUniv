@@ -31,12 +31,12 @@ nuisances['pdfScale'] = {
 	},
 }
 
-nuisances['pdfErr'] = {
-    'name'	: 'PDFerror',
-    'kind'	: 'PDF',
-    'type'	: 'HESSIAN',
-    'samples'	: {
-      	'DYJets'	: pdfErr_syst ,
-	},
-}
-
+#nuisances['pdfErr'] = {
+#    'name'	: 'PDFerror',
+#    'kind'	: 'PDF',
+#    'type'	: 'HESSIAN',
+#    'samples'	: {
+#      	'DYJets'	: pdfErr_syst ,
+#	},
+#}
+#

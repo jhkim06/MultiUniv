@@ -7,3 +7,5 @@ DYJets    muon             5             ZptWeight_muon_m60to81.root		        Zp
 DYJets    electron         5             ZptWeight_electron_m64to81.root		ZptWeight_iter  m64to81
 DYJets    muon             5             ZptWeight_muon_m101to320.root		        ZptWeight_iter  m101to320
 DYJets    electron         5             ZptWeight_electron_m101to320.root		ZptWeight_iter  m101to320
+DYJets    muon            10             ZptWeight_muon.root                            ZptWeight_iter  m40to320
+DYJets    electron        10             ZptWeight_electron.root                        ZptWeight_iter  m50to320

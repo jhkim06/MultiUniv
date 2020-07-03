@@ -9,7 +9,7 @@ McWeightZptCorr = 'evt_weight_total_gen * 1. * evt_weight_total_rec * evt_weight
 
 samples['DYJets@DYJetsToEE'] = {
     'skim'   :'ISR_v1', # use default skim defined in configuration.py
-    'cut'    :'vt_tag_dielectron_hardprocess == 1',
+    'cut'    :'evt_tag_dielectron_hardprocess == 1',
     'weight' :McWeight,
     }
 

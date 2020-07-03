@@ -42,3 +42,29 @@ variables['mll_variable_bin'] = {
     'go1D':  True,
     'fold' : 0
     }
+variables['ptll_mll'] = {
+
+    'unfoldBinType': ISRUnfold.PtRec2DHist,
+    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
+    'fold':   0,
+    'range':  None,
+    'name':  'Get2DPtRecBinIndex(dilep_pt_rec_Nominal, dilep_mass_rec_Nominal)',
+    'xaxis': 'Mass p_{T} [GeV]',
+    'yaxis': 'Events',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("muon", "ZptWeight"),
+    'go1D': True
+}
+
+variables['ptll_mll_analysis'] = {
+
+    'unfoldBinType': ISRUnfold.PtRec2DHist,
+    'fold':   0,
+    'range':  None,
+    'name':  'Get2DPtRecBinIndex(dilep_pt_rec_Nominal, dilep_mass_rec_Nominal)',
+    'xaxis': 'Mass p_{T} [GeV]',
+    'yaxis': 'Events',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("muon", "FineCoarse"),
+    'go1D': True
+}
