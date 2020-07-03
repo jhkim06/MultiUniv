@@ -137,20 +137,20 @@ nuisances['pdfScale'] = {
 	},
 }
 
-nuisances['pdfErr'] = {
-    'name'	: 'PDFerror',
-    'kind'	: 'PDF',
-    'type'	: 'HESSIAN',
-    'samples'	: {
-        'DYJetsToMuMu'          : pdfErr_syst ,
-        'DYJets10to50ToMuMu'    : pdfErr_syst ,
-        'DYJetsToTauTau'        : pdfErr_syst ,
-        'DYJets10to50ToTauTau'  : pdfErr_syst ,
-        'TTLL_powheg'           : pdfErr_syst ,
-        'WJets_MG'              : pdfErr_syst ,
-        'WW_pythia'             : pdfErr_syst ,
-        'WZ_pythia'             : pdfErr_syst ,
-        'ZZ_pythia'             : pdfErr_syst ,
-	},
-}
+#nuisances['pdfErr'] = {
+#    'name'	: 'PDFerror',
+#    'kind'	: 'PDF',
+#    'type'	: 'HESSIAN',
+#    'samples'	: {
+#        'DYJetsToMuMu'          : pdfErr_syst ,
+#        'DYJets10to50ToMuMu'    : pdfErr_syst ,
+#        'DYJetsToTauTau'        : pdfErr_syst ,
+#        'DYJets10to50ToTauTau'  : pdfErr_syst ,
+#        'TTLL_powheg'           : pdfErr_syst ,
+#        'WJets_MG'              : pdfErr_syst ,
+#        'WW_pythia'             : pdfErr_syst ,
+#        'WZ_pythia'             : pdfErr_syst ,
+#        'ZZ_pythia'             : pdfErr_syst ,
+#	},
+#}
 
