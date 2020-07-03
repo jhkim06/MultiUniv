@@ -60,40 +60,13 @@ variables['Mass_ResMatrix_Dressed_DRp1_Dressed_DR4PI_CoarseCoarse'] = {
     'isResMatrix':True
 }
 
-variables['Pt_ResMatrix_Dressed_DRp1_Dressed_DR4PI_FineFine'] = {
-
-    'unfoldBinType': ISRUnfold.PtFSRMigrationM,
-    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DPtGenBinIndex(dilep_pt_FSRgammaDRp1_gen_ispromptfinal, dilep_mass_FSRgammaDRp1_gen_ispromptfinal):Get2DPtGenBinIndex(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal)',
-    'xaxis': 'Post FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': ("muon","FineFine"),
-    'go1D': False,
-    'isResMatrix':True
-}
-
-variables['Mass_ResMatrix_Dressed_DRp1_Dressed_DR4PI_FineFine'] = {
-
-    'unfoldBinType': ISRUnfold.MassFSRMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DMassGenBinIndex(dilep_mass_FSRgammaDRp1_gen_ispromptfinal, dilep_pt_FSRgammaDRp1_gen_ispromptfinal):Get2DMassGenBinIndex(dilep_mass_FSRgamma_gen_ispromptfinal, dilep_pt_FSRgamma_gen_ispromptfinal)',
-    'xaxis': 'Post FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': ("muon","FineFine"),
-    'go1D': False,
-    'isResMatrix':True
-}
-
 variables['PtGen_FineCoarse'] = {
 
     'unfoldBinType': ISRUnfold.PtGen2DHist,
     'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
     'fold':   0,
     'range':  None,
-    'name':  'Get2DPtGenBinIndex(dilep_pt_FSRgammaDRp1_gen_ispromptfinal, dilep_mass_FSRgammaDRp1_gen_ispromptfinal)',
+    'name':  'Get2DPtGenBinIndex(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal)',
     'xaxis': 'Mass p_{T} [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
@@ -106,7 +79,7 @@ variables['MassGen_FineCoarse'] = {
     'unfoldBinType': ISRUnfold.MassGen2DHist,
     'fold':   0,
     'range':  None,
-    'name':  'Get2DMassGenBinIndex(dilep_mass_FSRgammaDRp1_gen_ispromptfinal, dilep_pt_FSRgammaDRp1_gen_ispromptfinal)',
+    'name':  'Get2DMassGenBinIndex(dilep_mass_FSRgamma_gen_ispromptfinal, dilep_pt_FSRgamma_gen_ispromptfinal)',
     'xaxis': 'Mass [GeV]',
     'yaxis': 'Events',
     'useTUnfoldBin': True,
