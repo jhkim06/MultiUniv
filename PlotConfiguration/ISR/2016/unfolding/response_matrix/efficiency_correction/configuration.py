@@ -1,0 +1,15 @@
+
+Analyzer    = 'mkShape'
+Outputdir   = 'Output'
+Category    = 'SMP'
+Year        = '2016'
+InSkim      = 'ISR_v1'
+#Userflags   = 'ISR_response_PDF'
+Userflags   = 'ISR_response_closureTest'
+treeName    = 'recoTree/SKFlat'
+
+samplesFile   = 'samples.py'
+plotFile     = 'plot.py'
+variablesFile = 'variables.py'
+cutsFile      = 'cuts.py'
+nuisancesFile= 'nuisances.py'
