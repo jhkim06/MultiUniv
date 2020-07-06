@@ -64,33 +64,6 @@ variables['Mass_FineCoarse'] = {
     'go1D': False
 }
 
-#variables['PtGen_FineCoarse'] = {
-#
-#    'unfoldBinType': ISRUnfold.PtGen2DHist,
-#    'linesToAdd': (".L " + SKFlat_WD + "/ShapeAnalysis/scripts/userfunc/TUnfold_Bin_Definition.C",),
-#    'fold':   0,
-#    'range':  None,
-#    'name':  'Get2DPtGenBinIndex(dilep_pt_FSRgammaDRp1_gen_ispromptfinal, dilep_mass_FSRgammaDRp1_gen_ispromptfinal)',
-#    'xaxis': 'Mass p_{T} [GeV]',
-#    'yaxis': 'Events',
-#    'useTUnfoldBin': True,
-#    'unfoldBinDefinition': ("muon","FineCoarse"),
-#    'go1D': True
-#}
-#
-#variables['MassGen_FineCoarse'] = {
-#
-#    'unfoldBinType': ISRUnfold.MassGen2DHist,
-#    'fold':   0,
-#    'range':  None,
-#    'name':  'Get2DMassGenBinIndex(dilep_mass_FSRgammaDRp1_gen_ispromptfinal, dilep_pt_FSRgammaDRp1_gen_ispromptfinal)',
-#    'xaxis': 'Mass [GeV]',
-#    'yaxis': 'Events',
-#    'useTUnfoldBin': True,
-#    'unfoldBinDefinition': ("muon","FineCoarse"),
-#    'go1D': False
-#}
-
 
 variables['Mass_ResMatrix_Detector_Dressed_DRp1'] = {
 

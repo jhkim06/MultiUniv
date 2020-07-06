@@ -14,12 +14,12 @@ GenMcWeight = 'evt_weight_total_gen * 1.'
 samples['DYJets'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
-    'weight' :GenMcWeight,
+    'weight' :McWeight,
     }
 
 samples['DYJets10to50_MG'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
-    'weight' :GenMcWeight,
+    'weight' :McWeight,
     }
 

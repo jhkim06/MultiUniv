@@ -16,4 +16,7 @@ PlotConfiguration/ISR/2016/Output_MetFt_L_v2_LL_v1_ISR_v1_ISR/
 PlotConfiguration/ISR/2016/Plot_ISR/
 Output*
 Combinato/setUp.sh
+PlotConfiguration/ISR/2016/unfolding/response_matrix/efficiency_correction/Output_*/
+PlotConfiguration/ISR/2017/unfolding/response_matrix/efficiency_correction/Output_*/
+PlotConfiguration/ISR/2018/unfolding/response_matrix/efficiency_correction/Output_*/
 
