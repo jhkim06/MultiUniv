@@ -16,9 +16,18 @@ TUnfoldBinning* massBinningGen = NULL;
 
 const int nptBinFine=17;
 double ptBinFine[nptBinFine+1]={0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 35., 45., 55., 65., 75., 85., 100.};
-
+//
 const int nptBinCoarse=9;
 double ptBinCoarse[nptBinCoarse+1]={0., 4., 8., 12., 18., 28., 40., 55., 75., 100.};
+
+//const int nptBinFine=28;
+//double ptBinFine[nptBinFine+1]={0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12., 13., 14., 16., 18., 20., 22., 25., 28., 32., 37., 43., 50., 60., 72., 85., 100.};
+
+//const int nptBinCoarse=14;
+//double ptBinCoarse[nptBinCoarse+1]={0., 2., 4., 6., 8., 10., 12., 14., 18., 22., 28., 37., 50., 72., 100.};
+
+//const int nptBinCoarse=13;
+//double ptBinCoarse[nptBinCoarse+1]={0., 3., 6., 9., 12., 15., 18., 21., 26., 35., 46., 59., 78., 100.};
 
 const int nptBinZptWeight=22;
 double ptBinZptWeight[nptBinZptWeight+1]={0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 42, 50, 60, 72, 85, 100};

@@ -36,11 +36,6 @@ McWeightZptCorr = 'evt_weight_total_gen * zptweight_muon'
 #    'cut'    :'',
 #    'weight' :McWeight,
 #    }
-#samples['DYJets200to400'] = {
-#    'skim'   :'', # use default skim defined in configuration.py
-#    'cut'    :'dilep_mass_FSRgamma_gen_ispromptfinal > 200',
-#    'weight' :McWeight,
-#    }
 samples['DYJets'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'cut'    :'',
@@ -86,4 +81,4 @@ samples['DYJets10to50'] = {
 #    'cut'    :'',
 #    'weight' :McWeight,
 #    }
-
+#

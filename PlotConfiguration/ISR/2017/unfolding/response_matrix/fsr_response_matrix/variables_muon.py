@@ -86,3 +86,29 @@ variables['MassGen_FineCoarse'] = {
     'unfoldBinDefinition': ("muon","FineCoarse"),
     'go1D': False
 }
+
+variables['Pt_CoarseCoarse'] = {
+
+    'unfoldBinType': ISRUnfold.PtGen2DHist,
+    'fold':   0,
+    'range':  None,
+    'name':  'Get2DPtGenBinIndex(dilep_pt_FSRgammaDRp1_gen_ispromptfinal, dilep_mass_FSRgammaDRp1_gen_ispromptfinal)',
+    'xaxis': 'Mass p_{T} [GeV]',
+    'yaxis': 'Events',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("muon","CoarseCoarse"),
+    'go1D': True
+}
+
+variables['Mass_CoarseCoarse'] = {
+
+    'unfoldBinType': ISRUnfold.MassGen2DHist,
+    'fold':   0,
+    'range':  None,
+    'name':  'Get2DMassGenBinIndex(dilep_mass_FSRgammaDRp1_gen_ispromptfinal, dilep_pt_FSRgammaDRp1_gen_ispromptfinal)',
+    'xaxis': 'Mass [GeV]',
+    'yaxis': 'Events',
+    'useTUnfoldBin': True,
+    'unfoldBinDefinition': ("muon","CoarseCoarse"),
+    'go1D': False
+}

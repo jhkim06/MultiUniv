@@ -5,7 +5,7 @@ from CommonPyTools.python.CommonTools import *
 ###########################
 
 McWeight    = 'evt_weight_total_gen * 1. * evt_weight_total_rec * evt_weight_recoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal'
-GenMcWeight = 'evt_weight_total_gen * 1.'
+GenMcWeight = 'evt_weight_total_gen '
 
 #--------------------
 # MC

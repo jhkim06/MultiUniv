@@ -36,12 +36,12 @@ do
 
   #mkGardener.py --Category SMP -a Skim_ISR -y 2017 -i $sample -n 50 --skimV 1 --userflags MakeZptCorrNtuple --multiQueue 
   #mkGardener.py --Category SMP -a Skim_ISR -y 2017 -i $sample -n 50 --skimV 1 --userflags ISR_generator_only --multiQueue --treeDir GEN  --OnlyGenLevel
-  #mkGardener.py --Category SMP -a Skim_ISR -y 2017 -i $sample -n 50 --skimV 1 --userflags ISR --multiQueue  
+  mkGardener.py --Category SMP -a Skim_ISR -y 2017 -i $sample -n 50 --skimV 1 --userflags ISR --multiQueue  
   #mkGardener.py --Category SMP -a Skim_ISR -y 2017 -i $sample -n 50 --skimV 1 --userflags ISR_detector_only --multiQueue 
 
   #mkGardener.py --Category SMP -a Skim_ISR -y 2018 -i $sample -n 50 --skimV 1 --userflags MakeZptCorrNtuple --multiQueue 
   #mkGardener.py --Category SMP -a Skim_ISR -y 2018 -i $sample -n 50 --skimV 1 --userflags ISR_detector_only --multiQueue
-  mkGardener.py --Category SMP -a Skim_ISR -y 2018 -i $sample -n 50 --skimV 1 --userflags ISR --multiQueue 
+  #mkGardener.py --Category SMP -a Skim_ISR -y 2018 -i $sample -n 50 --skimV 1 --userflags ISR --multiQueue 
 done
 
 #for sample in DoubleEG DoubleMuon DYJets10to50_MG DYJets TT_powheg WJets_MG WW_pythia WZ_pythia ZZ_pythia 

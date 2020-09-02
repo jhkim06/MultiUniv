@@ -7,8 +7,8 @@ from CommonPyTools.python.CommonTools import *
 #Nlep='2'
 #eleWP='mediumSelectiveQ'
 
-FakeRate = 'evt_weight_LL_rec_Fake'
-McWeight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake'
+FakeRate            = 'evt_weight_LL_rec_Fake'
+McWeight            = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake'
 McWeightZptReweight = 'evt_weight_total_gen * evt_weight_total_rec * evt_weight_LL_rec_Fake * evt_weight_zptcorr_Fake'
 
 #--------------------

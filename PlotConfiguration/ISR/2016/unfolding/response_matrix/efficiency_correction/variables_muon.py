@@ -11,6 +11,7 @@ from Definitions import * # to use enumerate for unfolding histogram type
 # xaxis, yaxis to set title
 # for closure test
 
+
 variables['PtGen_FineCoarse'] = {
 
     'unfoldBinType': ISRUnfold.PtGen2DHist,
@@ -37,5 +38,4 @@ variables['MassGen_FineCoarse'] = {
     'unfoldBinDefinition': ("muon","FineCoarse"),
     'go1D': False
 }
-
 

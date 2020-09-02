@@ -90,32 +90,6 @@ variables['Pt_ResMatrix_Detector_Dressed_DRp1'] = {
     'isResMatrix':True
 }
 
-variables['Mass_ResMatrix_Detector_Dressed_DR4PI'] = {
-
-    'unfoldBinType': ISRUnfold.MassMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DMassRecBinIndex(dilep_mass_rec_Nominal, dilep_pt_rec_Nominal):Get2DMassGenBinIndex(dilep_mass_FSRgamma_gen_ispromptfinal, dilep_pt_FSRgamma_gen_ispromptfinal)',
-    'xaxis': 'Pre FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': ("electron","CoarseCoarse"),
-    'go1D': False,
-    'isResMatrix':True
-}
-
-variables['Pt_ResMatrix_Detector_Dressed_DR4PI'] = {
-
-    'unfoldBinType': ISRUnfold.PtMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DPtRecBinIndex(dilep_pt_rec_Nominal, dilep_mass_rec_Nominal):Get2DPtGenBinIndex(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal)',
-    'xaxis': 'Pre FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': ("electron","CoarseCoarse"),
-    'go1D': False,
-    'isResMatrix':True
-}
-
 variables['Mass_ResMatrix_Detector_Dressed_DRp1_FineCoarse'] = {
 
     'unfoldBinType': ISRUnfold.MassMigrationM,
@@ -135,32 +109,6 @@ variables['Pt_ResMatrix_Detector_Dressed_DRp1_FineCoarse'] = {
     'fold': 0,
     'range': None,
     'name': 'Get2DPtRecBinIndex(dilep_pt_rec_Nominal, dilep_mass_rec_Nominal):Get2DPtGenBinIndex(dilep_pt_FSRgammaDRp1_gen_ispromptfinal, dilep_mass_FSRgammaDRp1_gen_ispromptfinal)',
-    'xaxis': 'Pre FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': ("electron","FineCoarse"),
-    'go1D': False,
-    'isResMatrix':True
-}
-
-variables['Mass_ResMatrix_Detector_Dressed_DR4PI_FineCoarse'] = {
-
-    'unfoldBinType': ISRUnfold.MassMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DMassRecBinIndex(dilep_mass_rec_Nominal, dilep_pt_rec_Nominal):Get2DMassGenBinIndex(dilep_mass_FSRgamma_gen_ispromptfinal, dilep_pt_FSRgamma_gen_ispromptfinal)',
-    'xaxis': 'Pre FSR',
-    'useTUnfoldBin': True,
-    'unfoldBinDefinition': ("electron","FineCoarse"),
-    'go1D': False,
-    'isResMatrix':True
-}
-
-variables['Pt_ResMatrix_Detector_Dressed_DR4PI_FineCoarse'] = {
-
-    'unfoldBinType': ISRUnfold.PtMigrationM,
-    'fold': 0,
-    'range': None,
-    'name': 'Get2DPtRecBinIndex(dilep_pt_rec_Nominal, dilep_mass_rec_Nominal):Get2DPtGenBinIndex(dilep_pt_FSRgamma_gen_ispromptfinal, dilep_mass_FSRgamma_gen_ispromptfinal)',
     'xaxis': 'Pre FSR',
     'useTUnfoldBin': True,
     'unfoldBinDefinition': ("electron","FineCoarse"),

@@ -8,7 +8,7 @@ from CommonPyTools.python.CommonTools import *
 #eleWP='mediumSelectiveQ'
 
 McWeight             = 'evt_weight_total_gen * 1. * evt_weight_total_rec * evt_weight_isoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal'
-McWeightZptCorr      = 'evt_weight_total_gen * 1. * evt_weight_total_rec * evt_weight_isoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal * evt_weight_zptcorr_Nominal'
+McWeightZptCorr      = 'evt_weight_total_gen * zptweight_muon * evt_weight_total_rec * evt_weight_isoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal'
 McWeight_forDY10to50 = 'evt_weight_total_gen * 1. * evt_weight_total_rec * evt_weight_isoSF_rec_Nominal * evt_weight_idSF_rec_Nominal * evt_weight_trigSF_rec_Nominal * 1.0687524'
 
 #--------------------

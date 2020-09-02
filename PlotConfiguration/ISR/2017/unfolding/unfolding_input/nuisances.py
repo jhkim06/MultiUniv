@@ -10,10 +10,29 @@
 trg_syst = ['evt_weight_trigSF_up_rec_Nominal/evt_weight_trigSF_rec_Nominal', 'evt_weight_trigSF_down_rec_Nominal/evt_weight_trigSF_rec_Nominal']
 reco_syst  = ['evt_weight_recoSF_up_rec_Nominal/evt_weight_recoSF_rec_Nominal', 'evt_weight_recoSF_down_rec_Nominal/evt_weight_recoSF_rec_Nominal']
 id_syst  = ['evt_weight_idSF_up_rec_Nominal/evt_weight_idSF_rec_Nominal', 'evt_weight_idSF_down_rec_Nominal/evt_weight_idSF_rec_Nominal']
+l1prefire_syst = ['evt_weight_l1prefire_up/evt_weight_l1prefire','evt_weight_l1prefire_down/evt_weight_l1prefire']
 pileup_syst = ['evt_weight_pureweight_up/evt_weight_pureweight','evt_weight_pureweight_down/evt_weight_pureweight']
+bveto_syst = ['evt_weight_bveto_up/evt_weight_bveto','evt_weight_bveto_down/evt_weight_bveto']
 alphaS_syst  = 'PDFWeights_AlphaS'
 pdfScale_syst  = 'PDFWeights_Scale'
 pdfErr_syst  = 'PDFWeights_Error'
+
+nuisances['bveto'] = {
+    'name'      : 'bveto',
+    'kind'      : 'weight',
+    'type'      : 'shape',
+    'samples'   : {
+        'DYJetsToEE'            : bveto_syst ,
+        'DYJets10to50ToEE'      : bveto_syst ,
+        'DYJetsToTauTau'        : bveto_syst ,
+        'DYJets10to50ToTauTau'  : bveto_syst ,
+        'TTLL_powheg'           : bveto_syst ,
+        'WJets_MG'              : bveto_syst ,
+        'WW_pythia'             : bveto_syst ,
+        'WZ_pythia'             : bveto_syst ,
+        'ZZ_pythia'             : bveto_syst ,
+        },
+}
 
 nuisances['trig_sf'] = {
     'name'	: 'trgSF',
@@ -64,6 +83,23 @@ nuisances['reco_sf'] = {
         'WW_pythia'             : reco_syst ,
         'WZ_pythia'             : reco_syst ,
         'ZZ_pythia'             : reco_syst ,
+        },
+}
+
+nuisances['l1prefire'] = {
+    'name'      : 'L1Prefire',
+    'kind'      : 'weight',
+    'type'      : 'shape',
+    'samples'   : {
+        'DYJetsToEE'            : l1prefire_syst ,
+        'DYJets10to50ToEE'      : l1prefire_syst ,
+        'DYJetsToTauTau'        : l1prefire_syst ,
+        'DYJets10to50ToTauTau'  : l1prefire_syst ,
+        'TTLL_powheg'           : l1prefire_syst ,
+        'WJets_MG'              : l1prefire_syst ,
+        'WW_pythia'             : l1prefire_syst ,
+        'WZ_pythia'             : l1prefire_syst ,
+        'ZZ_pythia'             : l1prefire_syst ,
         },
 }
 
@@ -134,4 +170,4 @@ nuisances['pdfScale'] = {
 #	'ZZ_pythia'	: pdfErr_syst ,
 #	},
 #}
-
+#

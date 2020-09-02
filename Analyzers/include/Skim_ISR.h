@@ -27,6 +27,13 @@ struct Analysis_Variables
     double subleadinglep_eta_rec_;
     double leadingphoton_lep_dr_rec_;
 
+    bool is_EBEB_rec_;
+    bool is_EEEE_rec_;
+    bool is_EBEE_rec_;
+
+    bool is_r9_p94_rec_;
+    bool is_r9_p96_rec_;
+
     double evt_weight_recoSF_rec_, evt_weight_recoSF_up_rec_, evt_weight_recoSF_down_rec_;
     double evt_weight_idSF_rec_,   evt_weight_idSF_up_rec_,   evt_weight_idSF_down_rec_;
     double evt_weight_isoSF_rec_,  evt_weight_isoSF_up_rec_,  evt_weight_isoSF_down_rec_;
@@ -57,6 +64,13 @@ struct Analysis_Variables
     TString subleadinglep_pt_rec_brname;
     TString leadinglep_eta_rec_brname;
     TString subleadinglep_eta_rec_brname;
+
+    TString is_EBEB_rec_brname;
+    TString is_EEEE_rec_brname;
+    TString is_EBEE_rec_brname;
+
+    TString is_r9_p94_rec_brname;
+    TString is_r9_p96_rec_brname;
 
     TString evt_weight_recoSF_rec_brname, evt_weight_recoSF_up_rec_brname, evt_weight_recoSF_down_rec_brname;
     TString evt_weight_idSF_rec_brname,   evt_weight_idSF_up_rec_brname,   evt_weight_idSF_down_rec_brname;
@@ -91,6 +105,13 @@ struct Analysis_Variables
         leadinglep_eta_rec_             = -999.;
         subleadinglep_eta_rec_          = -999.;
 
+        is_EBEB_rec_ = false;
+        is_EEEE_rec_ = false;
+        is_EBEE_rec_ = false;
+
+        is_r9_p94_rec_ = false;
+        is_r9_p96_rec_ = false;
+
         evt_tag_TT_rec_           = false;
         evt_tag_TL_rec_           = false;
         evt_tag_LL_rec_           = false;
@@ -121,6 +142,13 @@ struct Analysis_Variables
         subleadinglep_pt_rec_brname         = "subleadinglep_pt_rec_" + prefix;
         leadinglep_eta_rec_brname           = "leadinglep_eta_rec_" + prefix;
         subleadinglep_eta_rec_brname        = "subleadinglep_eta_rec_" + prefix;
+
+        is_EBEB_rec_brname = "is_EBEB_rec_" + prefix;
+        is_EEEE_rec_brname = "is_EEEE_rec_" + prefix;
+        is_EBEE_rec_brname = "is_EBEE_rec_" + prefix;
+
+        is_r9_p94_rec_brname = "is_r9_p94_rec_" + prefix;
+        is_r9_p96_rec_brname = "is_r9_p96_rec_" + prefix;
 
         evt_tag_TT_rec_brname               = "evt_tag_TT_rec_" + prefix;
         evt_tag_TL_rec_brname               = "evt_tag_TL_rec_" + prefix;
@@ -163,7 +191,7 @@ public:
     void saveIndexToMap(int current_index, int mother_index, std::map<int,int> &partindex_map);
     void saveIndexToVector(int current_index, int mother_index, std::vector<int> &partindex_vector);
     bool isMatchedToDYIndexMap(int mother_index, int DYInitIndex, std::map<int,int> &partindex_map);  
-    bool PassKinematicCuts(const Gen lep1, const Gen lep2, double leading_pt, double subleading_pt, double eta);
+    bool PassKinematicCuts(const Gen lep1, const Gen lep2, double leading_pt, double subleading_pt, double eta, bool isEle = false);
     void clearVariables();
 
     double FR_template(double pT, double eta);
@@ -225,6 +253,9 @@ private:
     bool evt_tag_dimuon_promptfinal;
     bool evt_tag_dielectron_promptfinal;
     bool evt_tag_emu_promptfinal;
+
+    bool is_EBEEtransition_el_FSRgammaDRp1_gen;
+    bool is_EBEEtransition_el_FSRgamma_gen;
 
     bool pass_kinematic_cut_el_bare_gen;
     bool pass_kinematic_cut_mu_bare_gen;

@@ -59,7 +59,7 @@
 # 3: make plot
 
 fake_selection="TLOS TLSS LLOS LLSS"
-#fake_selection="TLSS TLOS"
+#fake_selection="LLOS LLSS"
 
 for fake in $fake_selection
 do

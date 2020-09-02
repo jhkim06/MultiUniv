@@ -160,6 +160,9 @@ void Skim_ISR::initializeAnalyzer()
         newtree->Branch("dilep_pt_alllepton_FSRgamma_gen_ispromptfinal", &dilep_pt_alllepton_FSRgamma_gen_ispromptfinal,"dilep_pt_alllepton_FSRgamma_gen_ispromptfinal/D");
         newtree->Branch("dilep_mass_alllepton_FSRgamma_gen_ispromptfinal", &dilep_mass_alllepton_FSRgamma_gen_ispromptfinal,"dilep_mass_alllepton_FSRgamma_gen_ispromptfinal/D");
 
+        newtree->Branch("is_EBEEtransition_el_FSRgammaDRp1_gen", &is_EBEEtransition_el_FSRgammaDRp1_gen, "is_EBEEtransition_el_FSRgammaDRp1_gen/O");
+        newtree->Branch("is_EBEEtransition_el_FSRgamma_gen", &is_EBEEtransition_el_FSRgamma_gen, "is_EBEEtransition_el_FSRgamma_gen/O");
+
         newtree->Branch("pass_kinematic_cut_el_bare_gen", &pass_kinematic_cut_el_bare_gen, "pass_kinematic_cut_el_bare_gen/O");
         newtree->Branch("pass_kinematic_cut_mu_bare_gen", &pass_kinematic_cut_mu_bare_gen, "pass_kinematic_cut_mu_bare_gen/O");
         newtree->Branch("pass_kinematic_cut_el_FSRgammaDRp1_gen", &pass_kinematic_cut_el_FSRgammaDRp1_gen, "pass_kinematic_cut_el_FSRgammaDRp1_gen/O");
@@ -344,6 +347,9 @@ void Skim_ISR::executeEvent()
 
         pass_kinematic_cut_el_bare_gen = false;
         pass_kinematic_cut_mu_bare_gen = false;
+
+        is_EBEEtransition_el_FSRgammaDRp1_gen = false;
+        is_EBEEtransition_el_FSRgamma_gen = false;
 
         pass_kinematic_cut_el_FSRgammaDRp1_gen = false;
         pass_kinematic_cut_mu_FSRgammaDRp1_gen = false;
@@ -638,7 +644,7 @@ void Skim_ISR::executeEvent()
 
                 lep_isPromptFinalState     += gen_lepton_isPromptFinalstate.at(l1index);
                 antilep_isPromptFinalState += gen_antilepton_isPromptFinalstate.at(l2index);
-    
+
                 // FIXME pass_kinematic_cut_mu_bare_gen->pass_pt_20_10_eta_2p4_bare_gen
                 pass_kinematic_cut_mu_bare_gen = PassKinematicCuts(lep_isPromptFinalState, antilep_isPromptFinalState, leading_muon_pt, subleading_muon_pt, muon_eta);
                 pass_kinematic_cut_el_bare_gen = PassKinematicCuts(lep_isPromptFinalState, antilep_isPromptFinalState, leading_electron_pt, subleading_electron_pt, electron_eta);
@@ -683,7 +689,7 @@ void Skim_ISR::executeEvent()
                             {
                                 cout << "index: " << mother_index << " ID: " << motherID_of_this_gamma << endl;
                                 mother_index = gen_particles.at(mother_index).MotherIndex();
-                                motherID_of_this_gamma = abs(gen_particles.at(mother_index).PID()); 
+                                motherID_of_this_gamma = abs(gen_particles.at(mother_index).PID());
                             }
                         }
                     }
@@ -746,6 +752,11 @@ void Skim_ISR::executeEvent()
                 antilep_isPromptFinalState += photon_less_DRp1_from_antilepton;
                 pass_kinematic_cut_mu_FSRgammaDRp1_gen = PassKinematicCuts(lep_isPromptFinalState, antilep_isPromptFinalState, leading_muon_pt, subleading_muon_pt, muon_eta);
                 pass_kinematic_cut_el_FSRgammaDRp1_gen = PassKinematicCuts(lep_isPromptFinalState, antilep_isPromptFinalState, leading_electron_pt, subleading_electron_pt, electron_eta);
+                if(pass_kinematic_cut_el_FSRgammaDRp1_gen)
+                {
+                    if((fabs(lep_isPromptFinalState.Eta()) > 1.4442 && fabs(lep_isPromptFinalState.Eta()) < 1.566) || (fabs(antilep_isPromptFinalState.Eta()) > 1.4442 && fabs(antilep_isPromptFinalState.Eta()) < 1.566)) 
+                        is_EBEEtransition_el_FSRgammaDRp1_gen = true; 
+                }
 
                 dilep_isPromptFinalState += photon_greater_DRp1;
                 dilep_pt_FSRgamma_gen_ispromptfinal = dilep_isPromptFinalState.Pt();
@@ -761,6 +772,12 @@ void Skim_ISR::executeEvent()
                 antilep_isPromptFinalState += photon_greater_DRp1_from_antilepton;
                 pass_kinematic_cut_mu_FSRgamma_gen = PassKinematicCuts(lep_isPromptFinalState, antilep_isPromptFinalState, leading_muon_pt, subleading_muon_pt, muon_eta);
                 pass_kinematic_cut_el_FSRgamma_gen = PassKinematicCuts(lep_isPromptFinalState, antilep_isPromptFinalState, leading_electron_pt, subleading_electron_pt, electron_eta);
+
+                if(pass_kinematic_cut_el_FSRgamma_gen)
+                {
+                    if((fabs(lep_isPromptFinalState.Eta()) > 1.4442 && fabs(lep_isPromptFinalState.Eta()) < 1.566) || (fabs(antilep_isPromptFinalState.Eta()) > 1.4442 && fabs(antilep_isPromptFinalState.Eta()) < 1.566)) 
+                        is_EBEEtransition_el_FSRgamma_gen = true; 
+                }
                 if(debug_) cout << "FSR photon summed pt, mass: " << dilep_pt_FSRgamma_gen_ispromptfinal << ", " << dilep_mass_FSRgamma_gen_ispromptfinal << endl;
                 // need to add FSR photon to lepton to check kinematic cuts
 
@@ -1059,7 +1076,7 @@ void Skim_ISR::executeEvent()
     delete evt;
 }
 
-bool Skim_ISR::PassKinematicCuts(const Gen lep1, const Gen lep2, double leading_pt, double subleading_pt, double eta)
+bool Skim_ISR::PassKinematicCuts(const Gen lep1, const Gen lep2, double leading_pt, double subleading_pt, double eta, bool isEle)
 {
     if((lep1.Pt() > leading_pt && lep2.Pt() > subleading_pt) || (lep1.Pt() > subleading_pt && lep2.Pt() > leading_pt))
     {
@@ -1264,6 +1281,25 @@ void Skim_ISR::executeEventFromParameter(AnalyzerParameter param, Analysis_Varia
             p_struct->dilep_pt_rec_          = (*(leps.at(0))+*(leps.at(1))).Pt();
             p_struct->dilep_mass_rec_        = (*(leps.at(0))+*(leps.at(1))).M();
 
+
+            if(IsElEl)
+            {
+                if(fabs(p_struct->leadinglep_eta_rec_) < 1.479 && fabs(p_struct->subleadinglep_eta_rec_) < 1.479)
+                    p_struct->is_EBEB_rec_ = true;
+                else if(fabs(p_struct->leadinglep_eta_rec_) > 1.479 && fabs(p_struct->subleadinglep_eta_rec_) > 1.479)
+                    p_struct->is_EEEE_rec_ = true;
+                else
+                    p_struct->is_EBEE_rec_ = true;
+
+                int el_index1 = electrons_.at(0).getNtupleIndex();
+                int el_index2 = electrons_.at(1).getNtupleIndex();
+
+                if(electron_r9->at(el_index1) > 0.94 && electron_r9->at(el_index2) > 0.94)
+                    p_struct->is_r9_p94_rec_ = true;
+                if(electron_r9->at(el_index1) > 0.96 && electron_r9->at(el_index2) > 0.96)
+                    p_struct->is_r9_p96_rec_ = true;
+            }
+
             if(p_struct->evt_tag_leptonpt_sel_rec_ && p_struct->evt_tag_leptoneta_sel_rec_ && p_struct->evt_tag_oppositecharge_sel_rec_ && evt_tag_bvetoed_rec)
             {
                 p_struct->evt_tag_analysisevnt_sel_rec_ = 1;
@@ -1447,7 +1483,7 @@ int Skim_ISR::findDYInitIndex(int l1_index, int l2_index, bool &zvertex)
     std::vector<int> v_intersection(100);
     std::vector<int>::iterator it;
 
-    // Save all ancestor particle index upto the second index, or the first Z index 
+    // Save all ancestor particle index upto the second index, or the first Z index
     saveIndexToVector(l1_index, 2, l1_index_vector);
     saveIndexToVector(l2_index, 2, l2_index_vector);
 
@@ -1576,6 +1612,13 @@ void Analysis_Variables::initVariables()
     leadinglep_eta_rec_             = -999.;
     subleadinglep_eta_rec_          = -999.;
 
+    is_EBEB_rec_ = false;
+    is_EEEE_rec_ = false;
+    is_EBEE_rec_ = false;
+
+    is_r9_p94_rec_ = false;
+    is_r9_p96_rec_ = false;
+
     evt_weight_recoSF_rec_ = 1.,        evt_weight_recoSF_up_rec_ = 1.,         evt_weight_recoSF_down_rec_ = 1.;
     evt_weight_idSF_rec_ = 1.,          evt_weight_idSF_up_rec_ = 1.,           evt_weight_idSF_down_rec_ = 1.;
     evt_weight_isoSF_rec_ = 1.,         evt_weight_isoSF_up_rec_ = 1.,          evt_weight_isoSF_down_rec_ = 1.;
@@ -1606,6 +1649,13 @@ void Analysis_Variables::setBranch(TTree *tree)
     tree->Branch(subleadinglep_pt_rec_brname,              &subleadinglep_pt_rec_);
     tree->Branch(leadinglep_eta_rec_brname,                &leadinglep_eta_rec_);
     tree->Branch(subleadinglep_eta_rec_brname,             &subleadinglep_eta_rec_);
+
+    tree->Branch(is_EBEB_rec_brname,             &is_EBEB_rec_);
+    tree->Branch(is_EEEE_rec_brname,             &is_EEEE_rec_);
+    tree->Branch(is_EBEE_rec_brname,             &is_EBEE_rec_);
+
+    tree->Branch(is_r9_p94_rec_brname,             &is_r9_p94_rec_);
+    tree->Branch(is_r9_p96_rec_brname,             &is_r9_p96_rec_);
 
     tree->Branch(evt_weight_recoSF_rec_brname,          &evt_weight_recoSF_rec_);
     tree->Branch(evt_weight_recoSF_up_rec_brname,       &evt_weight_recoSF_up_rec_);

@@ -41,18 +41,6 @@ samples['DYJets10to50@DYJets10to50ToTauTau'] = {
     'weight' :McWeight,
     }
 
-samples['SingleTop_tW_antitop_Incl'] = {
-    'skim'   :'', # use default skim defined in configuration.py
-    'cut'    :'',
-    'weight' :McWeight,
-    }
-
-samples['SingleTop_tW_top_Incl'] = {
-    'skim'   :'', # use default skim defined in configuration.py
-    'cut'    :'',
-    'weight' :McWeight,
-    }
-
 samples['TTLL_powheg'] = {
     'skim'   :'', # use default skim defined in configuration.py
     'combine_cuts' : True,
